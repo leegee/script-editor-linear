@@ -1,0 +1,43 @@
+.drag-list {
+  width: 360px;
+  margin: 2rem auto;
+  font-family: system-ui, sans-serif;
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  li {
+    padding: 0.75rem 1rem;
+    margin: 0.25rem 0;
+    border-radius: 8px;
+    border: 1px solid #444;
+    background-color: #1e1e1e;
+    color: #eee;
+    cursor: grab;
+    user-select: none;
+    transition: background-color 0.1s, opacity 0.1s, transform 0.1s;
+
+    &.dragging {
+      opacity: 0.3;
+    }
+
+    &.placeholder {
+      background-color: #3338;
+    }
+  }
+
+  .floating {
+    position: fixed;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    border: 1px solid #666;
+    background-color: #292929;
+    color: #fff;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+    pointer-events: none; // prevents blocking pointer events
+    z-index: 9999;
+  }
+}

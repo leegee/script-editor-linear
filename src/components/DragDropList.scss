@@ -1,0 +1,33 @@
+.drag-list {
+  li {
+    cursor: grab;
+    user-select: none;
+    transition: background-color 0.1s, opacity 0.1s, transform 0.1s;
+
+    &.dragging {
+      opacity: 0.3 !important;
+    }
+
+    &.placeholder {
+      background-color: #3338;
+    }
+
+    &.drag-over {
+      outline: 2pt solid var(--primary, #00f);
+      background: rgba(0, 0, 255, 0.5) !important;
+      filter: brightness(1.2)
+    }
+  }
+
+  .floating {
+    position: fixed;
+    width: 100%;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+    pointer-events: none; // prevents blocking pointer events
+    z-index: 9999;
+  }
+
+  .clicked {
+    opacity: 0.75;
+  }
+}

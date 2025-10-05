@@ -23,6 +23,7 @@
     "vitest": "^3.0.0"
   },
   "dependencies": {
+    "beercss": "^3.12.11",
     "solid-js": "^1.9.5"
   }
 }

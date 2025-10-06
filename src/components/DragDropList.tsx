@@ -1,52 +1,64 @@
-import { JSX, createSignal, For } from "solid-js";
+// src/components/DragDropList.tsx
+import { JSX, createSignal, createEffect, For } from "solid-js";
 import "./DragDropList.scss";
 
-interface DragDropListProps {
-  children: JSX.Element[] | JSX.Element;
+interface DragDropListProps<T = any> {
+  items: T[];
+  renderItem: (item: T, index: number) => JSX.Element | null;
+  onReorder?: (newOrder: number[]) => void;
+  className?: string;
 }
 
-// Adds listeners on init, cleans up on exit
-export default function DragDropList(props: DragDropListProps) {
-  // Order of children by index
-  const [order, setOrder] = createSignal<number[]>(
-    (Array.isArray(props.children) ? props.children : [props.children]).map((_, i) => i)
-  );
+export default function DragDropList<T>(props: DragDropListProps<T>) {
+  // initial order = indices into props.items
+  const [order, setOrder] = createSignal<number[]>(props.items.map((_, i) => i));
 
-
-  // Dragging state
+  // drag state
   const [draggingIndex, setDraggingIndex] = createSignal<number | null>(null);
   const [overIndex, setOverIndex] = createSignal<number | null>(null);
   const [dragX, setDragX] = createSignal<number | null>(null);
   const [dragY, setDragY] = createSignal<number | null>(null);
 
-  let floatingRef: HTMLLIElement | undefined;
+  let floatingRef: HTMLElement | undefined;
+
+  // Keep order in sync if item length changes
+  createEffect(() => {
+    const itemsLen = props.items.length;
+    const cur = order();
+    if (cur.length !== itemsLen) {
+      const kept = cur.filter(i => i < itemsLen);
+      const added = Array.from({ length: itemsLen }, (_, i) => i).filter(i => !kept.includes(i));
+      setOrder([...kept, ...added]);
+    }
+  });
 
   function startDrag(index: number, e: PointerEvent) {
     setDraggingIndex(index);
     setOverIndex(index);
     setDragX(e.clientX);
     setDragY(e.clientY);
-    (e.target as HTMLElement).classList.add('clicked');
-    (e.target as HTMLElement).setPointerCapture(e.pointerId);
+    const targetEl = e.target as HTMLElement;
+    targetEl.classList.add("clicked");
+    targetEl.setPointerCapture?.(e.pointerId);
 
     function move(ev: PointerEvent) {
       setDragX(ev.clientX);
       setDragY(ev.clientY);
-
       if (!floatingRef) return;
 
-      // Temporarily hide floating element so it doesn't block elementFromPoint
       floatingRef.style.display = "none";
       const target = document.elementFromPoint(ev.clientX, ev.clientY);
       floatingRef.style.display = "";
-
-      const li = target?.closest("li[data-index]") as HTMLElement | null;
-      if (li) setOverIndex(Number(li.dataset.index));
+      const el = target?.closest("[data-index]") as HTMLElement | null;
+      if (el) setOverIndex(Number(el.dataset.index));
     }
 
     function end() {
-      (e.target as HTMLElement).classList.remove('clicked');
-      (e.target as HTMLElement).releasePointerCapture(e.pointerId);
+      try {
+        (e.target as HTMLElement).classList.remove("clicked");
+        (e.target as HTMLElement).releasePointerCapture?.(e.pointerId);
+      } catch { }
+
       document.removeEventListener("pointermove", move);
       document.removeEventListener("pointerup", end);
 
@@ -54,10 +66,11 @@ export default function DragDropList(props: DragDropListProps) {
       const dest = overIndex();
 
       if (src !== null && dest !== null && src !== dest) {
-        const newOrder = [...order()];
-        const [moved] = newOrder.splice(src, 1);
-        newOrder.splice(dest, 0, moved);
-        setOrder(newOrder);
+        const next = [...order()];
+        const [moved] = next.splice(src, 1);
+        next.splice(dest, 0, moved);
+        setOrder(next);
+        props.onReorder?.(next);
       }
 
       setDraggingIndex(null);
@@ -71,46 +84,47 @@ export default function DragDropList(props: DragDropListProps) {
   }
 
   return (
-    <div class="drag-list">
+    <div class={props.className ?? "drag-list"}>
       <ul class="list border medium-space">
         <For each={order()}>
-          {(childIdx, idx) => {
-            const index = idx();
-            const isDragging = draggingIndex() === index;
-            const isPlaceholder = overIndex() === index && draggingIndex() !== null;
+          {(itemIndex, idx) => {
+            const pos = idx();
+            const isDragging = draggingIndex() === pos;
+            const isPlaceholder = overIndex() === pos && draggingIndex() !== null;
+            const item = props.items[itemIndex];
 
             return (
               <li
-                data-index={index}
-                onPointerDown={(e) => startDrag(index, e)}
-                class={
-                  `border fill tiny-margin tiny-padding  ${isDragging ? "dragging" : ""
-                  } ${isPlaceholder ? "placeholder" : ""
-                  } ${overIndex() === index ? "drag-over" : ""}`
-                }
+                data-index={pos}
+                onPointerDown={(e) => startDrag(pos, e)}
+                class={`border fill tiny-margin tiny-padding dd-item
+                  ${isDragging ? "dragging" : ""}
+                  ${isPlaceholder ? "placeholder" : ""}
+                  ${overIndex() === pos ? "drag-over" : ""}
+                `}
               >
-                {(Array.isArray(props.children) ? props.children : [props.children])[childIdx]}
+                {props.renderItem(item, itemIndex)}
               </li>
             );
           }}
         </For>
 
-        {draggingIndex() !== null &&
-          dragX() !== null &&
-          dragY() !== null && (
-            <li
-              class="floating large-elevate border tiny-margin tiny-padding secondary"
-              ref={floatingRef}
-              style={{
-                top: `calc(${dragY()!}px - 4em)`,
-              }}
-            >
-              {(Array.isArray(props.children) ? props.children : [props.children])[order()[draggingIndex()!]]}
-            </li>
-          )}
-
+        {/* floating draggable preview */}
+        {draggingIndex() !== null && dragX() !== null && dragY() !== null && (
+          <li
+            class="floating large-elevate border tiny-margin tiny-padding secondary"
+            ref={floatingRef as HTMLLIElement}
+            style={{
+              position: "fixed",
+              left: `${dragX()!}px`,
+              top: `${dragY()!}px`,
+              transform: "translate(-50%,-2em)",
+            }}
+          >
+            {props.renderItem(props.items[order()[draggingIndex()!]], order()[draggingIndex()!])}
+          </li>
+        )}
       </ul>
-
     </div>
   );
 }

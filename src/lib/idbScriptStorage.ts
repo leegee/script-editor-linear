@@ -27,7 +27,7 @@ async function openStore(): Promise<IDBPDatabase> {
 }
 
 /**
- * Script storage helper that keeps items and their order (sequence) in sync
+ * keeps items and their order (sequence) in sync
  */
 export const scriptStorage = {
     itemsKey: "default", // key for sequence store

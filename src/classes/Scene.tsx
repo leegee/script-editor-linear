@@ -1,4 +1,3 @@
 import { BaseScriptItem } from "./ScriptItem";
 
-export class Act extends BaseScriptItem { }
-
+export class Scene extends BaseScriptItem { }

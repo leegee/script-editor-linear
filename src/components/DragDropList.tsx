@@ -2,15 +2,16 @@ import { JSX, createSignal, For } from "solid-js";
 import "./DragDropList.scss";
 
 interface DragDropListProps {
-  children: JSX.Element[];
+  children: JSX.Element[] | JSX.Element;
 }
 
 // Adds listeners on init, cleans up on exit
 export default function DragDropList(props: DragDropListProps) {
   // Order of children by index
   const [order, setOrder] = createSignal<number[]>(
-    props.children.map((_, i) => i)
+    (Array.isArray(props.children) ? props.children : [props.children]).map((_, i) => i)
   );
+
 
   // Dragging state
   const [draggingIndex, setDraggingIndex] = createSignal<number | null>(null);
@@ -88,7 +89,7 @@ export default function DragDropList(props: DragDropListProps) {
                   } ${overIndex() === index ? "drag-over" : ""}`
                 }
               >
-                {props.children[childIdx]}
+                {(Array.isArray(props.children) ? props.children : [props.children])[childIdx]}
               </li>
             );
           }}
@@ -104,7 +105,7 @@ export default function DragDropList(props: DragDropListProps) {
                 top: `calc(${dragY()!}px - 4em)`,
               }}
             >
-              {props.children[order()[draggingIndex()!]]}
+              {(Array.isArray(props.children) ? props.children : [props.children])[order()[draggingIndex()!]]}
             </li>
           )}
 

@@ -1,25 +1,27 @@
-export abstract class ScriptItem {
-    readonly id: string;
-    readonly time: number;
-    readonly type: string;
+import { type JSX } from "solid-js/jsx-runtime";
+import { createStore } from "solid-js/store";
+
+export interface BaseScriptItemProps {
+    id: string;
+    type: string;
+    time: number;
     text: string;
-
-    constructor(id: string, time: number, type: string, text: string) {
-        this.id = id;
-        this.time = time;
-        this.type = type;
-        this.text = text;
-    }
-
-    abstract render(): string;
-
-    toJSON() {
-        return {
-            id: this.id,
-            time: this.time,
-            type: this.type,
-            text: this.text,
-        };
-    }
+    [key: string]: any;
 }
 
+export class BaseScriptItem {
+    props: BaseScriptItemProps;
+
+    constructor(data: BaseScriptItemProps) {
+        const [store] = createStore(data);
+        this.props = store;
+    }
+
+    toJSON(): BaseScriptItemProps {
+        return { ...this.props };
+    }
+
+    render(): JSX.Element {
+        return <div class={this.props.type}>{this.props.text}</div>;
+    }
+}

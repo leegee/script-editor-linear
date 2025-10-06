@@ -16,8 +16,12 @@ export interface ScriptItemJSON {
 async function openStore(): Promise<IDBPDatabase> {
     return openDB("script-items-db", 1, {
         upgrade(db) {
-            if (!db.objectStoreNames.contains("items")) db.createObjectStore("items");
-            if (!db.objectStoreNames.contains("sequence")) db.createObjectStore("sequence");
+            if (!db.objectStoreNames.contains("items")) {
+                db.createObjectStore("items");
+            }
+            if (!db.objectStoreNames.contains("sequence")) {
+                db.createObjectStore("sequence");
+            }
         },
     });
 }
@@ -103,6 +107,12 @@ export const scriptStorage = {
         db.close();
     },
 
+    async clear() {
+        const db = await openStore();
+        await db.transaction("items", "readwrite").objectStore("items").clear();
+        await db.transaction("sequence", "readwrite").objectStore("sequence").clear();
+        db.close();
+    },
 
     async reorderItems(newSequence: string[]) {
         const db = await openStore();

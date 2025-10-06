@@ -1,18 +1,16 @@
-import { ScriptItem } from "./ScriptItem";
+import { JSX } from "solid-js/jsx-runtime";
+import { type ScriptItemJSON } from "../lib/idbScriptStorage";
+import { BaseScriptItem, type BaseScriptItemProps } from "./ScriptItem";
 
-export class Dialogue extends ScriptItem {
-    speaker: string;
-
-    constructor(id: string, time: number, speaker: string, text: string) {
-        super(id, time, 'dialogue', text);
-        this.speaker = speaker;
+export interface DialoguePropsType extends BaseScriptItemProps {
+    characterId: string;
+}
+export class Dialogue extends BaseScriptItem {
+    render(): JSX.Element {
+        return <div class={this.props.type}>
+            <img src={`characters/${this.props.characterId}.png`} />
+            {this.props.characterId}: {this.props.text}
+        </div>;
     }
 
-    render() {
-        return `${this.speaker}: ${this.text}`;
-    }
-
-    toJSON() {
-        return { ...super.toJSON(), speaker: this.speaker };
-    }
 }

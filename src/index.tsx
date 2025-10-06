@@ -1,3 +1,4 @@
+// index.tsx
 import { render } from 'solid-js/web';
 import 'solid-devtools';
 import "beercss";
@@ -13,6 +14,13 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
   );
 }
 
-ingest();
-
-render(() => <App />, root!);
+ingest()
+  .catch(
+    console.error
+  )
+  .then(
+    () => render(
+      () => <App />,
+      root!
+    )
+  );

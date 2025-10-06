@@ -1,6 +1,6 @@
-import { scriptStorage, type ScriptItemJSON } from "./lib/idbScriptStorage";
+import { scriptStorage, type ScriptItemProps } from "./lib/idbScriptStorage";
 
-const sampleScript: ScriptItemJSON[] = [
+const sampleScript: ScriptItemProps[] = [
     { id: crypto.randomUUID(), type: "act", title: "Act 1", time: 0, text: "Act 1" },
     { id: crypto.randomUUID(), type: "scene", title: "Scene 1", time: 1, text: "Scene 1" },
     { id: crypto.randomUUID(), type: "dialogue", characterId: "Alice", text: "Hello there!", time: 2 },

@@ -1,12 +1,12 @@
 import { createStore } from "solid-js/store";
 import { createRoot, createSignal, onMount } from "solid-js";
-import { scriptStorage, type ScriptItemJSON } from "../lib/idbScriptStorage";
+import { scriptStorage, type ScriptItemProps } from "../lib/idbScriptStorage";
 import { BaseScriptItem } from "../classes/ScriptItem";
 import { Act } from "../classes/Act";
 import { Scene } from "../classes/Scene";
 import { Dialogue, DialoguePropsType } from "../classes/Dialogue";
 
-function reviveItem(obj: ScriptItemJSON) {
+function reviveItem(obj: ScriptItemProps) {
     switch (obj.type) {
         case "act": return new Act(obj);
         case "scene": return new Scene(obj);

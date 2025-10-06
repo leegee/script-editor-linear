@@ -2,7 +2,7 @@
 import type { AsyncStorage } from "@solid-primitives/storage";
 import { openDB, type IDBPDatabase } from "idb";
 
-export interface ScriptItemJSON {
+export interface ScriptItemProps {
     id: string;
     time: number;
     type: string;
@@ -32,15 +32,15 @@ async function openStore(): Promise<IDBPDatabase> {
 export const scriptStorage = {
     itemsKey: "default", // key for sequence store
 
-    async getItems(): Promise<Record<string, ScriptItemJSON>> {
+    async getItems(): Promise<Record<string, ScriptItemProps>> {
         const db = await openStore();
         const tx = db.transaction("items", "readonly");
         const store = tx.objectStore("items");
         const allKeys = await store.getAllKeys();
-        const result: Record<string, ScriptItemJSON> = {};
+        const result: Record<string, ScriptItemProps> = {};
         for (const key of allKeys) {
             const item = await store.get(key);
-            if (item) result[key.toString()] = item as ScriptItemJSON;
+            if (item) result[key.toString()] = item as ScriptItemProps;
         }
         await tx.done;
         db.close();
@@ -57,7 +57,7 @@ export const scriptStorage = {
         return seq ?? [];
     },
 
-    async addItem(item: ScriptItemJSON) {
+    async addItem(item: ScriptItemProps) {
         const db = await openStore();
 
         // Store item

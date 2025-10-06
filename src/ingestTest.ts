@@ -1,4 +1,4 @@
-import { scriptStorage, type ScriptItemProps } from "./lib/idbScriptStorage";
+import { scriptStorage, type ScriptItemProps } from "./stores/idbScriptStorage";
 
 const sampleScript: ScriptItemProps[] = [
     { id: crypto.randomUUID(), type: "act", title: "Act 1", time: 0, text: "Act 1" },

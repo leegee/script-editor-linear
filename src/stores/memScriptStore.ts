@@ -1,6 +1,6 @@
 import { createStore } from "solid-js/store";
 import { createRoot, createSignal, onMount } from "solid-js";
-import { scriptStorage, type ScriptItemProps } from "../lib/idbScriptStorage";
+import { scriptStorage, type ScriptItemProps } from "./idbScriptStorage";
 import { BaseScriptItem } from "../classes/ScriptItem";
 import { Act } from "../classes/Act";
 import { Scene } from "../classes/Scene";

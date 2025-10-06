@@ -1,7 +1,7 @@
 // src/App.tsx
 import { createSignal, createMemo, For, onMount } from "solid-js";
 import DragDropList from "./components/DragDropList";
-import { items, sequence, loadScript, reorderItems as persistReorder } from "./stores/sciptStore";
+import { items, sequence, loadScript, reorderItems as persistReorder } from "./stores/memScriptStore";
 
 export default function App() {
     const [loaded, setLoaded] = createSignal(false);

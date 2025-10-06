@@ -1,5 +1,5 @@
 import { JSX } from "solid-js/jsx-runtime";
-import { type ScriptItemProps } from "../lib/idbScriptStorage";
+import { type ScriptItemProps } from "../stores/idbScriptStorage";
 import { BaseScriptItem, type BaseScriptItemProps } from "./ScriptItem";
 
 export interface DialoguePropsType extends BaseScriptItemProps {

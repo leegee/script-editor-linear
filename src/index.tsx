@@ -2,6 +2,7 @@
 import { render } from 'solid-js/web';
 import 'solid-devtools';
 import "beercss";
+import './index.css';
 
 import App from './App';
 import { ingest } from './ingestTest';

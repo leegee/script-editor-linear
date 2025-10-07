@@ -72,7 +72,7 @@ export default function DragDropList<T>(props: DragDropListProps<T>) {
 
   return (
     <div class={props.className ?? "drag-list"}>
-      <ul class="list border medium-space">
+      <ul class="list border no-space">
         <For each={order()}>
           {(itemIdx, idx) => {
             const pos = idx();
@@ -92,7 +92,7 @@ export default function DragDropList<T>(props: DragDropListProps<T>) {
         </For>
         {draggingIndex() !== null && dragX() !== null && dragY() !== null && (
           <li
-            class="floating large-elevate border tiny-margin tiny-padding secondary"
+            class="floating large-elevate border no-margin no-padding secondary"
             ref={floatingRef as HTMLLIElement}
             style={{ position: "fixed", left: `${dragX()!}px`, top: `${dragY()!}px`, transform: "translate(-50%,-2em)" }}
           >

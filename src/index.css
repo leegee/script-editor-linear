@@ -1,0 +1,15 @@
+.act {
+    font-size: xx-large !important;
+}
+
+.scene {
+    font-size: x-large !important;
+}
+
+.location {
+    font-size: large !important;
+}
+
+.dialog {
+    font-size: normal;
+}

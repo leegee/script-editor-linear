@@ -2,13 +2,13 @@ import { type JSX } from "solid-js/jsx-runtime";
 import { createStore } from "solid-js/store";
 
 
-export interface BaseScriptItemProps<T extends string = 'base'> {
+export interface BaseItemProps<T extends string = 'base'> {
     type: T;
     id: string;
     text: string;
 }
 
-export class BaseScriptItem<P extends BaseScriptItemProps<string> = BaseScriptItemProps> {
+export class BaseItem<P extends BaseItemProps<string> = BaseItemProps> {
     props: P;
 
     constructor(data: P) {

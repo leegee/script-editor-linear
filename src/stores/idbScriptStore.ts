@@ -1,6 +1,6 @@
 // src/lib/idbScriptStorage.ts
 import { openDB, type IDBPDatabase } from "idb";
-import { BaseScriptItemProps } from "../classes/ScriptItem";
+import { BaseItemProps } from "../classes/BaseItem";
 import { AllClassPropsUnion } from "../classes";
 
 export const DB_NAME = "script-items-db";

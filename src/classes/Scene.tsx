@@ -1,7 +1,7 @@
 import { ActPropsType } from "./Act";
-import { BaseScriptItem, type BaseScriptItemProps } from "./ScriptItem";
+import { BaseItem, type BaseItemProps } from "./BaseItem";
 
-export type ScenePropsType = BaseScriptItemProps<'scene'>;
+export type ScenePropsType = BaseItemProps<'scene'>;
 
-export class Scene extends BaseScriptItem<ScenePropsType> { }
+export class Scene extends BaseItem<ScenePropsType> { }
 

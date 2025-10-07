@@ -1,12 +1,12 @@
 import { JSX } from "solid-js/jsx-runtime";
-import { BaseScriptItem, type BaseScriptItemProps } from "./ScriptItem";
+import { BaseItem, type BaseItemProps } from "./BaseItem";
 
-export type DialoguePropsType = BaseScriptItemProps<'dialogue'> & {
+export type DialoguePropsType = BaseItemProps<'dialogue'> & {
     characterId: string;
     text: string;
 }
 
-export class Dialogue extends BaseScriptItem<DialoguePropsType> {
+export class Dialogue extends BaseItem<DialoguePropsType> {
     render(): JSX.Element {
         return <div class={this.props.type}>
             <img src={`characters/${this.props.characterId}.png`} />

@@ -1,14 +1,14 @@
 import { JSX } from "solid-js/jsx-runtime";
-import { BaseScriptItem, type BaseScriptItemProps } from "./ScriptItem";
+import { BaseItem, type BaseItemProps } from "./BaseItem";
 
-export type LocationPropsType = BaseScriptItemProps<'location'> & {
+export type LocationPropsType = BaseItemProps<'location'> & {
     lat: number;
     lng: number;
     polyline?: string;
     radius?: number;
 }
 
-export class Location extends BaseScriptItem<LocationPropsType> {
+export class Location extends BaseItem<LocationPropsType> {
     render(): JSX.Element {
         return <div class={this.props.type}>
             this.props.text

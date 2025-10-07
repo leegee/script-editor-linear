@@ -1,4 +1,8 @@
 .drag-list {
+  .dd-item {
+    position: relative;
+  }
+
   li {
     cursor: grab;
     user-select: none;

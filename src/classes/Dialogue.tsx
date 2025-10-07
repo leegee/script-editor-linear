@@ -8,7 +8,7 @@ export type DialoguePropsType = BaseItemProps<'dialogue'> & {
 
 export class Dialogue extends BaseItem<DialoguePropsType> {
     render(): JSX.Element {
-        return <div class={this.props.type + ' border max fill padding'} >
+        return <div class={this.props.type + ' card border max fill padding'} >
             <img src={`characters/${this.props.characterId}.png`} />
             {this.props.characterId}: {this.props.text}
         </div >;

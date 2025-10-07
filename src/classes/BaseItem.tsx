@@ -21,6 +21,6 @@ export class BaseItem<P extends BaseItemProps<string> = BaseItemProps> {
     }
 
     render(): JSX.Element {
-        return <div class={'border max fill padding ' + this.props.type}>{this.props.text}</div>;
+        return <div class={'border max fill padding card ' + this.props.type}>{this.props.text}</div>;
     }
 }

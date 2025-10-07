@@ -10,7 +10,7 @@ export type LocationPropsType = BaseItemProps<'location'> & {
 
 export class Location extends BaseItem<LocationPropsType> {
     render(): JSX.Element {
-        return <div class={'border max fill padding ' + this.props.type}>
+        return <div class={'border max fill padding card ' + this.props.type}>
             Location
         </div>;
     }

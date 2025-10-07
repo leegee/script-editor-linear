@@ -1,5 +1,21 @@
-.act {
+.card {
+    opacity: 0.9;
+    outline: 1pt solid transparent;
+}
+
+.card:hover,
+.card:focus-within {
+    opacity: 1;
+    outline: 1pt solid var(--primary);
+}
+
+.dd-item:has(> .act) {
+    background: var(--primary) !important;
     font-size: xx-large !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 10 !important;
+    align-self: flex-start;
 }
 
 .scene {

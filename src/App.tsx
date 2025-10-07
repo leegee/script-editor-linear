@@ -18,13 +18,14 @@ export default function App() {
     });
 
     return (
-        <main>
+        <main class="responsive">
             <Show when={loaded() && sequence()} fallback={<p>Loading script...</p>}>
 
                 <DragDropList
                     items={sequence().map(id => items[id]?.instance).filter(Boolean)}
                     renderItem={(item) => item?.render() ?? null}
                     onReorder={(newOrder) => {
+                        console.log('newOrder', newOrder)
                         memScriptStore.setSequence(newOrder.map(i => sequence()[i]));
                         reorderItems(memScriptStore.sequence());
                     }}

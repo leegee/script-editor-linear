@@ -48,11 +48,16 @@ export default function DragDropList<T>(props: DragDropListProps<T>) {
     }
 
     function end() {
-      try { targetEl.classList.remove("clicked"); targetEl.releasePointerCapture?.(e.pointerId); } catch { }
+      try {
+        targetEl.classList.remove("clicked");
+        targetEl.releasePointerCapture?.(e.pointerId);
+      } catch { }
       document.removeEventListener("pointermove", move);
       document.removeEventListener("pointerup", end);
+
       const src = draggingIndex();
       const dest = overIndex();
+
       if (src !== null && dest !== null && src !== dest) {
         const next = [...order()];
         const [moved] = next.splice(src, 1);
@@ -60,6 +65,7 @@ export default function DragDropList<T>(props: DragDropListProps<T>) {
         setOrder(next);
         props.onReorder?.(next);
       }
+
       setDraggingIndex(null);
       setOverIndex(null);
       setDragX(null);
@@ -72,7 +78,7 @@ export default function DragDropList<T>(props: DragDropListProps<T>) {
 
   return (
     <div class={props.className ?? "drag-list"}>
-      <ul class="list border no-space">
+      <ul class="list border no-space" style="position:relative">
         <For each={order()}>
           {(itemIdx, idx) => {
             const pos = idx();
@@ -90,15 +96,17 @@ export default function DragDropList<T>(props: DragDropListProps<T>) {
             );
           }}
         </For>
+
         {draggingIndex() !== null && dragX() !== null && dragY() !== null && (
           <li
-            class="floating large-elevate border no-margin no-padding secondary"
+            class="dd-item floating large-elevate border no-margin no-padding secondary"
             ref={floatingRef as HTMLLIElement}
-            style={{ position: "fixed", left: `${dragX()!}px`, top: `${dragY()!}px`, transform: "translate(-50%,-2em)" }}
+            style={{ zoom: 0.8, position: "fixed", left: `${dragX()!}px`, top: `${dragY()!}px`, transform: "translate(-50%,-2em)" }}
           >
             {props.renderItem(props.items[order()[draggingIndex()!]], order()[draggingIndex()!])}
           </li>
         )}
+
       </ul>
     </div>
   );

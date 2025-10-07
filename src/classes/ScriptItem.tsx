@@ -1,23 +1,22 @@
 import { type JSX } from "solid-js/jsx-runtime";
 import { createStore } from "solid-js/store";
 
-export interface BaseScriptItemProps {
+
+export interface BaseScriptItemProps<T extends string = 'base'> {
+    type: T;
     id: string;
-    type: string;
-    time: number;
     text: string;
-    [key: string]: any;
 }
 
-export class BaseScriptItem {
-    props: BaseScriptItemProps;
+export class BaseScriptItem<P extends BaseScriptItemProps<string> = BaseScriptItemProps> {
+    props: P;
 
-    constructor(data: BaseScriptItemProps) {
+    constructor(data: P) {
         const [store] = createStore(data);
         this.props = store;
     }
 
-    toJSON(): BaseScriptItemProps {
+    toJSON(): P {
         return { ...this.props };
     }
 

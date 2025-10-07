@@ -5,6 +5,11 @@ import "beercss";
 
 import App from './App';
 import { ingest } from './ingestTest';
+import { memScriptStore } from "./stores/memScriptStore";
+import { scriptStorage } from "./stores/idbScriptStore";
+import { syncStores } from "./stores/syncStores";
+
+syncStores(memScriptStore, scriptStorage);
 
 const root = document.getElementById('root');
 

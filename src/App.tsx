@@ -1,43 +1,36 @@
-// src/App.tsx
-import { createSignal, createMemo, For, onMount } from "solid-js";
+import { createEffect, createSignal, For, onMount, Show } from "solid-js";
 import DragDropList from "./components/DragDropList";
-import { items, sequence, loadScript, reorderItems as persistReorder } from "./stores/memScriptStore";
+import { memScriptStore, reorderItems } from "./stores/memScriptStore";
 
 export default function App() {
+    const { items, sequence, loadScript } = memScriptStore;
     const [loaded, setLoaded] = createSignal(false);
 
     onMount(async () => {
         await loadScript();
-        // give Solid a microtask to ensure store updates propagate before showing the UI
-        queueMicrotask(() => setLoaded(true));
+        console.log('Loaded items:', items);
+        console.log('Loaded sequence:', sequence());
+        setLoaded(true);
     });
 
-    // build an items array in the same order as sequence()
-    const itemsArray = createMemo(() =>
-        sequence().map(id => ({ id, item: items[id]?.instance ?? null }))
-    );
-
-    // convert DragDropList new order (indices) back into GUID sequence and persist
-    function handleReorder(newOrderIndices: number[]) {
-        const arr = itemsArray();
-        const newSequence = newOrderIndices.map(i => arr[i].id);
-        // persist the new sequence to DB + store
-        persistReorder(newSequence).catch(console.error);
-    }
+    createEffect(() => {
+        console.log('change', Object.keys(items).length, sequence());
+    });
 
     return (
         <main>
-            {!loaded() ? (
-                <p>Loading script...</p>
-            ) : (
+            <Show when={loaded() && sequence()} fallback={<p>Loading script...</p>}>
+
                 <DragDropList
-                    items={itemsArray()}
-                    renderItem={(entry: { id: string; item: any }) =>
-                        entry.item ? entry.item.render() : <div class="placeholder">Missing</div>
-                    }
-                    onReorder={handleReorder}
+                    items={sequence().map(id => items[id]?.instance).filter(Boolean)}
+                    renderItem={(item) => item?.render() ?? null}
+                    onReorder={(newOrder) => {
+                        memScriptStore.setSequence(newOrder.map(i => sequence()[i]));
+                        reorderItems(memScriptStore.sequence());
+                    }}
                 />
-            )}
+
+            </Show>
         </main>
     );
 }

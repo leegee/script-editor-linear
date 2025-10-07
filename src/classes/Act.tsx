@@ -1,4 +1,8 @@
-import { BaseScriptItem } from "./ScriptItem";
+import { LocationPropsType } from "./Location";
+import { BaseScriptItem, type BaseScriptItemProps } from "./ScriptItem";
 
-export class Act extends BaseScriptItem { }
+export type ActPropsType = BaseScriptItemProps<'act'>;
+
+export class Act extends BaseScriptItem<ActPropsType> { }
+
 

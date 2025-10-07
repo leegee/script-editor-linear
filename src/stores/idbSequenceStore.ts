@@ -1,15 +1,16 @@
 // src/lib/idbSequenceStorage.ts
 import type { AsyncStorage } from "@solid-primitives/storage";
 import { openDB, type IDBPDatabase } from "idb";
+import { DB_NAME, SEQUENCE_STORE } from "./idbScriptStore";
 
 /**
  * Helper to open or create the database
  */
 async function openStore(): Promise<IDBPDatabase> {
-    return openDB("script-items-db", 1, {
+    return openDB(DB_NAME, 1, {
         upgrade(db) {
-            if (!db.objectStoreNames.contains("sequence")) {
-                db.createObjectStore("sequence");
+            if (!db.objectStoreNames.contains(SEQUENCE_STORE)) {
+                db.createObjectStore(SEQUENCE_STORE);
             }
         },
     });
@@ -21,8 +22,8 @@ async function openStore(): Promise<IDBPDatabase> {
 export const sequenceStorage: AsyncStorage = {
     getItem: async (key) => {
         const db = await openStore();
-        const tx = db.transaction("sequence", "readonly");
-        const store = tx.objectStore("sequence");
+        const tx = db.transaction(SEQUENCE_STORE, "readonly");
+        const store = tx.objectStore(SEQUENCE_STORE);
         const result = await store.get(key);
         await tx.done;
         db.close();
@@ -32,8 +33,8 @@ export const sequenceStorage: AsyncStorage = {
 
     setItem: async (key, value) => {
         const db = await openStore();
-        const tx = db.transaction("sequence", "readwrite");
-        const store = tx.objectStore("sequence");
+        const tx = db.transaction(SEQUENCE_STORE, "readwrite");
+        const store = tx.objectStore(SEQUENCE_STORE);
         // value should be an array of strings (GUIDs)
         await store.put(value, key);
         await tx.done;
@@ -42,8 +43,8 @@ export const sequenceStorage: AsyncStorage = {
 
     removeItem: async (key) => {
         const db = await openStore();
-        const tx = db.transaction("sequence", "readwrite");
-        const store = tx.objectStore("sequence");
+        const tx = db.transaction(SEQUENCE_STORE, "readwrite");
+        const store = tx.objectStore(SEQUENCE_STORE);
         await store.delete(key);
         await tx.done;
         db.close();

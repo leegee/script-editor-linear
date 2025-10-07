@@ -1,10 +1,12 @@
-import { scriptStorage, type ScriptItemProps } from "./stores/idbScriptStorage";
+import { scriptStorage } from "./stores/idbScriptStore";
+import { AllClassPropsUnion } from './classes/index';
 
-const sampleScript: ScriptItemProps[] = [
-    { id: crypto.randomUUID(), type: "act", title: "Act 1", time: 0, text: "Act 1" },
-    { id: crypto.randomUUID(), type: "scene", title: "Scene 1", time: 1, text: "Scene 1" },
-    { id: crypto.randomUUID(), type: "dialogue", characterId: "Alice", text: "Hello there!", time: 2 },
-    { id: crypto.randomUUID(), type: "dialogue", characterId: "Bob", text: "Hi Alice!", time: 3 }
+const sampleScript: AllClassPropsUnion[] = [
+    { id: crypto.randomUUID(), type: "act", text: "Act 1" },
+    { id: crypto.randomUUID(), type: "scene", text: "Scene 1" },
+    { id: crypto.randomUUID(), type: "location", text: "Crystal Cav", lat: 47.49801, lng: 19.03991, radius: 100 },
+    { id: crypto.randomUUID(), type: "dialogue", characterId: "Alice", text: "Hello there!" },
+    { id: crypto.randomUUID(), type: "dialogue", characterId: "Bob", text: "Hi Alice!" }
 ];
 
 export async function ingest() {
@@ -19,6 +21,8 @@ export async function ingest() {
 
     const seq = await scriptStorage.getSequence();
     console.log("Current sequence:", seq);
+
+    // await scriptStorage.reorderItems(seq);
 
     console.log("Ingestion complete.");
 }

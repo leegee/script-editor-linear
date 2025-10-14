@@ -1,5 +1,5 @@
 .drag-list {
-  .dd-item {
+  .dnd-item {
     position: relative;
   }
 
@@ -28,10 +28,10 @@
 
   .floating {
     position: fixed;
-    width: 100%;
     box-shadow: 0 6pt 12pt rgba(0, 0, 0, 0.5);
     pointer-events: none; // prevents blocking pointer events
     z-index: 9999;
+    margin: 0;
   }
 
   .clicked {

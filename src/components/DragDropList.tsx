@@ -16,6 +16,9 @@ export default function DragDropList<T>(props: DragDropListProps<T>) {
   const [dragY, setDragY] = createSignal<number | null>(null);
   let floatingRef: HTMLElement | undefined;
 
+  let offsetX = 0;
+  let offsetY = 0;
+
   createEffect(() => {
     console.log('#', props.items)
     const len = props.items.length;
@@ -27,22 +30,25 @@ export default function DragDropList<T>(props: DragDropListProps<T>) {
     }
   });
 
-  function startDrag(index: number, e: PointerEvent) {
+  function startDrag(index: number, startDragEvent: PointerEvent) {
     setDraggingIndex(index);
     setOverIndex(index);
-    setDragX(e.clientX);
-    setDragY(e.clientY);
-    const targetEl = e.target as HTMLElement;
+    setDragX(startDragEvent.clientX);
+    setDragY(startDragEvent.clientY);
+    const targetEl = startDragEvent.target as HTMLElement;
     targetEl.classList.add("clicked");
-    targetEl.setPointerCapture?.(e.pointerId);
+    targetEl.setPointerCapture?.(startDragEvent.pointerId);
+    const rect = targetEl.getBoundingClientRect();
+    offsetX = startDragEvent.clientX - rect.left;
+    offsetY = startDragEvent.clientY - rect.top;
 
-    function move(ev: PointerEvent) {
-      setDragX(ev.clientX);
-      setDragY(ev.clientY);
+    function move(moveEvent: PointerEvent) {
+      setDragX(moveEvent.clientX);
+      setDragY(moveEvent.clientY);
       if (!floatingRef) return;
-      floatingRef.style.display = "none";
-      const target = document.elementFromPoint(ev.clientX, ev.clientY);
-      floatingRef.style.display = "";
+      if (floatingRef) floatingRef.style.display = "none"; // Hide whilst measuring
+      const target = document.elementFromPoint(moveEvent.clientX, moveEvent.clientY);
+      if (floatingRef) floatingRef.style.display = "";
       const el = target?.closest("[data-index]") as HTMLElement | null;
       if (el) setOverIndex(Number(el.dataset.index));
     }
@@ -50,7 +56,7 @@ export default function DragDropList<T>(props: DragDropListProps<T>) {
     function end() {
       try {
         targetEl.classList.remove("clicked");
-        targetEl.releasePointerCapture?.(e.pointerId);
+        targetEl.releasePointerCapture?.(startDragEvent.pointerId);
       } catch { }
       document.removeEventListener("pointermove", move);
       document.removeEventListener("pointerup", end);
@@ -72,8 +78,21 @@ export default function DragDropList<T>(props: DragDropListProps<T>) {
       setDragY(null);
     }
 
+    function cancelDrag(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        setDraggingIndex(null);
+        setOverIndex(null);
+        setDragX(null);
+        setDragY(null);
+        document.removeEventListener("pointermove", move);
+        document.removeEventListener("pointerup", end);
+        document.removeEventListener("keydown", cancelDrag);
+      }
+    }
+
     document.addEventListener("pointermove", move);
     document.addEventListener("pointerup", end);
+    document.addEventListener("keydown", cancelDrag);
   }
 
   return (
@@ -89,7 +108,7 @@ export default function DragDropList<T>(props: DragDropListProps<T>) {
               <li
                 data-index={pos}
                 onPointerDown={(e) => startDrag(pos, e)}
-                class={`dd-item ${isDragging ? "dragging" : ""} ${isPlaceholder ? "placeholder" : ""}`}
+                class={`dnd-item ${isDragging ? "dragging" : ""} ${isPlaceholder ? "placeholder" : ""} ${overIndex() === pos ? "drag-over" : ""}`}
               >
                 {props.renderItem(item, itemIdx)}
               </li>
@@ -99,9 +118,12 @@ export default function DragDropList<T>(props: DragDropListProps<T>) {
 
         {draggingIndex() !== null && dragX() !== null && dragY() !== null && (
           <li
-            class="dd-item floating large-elevate border no-margin no-padding secondary"
+            class="dnd-item floating large-elevate border no-margin no-padding secondary"
             ref={floatingRef as HTMLLIElement}
-            style={{ zoom: 0.8, position: "fixed", left: `${dragX()!}px`, top: `${dragY()!}px`, transform: "translate(-50%,-2em)" }}
+            style={{
+              left: `${dragX()! - offsetX}px`,
+              top: `${dragY()! - offsetY}px`,
+            }}
           >
             {props.renderItem(props.items[order()[draggingIndex()!]], order()[draggingIndex()!])}
           </li>

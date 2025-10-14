@@ -9,7 +9,7 @@
     outline: 1pt solid var(--primary);
 }
 
-.dd-item:has(> .act) {
+.dnd-item:has(> .act) {
     background: var(--primary) !important;
     font-size: xx-large !important;
     position: sticky !important;

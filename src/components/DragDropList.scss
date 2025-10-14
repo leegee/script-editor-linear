@@ -12,7 +12,7 @@
     width: 100%;
 
     &.dragging {
-      opacity: 0.3 !important;
+      opacity: 0.8 !important;
     }
 
     &.placeholder {
@@ -21,7 +21,7 @@
 
     &.drag-over {
       outline: 2pt solid var(--primary, #00f);
-      background: rgba(0, 0, 255, 0.5) !important;
+      background: rgba(0, 0, 255, 0.25) !important;
       filter: brightness(1.2)
     }
   }
@@ -29,7 +29,7 @@
   .floating {
     position: fixed;
     width: 100%;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 6pt 12pt rgba(0, 0, 0, 0.5);
     pointer-events: none; // prevents blocking pointer events
     z-index: 9999;
   }

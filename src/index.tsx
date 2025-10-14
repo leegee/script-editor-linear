@@ -5,12 +5,8 @@ import "beercss";
 import './index.css';
 
 import App from './App';
-import { ingest } from './ingestTest';
-import { memScriptStore } from "./stores/memScriptStore";
-import { scriptStorage } from "./stores/idbScriptStore";
-import { syncStores } from "./stores/syncStores";
-
-syncStores(memScriptStore, scriptStorage);
+import { ingest } from './scripts/TheThreeBears';
+import { loadAll } from './stores/coreStores';
 
 const root = document.getElementById('root');
 
@@ -21,12 +17,6 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
 }
 
 ingest()
-  .catch(
-    console.error
-  )
-  .then(
-    () => render(
-      () => <App />,
-      root!
-    )
-  );
+  .catch(console.error)
+  .then(() => loadAll())
+  .then(() => render(() => <App />, root!));

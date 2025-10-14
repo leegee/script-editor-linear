@@ -1,36 +1,28 @@
-import { createEffect, createSignal, For, onMount, Show } from "solid-js";
+import { onMount, createSignal, Show } from "solid-js";
 import DragDropList from "./components/DragDropList";
-import { memScriptStore, reorderItems } from "./stores/memScriptStore";
+import { scriptItems, sequence, setSequence, loadAll, reorderScriptItems } from "./stores/coreStores";
+import { ingest } from "./scripts/TheThreeBears";
 
 export default function App() {
-    const { items, sequence, loadScript } = memScriptStore;
     const [loaded, setLoaded] = createSignal(false);
 
     onMount(async () => {
-        await loadScript();
-        console.log('Loaded items:', items);
-        console.log('Loaded sequence:', sequence());
-        setLoaded(true);
-    });
-
-    createEffect(() => {
-        console.log('change', Object.keys(items).length, sequence());
+        await ingest();   // Populate the DB + store
+        await loadAll();            // Load everything into reactive store
+        setLoaded(true);            // Allow <Show> to render
     });
 
     return (
         <main class="responsive">
-            <Show when={loaded() && sequence()} fallback={<p>Loading script...</p>}>
-
+            <Show when={loaded()} fallback={<p>Loading script...</p>}>
                 <DragDropList
-                    items={sequence().map(id => items[id]?.instance).filter(Boolean)}
-                    renderItem={(item) => item?.render() ?? null}
+                    items={sequence().map(id => scriptItems[id]).filter(Boolean)}
+                    renderItem={item => item?.renderCompact() ?? null}
                     onReorder={(newOrder) => {
-                        console.log('newOrder', newOrder)
-                        memScriptStore.setSequence(newOrder.map(i => sequence()[i]));
-                        reorderItems(memScriptStore.sequence());
+                        const newSeq = newOrder.map(i => sequence()[i]);
+                        reorderScriptItems(newSeq);
                     }}
                 />
-
             </Show>
         </main>
     );

@@ -35,7 +35,8 @@ export default function DragDropList<T>(props: DragDropListProps<T>) {
     setOverIndex(index);
     setDragX(startDragEvent.clientX);
     setDragY(startDragEvent.clientY);
-    const targetEl = startDragEvent.target as HTMLElement;
+    const originalOrder = [...order()];
+    const targetEl = startDragEvent.currentTarget as HTMLElement;
     targetEl.classList.add("clicked");
     targetEl.setPointerCapture?.(startDragEvent.pointerId);
     const rect = targetEl.getBoundingClientRect();
@@ -79,15 +80,21 @@ export default function DragDropList<T>(props: DragDropListProps<T>) {
     }
 
     function cancelDrag(e: KeyboardEvent) {
-      if (e.key === "Escape") {
-        setDraggingIndex(null);
-        setOverIndex(null);
-        setDragX(null);
-        setDragY(null);
-        document.removeEventListener("pointermove", move);
-        document.removeEventListener("pointerup", end);
-        document.removeEventListener("keydown", cancelDrag);
-      }
+      if (e && e.key !== "Escape") return;
+      try {
+        setOrder(originalOrder);
+        targetEl.classList.remove("clicked");
+        targetEl.releasePointerCapture?.(startDragEvent.pointerId);
+      } catch { }
+
+      document.removeEventListener("pointermove", move);
+      document.removeEventListener("pointerup", end);
+      document.removeEventListener("keydown", cancelDrag);
+
+      setDraggingIndex(null);
+      setOverIndex(null);
+      setDragX(null);
+      setDragY(null);
     }
 
     document.addEventListener("pointermove", move);

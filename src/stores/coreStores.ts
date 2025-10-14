@@ -19,7 +19,6 @@ export async function loadAll() {
         setSequence(savedSeq);
     } else {
         throw new Error('No sequence stored?')
-        setSequence(Object.keys(revived));
     }
 }
 
@@ -29,7 +28,7 @@ export async function addScriptItem(item: ScriptItem) {
     const seq = [...sequence(), item.id];
     setSequence(seq);
     await storage.put("scriptItems", item);
-    await storage.putMeta("sequence", seq);  // persist every update
+    await storage.putMeta("sequence", seq);
 }
 
 export async function reorderScriptItems(newSeq: string[]) {

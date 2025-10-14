@@ -2,19 +2,23 @@ import { onMount, createSignal, Show } from "solid-js";
 import DragDropList from "./components/DragDropList";
 import { scriptItems, sequence, setSequence, loadAll, reorderScriptItems } from "./stores/coreStores";
 import { ingest } from "./scripts/TheThreeBears";
+import { ViewModeSwitch } from "./components/ViewModeSwitch";
 
 export default function App() {
     const [loaded, setLoaded] = createSignal(false);
 
     onMount(async () => {
-        await ingest();   // Populate the DB + store
-        await loadAll();            // Load everything into reactive store
-        setLoaded(true);            // Allow <Show> to render
+        await ingest();
+        await loadAll();
+        setLoaded(true);
     });
 
     return (
         <main class="responsive">
             <Show when={loaded()} fallback={<p>Loading script...</p>}>
+
+                <ViewModeSwitch />
+
                 <DragDropList
                     items={sequence().map(id => scriptItems[id]).filter(Boolean)}
                     renderItem={item => item?.renderCompact() ?? null}

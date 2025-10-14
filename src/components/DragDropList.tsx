@@ -1,11 +1,14 @@
 import { JSX, createSignal, createEffect, For } from "solid-js";
 import "./DragDropList.scss";
+import { ScriptItem } from "../classes/CoreItems";
 
 interface DragDropListProps<T = any> {
   items: T[];
   renderItem: (item: T, index: number) => JSX.Element | null;
   onReorder?: (newOrder: number[]) => void;
   className?: string;
+  viewMode?: "list" | "timeline";
+  getItemX?: (item: T) => number;
 }
 
 export default function DragDropList<T>(props: DragDropListProps<T>) {
@@ -103,7 +106,8 @@ export default function DragDropList<T>(props: DragDropListProps<T>) {
   }
 
   return (
-    <div class={props.className ?? "drag-list"}>
+    <div class={`${props.className || ""} drag-list ${props.viewMode === "timeline" ? "timeline" : "not-timeline"}`}>
+
       <ul class="list border no-space" style="position:relative">
         <For each={order()}>
           {(itemIdx, idx) => {
@@ -111,11 +115,18 @@ export default function DragDropList<T>(props: DragDropListProps<T>) {
             const isDragging = draggingIndex() === pos;
             const isPlaceholder = overIndex() === pos && draggingIndex() !== null;
             const item = props.items[itemIdx];
+            const itemX = props.getItemX ? props.getItemX(item) : 0;
+
             return (
               <li
                 data-index={pos}
                 onPointerDown={(e) => startDrag(pos, e)}
                 class={`dnd-item ${isDragging ? "dragging" : ""} ${isPlaceholder ? "placeholder" : ""} ${overIndex() === pos ? "drag-over" : ""}`}
+                style={
+                  props.viewMode === "timeline"
+                    ? { position: "absolute", left: `${itemX}px`, top: "0px" }
+                    : {}
+                }
               >
                 {props.renderItem(item, itemIdx)}
               </li>
@@ -128,8 +139,8 @@ export default function DragDropList<T>(props: DragDropListProps<T>) {
             class="dnd-item floating large-elevate border no-margin no-padding secondary"
             ref={floatingRef as HTMLLIElement}
             style={{
-              left: `${dragX()! - offsetX}px`,
-              top: `${dragY()! - offsetY}px`,
+              left: props.viewMode === "timeline" ? `${dragX()! - offsetX}px` : "auto",
+              top: props.viewMode === "timeline" ? "50%" : `${dragY()! - offsetY}px`,
             }}
           >
             {props.renderItem(props.items[order()[draggingIndex()!]], order()[draggingIndex()!])}

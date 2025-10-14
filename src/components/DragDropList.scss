@@ -1,4 +1,21 @@
 .drag-list {
+
+  .timeline ul {
+    display: flex;
+    flex-direction: row; // horizontal
+    position: relative;
+    overflow-x: auto;
+  }
+
+  .timeline li {
+    margin: 0 0.5em;
+    flex: 0 0 auto; // don’t shrink
+  }
+
+  .timeline .floating {
+    transform: translate(-50%, -50%); // center floating item on cursor
+  }
+
   .dnd-item {
     position: relative;
   }

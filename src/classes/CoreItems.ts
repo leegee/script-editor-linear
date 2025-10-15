@@ -1,3 +1,5 @@
+import { characters, locations } from "../stores";
+
 export interface ScriptItemProps {
     id: string;
     type: string; // "dialogue" | "location" | "transition" | "beat-marker" | "scene" | "act"
@@ -39,11 +41,35 @@ export class ScriptItem {
     }
 }
 
+// Subclasses
+export class ActItem extends ScriptItem { }
+
+export class SceneItem extends ScriptItem { }
 
 export class DialogueItem extends ScriptItem {
     speaker?: string;
     text?: string;
-    renderFull() { return `${this.speaker}: ${this.text}`; }
+
+    renderFull() {
+        // Expand speaker name if it's an ID
+        let speakerName = this.speaker;
+        if (speakerName && speakerName in characters) {
+            speakerName = characters[speakerName].name;
+        }
+
+        // Expand any location references in text/details
+        let expandedText = this.text ?? this.details?.text ?? "";
+        const locId = this.details?.locationId;
+        if (locId && locId in locations) {
+            expandedText += ` (Location: ${locations[locId].title})`;
+        }
+
+        return `${speakerName ?? "Unknown"}: ${expandedText}`;
+    }
+
+    renderCompact() {
+        return `${this.speaker ?? "Unknown"}: ${this.text ?? ""}`;
+    }
 }
 
 export class TransitionItem extends ScriptItem {
@@ -54,9 +80,16 @@ export class TransitionItem extends ScriptItem {
 export class LocationItem extends ScriptItem {
     mapData?: any;
     contacts?: string[];
+
+    renderFull() {
+        return `Location: ${this.title ?? "Unnamed"} (Lat: ${this.details.lat ?? "?"}, Lng: ${this.details.lng ?? "?"})`;
+    }
+
+    renderCompact() {
+        return this.title ?? "Unnamed Location";
+    }
 }
 
-/* -------------------- Characters -------------------- */
 export class Character {
     id!: string;
     name!: string;
@@ -71,7 +104,7 @@ export class Character {
     renderFull() { return `${this.name} [${this.traits?.join(", ")}]`; }
 }
 
-/* -------------------- Tags -------------------- */
+
 export class Tag {
     id!: string;
     name!: string;
@@ -85,11 +118,11 @@ export class Tag {
     renderCompact() { return this.name; }
 }
 
-/* -------------------- Notes -------------------- */
+
 export class Note {
     id!: string;
     parentId!: string;
-    parentType!: string; // e.g., 'scriptItem', 'character', 'location', 'tag'
+    parentType!: string; // 'scriptItem' | 'character' | 'location' | 'tag'
     text!: string;
     media?: string[];
 
@@ -100,9 +133,12 @@ export class Note {
     renderCompact() { return this.text; }
 }
 
-/* -------------------- Revival Function -------------------- */
-export function reviveItem(obj: any) {
+
+
+export function reviveItem(obj: any): ScriptItem {
     switch (obj.type) {
+        case "act": return new ActItem(obj);
+        case "scene": return new SceneItem(obj);
         case "dialogue": return new DialogueItem(obj);
         case "transition": return new TransitionItem(obj);
         case "location": return new LocationItem(obj);

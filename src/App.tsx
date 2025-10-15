@@ -1,9 +1,12 @@
 import { onMount, createSignal, Show } from "solid-js";
 import DragDropList from "./components/DragDropList";
-import { scriptItems, sequence, loadAll, reorderScriptItems } from "./stores/coreStores";
-import { ingest } from "./scripts/TheThreeBears";
+import { loadAll } from "./stores";
+import { scriptItems, sequence, reorderScriptItems } from "./stores/scriptItems";
+import { ingest } from "./lib/ingest";
 import { ViewModeSwitch } from "./components/ViewModeSwitch";
 import { layoutTimeline } from "./lib/timelineLayout";
+import { sampleScript, sampleCharacters, sampleLocations } from "./scripts/TheThreeBears";
+import { storage } from "./db";
 
 export default function App() {
     const [loaded, setLoaded] = createSignal(false);
@@ -15,7 +18,10 @@ export default function App() {
     });
 
     onMount(async () => {
-        await ingest();
+        if ((await storage.getKeys("scriptItems")).length === 0) {
+            await ingest(sampleScript, sampleCharacters, sampleLocations);
+        }
+
         await loadAll();
         setLoaded(true);
     });

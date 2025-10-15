@@ -1,25 +1,22 @@
 import { createStore } from "solid-js/store";
 import { createSignal } from "solid-js";
-import { ScriptItem, ScriptItemProps } from "../classes/CoreItems";
+import { ScriptItem, ScriptItemProps, reviveItem } from "../classes/CoreItems";
 import { storage } from "../db";
 
-// -------------------- Reactive stores --------------------
+// -------------------- ScriptItems Store --------------------
 export const [scriptItems, setScriptItems] = createStore<Record<string, ScriptItem>>({});
 export const [sequence, setSequence] = createSignal<string[]>([]);
 
-export async function loadAll() {
+// Load all script items
+export async function loadAllScriptItems() {
     const items = await storage.getAll<ScriptItemProps>("scriptItems");
     const revived = Object.fromEntries(
-        Object.entries(items).map(([id, props]) => [id, new ScriptItem(props)])
+        Object.entries(items).map(([id, props]) => [id, reviveItem(props)])
     );
     setScriptItems(revived);
 
     const savedSeq = await storage.getMeta<string[]>("sequence");
-    if (savedSeq && savedSeq.length) {
-        setSequence(savedSeq);
-    } else {
-        throw new Error('No sequence stored?')
-    }
+    if (savedSeq && savedSeq.length) setSequence(savedSeq);
 }
 
 // CRUD
@@ -33,7 +30,7 @@ export async function addScriptItem(item: ScriptItem) {
 
 export async function reorderScriptItems(newSeq: string[]) {
     setSequence(newSeq);
-    await storage.putMeta("sequence", newSeq); // persist reorder
+    await storage.putMeta("sequence", newSeq);
 }
 
 export async function removeScriptItem(id: string) {
@@ -45,4 +42,3 @@ export async function removeScriptItem(id: string) {
     setSequence(sequence().filter(x => x !== id));
     await storage.delete("scriptItems", id);
 }
-

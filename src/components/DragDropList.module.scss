@@ -1,0 +1,51 @@
+.dragList {
+  position: relative;
+
+  li.dndItem {
+    list-style: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+    transform-origin: center;
+    color: white;
+    padding: 0.5em 1em;
+    border-radius: 6px;
+    margin: 0.2em;
+  }
+
+  .floating {
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.8;
+    transform: translate(-50%, -50%);
+  }
+
+  .clicked {
+    outline: 2px solid #ccc;
+  }
+
+  &.timeline {
+    perspective: 1200px;
+    /* parent perspective */
+
+    ul {
+      display: flex;
+      flex-direction: row;
+      position: relative;
+      overflow-x: auto;
+      transform-style: preserve-3d;
+      /* keep children in 3D space */
+      padding: 1em;
+    }
+
+    li.dndItem[data-index] {
+      flex: 0 0 auto;
+      transition: transform 0.2s, box-shadow 0.2s;
+      transform: rotateY(calc(var(--index) * 8deg)) translateZ(calc(var(--index) * 10px));
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
+    }
+
+    .floating {
+      transform: translate(-50%, -50%) rotateY(10deg);
+    }
+  }
+}

@@ -1,6 +1,5 @@
 import { JSX, createSignal, createEffect, For } from "solid-js";
-import "./DragDropList.scss";
-import { ScriptItem } from "../classes/CoreItems";
+import styles from "./DragDropList.module.scss";
 
 interface DragDropListProps<T = any> {
   items: T[];
@@ -9,6 +8,7 @@ interface DragDropListProps<T = any> {
   className?: string;
   viewMode?: "list" | "timeline";
   getItemX?: (item: T) => number;
+  getItemY?: (item: T) => number;
 }
 
 export default function DragDropList<T>(props: DragDropListProps<T>) {
@@ -23,7 +23,6 @@ export default function DragDropList<T>(props: DragDropListProps<T>) {
   let offsetY = 0;
 
   createEffect(() => {
-    console.log('#', props.items)
     const len = props.items.length;
     const cur = order();
     if (cur.length !== len) {
@@ -40,7 +39,7 @@ export default function DragDropList<T>(props: DragDropListProps<T>) {
     setDragY(startDragEvent.clientY);
     const originalOrder = [...order()];
     const targetEl = startDragEvent.currentTarget as HTMLElement;
-    targetEl.classList.add("clicked");
+    targetEl.classList.add(styles.clicked);
     targetEl.setPointerCapture?.(startDragEvent.pointerId);
     const rect = targetEl.getBoundingClientRect();
     offsetX = startDragEvent.clientX - rect.left;
@@ -50,16 +49,16 @@ export default function DragDropList<T>(props: DragDropListProps<T>) {
       setDragX(moveEvent.clientX);
       setDragY(moveEvent.clientY);
       if (!floatingRef) return;
-      if (floatingRef) floatingRef.style.display = "none"; // Hide whilst measuring
+      floatingRef.style.display = "none"; // hide while measuring
       const target = document.elementFromPoint(moveEvent.clientX, moveEvent.clientY);
-      if (floatingRef) floatingRef.style.display = "";
+      floatingRef.style.display = "";
       const el = target?.closest("[data-index]") as HTMLElement | null;
       if (el) setOverIndex(Number(el.dataset.index));
     }
 
     function end() {
       try {
-        targetEl.classList.remove("clicked");
+        targetEl.classList.remove(styles.clicked);
         targetEl.releasePointerCapture?.(startDragEvent.pointerId);
       } catch { }
       document.removeEventListener("pointermove", move);
@@ -83,10 +82,10 @@ export default function DragDropList<T>(props: DragDropListProps<T>) {
     }
 
     function cancelDrag(e: KeyboardEvent) {
-      if (e && e.key !== "Escape") return;
+      if (e.key !== "Escape") return;
       try {
         setOrder(originalOrder);
-        targetEl.classList.remove("clicked");
+        targetEl.classList.remove(styles.clicked);
         targetEl.releasePointerCapture?.(startDragEvent.pointerId);
       } catch { }
 
@@ -106,25 +105,33 @@ export default function DragDropList<T>(props: DragDropListProps<T>) {
   }
 
   return (
-    <div class={`${props.className || ""} drag-list ${props.viewMode === "timeline" ? "timeline" : "not-timeline"}`}>
-
-      <ul class="list border no-space" style="position:relative">
+    <div
+      classList={{
+        [styles.dragList]: true,
+        [styles.timeline]: props.viewMode === "timeline",
+        [props.className!]: !!props.className,
+      }}
+    >
+      <ul class="border no-space" style="position:relative">
         <For each={order()}>
           {(itemIdx, idx) => {
             const pos = idx();
             const isDragging = draggingIndex() === pos;
             const isPlaceholder = overIndex() === pos && draggingIndex() !== null;
             const item = props.items[itemIdx];
-            const itemX = props.getItemX ? props.getItemX(item) : 0;
 
             return (
               <li
                 data-index={pos}
                 onPointerDown={(e) => startDrag(pos, e)}
-                class={`dnd-item ${isDragging ? "dragging" : ""} ${isPlaceholder ? "placeholder" : ""} ${overIndex() === pos ? "drag-over" : ""}`}
+                class={`${styles.dndItem} ${isDragging ? "dragging" : ""} ${isPlaceholder ? "placeholder" : ""} ${overIndex() === pos ? "dragOver" : ""}`}
                 style={
                   props.viewMode === "timeline"
-                    ? { position: "absolute", left: `${itemX}px`, top: "0px" }
+                    ? {
+                      "--index": pos.toString(),
+                      left: `${props.getItemX?.(item) ?? 0}px`,
+                      top: `${props.getItemY?.(item) ?? 0}px`,
+                    }
                     : {}
                 }
               >
@@ -136,17 +143,16 @@ export default function DragDropList<T>(props: DragDropListProps<T>) {
 
         {draggingIndex() !== null && dragX() !== null && dragY() !== null && (
           <li
-            class="dnd-item floating large-elevate border no-margin no-padding secondary"
+            class={`${styles.dndItem} ${styles.floating} large-elevate border no-margin no-padding secondary`}
             ref={floatingRef as HTMLLIElement}
             style={{
               left: props.viewMode === "timeline" ? `${dragX()! - offsetX}px` : "auto",
-              top: props.viewMode === "timeline" ? "50%" : `${dragY()! - offsetY}px`,
+              top: `${dragY()! - offsetY}px`,
             }}
           >
             {props.renderItem(props.items[order()[draggingIndex()!]], order()[draggingIndex()!])}
           </li>
         )}
-
       </ul>
     </div>
   );

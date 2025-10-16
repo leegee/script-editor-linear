@@ -1,0 +1,70 @@
+import { TimelineItemProps, TimelineItem, ActItem, SceneItem, DialogueItem, LocationItem } from "../components/CoreItems";
+import { setTimelineItems, timelineItems, setTimelineSequence, timelineSequence, locations, setLocations } from "../stores";
+import { storage } from "../db";
+
+interface CreateTimelineItemOptions {
+    insertAtIndex?: number;
+    createMissingLocation?: boolean;
+}
+
+export async function createTimelineItem(
+    props: Partial<TimelineItemProps> & { type: string },
+    options: CreateTimelineItemOptions = {}
+): Promise<TimelineItem> {
+    const id = crypto.randomUUID();
+    const baseProps: TimelineItemProps = {
+        id,
+        type: props.type,
+        title: props.title,
+        startTime: props.startTime,
+        duration: props.duration,
+        details: props.details ?? {},
+        tags: props.tags ?? [],
+        notes: props.notes ?? []
+    };
+
+    // Handle missing location if needed
+    if (props.type === "location" && props.details?.locationId) {
+        const locId = props.details.locationId;
+        if (!locations[locId]) {
+            if (options.createMissingLocation) {
+                const placeholder = new LocationItem({
+                    id: locId,
+                    type: "location",
+                    title: "Unnamed Location",
+                    details: {}
+                });
+                setLocations(locId, placeholder);
+                await storage.put("locations", placeholder);
+            } else {
+                throw new Error(`Location "${locId}" does not exist`);
+            }
+        }
+    }
+
+    // Create the correct subclass
+    let item: TimelineItem;
+    switch (props.type) {
+        case "act": item = new ActItem(baseProps); break;
+        case "scene": item = new SceneItem(baseProps); break;
+        case "dialogue": item = new DialogueItem(baseProps); break;
+        case "location": item = new LocationItem(baseProps); break;
+        default: item = new TimelineItem(baseProps);
+    }
+
+    // Add to timelineItems store
+    setTimelineItems(item.id, item);
+    await storage.put("timelineItems", item);
+
+    // Update timeline sequence
+    const seq = [...timelineSequence()];
+    if (options.insertAtIndex !== undefined && options.insertAtIndex >= 0 && options.insertAtIndex <= seq.length) {
+        seq.splice(options.insertAtIndex, 0, item.id);
+    } else {
+        seq.push(item.id); // append
+    }
+    setTimelineSequence(seq);
+    await storage.putMeta("timelineSequence", seq);
+
+    return item;
+}

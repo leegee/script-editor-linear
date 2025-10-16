@@ -105,55 +105,52 @@ export default function DragDropList<T>(props: DragDropListProps<T>) {
   }
 
   return (
-    <div class={`${props.className || ""} drag-list ${props.viewMode === "timeline" ? "timeline" : "not-timeline"}`}>
+    <ul class="drag-list list border no-space" style="position:relative">
+      <For each={order()}>
+        {(itemIdx, idx) => {
+          const pos = idx();
+          const isDragging = draggingIndex() === pos;
+          const isPlaceholder = overIndex() === pos && draggingIndex() !== null;
+          const item = props.items[itemIdx];
+          const itemX = props.getItemX ? props.getItemX(item) : 0;
 
-      <ul class="list border no-space" style="position:relative">
-        <For each={order()}>
-          {(itemIdx, idx) => {
-            const pos = idx();
-            const isDragging = draggingIndex() === pos;
-            const isPlaceholder = overIndex() === pos && draggingIndex() !== null;
-            const item = props.items[itemIdx];
-            const itemX = props.getItemX ? props.getItemX(item) : 0;
-
-            return (
-              <li
-                data-index={pos}
-                class={`dnd-item ${isDragging ? "dragging" : ""} ${isPlaceholder ? "placeholder" : ""} ${overIndex() === pos ? "drag-over" : ""}`}
-                style={
-                  props.viewMode === "timeline"
-                    ? { position: "absolute", left: `${itemX}px`, top: "0px" }
-                    : {}
-                }
+          return (
+            <li
+              data-index={pos}
+              class={`dnd-item ${isDragging ? "dragging" : ""} ${isPlaceholder ? "placeholder" : ""} ${overIndex() === pos ? "drag-over" : ""}`}
+              style={
+                props.viewMode === "timeline"
+                  ? { position: "absolute", left: `${itemX}px`, top: "0px" }
+                  : {}
+              }
+            >
+              <div>
+                {props.renderItem(item, itemIdx)}
+              </div>
+              <div
+                class="dragHandle"
+                onPointerDown={(e) => startDrag(pos, e)}
               >
-                <div
-                  class="dragHandle"
-                  onPointerDown={(e) => startDrag(pos, e)}
-                >
-                  ⠿
-                </div>
-                <div>
-                  {props.renderItem(item, itemIdx)}
-                </div>
-              </li>
-            );
+                ⠿
+              </div>
+            </li>
+          );
+        }}
+      </For>
+
+      {draggingIndex() !== null && dragX() !== null && dragY() !== null && (
+        <li
+          class="dnd-item floating large-elevate border no-margin no-padding secondary"
+          ref={floatingRef as HTMLLIElement}
+          style={{
+            left: props.viewMode === "timeline" ? `${dragX()! - offsetX}px` : "auto",
+            top: props.viewMode === "timeline" ? "50%" : `${dragY()! - offsetY}px`,
           }}
-        </For>
+        >
+          {props.renderItem(props.items[order()[draggingIndex()!]], order()[draggingIndex()!])}
+        </li>
+      )}
 
-        {draggingIndex() !== null && dragX() !== null && dragY() !== null && (
-          <li
-            class="dnd-item floating large-elevate border no-margin no-padding secondary"
-            ref={floatingRef as HTMLLIElement}
-            style={{
-              left: props.viewMode === "timeline" ? `${dragX()! - offsetX}px` : "auto",
-              top: props.viewMode === "timeline" ? "50%" : `${dragY()! - offsetY}px`,
-            }}
-          >
-            {props.renderItem(props.items[order()[draggingIndex()!]], order()[draggingIndex()!])}
-          </li>
-        )}
-
-      </ul>
-    </div>
+    </ul>
   );
 }

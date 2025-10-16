@@ -1,5 +1,5 @@
 import { createStore } from "solid-js/store";
-import { Character } from "../classes/CoreItems";
+import { Character } from "../components/CoreItems";
 import { storage } from "../db";
 
 export const [characters, setCharacters] = createStore<Record<string, Character>>({});

@@ -188,7 +188,7 @@ E -->|attached to| D
 E -->|can include| M[Media Links]
 
 %% Metadata and storage
-subgraph Storage Layer [Local Storage (IndexedDB)]
+subgraph Storage Layer ["Local Storage (IndexedDB)"]
 A
 B
 C
@@ -196,7 +196,7 @@ D
 E
 end
 
-subgraph Media [Optional External Media]
+subgraph Media ["Optional External Media"]
 M
 end
 

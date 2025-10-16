@@ -85,7 +85,7 @@ export class TransitionItem extends TimelineItem {
 export class LocationItem extends TimelineItem {
     renderCompact() {
         const loc = locations[this.details.locationId];
-        return loc?.title ?? "Unknown Location";
+        return <h5>{loc?.title ?? "Unknown Location"}</h5>
     }
 
     renderFull() {

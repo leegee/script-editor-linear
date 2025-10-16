@@ -124,15 +124,8 @@ export default function DragDropList<T>(props: DragDropListProps<T>) {
                   : {}
               }
             >
-              <div>
-                {props.renderItem(item, itemIdx)}
-              </div>
-              <div
-                class="dragHandle"
-                onPointerDown={(e) => startDrag(pos, e)}
-              >
-                ⠿
-              </div>
+              <div class="dragHandle" onPointerDown={(e) => startDrag(pos, e)} > ⠿ </div>
+              <div> {props.renderItem(item, itemIdx)} </div>
             </li>
           );
         }}

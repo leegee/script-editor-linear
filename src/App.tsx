@@ -1,5 +1,6 @@
 import { onMount, createSignal, Show } from "solid-js";
 import DragDropList from "./components/DragDropList";
+import TimelineView from "./components/TimelineView";
 import { loadAll } from "./stores";
 import { scriptItems, sequence, reorderScriptItems } from "./stores/scriptItems";
 import { ingest } from "./lib/ingest";
@@ -12,11 +13,6 @@ export default function App() {
     const [loaded, setLoaded] = createSignal(false);
     const [viewMode, setViewMode] = createSignal<"list" | "timeline">("list");
 
-    const layouted = layoutTimeline(sequence().map(id => scriptItems[id]).filter(Boolean), {
-        totalWidth: 1200,
-        laneHeight: 40,
-    });
-
     onMount(async () => {
         if ((await storage.getKeys("scriptItems")).length === 0) {
             await ingest(sampleScript, sampleCharacters, sampleLocations);
@@ -26,24 +22,37 @@ export default function App() {
         setLoaded(true);
     });
 
+    const items = () => sequence().map(id => scriptItems[id]).filter(Boolean);
+
     return (
-        <main class="responsive">
-            <Show when={loaded()} fallback={<p>Loading script...</p>}>
+        <>
+            <main class="responsive">
+                <Show when={loaded()} fallback={<p>Loading script...</p>}>
 
+                    <Show when={viewMode() === "list"}>
+                        <DragDropList
+                            items={items()}
+                            renderItem={(item) => item?.renderCompact() ?? null}
+                            onReorder={(newOrder) => {
+                                const newSeq = newOrder.map((i) => sequence()[i]);
+                                reorderScriptItems(newSeq);
+                            }}
+                        />
+                    </Show>
+
+                    <Show when={viewMode() === "timeline"}>
+                        <TimelineView
+                            items={items()}
+                            layout={layoutTimeline(items(), { totalWidth: 1200, laneHeight: 80 })}
+                        />
+                    </Show>
+                </Show>
+            </main>
+
+            <nav class="bottom">
                 <ViewModeSwitch onChange={setViewMode} />
+            </nav>
 
-                <DragDropList
-                    items={sequence().map(id => scriptItems[id]).filter(Boolean)}
-                    renderItem={item => item?.renderCompact() ?? null}
-                    getItemX={(item) => layouted.find(l => l.item.id === item.id)!.x}
-                    getItemY={(item) => layouted.find(l => l.item.id === item.id)!.y}
-                    viewMode={viewMode()}
-                    onReorder={(newOrder) => {
-                        const newSeq = newOrder.map(i => sequence()[i]);
-                        reorderScriptItems(newSeq);
-                    }}
-                />
-            </Show>
-        </main>
+        </>
     );
 }

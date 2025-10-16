@@ -1,6 +1,5 @@
 import { JSX, createSignal, createEffect, For } from "solid-js";
 import "./DragDropList.scss";
-import { ScriptItem } from "../classes/CoreItems";
 
 interface DragDropListProps<T = any> {
   items: T[];

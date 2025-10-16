@@ -33,44 +33,58 @@ export class ScriptItem {
     }
 
     renderCompact() {
-        return `${this.type}: ${this.title ?? this.details.text ?? ""}`;
+        return <div>{this.type}: {this.title ?? this.details.text ?? ""}</div>;
     }
 
     renderFull() {
-        return JSON.stringify(this, null, 2);
+        return <div>JSON.stringify(this, null, 2)</div>
     }
 }
 
 // Subclasses
-export class ActItem extends ScriptItem { }
+export class ActItem extends ScriptItem {
+    renderCompact() {
+        return (
+            <div class="act">
+                <h2>{this.title ?? "Untitled Act"} </h2>
+            </div>
+        );
+    }
+}
 
-export class SceneItem extends ScriptItem { }
+export class SceneItem extends ScriptItem {
+    renderCompact() {
+        return (
+            <div class="scene">
+                <h3>{this.title ?? "Untitled Act"} </h3>
+            </div>
+        );
+    }
+}
+
 
 export class DialogueItem extends ScriptItem {
-    speaker?: string;
-    text?: string;
+    speakerName: string;
+
+    constructor(props: ScriptItemProps) {
+        super(props);
+        const charId = props.details!.characterId;
+        this.speakerName = charId && charId in characters ? characters[charId].name : charId ?? "Unknown Speaker";
+    }
 
     renderFull() {
-        // Expand speaker name if it's an ID
-        let speakerName = this.speaker;
-        if (speakerName && speakerName in characters) {
-            speakerName = characters[speakerName].name;
-        }
-
-        // Expand any location references in text/details
-        let expandedText = this.text ?? this.details?.text ?? "";
-        const locId = this.details?.locationId;
-        if (locId && locId in locations) {
-            expandedText += ` (Location: ${locations[locId].title})`;
-        }
-
-        return `${speakerName ?? "Unknown"}: ${expandedText}`;
+        return <div class="dialog">{this.speakerName}: {this.details.text ?? ""}</div>;
     }
 
     renderCompact() {
-        return `${this.speaker ?? "Unknown"}: ${this.text ?? ""}`;
+        const len = 50;
+        let text = (this.details.text || "").substring(0, len);
+        if (text.length > len) text += " ...";
+        return <div class="dialog">{this.speakerName}: {text}</div>;
     }
 }
+
+
 
 export class TransitionItem extends ScriptItem {
     transitionType?: "fade" | "cut" | "dissolve";

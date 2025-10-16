@@ -1,0 +1,27 @@
+.timelineView {
+    position: relative;
+    perspective: 1200px;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    padding: 1em;
+
+    ul {
+        position: relative;
+        transform-style: preserve-3d;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    li {
+        transition: transform 0.2s ease;
+        transform: rotateY(-10deg);
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
+        border-radius: 4px;
+        padding: 0.25em 0.5em;
+        background: #222;
+        color: white;
+        white-space: nowrap;
+    }
+}

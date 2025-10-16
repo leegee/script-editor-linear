@@ -1,4 +1,4 @@
-# 🎬 Project Feature List — Script Visualizer / Story Matrix
+# 🎬 Project Feature List:  Script Visualizer / Story Matrix
 
 ## Core Concepts
 
@@ -12,14 +12,14 @@
   - **Tags** and **Notes**
   - Links to **Characters**, **Locations**, **Contacts**
 - Subtypes and examples:
-  - **Marker** — Act / Scene / Beat (structural)
-  - **Cue** — Audio / Lighting / Transition
-  - **Dialogue / Action** — Character involvement
-  - **Other** — Anything user-defined
+  - **Marker**:  Act / Scene / Beat (structural)
+  - **Cue**:  Audio / Lighting / Transition
+  - **Dialogue / Action**:  Character involvement
+  - **Other**:  Anything user-defined
 - Each Timeline Item supports **three rendering/edit modes**:
-  1. **Simplified View** — minimal timeline block
-  2. **Medium Detail** — inline, summary information
-  3. **Full Detail / Editor** — complete editable form (with multimedia and links)
+  1. **Simplified View**:  minimal timeline block
+  2. **Medium Detail**:  inline, summary information
+  3. **Full Detail / Editor**:  complete editable form (with multimedia and links)
 - **Edits persist locally** (e.g., IndexedDB tables: `timelineItems`, `characters`, etc.)
 
 ---
@@ -245,7 +245,7 @@ Renderer -->|interactive feedback| UI
 gantt
     dateFormat  mm:ss
     axisFormat  %M:%S
-    title Example Timeline Structure — Overlapping TimelineItems
+    title Example Timeline Structure:  Overlapping TimelineItems
 
     section Structural Markers
     Act 1 Marker           :milestone, 00:00, 0s

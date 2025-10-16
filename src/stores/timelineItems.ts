@@ -14,7 +14,7 @@ export async function loadAllTimelineItems() {
     );
     setTimelineItems(revived);
 
-    const savedSeq = await storage.getMeta<string[]>("sequence");
+    const savedSeq = await storage.getMeta<string[]>("timelineSequence");
     if (savedSeq && savedSeq.length) setTimelineSequence(savedSeq);
 }
 

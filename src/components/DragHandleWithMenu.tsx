@@ -1,0 +1,39 @@
+import { JSX, createSignal } from "solid-js";
+
+interface DragHandleWithMenuProps {
+    onPointerDown: (e: PointerEvent) => void;
+    onDuplicate?: () => void;
+    onInsertBefore?: () => void;
+    onInsertAfter?: () => void;
+    onDelete?: () => void;
+}
+
+export default function DragHandleWithMenu(props: DragHandleWithMenuProps) {
+    const [menuOpen, setMenuOpen] = createSignal(false);
+
+    return (
+        <div class="drag-handle-menu-wrapper" style={{ position: 'relative', display: 'inline-flex', "align-items": 'center' }}>
+            <button class="transparent  no-margin"
+                onPointerDown={props.onPointerDown}
+                style={{ cursor: 'grab', padding: '0 4px' }}
+            >
+                <span>⠿</span>
+            </button>
+
+            {/* Overflow menu button */}
+            <button class="transparent no-margin" onClick={(e) => { e.stopPropagation(); setMenuOpen(!menuOpen()); }}>
+                <span>⋮</span>
+
+                {menuOpen() && (
+                    <menu class="overflow-menu border secondary elevate" style={{ 'min-width': '120px', }} >
+                        {props.onDuplicate && <li onClick={props.onDuplicate}>Duplicate</li>}
+                        {props.onInsertBefore && <li onClick={props.onInsertBefore}>Insert Before</li>}
+                        {props.onInsertAfter && <li onClick={props.onInsertAfter}>Insert After</li>}
+                        {props.onDelete && <li onClick={props.onDelete}>Delete</li>}
+                    </menu>
+                )}
+            </button>
+        </div>
+
+    );
+}

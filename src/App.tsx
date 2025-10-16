@@ -1,4 +1,4 @@
-import { onMount, createSignal, Show } from "solid-js";
+import { onMount, createSignal, Show, createEffect } from "solid-js";
 import DragDropList from "./components/DragDropList";
 import TimelineView from "./components/TimelineView";
 import { loadAll } from "./stores";
@@ -34,7 +34,8 @@ export default function App() {
                             items={items()}
                             renderItem={(item) => item?.renderCompact() ?? null}
                             onReorder={(newOrder) => {
-                                const newSeq = newOrder.map((i) => timelineSequence()[i]);
+                                const seq = timelineSequence();
+                                const newSeq = newOrder.map(i => seq[i]);
                                 reorderTimeline(newSeq);
                             }}
                         />

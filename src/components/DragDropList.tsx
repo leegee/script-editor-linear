@@ -1,7 +1,13 @@
 import { JSX, createSignal, createEffect, For } from "solid-js";
 import "./DragDropList.scss";
+import DragHandleWithMenu from "./DragHandleWithMenu";
+import { duplicateTimelineItem } from "../lib/duplicateTimelineItem";
 
-interface DragDropListProps<T = any> {
+interface HasId {
+  id: string;
+}
+
+interface DragDropListProps<T extends HasId> {
   items: T[];
   renderItem: (item: T, index: number) => JSX.Element | null;
   onReorder?: (newOrder: number[]) => void;
@@ -10,7 +16,7 @@ interface DragDropListProps<T = any> {
   getItemX?: (item: T) => number;
 }
 
-export default function DragDropList<T>(props: DragDropListProps<T>) {
+export default function DragDropList<T extends HasId>(props: DragDropListProps<T>) {
   const [order, setOrder] = createSignal(props.items.map((_, i) => i));
   const [draggingIndex, setDraggingIndex] = createSignal<number | null>(null);
   const [overIndex, setOverIndex] = createSignal<number | null>(null);
@@ -22,15 +28,33 @@ export default function DragDropList<T>(props: DragDropListProps<T>) {
   let offsetY = 0;
 
   createEffect(() => {
-    console.log('#', props.items)
-    const len = props.items.length;
-    const cur = order();
-    if (cur.length !== len) {
-      const kept = cur.filter(i => i < len);
-      const added = Array.from({ length: len }, (_, i) => i).filter(i => !kept.includes(i));
-      setOrder([...kept, ...added]);
+    const newIds = props.items.map(i => i.id);
+    const curOrder = order().map(i => props.items[i]?.id).filter(Boolean) as string[];
+
+    const kept = curOrder.filter(id => newIds.includes(id));
+    const added = newIds.filter(id => !kept.includes(id));
+
+    const nextOrder = [...kept, ...added].map(id => newIds.indexOf(id));
+
+    // Only setOrder if it’s actually different
+    const isDifferent = nextOrder.length !== order().length || nextOrder.some((v, i) => v !== order()[i]);
+    if (isDifferent) {
+      setOrder(nextOrder);
     }
   });
+
+
+  function handleInsertBefore(pos: number): void {
+    throw new Error("Function not implemented.");
+  }
+
+  function handleInsertAfter(pos: number): void {
+    throw new Error("Function not implemented.");
+  }
+
+  function handleDelete(pos: number): void {
+    throw new Error("Function not implemented.");
+  }
 
   function startDrag(index: number, startDragEvent: PointerEvent) {
     setDraggingIndex(index);
@@ -106,26 +130,27 @@ export default function DragDropList<T>(props: DragDropListProps<T>) {
 
   return (
     <ul class="drag-list list border no-space" style="position:relative">
-      <For each={order()}>
-        {(itemIdx, idx) => {
-          const pos = idx();
+      <For each={props.items}>
+        {(item, idx) => {
+          const pos = order().indexOf(idx()); // for drag visual order
           const isDragging = draggingIndex() === pos;
           const isPlaceholder = overIndex() === pos && draggingIndex() !== null;
-          const item = props.items[itemIdx];
-          const itemX = props.getItemX ? props.getItemX(item) : 0;
+          const itemX = props.getItemX?.(item) ?? 0;
 
           return (
             <li
               data-index={pos}
               class={`dnd-item ${isDragging ? "dragging" : ""} ${isPlaceholder ? "placeholder" : ""} ${overIndex() === pos ? "drag-over" : ""}`}
-              style={
-                props.viewMode === "timeline"
-                  ? { position: "absolute", left: `${itemX}px`, top: "0px" }
-                  : {}
-              }
+              style={props.viewMode === "timeline" ? { position: "absolute", left: `${itemX}px`, top: "0px" } : {}}
             >
-              <div class="dragHandle" onPointerDown={(e) => startDrag(pos, e)} > ⠿ </div>
-              <div> {props.renderItem(item, itemIdx)} </div>
+              <DragHandleWithMenu
+                onPointerDown={(e) => startDrag(pos, e)}
+                onDuplicate={() => duplicateTimelineItem(item.id, { insertAtIndex: pos + 1 })}
+                onInsertBefore={() => handleInsertBefore(pos)}
+                onInsertAfter={() => handleInsertAfter(pos)}
+                onDelete={() => handleDelete(pos)}
+              />
+              <div>{props.renderItem(item, idx())}</div>
             </li>
           );
         }}

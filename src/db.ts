@@ -1,5 +1,4 @@
 import Dexie from "dexie";
-import { TimelineItemProps } from "./classes/CoreItems";
 
 export const db = new Dexie("ScriptDB");
 

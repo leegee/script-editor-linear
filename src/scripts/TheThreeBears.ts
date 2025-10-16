@@ -1,4 +1,4 @@
-import { TimelineItemProps, LocationItem, Character } from "../classes/CoreItems";
+import { TimelineItemProps, LocationItem, Character } from "../components/CoreItems";
 
 export const sampleCharacters: Character[] = [
     new Character({ id: "Narrator", name: "Narrator" }),

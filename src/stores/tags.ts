@@ -1,5 +1,5 @@
 import { createStore } from "solid-js/store";
-import { Tag } from "../classes/CoreItems";
+import { Tag } from "../components/CoreItems";
 import { storage } from "../db";
 
 export const [tags, setTags] = createStore<Record<string, Tag>>({});

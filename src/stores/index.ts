@@ -12,7 +12,6 @@ export * from "./notes";
 
 /** 
  * Loads all data from IndexedDB into the stores.
- * Use this on app startup.
  */
 export async function loadAll() {
     await Promise.all([

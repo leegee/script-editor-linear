@@ -1,6 +1,6 @@
 import { createStore } from "solid-js/store";
 import { createSignal } from "solid-js";
-import { TimelineItem, TimelineItemProps, reviveItem } from "../classes/CoreItems";
+import { TimelineItem, TimelineItemProps, reviveItem } from "../components/CoreItems";
 import { storage } from "../db";
 
 export const [timelineItems, setTimelineItems] = createStore<Record<string, TimelineItem>>({});

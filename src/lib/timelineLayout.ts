@@ -1,4 +1,4 @@
-import { TimelineItem } from "../classes/CoreItems";
+import { TimelineItem } from "../components/CoreItems";
 
 export interface TimelineLayoutItem {
     item: TimelineItem;

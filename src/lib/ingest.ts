@@ -1,4 +1,4 @@
-import { TimelineItemProps, ActItem, SceneItem, DialogueItem, LocationItem, Character, TimelineItem } from "../classes/CoreItems";
+import { TimelineItemProps, ActItem, SceneItem, DialogueItem, LocationItem, Character, TimelineItem } from "../components/CoreItems";
 import { storage } from "../db";
 import { setTimelineItems, setTimelineSequence, setLocations, setCharacters } from "../stores";
 

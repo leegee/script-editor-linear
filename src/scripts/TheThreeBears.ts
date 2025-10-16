@@ -1,12 +1,4 @@
-import { ScriptItemProps, ActItem, SceneItem, DialogueItem, LocationItem, Character, ScriptItem } from "../classes/CoreItems";
-import { storage } from "../db";
-import {
-    setScriptItems,
-    setSequence,
-    setLocations,
-    setCharacters,
-} from "../stores";
-
+import { TimelineItemProps, LocationItem, Character } from "../classes/CoreItems";
 
 export const sampleCharacters: Character[] = [
     new Character({ id: "Narrator", name: "Narrator" }),
@@ -37,7 +29,7 @@ export const sampleLocations: LocationItem[] = [
     })
 ];
 
-export const sampleScript: ScriptItemProps[] = [
+export const sampleScript: TimelineItemProps[] = [
     { id: crypto.randomUUID(), type: "act", title: "Act 1", startTime: 0, duration: 60 },
 
     { id: crypto.randomUUID(), type: "scene", title: "Scene 1", startTime: 0, duration: 15 },
@@ -71,62 +63,3 @@ export const sampleScript: ScriptItemProps[] = [
     { id: crypto.randomUUID(), type: "dialogue", details: { characterId: "Goldilocks", text: "Ahh! This porridge is just right." }, startTime: 53, duration: 2 },
     { id: crypto.randomUUID(), type: "dialogue", details: { characterId: "Narrator", text: "And she ate it all up." }, startTime: 55, duration: 3 }
 ];
-
-// export async function ingest() {
-//     console.log("Starting ingestion of Three Bears...");
-
-//     // Clear tables
-//     await storage.clearTable("scriptItems");
-//     await storage.clearTable("locations");
-//     await storage.clearTable("characters");
-
-//     // Reset stores
-//     setScriptItems({});
-//     setLocations({});
-//     setCharacters({});
-//     setSequence([]);
-
-//     const seq: string[] = [];
-
-//     // Add characters
-//     for (const char of sampleCharacters) {
-//         setCharacters(char.id, char);
-//         await storage.put("characters", char);
-//     }
-
-//     // Add script items and locations
-//     for (const props of sampleScript) {
-//         let item;
-//         switch (props.type) {
-//             case "act":
-//                 item = new ActItem(props);
-//                 break;
-//             case "scene":
-//                 item = new SceneItem(props);
-//                 break;
-//             case "dialogue":
-//                 item = new DialogueItem(props);
-//                 break;
-//             case "location":
-//                 item = new LocationItem(props);
-//                 break;
-//             default:
-//                 item = new ScriptItem(props);
-//         }
-
-//         if (props.type === "location") {
-//             setLocations(item.id, item as LocationItem);
-//             await storage.put("locations", item);
-//         } else {
-//             setScriptItems(item.id, item as ScriptItem);
-//             await storage.put("scriptItems", item);
-//             seq.push(item.id);
-//         }
-//     }
-
-//     // Save sequence
-//     setSequence(seq);
-//     await storage.putMeta("sequence", seq);
-
-//     console.log("Three Bears ingestion complete. Sequence length:", seq.length);
-// }

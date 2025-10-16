@@ -119,7 +119,6 @@ export default function DragDropList<T>(props: DragDropListProps<T>) {
             return (
               <li
                 data-index={pos}
-                onPointerDown={(e) => startDrag(pos, e)}
                 class={`dnd-item ${isDragging ? "dragging" : ""} ${isPlaceholder ? "placeholder" : ""} ${overIndex() === pos ? "drag-over" : ""}`}
                 style={
                   props.viewMode === "timeline"
@@ -127,7 +126,15 @@ export default function DragDropList<T>(props: DragDropListProps<T>) {
                     : {}
                 }
               >
-                {props.renderItem(item, itemIdx)}
+                <div
+                  class="dragHandle"
+                  onPointerDown={(e) => startDrag(pos, e)}
+                >
+                  ⠿
+                </div>
+                <div>
+                  {props.renderItem(item, itemIdx)}
+                </div>
               </li>
             );
           }}

@@ -1,10 +1,10 @@
 import Dexie from "dexie";
-import { ScriptItemProps } from "./classes/CoreItems";
+import { TimelineItemProps } from "./classes/CoreItems";
 
 export const db = new Dexie("ScriptDB");
 
 db.version(1).stores({
-    scriptItems: "id,type,startTime",
+    timelineItems: "id,type,startTime",
     characters: "id,name",
     locations: "id,name",
     tags: "id,name",
@@ -12,7 +12,7 @@ db.version(1).stores({
     meta: "key",
 });
 
-export type TableName = "scriptItems" | "characters" | "locations" | "tags" | "notes";
+export type TableName = "timelineItems" | "characters" | "locations" | "tags" | "notes";
 
 export const storage = {
     async getAll<T>(table: TableName): Promise<Record<string, T>> {

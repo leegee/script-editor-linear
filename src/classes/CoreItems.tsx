@@ -1,6 +1,7 @@
-import { characters, locations } from "../stores";
+import InlineEditable from "../components/InlineEditable";
+import { characters, locations, setTimelineItems } from "../stores";
 
-export interface ScriptItemProps {
+export interface TimelineItemProps {
     id: string;
     type: string; // "dialogue" | "location" | "transition" | "beat-marker" | "scene" | "act"
     title?: string;
@@ -11,7 +12,7 @@ export interface ScriptItemProps {
     notes?: string[];
 }
 
-export class ScriptItem {
+export class TimelineItem {
     id: string;
     type: string;
     title?: string;
@@ -21,7 +22,7 @@ export class ScriptItem {
     tags: string[];
     notes: string[];
 
-    constructor(props: ScriptItemProps) {
+    constructor(props: TimelineItemProps) {
         this.id = props.id;
         this.type = props.type;
         this.title = props.title;
@@ -42,7 +43,7 @@ export class ScriptItem {
 }
 
 // Subclasses
-export class ActItem extends ScriptItem {
+export class ActItem extends TimelineItem {
     renderCompact() {
         return (
             <div class="act">
@@ -52,7 +53,7 @@ export class ActItem extends ScriptItem {
     }
 }
 
-export class SceneItem extends ScriptItem {
+export class SceneItem extends TimelineItem {
     renderCompact() {
         return (
             <div class="scene">
@@ -63,44 +64,39 @@ export class SceneItem extends ScriptItem {
 }
 
 
-export class DialogueItem extends ScriptItem {
-    speakerName: string;
-
-    constructor(props: ScriptItemProps) {
-        super(props);
-        const charId = props.details!.characterId;
-        this.speakerName = charId && charId in characters ? characters[charId].name : charId ?? "Unknown Speaker";
-    }
-
-    renderFull() {
-        return <div class="dialog">{this.speakerName}: {this.details.text ?? ""}</div>;
-    }
-
+export class DialogueItem extends TimelineItem {
     renderCompact() {
-        const len = 50;
-        let text = (this.details.text || "").substring(0, len);
-        if (text.length > len) text += " ...";
-        return <div class="dialog">{this.speakerName}: {text}</div>;
+        const char = characters[this.details.characterId];
+        const speakerName = char?.name ?? "Unknown Speaker";
+
+        return <div class="dialog">
+            {speakerName}
+            <InlineEditable value={this.details.text} onUpdate={(v) => setTimelineItems(this.id, "details", "text", v)} />
+        </div>;
     }
 }
 
 
-
-export class TransitionItem extends ScriptItem {
+export class TransitionItem extends TimelineItem {
     transitionType?: "fade" | "cut" | "dissolve";
     renderCompact() { return `⏭ ${this.transitionType?.toUpperCase()} →`; }
 }
 
-export class LocationItem extends ScriptItem {
-    mapData?: any;
-    contacts?: string[];
-
-    renderFull() {
-        return `Location: ${this.title ?? "Unnamed"} (Lat: ${this.details.lat ?? "?"}, Lng: ${this.details.lng ?? "?"})`;
+export class LocationItem extends TimelineItem {
+    renderCompact() {
+        const loc = locations[this.details.locationId];
+        return loc?.title ?? "Unknown Location";
     }
 
-    renderCompact() {
-        return this.title ?? "Unnamed Location";
+    renderFull() {
+        const loc = locations[this.details.locationId];
+        if (!loc) return "Unknown Location";
+        return (
+            <div class="location">
+                <strong>{loc.title}</strong>
+                <div>Lat: {loc.details.lat ?? "?"}, Lng: {loc.details.lng ?? "?"}</div>
+            </div>
+        );
     }
 }
 
@@ -136,7 +132,7 @@ export class Tag {
 export class Note {
     id!: string;
     parentId!: string;
-    parentType!: string; // 'scriptItem' | 'character' | 'location' | 'tag'
+    parentType!: string; // 'timelineItem' | 'character' | 'location' | 'tag'
     text!: string;
     media?: string[];
 
@@ -149,14 +145,14 @@ export class Note {
 
 
 
-export function reviveItem(obj: any): ScriptItem {
+export function reviveItem(obj: any): TimelineItem {
     switch (obj.type) {
         case "act": return new ActItem(obj);
         case "scene": return new SceneItem(obj);
         case "dialogue": return new DialogueItem(obj);
         case "transition": return new TransitionItem(obj);
         case "location": return new LocationItem(obj);
-        default: return new ScriptItem(obj);
+        default: return new TimelineItem(obj);
     }
 }
 

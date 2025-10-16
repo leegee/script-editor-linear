@@ -2,7 +2,7 @@ import { onMount, createSignal, Show } from "solid-js";
 import DragDropList from "./components/DragDropList";
 import TimelineView from "./components/TimelineView";
 import { loadAll } from "./stores";
-import { scriptItems, sequence, reorderScriptItems } from "./stores/scriptItems";
+import { timelineItems, timelineSequence, reorderTimeline } from "./stores/timelineItems";
 import { ingest } from "./lib/ingest";
 import { ViewModeSwitch } from "./components/ViewModeSwitch";
 import { layoutTimeline } from "./lib/timelineLayout";
@@ -14,7 +14,7 @@ export default function App() {
     const [viewMode, setViewMode] = createSignal<"list" | "timeline">("list");
 
     onMount(async () => {
-        if ((await storage.getKeys("scriptItems")).length === 0) {
+        if ((await storage.getKeys("timelineItems")).length === 0) {
             await ingest(sampleScript, sampleCharacters, sampleLocations);
         }
 
@@ -22,7 +22,7 @@ export default function App() {
         setLoaded(true);
     });
 
-    const items = () => sequence().map(id => scriptItems[id]).filter(Boolean);
+    const items = () => timelineSequence().map(id => timelineItems[id]).filter(Boolean);
 
     return (
         <>
@@ -34,8 +34,8 @@ export default function App() {
                             items={items()}
                             renderItem={(item) => item?.renderCompact() ?? null}
                             onReorder={(newOrder) => {
-                                const newSeq = newOrder.map((i) => sequence()[i]);
-                                reorderScriptItems(newSeq);
+                                const newSeq = newOrder.map((i) => timelineSequence()[i]);
+                                reorderTimeline(newSeq);
                             }}
                         />
                     </Show>

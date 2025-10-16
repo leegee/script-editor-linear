@@ -16,11 +16,11 @@
   - **Cue** — Audio / Lighting / Transition
   - **Dialogue / Action** — Character involvement
   - **Other** — Anything user-defined
-- Each Script Item supports **three rendering/edit modes**:
+- Each Timeline Item supports **three rendering/edit modes**:
   1. **Simplified View** — minimal timeline block
   2. **Medium Detail** — inline, summary information
   3. **Full Detail / Editor** — complete editable form (with multimedia and links)
-- **Edits persist locally** (e.g., IndexedDB tables: `scriptItems`, `characters`, etc.)
+- **Edits persist locally** (e.g., IndexedDB tables: `timelineItems`, `characters`, etc.)
 
 ---
 
@@ -30,7 +30,7 @@
   - **Traits / Attributes** (key-value pairs, numeric sliders, categorical flags)
   - **Tags** and **Notes**
   - Optional **photo or avatar**
-  - Links to **Script Items**, **Locations**, and **Contacts**
+  - Links to **Timeline Items**, **Locations**, and **Contacts**
 - **Full Detail / Editor View:**
   - Character card layout
   - Notes, traits, backstory, appearance
@@ -42,7 +42,7 @@
 - Represent physical or conceptual places
 - Have:
   - **Tags** and **Notes**
-  - Links to **Script Items**, **Characters**, and **Contacts**
+  - Links to **Timeline Items**, **Characters**, and **Contacts**
 - **Full Detail / Editor View:**
   - Map editor or layout view
   - Linked contacts (e.g., liaison, owner)
@@ -53,7 +53,7 @@
 
 ### Tags
 - **Universal linking system** for all entities
-- Any entity (Script Item, Character, Location, Note) can have **multiple tags**
+- Any entity (Timeline Item, Character, Location, Note) can have **multiple tags**
 - Tags can represent:
   - **Themes** (e.g., *Hope*, *Isolation*, *Redemption*)
   - **Story Arcs**
@@ -72,7 +72,7 @@
 ---
 
 ### Notes
-- **Attachable to anything** (Script Item, Character, Location, Tag)
+- **Attachable to anything** (Timeline Item, Character, Location, Tag)
 - Can themselves be **tagged**
 - Support:
   - **Rich text (Markdown or WYSIWYG)**
@@ -100,7 +100,7 @@
 ---
 
 ### Column / Matrix View
-- Displays chronological **columns** of entities (script items, characters, etc.)
+- Displays chronological **columns** of entities (timeline items, characters, etc.)
 - Filters by **tag**, **character**, or **location**
 - **Zoom / Focus Mode:**
   - Zoom enlarges selected column
@@ -122,14 +122,14 @@
   - Has **tags** and **notes**
   - Has **cross-links** (references to other entities)
 - Entities are stored locally (IndexedDB or LocalStorage)
-  - Example: `indexeddb.scriptItems`, `indexeddb.characters`, etc.
+  - Example: `indexeddb.timelineItems`, `indexeddb.characters`, etc.
 - Relationships are **bidirectional** for fast lookup
 - Multiple simultaneous timelines supported (parallel actions)
 
 ---
 
 ## Future / Planned Features
-- **Audio/video synchronization** for media-based script items
+- **Audio/video synchronization** for media-based timeline items
 - **Timeline playback** (real-time simulation)
 - **Collaboration** (multi-user, shared state)
 - **Version history** and change diffing
@@ -141,9 +141,9 @@
 
 ## Technical Goals
 - SolidJS + TypeScript reactive architecture
-- WebGL/Canvas hybrid renderer for perspective and timeline modes
 - IndexedDB-backed local persistence
 - Modular data schemas (JSON-based storage)
+- WebGL/Canvas hybrid renderer for perspective and timeline modes
 - Accessibility and keyboard shortcuts
 - Multi-touch and gesture support
 
@@ -158,7 +158,7 @@
 graph TD
 
 %% Core entities
-A[ScriptItem]:::entity -->|can reference| B[Character]
+A[TimelineItem]:::entity -->|can reference| B[Character]
 A -->|can reference| C[Location]
 A -->|can have| D[Tag]
 A -->|can have| E[Note]
@@ -228,7 +228,7 @@ Renderer -->|interactive feedback| UI
 
 ## Summary
 
-- **ScriptItem** is the universal timeline entity  
+- **TimelineItem** is the universal timeline entity  
 - **Character** and **Location** extend via references  
 - **Tag** and **Note** are shared, universal linkable layers  
 - **Storage** is local-first (IndexedDB), ready for sync extension  
@@ -239,13 +239,13 @@ Renderer -->|interactive feedback| UI
 
 ---
 
-## Timeline Schema (Chronological + Simultaneous ScriptItems)
+## Timeline Schema (Chronological + Simultaneous TimelineItems)
 
 ```mermaid
 gantt
     dateFormat  mm:ss
     axisFormat  %M:%S
-    title Example Timeline Structure — Overlapping ScriptItems
+    title Example Timeline Structure — Overlapping TimelineItems
 
     section Structural Markers
     Act 1 Marker           :milestone, 00:00, 0s
@@ -272,8 +272,8 @@ gantt
 
 ## Interpretation
 
-- **Markers** (Act, Scene, Beat) are `ScriptItem` subtypes with **zero duration**
-- **Dialogue**, **Action**, **Cue**, **Transition** are standard `ScriptItems` with duration
+- **Markers** (Act, Scene, Beat) are `TimelineItem` subtypes with **zero duration**
+- **Dialogue**, **Action**, **Cue**, **Transition** are standard `TimelineItems` with duration
 - **Simultaneous actions** (e.g., sound, music) run **in parallel** with others  
 - **Timeline** supports:
   - Explicit durations (`start + length`)

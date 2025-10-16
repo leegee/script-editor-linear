@@ -1,7 +1,7 @@
-import { ScriptItem } from "../classes/CoreItems";
+import { TimelineItem } from "../classes/CoreItems";
 
 export interface TimelineLayoutItem {
-    item: ScriptItem;
+    item: TimelineItem;
     x: number; // horizontal px
     y: number; // lane index
 }
@@ -14,7 +14,7 @@ export interface TimelineLayoutOptions {
 }
 
 export function layoutTimeline(
-    items: ScriptItem[],
+    items: TimelineItem[],
     opts: TimelineLayoutOptions = {}
 ): TimelineLayoutItem[] {
     const totalWidth = opts.totalWidth ?? 1000;
@@ -37,7 +37,7 @@ export function layoutTimeline(
     itemsWithTime.sort((a, b) => (a.startTime! - b.startTime!));
 
     // Assign lanes to avoid vertical overlaps
-    const lanes: ScriptItem[][] = [];
+    const lanes: TimelineItem[][] = [];
     const layout: TimelineLayoutItem[] = [];
 
     for (const it of itemsWithTime) {

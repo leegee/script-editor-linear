@@ -1,42 +1,39 @@
+import { TimelineItemProps, ActItem, SceneItem, DialogueItem, LocationItem, Character, TimelineItem } from "../classes/CoreItems";
 import { storage } from "../db";
-import { ActItem, Character, DialogueItem, LocationItem, SceneItem, ScriptItem, type ScriptItemProps } from "../classes/CoreItems";
-import { setScriptItems, locations, setLocations, setCharacters, setSequence } from "../stores/index";
+import { setTimelineItems, setTimelineSequence, setLocations, setCharacters } from "../stores";
 
 export async function ingest(
-    sampleScript: ScriptItemProps[],
+    sampleScript: TimelineItemProps[],
     sampleCharacters: Character[],
     sampleLocations: LocationItem[],
 ) {
-    console.log("Starting ingestion of Three Bears...");
+    console.log("Starting ingestion...");
 
-    // Clear all tables and stores
+    // Clear stores and tables
     await Promise.all([
-        storage.clearTable("scriptItems"),
+        storage.clearTable("timelineItems"),
         storage.clearTable("locations"),
         storage.clearTable("characters")
     ]);
-    setScriptItems({});
+    setTimelineItems({});
     setLocations({});
     setCharacters({});
-    setSequence([]);
+    setTimelineSequence([]);
 
     const seq: string[] = [];
 
-    // Add characters
     for (const char of sampleCharacters) {
         setCharacters(char.id, char);
         await storage.put("characters", char);
     }
 
-    // Add locations
     for (const loc of sampleLocations) {
         setLocations(loc.id, loc);
         await storage.put("locations", loc);
     }
 
-    // Add script items
     for (const props of sampleScript) {
-        let item: ScriptItem;
+        let item: TimelineItem;
 
         switch (props.type) {
             case "act":
@@ -46,48 +43,22 @@ export async function ingest(
                 item = new SceneItem(props);
                 break;
             case "dialogue":
-                // Expand location reference if present
-                const dialogueProps = { ...props };
-                const locId = props.details?.locationId;
-                if (locId && Object.prototype.hasOwnProperty.call(locations, locId)) {
-                    dialogueProps.details = {
-                        ...dialogueProps.details,
-                        locationTitle: locations[locId].title
-                    };
-                }
-                item = new DialogueItem(dialogueProps);
+                item = new DialogueItem(props);
                 break;
             case "location":
-                const locationProps = { ...props };
-                const locRefId = props.details?.locationId;
-                let existingLoc;
-                if (locRefId && Object.prototype.hasOwnProperty.call(locations, locRefId)) {
-                    existingLoc = locations[locRefId];
-                }
-                item = new LocationItem({
-                    ...locationProps,
-                    title: existingLoc?.title ?? props.title,
-                    details: existingLoc?.details ?? props.details
-                });
+                item = new LocationItem(props);
                 break;
-
             default:
-                item = new ScriptItem(props);
+                item = new TimelineItem(props);
         }
 
-        // Save to store and IndexedDB
-        if (props.type === "location") {
-            setLocations(item.id, item as LocationItem);
-            await storage.put("locations", item);
-        } else {
-            setScriptItems(item.id, item as ScriptItem);
-            await storage.put("scriptItems", item);
-            seq.push(item.id);
-        }
+        setTimelineItems(item.id, item);
+        await storage.put("timelineItems", item);
+        seq.push(item.id);
     }
 
-    setSequence(seq);
-    await storage.putMeta("sequence", seq);
+    setTimelineSequence(seq);
+    await storage.putMeta("timelineSequence", seq);
 
-    console.log("Three Bears ingestion complete. Sequence length:", seq.length);
+    console.log("Ingestion complete. Sequence length:", seq.length);
 }

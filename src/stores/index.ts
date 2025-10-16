@@ -1,10 +1,10 @@
 import { loadAllCharacters } from "./characters";
 import { loadAllLocations } from "./locations";
 import { loadAllNotes } from "./notes";
-import { loadAllScriptItems } from "./scriptItems";
+import { loadAllTimelineItems } from "./timelineItems";
 import { loadAllTags } from "./tags";
 
-export * from "./scriptItems";
+export * from "./timelineItems";
 export * from "./locations";
 export * from "./characters";
 export * from "./tags";
@@ -16,7 +16,7 @@ export * from "./notes";
  */
 export async function loadAll() {
     await Promise.all([
-        loadAllScriptItems(),
+        loadAllTimelineItems(),
         loadAllLocations(),
         loadAllCharacters(),
         loadAllTags(),

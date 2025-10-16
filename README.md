@@ -178,7 +178,7 @@ D -->|applies to| A
 D -->|applies to| B
 D -->|applies to| C
 D -->|can have| E
-D -->|can link to| D2[Tag (linked/nested)]
+D -->|can link to| D2["Tag (linked/nested)"]
 
 %% Note relationships
 E -->|attached to| A

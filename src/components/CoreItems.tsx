@@ -48,7 +48,9 @@ export class ActItem extends TimelineItem {
     renderCompact() {
         return (
             <h2 class="timeline-item act">
-                {this.title ?? "Untitled Act"}
+                <InlineEditable value={this.title ?? "Untitled Act"} onUpdate={
+                    (v) => setTimelineItems(this.id, "title", v)
+                } />
             </h2>
         );
     }
@@ -57,7 +59,11 @@ export class ActItem extends TimelineItem {
 export class SceneItem extends TimelineItem {
     renderCompact() {
         return (
-            <h3 class="timeline-item scene">{this.title ?? "Untitled Act"} </h3>
+            <h3 class="timeline-item scene">
+                <InlineEditable value={this.title ?? "Untitled Scene"} onUpdate={
+                    (v) => setTimelineItems(this.id, "title", v)
+                } />
+            </h3>
         );
     }
 }

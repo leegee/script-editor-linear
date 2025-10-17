@@ -9,10 +9,11 @@ import { layoutTimeline } from "./lib/timelineLayout";
 import { sampleScript, sampleCharacters, sampleLocations } from "./scripts/TheThreeBears";
 import { storage } from "./db";
 import NewTimelineItemSelector from "./components/NewTimelineItemSelector";
+import { TimelineItem } from "./components/CoreItems";
 
 export default function App() {
     const [insertNewItemPos, setInsertNewItemPos] = createSignal(-1);
-    const [itemIdToShow, setItemIdToShow] = createSignal('');
+    const [itemToShow, setItemToShow] = createSignal<TimelineItem | null>(null);
     const [loaded, setLoaded] = createSignal(false);
     const [viewMode, setViewMode] = createSignal<"list" | "timeline">("list");
 
@@ -39,7 +40,7 @@ export default function App() {
                                 <DragDropList
                                     items={items()}
                                     renderItem={(item) => {
-                                        return (<span style="width:100%" onClick={() => setItemIdToShow(item.id)}>
+                                        return (<span style="width:100%" onClick={() => setItemToShow(item)}>
                                             {item?.renderCompact() ?? null}
                                         </span>)
                                     }}
@@ -70,8 +71,10 @@ export default function App() {
                                 />
                             </Show>
 
-                            <Show when={itemIdToShow()}>
-                                {itemIdToShow()}
+                            <Show when={itemToShow() !== null}>
+                                {/* {itemToShow()!.constructor.name} /
+                                {itemToShow()!.type} {itemToShow()!.id} */}
+                                {itemToShow()!.renderFull()}
                             </Show>
                         </div>
                     </div>

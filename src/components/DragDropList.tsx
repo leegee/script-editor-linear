@@ -129,12 +129,12 @@ export default function DragDropList<T extends HasId>(props: DragDropListProps<T
           return (
             <li
               data-index={pos}
+              class="dnd-item"
               classList={{
                 dragging: isDragging,
                 placeholder: isPlaceholder,
                 "drag-over": overIndex() === pos
               }}
-              style={props.viewMode === "timeline" ? { position: "absolute", left: `${itemX}px`, top: "0px" } : {}}
             >
               <DragHandleWithMenu
                 onPointerDown={(e) => startDrag(pos, e)}
@@ -143,19 +143,18 @@ export default function DragDropList<T extends HasId>(props: DragDropListProps<T
                 onInsertAfter={() => handleInsertAfter(pos)}
                 onDelete={() => handleDelete(pos)}
               />
-              <div>{props.renderItem(item, idx())}</div>
+              {props.renderItem(item, idx())}
             </li>
           );
         }}
       </For>
 
       {draggingIndex() !== null && dragX() !== null && dragY() !== null && (
-        <li
+        <li ref={floatingRef as HTMLLIElement}
           class="dnd-item floating large-elevate border no-margin no-padding secondary"
-          ref={floatingRef as HTMLLIElement}
+          classList={{ dragging: draggingIndex() !== null }}
           style={{
-            left: props.viewMode === "timeline" ? `${dragX()! - offsetX}px` : "auto",
-            top: props.viewMode === "timeline" ? "50%" : `${dragY()! - offsetY}px`,
+            top: `${dragY()! - offsetY}px`,
           }}
         >
           {props.renderItem(props.items[order()[draggingIndex()!]], order()[draggingIndex()!])}

@@ -29,24 +29,34 @@ export default function App() {
             <main class="responsive">
                 <Show when={loaded()} fallback={<p>Loading script...</p>}>
 
-                    <Show when={viewMode() === "list"}>
-                        <DragDropList
-                            items={items()}
-                            renderItem={(item) => item?.renderCompact() ?? null}
-                            onReorder={(newOrder) => {
-                                const seq = timelineSequence();
-                                const newSeq = newOrder.map(i => seq[i]);
-                                reorderTimeline(newSeq);
-                            }}
-                        />
-                    </Show>
+                    <div class="grid">
+                        <div class="s12 m6 l6 ">
 
-                    <Show when={viewMode() === "timeline"}>
-                        <TimelineView
-                            items={items()}
-                            layout={layoutTimeline(items(), { totalWidth: 1200, laneHeight: 80 })}
-                        />
-                    </Show>
+                            <Show when={viewMode() === "list"}>
+                                <DragDropList
+                                    items={items()}
+                                    renderItem={(item) => item?.renderCompact() ?? null}
+                                    onReorder={(newOrder) => {
+                                        const seq = timelineSequence();
+                                        const newSeq = newOrder.map(i => seq[i]);
+                                        reorderTimeline(newSeq);
+                                    }}
+                                />
+                            </Show>
+
+                            <Show when={viewMode() === "timeline"}>
+                                <TimelineView
+                                    items={items()}
+                                    layout={layoutTimeline(items(), { totalWidth: 1200, laneHeight: 80 })}
+                                />
+                            </Show>
+                        </div>
+
+                        <div class="s12 m6 l6">
+                            {/* <!-- right panel --> */}
+                        </div>
+                    </div>
+
                 </Show>
             </main>
 

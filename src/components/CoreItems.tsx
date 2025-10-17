@@ -1,5 +1,6 @@
 import InlineEditable from "../components/InlineEditable";
 import { characters, locations, setTimelineItems } from "../stores";
+import "./CoreItems.scss";
 
 export interface TimelineItemProps {
     id: string;
@@ -46,7 +47,7 @@ export class TimelineItem {
 export class ActItem extends TimelineItem {
     renderCompact() {
         return (
-            <div class="act">
+            <div class="timeline-item act">
                 <h2>{this.title ?? "Untitled Act"} </h2>
             </div>
         );
@@ -56,7 +57,7 @@ export class ActItem extends TimelineItem {
 export class SceneItem extends TimelineItem {
     renderCompact() {
         return (
-            <div class="scene">
+            <div class="timeline-item scene">
                 <h3>{this.title ?? "Untitled Act"} </h3>
             </div>
         );
@@ -69,9 +70,9 @@ export class DialogueItem extends TimelineItem {
         const char = characters[this.details.characterId];
         const speakerName = char?.name ?? "Unknown Speaker";
 
-        return <div class="dialog">
+        return <div class="timeline-item">
             {speakerName}
-            <InlineEditable value={this.details.text} onUpdate={(v) => setTimelineItems(this.id, "details", "text", v)} />
+            <InlineEditable class="dialogueText" value={this.details.text} onUpdate={(v) => setTimelineItems(this.id, "details", "text", v)} />
         </div>;
     }
 }
@@ -79,20 +80,20 @@ export class DialogueItem extends TimelineItem {
 
 export class TransitionItem extends TimelineItem {
     transitionType?: "fade" | "cut" | "dissolve";
-    renderCompact() { return `⏭ ${this.transitionType?.toUpperCase()} →`; }
+    renderCompact() { return <div class="timeline-item">${this.transitionType?.toUpperCase()} →</div> }
 }
 
 export class LocationItem extends TimelineItem {
     renderCompact() {
         const loc = locations[this.details.locationId];
-        return <h5>{loc?.title ?? "Unknown Location"}</h5>
+        return <h5 class="timeline-item">{loc?.title ?? "Unknown Location"}</h5>
     }
 
     renderFull() {
         const loc = locations[this.details.locationId];
         if (!loc) return "Unknown Location";
         return (
-            <div class="location">
+            <div class="timeline-item location">
                 <strong>{loc.title}</strong>
                 <div>Lat: {loc.details.lat ?? "?"}, Lng: {loc.details.lng ?? "?"}</div>
             </div>

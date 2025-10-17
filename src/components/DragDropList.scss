@@ -1,16 +1,18 @@
-ul.drag-list {
+.drag-list {
   display: flex;
   position: relative;
   overflow-x: auto;
+  width: 100%;
 
-  li.dnd-item {
+  .dnd-item {
+    position: relative;
     margin: 0 0.5em;
     flex: 0 0 auto; // don’t shrink
-    position: relative;
     transition: background-color 0.1s, opacity 0.1s, transform 0.1s;
     padding: 0;
     margin: 0;
     width: 100%;
+    flex: 1;
 
     &.dragging {
       opacity: 0.8 !important;
@@ -33,6 +35,7 @@ ul.drag-list {
 
     &.floating {
       position: fixed;
+      left: auto;
       box-shadow: 0 6pt 12pt rgba(0, 0, 0, 0.5);
       pointer-events: none; // prevents blocking pointer events
       z-index: 9999;

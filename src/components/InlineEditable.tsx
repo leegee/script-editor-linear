@@ -1,4 +1,5 @@
 import { createSignal, Show } from "solid-js";
+import styles from "./InlineEditor.module.scss";
 
 export default function InlineEditable(props: {
     value: string,
@@ -34,7 +35,7 @@ export default function InlineEditable(props: {
                     autofocus
                 /> :
                 <input
-                    class={props.class}
+                    class={styles.inlineEditor + ' ' + props.class}
                     value={draft()}
                     onInput={e => setDraft(e.currentTarget.value)}
                     onBlur={() => { setEditing(false); props.onUpdate(draft()); }}

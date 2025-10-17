@@ -1,5 +1,5 @@
 import { createStore } from "solid-js/store";
-import { Location } from "../components/CoreItems";
+import { Location } from "../components/CoreItems/";
 import { storage } from "../db";
 
 export const [locations, setLocations] = createStore<Record<string, Location>>({});

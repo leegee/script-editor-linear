@@ -1,4 +1,10 @@
-import { TimelineItemProps, TimelineItem, ActItem, SceneItem, DialogueItem, LocationItem, Location, Character, } from "../components/CoreItems";
+import { ActItem } from "../components/CoreItems/Act";
+import { Character } from "../components/CoreItems/Character";
+import { DialogueItem } from "../components/CoreItems/DialogueItem";
+import { LocationItem } from "../components/CoreItems/LocationItem";
+import { Location } from "../components/CoreItems/Location";
+import { SceneItem } from "../components/CoreItems/SceneItem";
+import { TimelineItemProps, TimelineItem } from "../components/CoreItems/TimelineItem";
 import { storage } from "../db";
 import { setTimelineItems, setTimelineSequence, setLocations, setCharacters } from "../stores";
 

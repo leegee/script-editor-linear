@@ -1,7 +1,7 @@
 import { createSignal, createEffect, JSX, For } from "solid-js";
 import { createTimelineItem } from "../lib/createTimelineItem";
-import { timelineSequence, timelineItems, locations } from "../stores";
-import type { LocationItem } from "../components/CoreItems";
+import { timelineSequence, timelineItems } from "../stores";
+import { ActItem, SceneItem, DialogueItem, LocationItem } from "../components/CoreItems";
 
 interface NewTimelineItemSelectorProps {
     insertAtIndex: number;
@@ -11,11 +11,9 @@ interface NewTimelineItemSelectorProps {
 
 export default function NewTimelineItemSelector(props: NewTimelineItemSelectorProps) {
     const [type, setType] = createSignal<"act" | "scene" | "dialogue" | "location">("dialogue");
-    const [title, setTitle] = createSignal("");
-    const [selectedLocation, setSelectedLocation] = createSignal<string | undefined>(undefined);
-    const [startTime, setStartTime] = createSignal<number | undefined>(undefined);
+    const [fields, setFields] = createSignal<Record<string, any>>({});
+    const [startTime, setStartTime] = createSignal<number>(0);
     const [duration, setDuration] = createSignal<number | undefined>(undefined);
-    const [defaultStartTime, setDefaultStartTime] = createSignal<number | undefined>(undefined);
 
     const types: { value: "act" | "scene" | "dialogue" | "location"; label: string }[] = [
         { value: "act", label: "Act" },
@@ -31,33 +29,32 @@ export default function NewTimelineItemSelector(props: NewTimelineItemSelectorPr
             const prevId = seq[props.insertAtIndex - 1];
             const prevItem = timelineItems[prevId];
             if (prevItem?.startTime != null && prevItem?.duration != null) {
-                const prevEnd = prevItem.startTime + prevItem.duration;
-                setDefaultStartTime(prevEnd);
-                if (startTime() == null) setStartTime(prevEnd);
+                setStartTime(prevItem.startTime + prevItem.duration);
             }
-        } else if (startTime() == null) {
+        } else {
             setStartTime(0);
-            setDefaultStartTime(0);
         }
     });
+
+    const handleChange = (field: string, value: any) => {
+        setFields((prev) => ({ ...prev, [field]: value }));
+    };
 
     const handleCreate = async () => {
         try {
             const item = await createTimelineItem(
                 {
                     type: type(),
-                    title: type() === "location" ? locations[selectedLocation()!]?.title : title(),
+                    title: fields().title,
                     startTime: startTime(),
                     duration: duration(),
-                    details: type() === "location" && selectedLocation() ? { locationId: selectedLocation() } : undefined
+                    details: { ...fields() }
                 },
                 { insertAtIndex: props.insertAtIndex }
             );
 
             // Reset form
-            setTitle("");
-            setSelectedLocation(undefined);
-            setStartTime(defaultStartTime());
+            setFields({});
             setDuration(undefined);
 
             props.onCreated?.(item.id);
@@ -66,10 +63,13 @@ export default function NewTimelineItemSelector(props: NewTimelineItemSelectorPr
         }
     };
 
+    // Map type string to class
+    const typeMap = { act: ActItem, scene: SceneItem, dialogue: DialogueItem, location: LocationItem };
+
     return (
-        <fieldset class="padding surface-dim" style={{ position: 'fixed' }}>
+        <fieldset class="padding surface-dim" style={{ position: 'fixed', "max-width": "400px" }}>
             <legend class="surface-dim">
-                <h3 class="surface-dim">Create a new item</h3>
+                <h3>Create a new item</h3>
             </legend>
 
             <div class="field border label">
@@ -81,50 +81,19 @@ export default function NewTimelineItemSelector(props: NewTimelineItemSelectorPr
                 <label>Type</label>
             </div>
 
-            {type() === "location" ? (
-                <div class="field border label">
-                    <select
-                        value={selectedLocation() ?? ""}
-                        onChange={(e) => setSelectedLocation(e.currentTarget.value)}
-                    >
-                        <option value="" disabled>Select a location</option>
-                        <For each={Object.values(locations)}>
-                            {(loc: LocationItem) => <option value={loc.id}>{loc.title}</option>}
-                        </For>
-                    </select>
-                    <label>Location</label>
-                </div>
-            ) : (
-                <div class="field border label">
-                    <input type="text" value={title()} onInput={(e) => setTitle(e.currentTarget.value)} />
-                    <label>Title</label>
-                </div>
-            )}
+            {/* Render type-specific form */}
+            {(() => {
+                const ItemClass = typeMap[type()];
+                const itemInstance = new ItemClass({ id: "new", type: type() });
+                return itemInstance.renderCreateNew({
+                    onChange: handleChange,
+                    startTime: startTime(),
+                    duration: duration()
+                });
+            })()}
 
-            <div class="field border label">
-                <input
-                    type="number"
-                    min={0}
-                    value={startTime() ?? ""}
-                    onInput={(e) => setStartTime(e.currentTarget.value ? Number(e.currentTarget.value) : undefined)}
-                />
-                <label>Start Time (seconds)</label>
-            </div>
-
-            {type() !== "location" && (
-                <div class="field border label">
-                    <input
-                        type="number"
-                        min={0}
-                        value={duration() ?? ""}
-                        onInput={(e) => setDuration(e.currentTarget.value ? Number(e.currentTarget.value) : undefined)}
-                    />
-                    <label>Duration (seconds)</label>
-                </div>
-            )}
-
-            <div class="field border label">
-                <button onClick={() => props.onCancel()} class="transparent">Cancel</button>
+            <div class="field border label top-margin" style={{ display: "flex", gap: "8px" }}>
+                <button onClick={props.onCancel} class="transparent">Cancel</button>
                 <button onClick={handleCreate} class="primary">Create Timeline Item</button>
             </div>
         </fieldset>

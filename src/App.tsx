@@ -61,6 +61,7 @@ export default function App() {
                                 <NewTimelineItemSelector
                                     insertAtIndex={insertNewItemPos()}
                                     onCancel={() => setInsertNewItemPos(-1)}
+                                    onCreated={() => setInsertNewItemPos(-1)}
                                 />
                             </Show>
                         </div>

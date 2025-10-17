@@ -1,3 +1,4 @@
+import { JSX } from "solid-js/jsx-runtime";
 import InlineEditable from "../components/InlineEditable";
 import { characters, locations, setTimelineItems } from "../stores";
 import "./CoreItems.scss";
@@ -39,7 +40,46 @@ export class TimelineItem {
     }
 
     renderFull() {
-        return <div>JSON.stringify(this, null, 2)</div>
+        return <div>{JSON.stringify(this, null, 2)}</div>;
+    }
+
+    renderCreateNew(props: {
+        startTime?: number;
+        duration?: number;
+        onChange: (field: string, value: any) => void;
+    }): JSX.Element {
+        return (
+            <>
+                <div class="field border label max">
+                    <input
+                        type="text"
+                        value={this.title ?? ""}
+                        onInput={(e) => props.onChange("title", e.currentTarget.value)}
+                    />
+                    <label> Title</label>
+                </div>
+
+                <div class="field border label max">
+                    <input
+                        type="number"
+                        min={0}
+                        value={props.startTime ?? ""}
+                        onInput={(e) => props.onChange("startTime", Number(e.currentTarget.value))}
+                    />
+                    <label> Start Time (seconds)</label>
+                </div>
+
+                <div class="field border label max">
+                    <input
+                        type="number"
+                        min={0}
+                        value={props.duration ?? ""}
+                        onInput={(e) => props.onChange("duration", Number(e.currentTarget.value))}
+                    />
+                    <label> Duration (seconds)</label>
+                </div>
+            </>
+        );
     }
 }
 
@@ -48,9 +88,7 @@ export class ActItem extends TimelineItem {
     renderCompact() {
         return (
             <h2 class="timeline-item act">
-                <InlineEditable value={this.title ?? "Untitled Act"} onUpdate={
-                    (v) => setTimelineItems(this.id, "title", v)
-                } />
+                <InlineEditable value={this.title ?? "Untitled Act"} onUpdate={(v) => setTimelineItems(this.id, "title", v)} />
             </h2>
         );
     }
@@ -60,37 +98,89 @@ export class SceneItem extends TimelineItem {
     renderCompact() {
         return (
             <h3 class="timeline-item scene">
-                <InlineEditable value={this.title ?? "Untitled Scene"} onUpdate={
-                    (v) => setTimelineItems(this.id, "title", v)
-                } />
+                <InlineEditable value={this.title ?? "Untitled Scene"} onUpdate={(v) => setTimelineItems(this.id, "title", v)} />
             </h3>
         );
     }
 }
-
 
 export class DialogueItem extends TimelineItem {
     renderCompact() {
         const char = characters[this.details.characterId];
         const speakerName = char?.name ?? "Unknown Speaker";
 
-        return <div class="timeline-item">
-            {speakerName}
-            <InlineEditable class="dialogueText" value={this.details.text} onUpdate={(v) => setTimelineItems(this.id, "details", "text", v)} />
-        </div>;
+        return (
+            <div class="timeline-item">
+                {speakerName}
+                <InlineEditable
+                    class="dialogueText"
+                    value={this.details.text}
+                    onUpdate={(v) => setTimelineItems(this.id, "details", "text", v)}
+                />
+            </div>
+        );
+    }
+
+    renderCreateNew(props: { startTime?: number; duration?: number; onChange: (field: string, value: any) => void }) {
+        return (
+            <>
+                <div class="field border label max">
+                    <input
+                        type="text"
+                        value={this.details.text ?? ""}
+                        onInput={(e) => props.onChange("text", e.currentTarget.value)}
+                    />
+                    <label> Dialogue Text</label>
+                </div>
+
+                <div class="field border label max">
+                    <select
+                        value={this.details.characterId ?? ""}
+                        onChange={(e) => props.onChange("characterId", e.currentTarget.value)}
+                    >
+                        <option value="" disabled>Select a character</option>
+                        {Object.values(characters).map((char) => (
+                            <option value={char.id}>{char.name}</option>
+                        ))}
+                    </select>
+                    <label> Character</label>
+                </div>
+
+                <div class="field border label max">
+                    <input
+                        type="number"
+                        min={0}
+                        value={props.startTime ?? ""}
+                        onInput={(e) => props.onChange("startTime", Number(e.currentTarget.value))}
+                    />
+                    <label> Start Time (seconds)</label>
+                </div>
+
+                <div class="field border label max">
+                    <input
+                        type="number"
+                        min={0}
+                        value={props.duration ?? ""}
+                        onInput={(e) => props.onChange("duration", Number(e.currentTarget.value))}
+                    />
+                    <label> Duration (seconds)</label>
+                </div>
+            </>
+        );
     }
 }
 
-
 export class TransitionItem extends TimelineItem {
     transitionType?: "fade" | "cut" | "dissolve";
-    renderCompact() { return <div class="timeline-item">${this.transitionType?.toUpperCase()} →</div> }
+    renderCompact() {
+        return <div class="timeline-item">{this.transitionType?.toUpperCase()} →</div>;
+    }
 }
 
 export class LocationItem extends TimelineItem {
     renderCompact() {
         const loc = locations[this.details.locationId];
-        return <h5 class="timeline-item location">{loc?.title ?? "Unknown Location"}</h5>
+        return <h5 class="timeline-item location">{loc?.title ?? "Unknown Location"}</h5>;
     }
 
     renderFull() {
@@ -101,6 +191,45 @@ export class LocationItem extends TimelineItem {
                 <strong>{loc.title}</strong>
                 <div>Lat: {loc.details.lat ?? "?"}, Lng: {loc.details.lng ?? "?"}</div>
             </div>
+        );
+    }
+
+    renderCreateNew(props: { startTime?: number; duration?: number; onChange: (field: string, value: any) => void }) {
+        return (
+            <>
+                <div class="field border label max">
+                    <select
+                        value={this.details.locationId ?? ""}
+                        onChange={(e) => props.onChange("locationId", e.currentTarget.value)}
+                    >
+                        <option value="" disabled>Select a location</option>
+                        {Object.values(locations).map((loc) => (
+                            <option value={loc.id}>{loc.title}</option>
+                        ))}
+                    </select>
+                    <label> Select Location</label>
+                </div>
+
+                <div class="field border label max">
+                    <input
+                        type="number"
+                        min={0}
+                        value={props.startTime ?? ""}
+                        onInput={(e) => props.onChange("startTime", Number(e.currentTarget.value))}
+                    />
+                    <label> Start Time (seconds)</label>
+                </div>
+
+                <div class="field border label max">
+                    <input
+                        type="number"
+                        min={0}
+                        value={props.duration ?? ""}
+                        onInput={(e) => props.onChange("duration", Number(e.currentTarget.value))}
+                    />
+                    <label> Duration (seconds)</label>
+                </div>
+            </>
         );
     }
 }
@@ -119,7 +248,6 @@ export class Character {
     renderFull() { return `${this.name} [${this.traits?.join(", ")}]`; }
 }
 
-
 export class Tag {
     id!: string;
     name!: string;
@@ -133,11 +261,10 @@ export class Tag {
     renderCompact() { return this.name; }
 }
 
-
 export class Note {
     id!: string;
     parentId!: string;
-    parentType!: string; // 'timelineItem' | 'character' | 'location' | 'tag'
+    parentType!: string;
     text!: string;
     media?: string[];
 
@@ -147,8 +274,6 @@ export class Note {
 
     renderCompact() { return this.text; }
 }
-
-
 
 export function reviveItem(obj: any): TimelineItem {
     switch (obj.type) {

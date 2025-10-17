@@ -8,7 +8,7 @@ export interface TimelineItemProps {
     id: string;
     type: string; // "dialogue" | "location" | "transition" | "beat-marker" | "scene" | "act"
     title?: string;
-    startTime?: number;    // in seconds
+    startTime: number;    // in seconds
     duration?: number;     // in seconds
     details?: Record<string, any>; // e.g., characterId, lat/lng, cues
     tags?: string[];
@@ -19,7 +19,7 @@ export class TimelineItem {
     id: string;
     type: string;
     title?: string;
-    startTime?: number;
+    startTime: number;
     duration?: number;
     details: Record<string, any>;
     tags: string[];
@@ -45,7 +45,7 @@ export class TimelineItem {
     }
 
     renderCreateNew(props: {
-        startTime?: number;
+        startTime: number;
         duration?: number;
         onChange: (field: string, value: any) => void;
     }): JSX.Element {
@@ -122,7 +122,7 @@ export class DialogueItem extends TimelineItem {
         );
     }
 
-    renderCreateNew(props: { startTime?: number; duration?: number; onChange: (field: string, value: any) => void }) {
+    renderCreateNew(props: { startTime: number; duration?: number; onChange: (field: string, value: any) => void }) {
         return (
             <>
                 <div class="field border label max">
@@ -179,7 +179,7 @@ export class TransitionItem extends TimelineItem {
     renderFull() {
         return <div class="timeline-item">{this.transitionType?.toUpperCase()} →</div>;
     }
-    renderCreateNew(props: { startTime?: number; duration?: number; onChange: (field: string, value: any) => void }) {
+    renderCreateNew(props: { startTime: number; duration?: number; onChange: (field: string, value: any) => void }) {
         const transitionTypes = ['chop', 'dissolve', 'fade', 'push', 'slide',];
         return (
             <>
@@ -239,7 +239,7 @@ export class LocationItem extends TimelineItem {
         );
     }
 
-    renderCreateNew(props: { startTime?: number; duration?: number; onChange: (field: string, value: any) => void }) {
+    renderCreateNew(props: { startTime: number; duration?: number; onChange: (field: string, value: any) => void }) {
         return (
             <>
                 <div class="field border label max">
@@ -293,6 +293,40 @@ export class Character {
     renderFull() { return `${this.name} [${this.traits?.join(", ")}]`; }
 }
 
+export class Location {
+    id!: string;
+    title!: string;
+    details?: {
+        lat?: number;
+        lng?: number;
+        address?: string;
+        description?: string;
+    };
+    notes?: string[];
+
+    constructor(data: Partial<Location>) {
+        Object.assign(this, data);
+    }
+
+    renderCompact() {
+        return this.title;
+    }
+
+    renderFull() {
+        const { lat, lng, address, description } = this.details ?? {};
+        return (
+            <div class="location-detail">
+                <strong>{this.title}</strong>
+                {address && <div>{address}</div>}
+                {(lat !== undefined && lng !== undefined) && (
+                    <div>Lat: {lat}, Lng: {lng}</div>
+                )}
+                {description && <div>{description}</div>}
+            </div>
+        );
+    }
+}
+
 export class Tag {
     id!: string;
     name!: string;
@@ -334,3 +368,4 @@ export function reviveItem(obj: any): TimelineItem {
 export function reviveCharacter(obj: any) { return new Character(obj); }
 export function reviveTag(obj: any) { return new Tag(obj); }
 export function reviveNote(obj: any) { return new Note(obj); }
+export function reviveLocation(obj: any) { return new Location(obj); }

@@ -8,8 +8,10 @@ import { ViewModeSwitch } from "./components/ViewModeSwitch";
 import { layoutTimeline } from "./lib/timelineLayout";
 import { sampleScript, sampleCharacters, sampleLocations } from "./scripts/TheThreeBears";
 import { storage } from "./db";
+import NewTimelineItemSelector from "./components/NewTimelineItemSelector";
 
 export default function App() {
+    const [insertNewItemPos, setInsertNewItemPos] = createSignal(-1);
     const [loaded, setLoaded] = createSignal(false);
     const [viewMode, setViewMode] = createSignal<"list" | "timeline">("list");
 
@@ -36,6 +38,7 @@ export default function App() {
                                 <DragDropList
                                     items={items()}
                                     renderItem={(item) => item?.renderCompact() ?? null}
+                                    onInsert={(pos: number) => setInsertNewItemPos(pos)}
                                     onReorder={(newOrder) => {
                                         const seq = timelineSequence();
                                         const newSeq = newOrder.map(i => seq[i]);
@@ -54,6 +57,12 @@ export default function App() {
 
                         <div class="s12 m6 l6">
                             {/* <!-- right panel --> */}
+                            <Show when={insertNewItemPos() > -1}>
+                                <NewTimelineItemSelector
+                                    insertAtIndex={insertNewItemPos()}
+                                    onCancel={() => setInsertNewItemPos(-1)}
+                                />
+                            </Show>
                         </div>
                     </div>
 

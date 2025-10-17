@@ -2,6 +2,7 @@ import { JSX, createSignal, createEffect, For, Accessor } from "solid-js";
 import "./DragDropList.scss";
 import DragHandleWithMenu from "./DragHandleWithMenu";
 import { duplicateTimelineItem } from "../lib/duplicateTimelineItem";
+import { deleteTimelineItem } from "../lib/createTimelineItem";
 
 interface HasId {
   id: string;
@@ -11,6 +12,7 @@ interface DragDropListProps<T extends HasId> {
   items: T[];
   renderItem: (item: T, index: number) => JSX.Element | null;
   onReorder?: (newOrder: number[]) => void;
+  onInsert: (pos: number) => void;
   className?: string;
   viewMode?: "list" | "timeline";
   getItemX?: (item: T) => number;
@@ -113,10 +115,6 @@ export default function DragDropList<T extends HasId>(props: DragDropListProps<T
     document.addEventListener("keydown", cancelDrag);
   }
 
-  function handleInsertBefore(pos: number) { /* implement */ }
-  function handleInsertAfter(pos: number) { /* implement */ }
-  function handleDelete(pos: number) { /* implement */ }
-
   return (
     <ul class="drag-list list border no-space">
       <For each={props.items}>
@@ -139,9 +137,9 @@ export default function DragDropList<T extends HasId>(props: DragDropListProps<T
               <DragHandleWithMenu
                 onPointerDown={(e) => startDrag(pos, e)}
                 onDuplicate={() => duplicateTimelineItem(item.id, { insertAtIndex: pos + 1 })}
-                onInsertBefore={() => handleInsertBefore(pos)}
-                onInsertAfter={() => handleInsertAfter(pos)}
-                onDelete={() => handleDelete(pos)}
+                onInsertBefore={() => props.onInsert(pos - 1)}
+                onInsertAfter={() => props.onInsert(pos + 1)}
+                onDelete={() => deleteTimelineItem(item.id)}
               />
               {props.renderItem(item, idx())}
             </li>

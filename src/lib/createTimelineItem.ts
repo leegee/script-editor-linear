@@ -68,3 +68,29 @@ export async function createTimelineItem(
 
     return item;
 }
+
+export async function deleteTimelineItem(itemId: string): Promise<void> {
+    if (!timelineItems[itemId]) {
+        console.warn(`Timeline item "${itemId}" does not exist`);
+        return;
+    }
+
+    // Remove from timelineItems store
+    setTimelineItems((items) => {
+        const copy = { ...items };
+        delete copy[itemId];
+        return copy;
+    });
+
+    // Remove from timelineSequence
+    const seq = [...timelineSequence()];
+    const index = seq.indexOf(itemId);
+    if (index !== -1) {
+        seq.splice(index, 1);
+        setTimelineSequence(seq);
+        await storage.putMeta("timelineSequence", seq);
+    }
+
+    // Delete from storage
+    await storage.delete("timelineItems", itemId);
+}

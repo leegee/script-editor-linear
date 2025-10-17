@@ -1,4 +1,4 @@
-# 🎬 Project Feature List:  Script Visualizer / Story Matrix
+# Project Feature List:  Script Visualizer / Story Matrix
 
 ## Core Concepts
 

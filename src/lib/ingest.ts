@@ -1,11 +1,11 @@
-import { TimelineItemProps, ActItem, SceneItem, DialogueItem, LocationItem, Character, TimelineItem } from "../components/CoreItems";
+import { TimelineItemProps, TimelineItem, ActItem, SceneItem, DialogueItem, LocationItem, Location, Character, } from "../components/CoreItems";
 import { storage } from "../db";
 import { setTimelineItems, setTimelineSequence, setLocations, setCharacters } from "../stores";
 
 export async function ingest(
     sampleScript: TimelineItemProps[],
     sampleCharacters: Character[],
-    sampleLocations: LocationItem[],
+    sampleLocations: Location[],
 ) {
     console.log("Starting ingestion...");
 

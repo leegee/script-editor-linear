@@ -1,10 +1,8 @@
-import { JSX, createSignal, createEffect, For, Accessor } from "solid-js";
 import "./DragDropList.scss";
+import { JSX, createSignal, createEffect, For, Accessor } from "solid-js";
 import DragHandleWithMenu from "./DragHandleWithMenu";
 import { duplicateTimelineItem } from "../lib/duplicateTimelineItem";
 import { deleteTimelineItem } from "../lib/createTimelineItem";
-import { formatHHMMSS } from "../lib/formatHHMMSS";
-import InlineEditable from "./InlineEditable";
 import InlineTimeEditable from "./InlineTimeEditable";
 
 interface HasIdAndStartTime {
@@ -147,7 +145,7 @@ export default function DragDropList<T extends HasIdAndStartTime>(props: DragDro
               />
               {props.renderItem(item, idx())}
               <small>
-                <InlineTimeEditable itemId={item.id} startTime={item.startTime ?? 0} class="startTime" />
+                <InlineTimeEditable itemId={item.id} />
               </small>
             </li>
           );

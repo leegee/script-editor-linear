@@ -1,4 +1,4 @@
-import { TimelineItemProps, TimelineItem, ActItem, SceneItem, DialogueItem, LocationItem, TransitionItem } from "../components/CoreItems";
+import { TimelineItemProps, TimelineItem, ActItem, SceneItem, DialogueItem, LocationItem, Location, TransitionItem } from "../components/CoreItems";
 import { setTimelineItems, timelineItems, setTimelineSequence, timelineSequence, locations, setLocations } from "../stores";
 import { storage } from "../db";
 
@@ -16,7 +16,7 @@ export async function createTimelineItem(
         id,
         type: props.type,
         title: props.title,
-        startTime: props.startTime,
+        startTime: props.startTime ?? 0,
         duration: props.duration,
         details: props.details ?? {},
         tags: props.tags ?? [],
@@ -28,9 +28,8 @@ export async function createTimelineItem(
         const locId = props.details.locationId;
         if (!locations[locId]) {
             if (options.createMissingLocation) {
-                const placeholder = new LocationItem({
+                const placeholder = new Location({
                     id: locId,
-                    type: "location",
                     title: "Unnamed Location",
                     details: {}
                 });

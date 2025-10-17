@@ -91,7 +91,11 @@ export default function NewTimelineItemSelector(props: NewTimelineItemSelectorPr
             {/* Render type-specific form */}
             {(() => {
                 const ItemClass = typeMap[type()];
-                const itemInstance = new ItemClass({ id: "new", type: type() });
+                const itemInstance = new ItemClass({
+                    id: "new",
+                    type: type(),
+                    startTime: startTime()
+                });
                 return itemInstance.renderCreateNew({
                     onChange: handleChange,
                     startTime: startTime(),

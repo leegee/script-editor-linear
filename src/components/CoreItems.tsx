@@ -234,7 +234,7 @@ export class LocationItem extends TimelineItem {
         return (
             <div class="timeline-item location">
                 <strong>{loc.title}</strong>
-                <div>Lat: {loc.details.lat ?? "?"}, Lng: {loc.details.lng ?? "?"}</div>
+                <div>Lat: {loc.details?.lat ?? "?"}, Lng: {loc.details?.lng ?? "?"}</div>
             </div>
         );
     }
@@ -299,6 +299,7 @@ export class Location {
     details?: {
         lat?: number;
         lng?: number;
+        radius?: number;
         address?: string;
         description?: string;
     };

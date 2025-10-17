@@ -1,4 +1,4 @@
-import { TimelineItemProps, LocationItem, Character } from "../components/CoreItems";
+import { TimelineItemProps, Character, Location } from "../components/CoreItems";
 
 export const sampleCharacters: Character[] = [
     new Character({ id: "Narrator", name: "Narrator" }),
@@ -8,22 +8,19 @@ export const sampleCharacters: Character[] = [
     new Character({ id: "Goldilocks", name: "Goldilocks" }),
 ];
 
-export const sampleLocations: LocationItem[] = [
-    new LocationItem({
+export const sampleLocations: Location[] = [
+    new Location({
         id: "cottage-1",
-        type: "location",
         title: "The Bears’ Cottage",
         details: { lat: 51.5074, lng: -0.1278, radius: 150 }
     }),
-    new LocationItem({
+    new Location({
         id: "forest-path-1",
-        type: "location",
         title: "Forest Path",
         details: { lat: 51.5076, lng: -0.1281, radius: 200 }
     }),
-    new LocationItem({
+    new Location({
         id: "cottage-inside-1",
-        type: "location",
         title: "Inside the Bears’ Cottage",
         details: { lat: 51.5075, lng: -0.1279, radius: 120 }
     })

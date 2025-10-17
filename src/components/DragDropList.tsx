@@ -143,7 +143,9 @@ export default function DragDropList<T extends HasIdAndStartTime>(props: DragDro
                 onInsertAfter={() => props.onInsert(pos + 1)}
                 onDelete={() => deleteTimelineItem(item.id)}
               />
+
               {props.renderItem(item, idx())}
+
               <small>
                 <InlineTimeEditable itemId={item.id} />
               </small>

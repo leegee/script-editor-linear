@@ -12,6 +12,7 @@ import NewTimelineItemSelector from "./components/NewTimelineItemSelector";
 
 export default function App() {
     const [insertNewItemPos, setInsertNewItemPos] = createSignal(-1);
+    const [itemIdToShow, setItemIdToShow] = createSignal('');
     const [loaded, setLoaded] = createSignal(false);
     const [viewMode, setViewMode] = createSignal<"list" | "timeline">("list");
 
@@ -37,7 +38,11 @@ export default function App() {
                             <Show when={viewMode() === "list"}>
                                 <DragDropList
                                     items={items()}
-                                    renderItem={(item) => item?.renderCompact() ?? null}
+                                    renderItem={(item) => {
+                                        return (<span style="width:100%" onClick={() => setItemIdToShow(item.id)}>
+                                            {item?.renderCompact() ?? null}
+                                        </span>)
+                                    }}
                                     onInsert={(pos: number) => setInsertNewItemPos(pos)}
                                     onReorder={(newOrder) => {
                                         const seq = timelineSequence();
@@ -63,6 +68,10 @@ export default function App() {
                                     onCancel={() => setInsertNewItemPos(-1)}
                                     onCreated={() => setInsertNewItemPos(-1)}
                                 />
+                            </Show>
+
+                            <Show when={itemIdToShow()}>
+                                {itemIdToShow()}
                             </Show>
                         </div>
                     </div>

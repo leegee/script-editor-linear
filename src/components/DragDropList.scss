@@ -1,11 +1,11 @@
 .drag-list {
+  position: static;
   display: flex;
-  position: relative;
-  overflow-x: auto;
   width: 100%;
 
   .dnd-item {
     position: relative;
+    white-space: wrap;
     margin: 0 0.5em;
     flex: 0 0 auto; // don’t shrink
     transition: background-color 0.1s, opacity 0.1s, transform 0.1s;

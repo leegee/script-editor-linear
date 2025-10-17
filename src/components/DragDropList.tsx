@@ -118,7 +118,7 @@ export default function DragDropList<T extends HasId>(props: DragDropListProps<T
   function handleDelete(pos: number) { /* implement */ }
 
   return (
-    <ul class="drag-list list border no-space" style="position:relative">
+    <ul class="drag-list list border no-space">
       <For each={props.items}>
         {(item, idx: Accessor<number>) => {
           const pos = order().indexOf(idx());

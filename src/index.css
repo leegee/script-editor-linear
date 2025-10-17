@@ -1,6 +1,15 @@
-.dnd-item:has(> .act) {
+.dnd-item:has(> .timeline-item.act) {
     position: sticky !important;
     top: 0 !important;
     z-index: 10 !important;
     align-self: auto !important;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    margin-block-start: 0 !important;
 }

@@ -47,9 +47,9 @@ export class TimelineItem {
 export class ActItem extends TimelineItem {
     renderCompact() {
         return (
-            <div class="timeline-item act">
-                <h2>{this.title ?? "Untitled Act"} </h2>
-            </div>
+            <h2 class="timeline-item act">
+                {this.title ?? "Untitled Act"}
+            </h2>
         );
     }
 }
@@ -57,9 +57,7 @@ export class ActItem extends TimelineItem {
 export class SceneItem extends TimelineItem {
     renderCompact() {
         return (
-            <div class="timeline-item scene">
-                <h3>{this.title ?? "Untitled Act"} </h3>
-            </div>
+            <h3 class="timeline-item scene">{this.title ?? "Untitled Act"} </h3>
         );
     }
 }
@@ -86,7 +84,7 @@ export class TransitionItem extends TimelineItem {
 export class LocationItem extends TimelineItem {
     renderCompact() {
         const loc = locations[this.details.locationId];
-        return <h5 class="timeline-item">{loc?.title ?? "Unknown Location"}</h5>
+        return <h5 class="timeline-item location">{loc?.title ?? "Unknown Location"}</h5>
     }
 
     renderFull() {

@@ -1,7 +1,7 @@
 import { createSignal, createEffect, JSX, For } from "solid-js";
 import { createTimelineItem } from "../lib/createTimelineItem";
 import { timelineSequence, timelineItems } from "../stores";
-import { ActItem, SceneItem, DialogueItem, LocationItem } from "../components/CoreItems";
+import { ActItem, SceneItem, DialogueItem, LocationItem, TransitionItem } from "../components/CoreItems";
 
 interface NewTimelineItemSelectorProps {
     insertAtIndex: number;
@@ -15,11 +15,12 @@ export default function NewTimelineItemSelector(props: NewTimelineItemSelectorPr
     const [startTime, setStartTime] = createSignal<number>(0);
     const [duration, setDuration] = createSignal<number | undefined>(undefined);
 
-    const types: { value: "act" | "scene" | "dialogue" | "location"; label: string }[] = [
+    const types: { value: "act" | "dialogue" | "location" | "scene" | "transition"; label: string }[] = [
         { value: "act", label: "Act" },
-        { value: "scene", label: "Scene" },
         { value: "dialogue", label: "Dialogue" },
         { value: "location", label: "Location" },
+        { value: "scene", label: "Scene" },
+        { value: "transition", label: "Transition" },
     ];
 
     // Compute default startTime based on previous item
@@ -64,7 +65,13 @@ export default function NewTimelineItemSelector(props: NewTimelineItemSelectorPr
     };
 
     // Map type string to class
-    const typeMap = { act: ActItem, scene: SceneItem, dialogue: DialogueItem, location: LocationItem };
+    const typeMap = {
+        act: ActItem,
+        dialogue: DialogueItem,
+        location: LocationItem,
+        scene: SceneItem,
+        transition: TransitionItem,
+    };
 
     return (
         <fieldset class="padding surface-dim" style={{ position: 'fixed', "max-width": "400px" }}>

@@ -2,6 +2,7 @@ import { JSX } from "solid-js/jsx-runtime";
 import InlineEditable from "../components/InlineEditable";
 import { characters, locations, setTimelineItems } from "../stores";
 import "./CoreItems.scss";
+import { Accessor, For } from "solid-js";
 
 export interface TimelineItemProps {
     id: string;
@@ -69,7 +70,7 @@ export class TimelineItem {
                     <label> Start Time (seconds)</label>
                 </div>
 
-                <div class="field border label max">
+                {/* <div class="field border label max">
                     <input
                         type="number"
                         min={0}
@@ -77,7 +78,7 @@ export class TimelineItem {
                         onInput={(e) => props.onChange("duration", Number(e.currentTarget.value))}
                     />
                     <label> Duration (seconds)</label>
-                </div>
+                </div> */}
             </>
         );
     }
@@ -174,6 +175,50 @@ export class TransitionItem extends TimelineItem {
     transitionType?: "fade" | "cut" | "dissolve";
     renderCompact() {
         return <div class="timeline-item">{this.transitionType?.toUpperCase()} →</div>;
+    }
+    renderFull() {
+        return <div class="timeline-item">{this.transitionType?.toUpperCase()} →</div>;
+    }
+    renderCreateNew(props: { startTime?: number; duration?: number; onChange: (field: string, value: any) => void }) {
+        const transitionTypes = ['chop', 'dissolve', 'fade', 'push', 'slide',];
+        return (
+            <>
+                <div class="field border label max">
+                    <select
+                        value={this.transitionType ?? ""}
+                        onChange={(e) => props.onChange("transitionType", e.currentTarget.value)}
+                    >
+                        <option value="" disabled>Select transition type</option>
+                        <For each={transitionTypes}>
+                            {(item) => (
+                                <option value={item}>{item}</option>
+                            )}
+                        </For>
+                    </select>
+                    <label> Transition Type</label>
+                </div>
+
+                <div class="field border label max">
+                    <input
+                        type="number"
+                        min={0}
+                        value={props.startTime ?? ""}
+                        onInput={(e) => props.onChange("startTime", Number(e.currentTarget.value))}
+                    />
+                    <label> Start Time (seconds)</label>
+                </div>
+
+                <div class="field border label max">
+                    <input
+                        type="number"
+                        min={0}
+                        value={props.duration ?? ""}
+                        onInput={(e) => props.onChange("duration", Number(e.currentTarget.value))}
+                    />
+                    <label> Duration (seconds)</label>
+                </div>
+            </>
+        );
     }
 }
 

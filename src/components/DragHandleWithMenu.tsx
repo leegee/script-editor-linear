@@ -13,15 +13,15 @@ export default function DragHandleWithMenu(props: DragHandleWithMenuProps) {
 
     return (
         <div class="drag-handle-menu-wrapper" style={{ position: 'relative', display: 'inline-flex', "align-items": 'center' }}>
-            <button class="transparent  no-margin"
+            <button class="transparent no-margin no-padding"
                 onPointerDown={props.onPointerDown}
-                style={{ cursor: 'grab', padding: '0 4px' }}
+                style={{ cursor: 'grab' }}
             >
                 <span>⠿</span>
             </button>
 
             {/* Overflow menu button */}
-            <button class="transparent no-margin" onClick={(e) => { e.stopPropagation(); setMenuOpen(!menuOpen()); }}>
+            <button class="transparent no-padding left-margin small-margin " onClick={(e) => { e.stopPropagation(); setMenuOpen(!menuOpen()); }}>
                 <span>⋮</span>
 
                 {menuOpen() && (

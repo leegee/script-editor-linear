@@ -3,12 +3,16 @@ import "./DragDropList.scss";
 import DragHandleWithMenu from "./DragHandleWithMenu";
 import { duplicateTimelineItem } from "../lib/duplicateTimelineItem";
 import { deleteTimelineItem } from "../lib/createTimelineItem";
+import { formatHHMMSS } from "../lib/formatHHMMSS";
+import InlineEditable from "./InlineEditable";
+import InlineTimeEditable from "./InlineTimeEditable";
 
-interface HasId {
+interface HasIdAndStartTime {
   id: string;
+  startTime: number;
 }
 
-interface DragDropListProps<T extends HasId> {
+interface DragDropListProps<T extends HasIdAndStartTime> {
   items: T[];
   renderItem: (item: T, index: number) => JSX.Element | null;
   onReorder?: (newOrder: number[]) => void;
@@ -18,7 +22,7 @@ interface DragDropListProps<T extends HasId> {
   getItemX?: (item: T) => number;
 }
 
-export default function DragDropList<T extends HasId>(props: DragDropListProps<T>) {
+export default function DragDropList<T extends HasIdAndStartTime>(props: DragDropListProps<T>) {
   const [order, setOrder] = createSignal(props.items.map((_, i) => i));
   const [draggingIndex, setDraggingIndex] = createSignal<number | null>(null);
   const [overIndex, setOverIndex] = createSignal<number | null>(null);
@@ -142,6 +146,9 @@ export default function DragDropList<T extends HasId>(props: DragDropListProps<T
                 onDelete={() => deleteTimelineItem(item.id)}
               />
               {props.renderItem(item, idx())}
+              <small>
+                <InlineTimeEditable itemId={item.id} startTime={item.startTime ?? 0} class="startTime" />
+              </small>
             </li>
           );
         }}

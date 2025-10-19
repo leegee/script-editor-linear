@@ -10,7 +10,6 @@ export interface TimelineItemProps {
     id: string;
     type: string; // "dialogue" | "location" | "transition" | "beat-marker" | "scene" | "act"
     title?: string;
-    startTime: number;    // in seconds
     duration?: number;     // in seconds
     details?: Record<string, any>; // e.g., characterId, lat/lng, cues
     tags?: string[];
@@ -21,7 +20,6 @@ export class TimelineItem {
     id: string;
     type: string;
     title?: string;
-    startTime: number;
     duration?: number;
     details: Record<string, any>;
     tags: string[];
@@ -31,7 +29,6 @@ export class TimelineItem {
         this.id = props.id;
         this.type = props.type;
         this.title = props.title;
-        this.startTime = props.startTime;
         this.duration = props.duration;
         this.details = props.details || {};
         this.tags = props.tags || [];
@@ -47,7 +44,6 @@ export class TimelineItem {
     }
 
     renderCreateNew(props: {
-        startTime: number;
         duration?: number;
         onChange: (field: string, value: any) => void;
     }): JSX.Element {
@@ -60,16 +56,6 @@ export class TimelineItem {
                         onInput={(e) => props.onChange("title", e.currentTarget.value)}
                     />
                     <label> Title</label>
-                </div>
-
-                <div class="field border label max">
-                    <input
-                        type="number"
-                        min={0}
-                        value={props.startTime ?? ""}
-                        onInput={(e) => props.onChange("startTime", Number(e.currentTarget.value))}
-                    />
-                    <label> Start Time (seconds)</label>
                 </div>
             </>
         );

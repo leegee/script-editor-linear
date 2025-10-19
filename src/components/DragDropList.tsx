@@ -3,14 +3,13 @@ import { JSX, createSignal, createEffect, For, Accessor } from "solid-js";
 import DragHandleWithMenu from "./DragHandleWithMenu";
 import { duplicateTimelineItem } from "../lib/duplicateTimelineItem";
 import { deleteTimelineItem } from "../lib/createTimelineItem";
-import InlineTimeEditable from "./InlineTimeEditable";
 
-interface HasIdAndStartTime {
+interface HasIdAndDuration {
   id: string;
-  startTime: number;
+  duration?: number; // seconds
 }
 
-interface DragDropListProps<T extends HasIdAndStartTime> {
+interface DragDropListProps<T extends HasIdAndDuration> {
   items: T[];
   renderItem: (item: T, index: number) => JSX.Element | null;
   onReorder?: (newOrder: number[]) => void;
@@ -20,7 +19,13 @@ interface DragDropListProps<T extends HasIdAndStartTime> {
   getItemX?: (item: T) => number;
 }
 
-export default function DragDropList<T extends HasIdAndStartTime>(props: DragDropListProps<T>) {
+function formatTime(totalSeconds: number): string {
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = Math.floor(totalSeconds % 60);
+  return `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+}
+
+export default function DragDropList<T extends HasIdAndDuration>(props: DragDropListProps<T>) {
   const [order, setOrder] = createSignal(props.items.map((_, i) => i));
   const [draggingIndex, setDraggingIndex] = createSignal<number | null>(null);
   const [overIndex, setOverIndex] = createSignal<number | null>(null);
@@ -158,7 +163,12 @@ export default function DragDropList<T extends HasIdAndStartTime>(props: DragDro
           const pos = order().indexOf(idx());
           const isDragging = draggingIndex() === pos;
           const isPlaceholder = overIndex() === pos && draggingIndex() !== null;
-          const itemX = props.getItemX?.(item) ?? 0;
+
+          // Compute cumulative time up to this item
+          const cumulativeSeconds = props.items
+            .slice(0, pos)
+            .reduce((sum, i) => sum + (i.duration ?? 0), 0);
+          const displayTime = formatTime(cumulativeSeconds);
 
           return (
             <li
@@ -181,15 +191,15 @@ export default function DragDropList<T extends HasIdAndStartTime>(props: DragDro
                 onDelete={() => deleteTimelineItem(item.id)}
               />
 
-              {props.renderItem(item, idx())}
-
-              <small>
-                <InlineTimeEditable itemId={item.id} />
-              </small>
+              <div class="item-content">
+                {props.renderItem(item, idx())}
+                <small class="time-label">{displayTime}</small>
+              </div>
             </li>
           );
         }}
       </For>
+
 
       {draggingIndex() !== null && dragX() !== null && dragY() !== null && (
         <li ref={floatingRef as HTMLLIElement}

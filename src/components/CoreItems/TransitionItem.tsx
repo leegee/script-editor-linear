@@ -9,7 +9,7 @@ export class TransitionItem extends TimelineItem {
     renderFull() {
         return <div class="timeline-item">{this.transitionType?.toUpperCase()} →</div>;
     }
-    renderCreateNew(props: { startTime: number; duration?: number; onChange: (field: string, value: any) => void }) {
+    renderCreateNew(props: { duration?: number; onChange: (field: string, value: any) => void }) {
         const transitionTypes = ['chop', 'dissolve', 'fade', 'push', 'slide',];
         return (
             <>
@@ -26,16 +26,6 @@ export class TransitionItem extends TimelineItem {
                         </For>
                     </select>
                     <label> Transition Type</label>
-                </div>
-
-                <div class="field border label max">
-                    <input
-                        type="number"
-                        min={0}
-                        value={props.startTime ?? ""}
-                        onInput={(e) => props.onChange("startTime", Number(e.currentTarget.value))}
-                    />
-                    <label> Start Time (seconds)</label>
                 </div>
 
                 <div class="field border label max">

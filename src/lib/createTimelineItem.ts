@@ -16,7 +16,6 @@ export async function createTimelineItem(
         id,
         type: props.type,
         title: props.title,
-        startTime: props.startTime ?? 0,
         duration: props.duration,
         details: props.details ?? {},
         tags: props.tags ?? [],

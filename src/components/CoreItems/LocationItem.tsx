@@ -24,7 +24,6 @@ export class LocationItem extends TimelineItem {
     }
 
     renderCreateNew(props: {
-        startTime: number;
         duration?: number;
         onChange: (field: string, value: any) => void;
     }) {
@@ -43,16 +42,6 @@ export class LocationItem extends TimelineItem {
                         ))}
                     </select>
                     <label>Select Location</label>
-                </div>
-
-                <div class="field border label max">
-                    <input
-                        type="number"
-                        min={0}
-                        value={props.startTime ?? ""}
-                        onInput={(e) => props.onChange("startTime", Number(e.currentTarget.value))}
-                    />
-                    <label>Start Time (seconds)</label>
                 </div>
 
                 <div class="field border label max">

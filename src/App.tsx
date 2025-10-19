@@ -1,11 +1,11 @@
 import { onMount, createSignal, Show, createEffect } from "solid-js";
 import DragDropList from "./components/DragDropList";
-import TimelineView from "./components/TimelineView";
+// import TimelineView from "./components/TimelineView";
 import { loadAll } from "./stores";
 import { timelineItems, timelineSequence, reorderTimeline } from "./stores/timelineItems";
 import { ingest } from "./lib/ingest";
 import { ViewModeSwitch } from "./components/ViewModeSwitch";
-import { layoutTimeline } from "./lib/timelineLayout";
+// import { layoutTimeline } from "./lib/timelineLayout";
 import { sampleScript, sampleCharacters, sampleLocations } from "./scripts/TheThreeBears";
 import { storage } from "./db";
 import NewTimelineItemSelector from "./components/NewTimelineItemSelector";
@@ -54,10 +54,11 @@ export default function App() {
                             </Show>
 
                             <Show when={viewMode() === "timeline"}>
-                                <TimelineView
+                                {/* <TimelineView
                                     items={items()}
                                     layout={layoutTimeline(items(), { totalWidth: 1200, laneHeight: 80 })}
-                                />
+                                /> */}
+                                <p>WIP</p>
                             </Show>
                         </div>
 

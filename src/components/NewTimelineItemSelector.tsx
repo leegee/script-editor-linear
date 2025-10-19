@@ -13,7 +13,6 @@ interface NewTimelineItemSelectorProps {
 export default function NewTimelineItemSelector(props: NewTimelineItemSelectorProps) {
     const [type, setType] = createSignal<"act" | "scene" | "dialogue" | "location">("dialogue");
     const [fields, setFields] = createSignal<Record<string, any>>({});
-    const [startTime, setStartTime] = createSignal<number>(0);
     const [duration, setDuration] = createSignal<number | undefined>(undefined);
 
     const types: { value: "act" | "dialogue" | "location" | "scene" | "transition"; label: string }[] = [
@@ -23,20 +22,6 @@ export default function NewTimelineItemSelector(props: NewTimelineItemSelectorPr
         { value: "scene", label: "Scene" },
         { value: "transition", label: "Transition" },
     ];
-
-    // Compute default startTime based on previous item
-    createEffect(() => {
-        const seq = timelineSequence();
-        if (props.insertAtIndex > 0 && seq[props.insertAtIndex - 1]) {
-            const prevId = seq[props.insertAtIndex - 1];
-            const prevItem = timelineItems[prevId];
-            if (prevItem?.startTime != null && prevItem?.duration != null) {
-                setStartTime(prevItem.startTime + prevItem.duration);
-            }
-        } else {
-            setStartTime(0);
-        }
-    });
 
     const handleChange = (field: string, value: any) => {
         setFields((prev) => ({ ...prev, [field]: value }));
@@ -48,7 +33,6 @@ export default function NewTimelineItemSelector(props: NewTimelineItemSelectorPr
                 {
                     type: type(),
                     title: fields().title,
-                    startTime: startTime(),
                     duration: duration(),
                     details: { ...fields() }
                 },
@@ -95,11 +79,9 @@ export default function NewTimelineItemSelector(props: NewTimelineItemSelectorPr
                 const itemInstance = new ItemClass({
                     id: "new",
                     type: type(),
-                    startTime: startTime()
                 });
                 return itemInstance.renderCreateNew({
                     onChange: handleChange,
-                    startTime: startTime(),
                     duration: duration()
                 });
             })()}

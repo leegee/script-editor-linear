@@ -3,7 +3,7 @@ import Dexie from "dexie";
 export const db = new Dexie("ScriptDB");
 
 db.version(1).stores({
-    timelineItems: "id,type,startTime",
+    timelineItems: "id,type",
     characters: "id,name",
     locations: "id,name",
     tags: "id,name",

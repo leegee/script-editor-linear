@@ -45,6 +45,38 @@ export default function DragDropList<T extends HasIdAndStartTime>(props: DragDro
     if (changed) setOrder(nextOrder);
   });
 
+  createEffect(() => {
+    function handleKey(e: KeyboardEvent) {
+      // Only act if something is selected
+      const currentId = selectedId();
+      if (!props.items.length) return;
+
+      if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+        e.preventDefault();
+
+        let currentIndex = props.items.findIndex(i => i.id === currentId);
+        if (currentIndex === -1) currentIndex = 0;
+
+        const delta = e.key === "ArrowDown" ? 1 : -1;
+        const nextIndex = Math.min(
+          props.items.length - 1,
+          Math.max(0, currentIndex + delta)
+        );
+
+        const nextItem = props.items[nextIndex];
+        if (nextItem) setSelectedId(nextItem.id);
+
+        const el = document.querySelector(
+          `[data-index="${nextIndex}"]`
+        ) as HTMLElement | null;
+        el?.scrollIntoView({ block: "nearest" });
+      }
+    }
+
+    document.addEventListener("keydown", handleKey);
+    return () => document.removeEventListener("keydown", handleKey);
+  });
+
   function startDrag(index: number, e: PointerEvent) {
     e.stopPropagation();
     setDraggingIndex(index);

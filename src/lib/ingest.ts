@@ -1,8 +1,7 @@
-import { ActItem } from "../components/CoreItems/Act";
-import { Character } from "../components/CoreItems/Character";
+import { ActItem } from "../components/CoreItems/ActItem";
+import { CharacterItem } from "../components/CoreItems/CharacterItem";
 import { DialogueItem } from "../components/CoreItems/DialogueItem";
-import { LocationItem } from "../components/CoreItems/LocationItem";
-import { Location } from "../components/CoreItems/Location";
+import { LocationItem, reviveLocation } from "../components/CoreItems/LocationItem";
 import { SceneItem } from "../components/CoreItems/SceneItem";
 import { TimelineItemProps, TimelineItem } from "../components/CoreItems/TimelineItem";
 import { storage } from "../db";
@@ -10,8 +9,8 @@ import { setTimelineItems, setTimelineSequence, setLocations, setCharacters } fr
 
 export async function ingest(
     sampleScript: TimelineItemProps[],
-    sampleCharacters: Character[],
-    sampleLocations: Location[],
+    sampleCharacters: CharacterItem[],
+    sampleLocations: LocationItem[],
 ) {
     console.log("Starting ingestion...");
 
@@ -52,7 +51,7 @@ export async function ingest(
                 item = new DialogueItem(props);
                 break;
             case "location":
-                item = new LocationItem(props);
+                item = reviveLocation(props);
                 break;
             default:
                 item = new TimelineItem(props);

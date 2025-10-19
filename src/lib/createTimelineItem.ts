@@ -1,4 +1,4 @@
-import { TimelineItemProps, TimelineItem, ActItem, SceneItem, DialogueItem, LocationItem, Location, TransitionItem } from "../components/CoreItems";
+import { TimelineItemProps, TimelineItem, ActItem, SceneItem, DialogueItem, LocationItem, TransitionItem, reviveLocation } from "../components/CoreItems";
 import { setTimelineItems, timelineItems, setTimelineSequence, timelineSequence, locations, setLocations } from "../stores";
 import { storage } from "../db";
 
@@ -23,14 +23,16 @@ export async function createTimelineItem(
     };
 
     // Handle missing location if needed
-    if (props.type === "location" && props.details?.locationId) {
-        const locId = props.details.locationId;
+    if (props.type === "location" && props.title) {
+        const locId = props.title;
         if (!locations[locId]) {
             if (options.createMissingLocation) {
-                const placeholder = new Location({
+                const placeholder = new LocationItem({
                     id: locId,
                     title: "Unnamed Location",
-                    details: {}
+                    details: {
+                        lat: 0, lng: 0, radius: 0
+                    }
                 });
                 setLocations(locId, placeholder);
                 await storage.put("locations", placeholder);
@@ -46,8 +48,8 @@ export async function createTimelineItem(
         case "act": item = new ActItem(baseProps); break;
         case "scene": item = new SceneItem(baseProps); break;
         case "dialogue": item = new DialogueItem(baseProps); break;
-        case "location": item = new LocationItem(baseProps); break;
         case "transition": item = new TransitionItem(baseProps); break;
+        case "location": item = reviveLocation(baseProps); break;
         default: item = new TimelineItem(baseProps);
     }
 

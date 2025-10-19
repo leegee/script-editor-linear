@@ -1,6 +1,6 @@
 import "ol/ol.css";
 import { locations, setTimelineItems } from "../../stores";
-import { TimelineItem } from "./TimelineItem";
+import { TimelineItem, TimelineItemProps } from "./TimelineItem";
 import Map from "ol/Map";
 import View from "ol/View";
 import { Tile as TileLayer, Vector as VectorLayer } from "ol/layer";
@@ -15,9 +15,14 @@ import InlineEditable from "../InlineEditable";
 
 export class LocationItem extends TimelineItem {
     mapContainer: HTMLDivElement | null = null;
+    declare title: string;
+
+    constructor(props: Omit<TimelineItemProps, "type"> & { title: string; details: { lat: number; lng: number; radius: number } }) {
+        super({ ...props, type: "location" });
+    }
 
     renderCompact() {
-        const loc = locations[this.details.locationId];
+        const loc = locations[this.title];
         return <h5 class="timeline-item location">{loc?.title ?? "Unknown Location"}</h5>;
     }
 
@@ -29,8 +34,8 @@ export class LocationItem extends TimelineItem {
             <>
                 <div class="field border label max">
                     <select
-                        value={this.details.locationId ?? ""}
-                        onChange={(e) => props.onChange("locationId", e.currentTarget.value)}
+                        value={this.title ?? ""}
+                        onChange={(e) => props.onChange("title", e.currentTarget.value)}
                     >
                         <option value="" disabled>
                             Select a location
@@ -56,7 +61,7 @@ export class LocationItem extends TimelineItem {
     }
 
     renderFull() {
-        const loc = locations[this.details.locationId];
+        const loc = locations[this.title];
         if (!loc) return "Unknown Location";
 
         const lat = Number(loc.details?.lat ?? 0);
@@ -65,7 +70,7 @@ export class LocationItem extends TimelineItem {
 
         return (
             <fieldset class="location padding">
-                <h2 class="field">
+                <h2 class="field" style="block-size: unset">
                     <InlineEditable value={loc.title ?? "Untitled Location"}
                         onUpdate={(v) => setTimelineItems(this.id, "title", v)}
                     />
@@ -150,4 +155,23 @@ export class LocationItem extends TimelineItem {
             </fieldset>
         );
     }
+}
+
+export function reviveLocation(obj: any): LocationItem {
+    let lat, lng, radius;
+    if (!obj.title) throw new Error("Missing title");
+    if (!obj.details) {
+        ({ lat, lng, radius } = locations[obj.title].details);
+    } else {
+        ({ lat, lng, radius } = obj.details);
+        if (typeof lat !== "number" || typeof lng !== "number" || typeof radius !== "number") {
+            throw new Error("Invalid location details");
+        }
+    }
+
+    return new LocationItem({
+        ...obj,
+        title: obj.title,
+        details: { lat, lng, radius }
+    });
 }

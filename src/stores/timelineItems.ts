@@ -1,5 +1,5 @@
 import { createStore } from "solid-js/store";
-import { createSignal, createMemo } from "solid-js";
+import { createSignal, createMemo, createRoot } from "solid-js";
 import { TimelineItem, TimelineItemProps, reviveItem } from "../components/CoreItems/";
 import { storage } from "../db";
 
@@ -18,7 +18,9 @@ export async function loadAllTimelineItems() {
     if (savedSeq && savedSeq.length) setTimelineSequence(savedSeq);
 }
 
-const orderedItems = createMemo(() => timelineSequence().map(id => timelineItems[id]).filter(Boolean));
+const orderedItems = createRoot(() =>
+    createMemo(() => timelineSequence().map(id => timelineItems[id]).filter(Boolean))
+);
 
 // CRUD:
 export async function addScriptItem(item: TimelineItem) {
@@ -47,7 +49,7 @@ export async function removeTimelineItem(id: string) {
 // Derived:
 
 // Cumulative durations per act
-export const actDurations = createMemo(() => {
+export const actDurations = createRoot(() => createMemo(() => {
     const acts: Record<string, number> = {};
     let currentActId: string | null = null;
     let sum = 0;
@@ -69,10 +71,10 @@ export const actDurations = createMemo(() => {
     if (currentActId) acts[currentActId] = sum;
 
     return acts;
-});
+}));
 
 // Reactive cumulative durations per scene
-export const sceneDurations = createMemo(() => {
+export const sceneDurations = createRoot(() => createMemo(() => {
     const scenes: Record<string, number> = {};
     let currentSceneId: string | null = null;
     let sum = 0;
@@ -90,4 +92,4 @@ export const sceneDurations = createMemo(() => {
     if (currentSceneId) scenes[currentSceneId] = sum;
 
     return scenes;
-});
+}));

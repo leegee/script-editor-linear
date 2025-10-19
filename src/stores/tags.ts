@@ -1,5 +1,5 @@
 import { createStore } from "solid-js/store";
-import { Tag } from "../components/CoreItems/";
+import { reviveTag, Tag } from "../components/CoreItems/";
 import { storage } from "../db";
 
 export const [tags, setTags] = createStore<Record<string, Tag>>({});
@@ -7,7 +7,7 @@ export const [tags, setTags] = createStore<Record<string, Tag>>({});
 export async function loadAllTags() {
     const items = await storage.getAll<Tag>("tags");
     const revived = Object.fromEntries(
-        Object.entries(items).map(([id, obj]) => [id, new Tag(obj)])
+        Object.entries(items).map(([id, obj]) => [id, reviveTag(obj)])
     );
     setTags(revived);
 }

@@ -1,5 +1,5 @@
 import "./CoreItems.scss";
-import { ActItem } from "./Act";
+import { ActItem } from "./ActItem";
 import { JSX } from "solid-js/jsx-runtime";
 import { DialogueItem } from "./DialogueItem";
 import { LocationItem } from "./LocationItem";

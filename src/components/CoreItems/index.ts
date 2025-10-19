@@ -1,14 +1,13 @@
-import { ActItem } from './Act';
+import { ActItem } from './ActItem';
 import { DialogueItem } from './DialogueItem';
 import { LocationItem } from './LocationItem';
 import { SceneItem } from './SceneItem';
 import { TimelineItem } from './TimelineItem';
 import { TransitionItem } from './TransitionItem';
 
-export * from './Act';
-export * from './Character';
+export * from './ActItem';
+export * from './CharacterItem';
 export * from './DialogueItem';
-export * from './Location';
 export * from './LocationItem';
 export * from './Note';
 export * from './SceneItem';

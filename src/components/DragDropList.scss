@@ -14,6 +14,10 @@
     width: 100%;
     flex: 1;
 
+    &:hover .show-on-hover {
+      opacity: 1;
+    }
+
     &.dragging {
       opacity: 0.8 !important;
     }
@@ -46,5 +50,11 @@
     .clicked {
       opacity: 0.75;
     }
+
+    .show-on-hover {
+      opacity: 0;
+      ;
+    }
+
   }
 }

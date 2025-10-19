@@ -1,6 +1,8 @@
-import { JSX, createSignal } from "solid-js";
+import { createSignal } from "solid-js";
+import styles from "./DragHandleWithMenu.module.scss";
 
 interface DragHandleWithMenuProps {
+    class: string;
     onPointerDown: (e: PointerEvent) => void;
     onDuplicate?: () => void;
     onInsertBefore?: () => void;
@@ -12,7 +14,7 @@ export default function DragHandleWithMenu(props: DragHandleWithMenuProps) {
     const [menuOpen, setMenuOpen] = createSignal(false);
 
     return (
-        <div class="drag-handle-menu-wrapper" style={{ position: 'relative', display: 'inline-flex', "align-items": 'center' }}>
+        <div class={styles.component + " " + props.class}>
             <button class="transparent no-margin no-padding"
                 onPointerDown={props.onPointerDown}
                 style={{ cursor: 'grab' }}
@@ -33,7 +35,7 @@ export default function DragHandleWithMenu(props: DragHandleWithMenuProps) {
                     </menu>
                 )}
             </button>
-        </div>
+        </div >
 
     );
 }

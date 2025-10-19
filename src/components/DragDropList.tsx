@@ -137,6 +137,7 @@ export default function DragDropList<T extends HasIdAndStartTime>(props: DragDro
               }}
             >
               <DragHandleWithMenu
+                class="show-on-hover"
                 onPointerDown={(e) => startDrag(pos, e)}
                 onDuplicate={() => duplicateTimelineItem(item.id, { insertAtIndex: pos + 1 })}
                 onInsertBefore={() => props.onInsert(pos - 1)}

@@ -24,6 +24,7 @@ export default function DragDropList<T extends HasIdAndStartTime>(props: DragDro
   const [order, setOrder] = createSignal(props.items.map((_, i) => i));
   const [draggingIndex, setDraggingIndex] = createSignal<number | null>(null);
   const [overIndex, setOverIndex] = createSignal<number | null>(null);
+  const [selectedId, setSelectedId] = createSignal<string | null>(null);
   const [dragX, setDragX] = createSignal<number | null>(null);
   const [dragY, setDragY] = createSignal<number | null>(null);
   let floatingRef: HTMLElement | undefined;
@@ -45,6 +46,7 @@ export default function DragDropList<T extends HasIdAndStartTime>(props: DragDro
   });
 
   function startDrag(index: number, e: PointerEvent) {
+    e.stopPropagation();
     setDraggingIndex(index);
     setOverIndex(index);
     setDragX(e.clientX);
@@ -130,7 +132,9 @@ export default function DragDropList<T extends HasIdAndStartTime>(props: DragDro
             <li
               data-index={pos}
               class="dnd-item"
+              onClick={() => setSelectedId(item.id)}
               classList={{
+                selected: selectedId() === item.id,
                 dragging: isDragging,
                 placeholder: isPlaceholder,
                 "drag-over": overIndex() === pos

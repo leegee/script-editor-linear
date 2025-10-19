@@ -29,8 +29,8 @@ export default function DragHandleWithMenu(props: DragHandleWithMenuProps) {
                 {menuOpen() && (
                     <menu class="overflow-menu border surface-bright secondary elevate" style={{ 'min-width': '120px', }} >
                         {props.onDuplicate && <li onClick={props.onDuplicate}>Duplicate</li>}
-                        {props.onInsertBefore && <li onClick={props.onInsertBefore}>Insert Before</li>}
-                        {props.onInsertAfter && <li onClick={props.onInsertAfter}>Insert After</li>}
+                        {props.onInsertBefore && <li onClick={props.onInsertBefore}>New Before</li>}
+                        {props.onInsertAfter && <li onClick={props.onInsertAfter}>New After</li>}
                         {props.onDelete && <li onClick={props.onDelete}>Delete</li>}
                     </menu>
                 )}

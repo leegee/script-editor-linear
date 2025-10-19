@@ -11,6 +11,7 @@ interface HasIdAndDuration {
 
 interface DragDropListProps<T extends HasIdAndDuration> {
   items: T[];
+  showItem: (item: T) => void;
   renderItem: (item: T, index: number) => JSX.Element | null;
   onReorder?: (newOrder: number[]) => void;
   onInsert: (pos: number) => void;
@@ -50,31 +51,36 @@ export default function DragDropList<T extends HasIdAndDuration>(props: DragDrop
     if (changed) setOrder(nextOrder);
   });
 
+  // Function to handle click/selection logic
+  function selectItem(item: T, index: number) {
+    setSelectedId(item.id);
+    // Scroll into view
+    const el = document.querySelector(`[data-index="${index}"]`) as HTMLElement | null;
+    el?.scrollIntoView({ block: "nearest" });
+    // Any other click logic can go here
+  }
+
+  // Keyboard navigation
   createEffect(() => {
     function handleKey(e: KeyboardEvent) {
-      // Only act if something is selected
-      const currentId = selectedId();
       if (!props.items.length) return;
+
+      const currentId = selectedId();
+      let currentIndex = props.items.findIndex(i => i.id === currentId);
+      if (currentIndex === -1) currentIndex = 0;
 
       if (e.key === "ArrowDown" || e.key === "ArrowUp") {
         e.preventDefault();
-
-        let currentIndex = props.items.findIndex(i => i.id === currentId);
-        if (currentIndex === -1) currentIndex = 0;
-
         const delta = e.key === "ArrowDown" ? 1 : -1;
         const nextIndex = Math.min(
           props.items.length - 1,
           Math.max(0, currentIndex + delta)
         );
-
-        const nextItem = props.items[nextIndex];
-        if (nextItem) setSelectedId(nextItem.id);
-
-        const el = document.querySelector(
-          `[data-index="${nextIndex}"]`
-        ) as HTMLElement | null;
-        el?.scrollIntoView({ block: "nearest" });
+        selectItem(props.items[nextIndex], nextIndex);
+      } else if (e.key === "Enter") {
+        e.preventDefault();
+        selectItem(props.items[currentIndex], currentIndex);
+        props.showItem(props.items[currentIndex])
       }
     }
 
@@ -174,7 +180,7 @@ export default function DragDropList<T extends HasIdAndDuration>(props: DragDrop
             <li
               data-index={pos}
               class="dnd-item"
-              onClick={() => setSelectedId(item.id)}
+              onClick={() => selectItem(item, pos)}
               classList={{
                 selected: selectedId() === item.id,
                 dragging: isDragging,
@@ -192,14 +198,16 @@ export default function DragDropList<T extends HasIdAndDuration>(props: DragDrop
               />
 
               <div class="item-content">
-                {props.renderItem(item, idx())}
+                <span style="width:100%" onClick={() => props.showItem(item)}>
+                  {props.renderItem(item, idx())}
+                </span>
+
                 <small class="time-label">{displayTime}</small>
               </div>
             </li>
           );
         }}
       </For>
-
 
       {draggingIndex() !== null && dragX() !== null && dragY() !== null && (
         <li ref={floatingRef as HTMLLIElement}

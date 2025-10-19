@@ -1,4 +1,10 @@
 .inlineEditor {
     display: inline-block;
     width: 100%;
+
+    input {
+        color: var(--on-inverse-surface);
+        background-color: var(--inverse-surface);
+        border: none;
+    }
 }

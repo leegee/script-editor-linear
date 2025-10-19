@@ -39,11 +39,8 @@ export default function App() {
                             <Show when={viewMode() === "list"}>
                                 <DragDropList
                                     items={items()}
-                                    renderItem={(item) => {
-                                        return (<span style="width:100%" onClick={() => setItemToShow(item)}>
-                                            {item?.renderCompact() ?? null}
-                                        </span>)
-                                    }}
+                                    showItem={item => setItemToShow(item)}
+                                    renderItem={(item) => item?.renderCompact() ?? null}
                                     onInsert={(pos: number) => setInsertNewItemPos(pos)}
                                     onReorder={(newOrder) => {
                                         const seq = timelineSequence();

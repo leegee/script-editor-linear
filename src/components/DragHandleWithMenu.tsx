@@ -15,7 +15,7 @@ export default function DragHandleWithMenu(props: DragHandleWithMenuProps) {
 
     return (
         <div class={styles.component + " " + props.class}>
-            <button class="transparent no-margin no-padding"
+            <button class="transparent tiny-padding tiny-margin"
                 onPointerDown={props.onPointerDown}
                 style={{ cursor: 'grab' }}
             >
@@ -23,7 +23,7 @@ export default function DragHandleWithMenu(props: DragHandleWithMenuProps) {
             </button>
 
             {/* Overflow menu button */}
-            <button class="transparent no-padding left-margin small-margin " onClick={(e) => { e.stopPropagation(); setMenuOpen(!menuOpen()); }}>
+            <button class="transparent tiny-padding tiny-margin " onClick={(e) => { e.stopPropagation(); setMenuOpen(!menuOpen()); }}>
                 <span>⋮</span>
 
                 {menuOpen() && (

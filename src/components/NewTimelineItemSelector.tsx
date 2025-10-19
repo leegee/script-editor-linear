@@ -1,3 +1,4 @@
+import styles from './NewTimelineItemSelector.module.scss';
 import { createSignal, createEffect, JSX, For } from "solid-js";
 import { createTimelineItem } from "../lib/createTimelineItem";
 import { timelineSequence, timelineItems } from "../stores";
@@ -74,7 +75,7 @@ export default function NewTimelineItemSelector(props: NewTimelineItemSelectorPr
     };
 
     return (
-        <fieldset class="padding surface-dim" style={{ position: 'fixed', "max-width": "400px" }}>
+        <fieldset class={styles.component + " padding fill  max surface-dim"} style={{ position: 'fixed', "max-width": "400px" }}>
             <legend class="surface-dim">
                 <h3>Create a new item</h3>
             </legend>

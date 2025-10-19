@@ -71,9 +71,7 @@ export default function App() {
                                 />
                             </Show>
 
-                            <Show when={itemToShow() !== null}>
-                                {/* {itemToShow()!.constructor.name} /
-                                {itemToShow()!.type} {itemToShow()!.id} */}
+                            <Show when={insertNewItemPos() === -1 && itemToShow() !== null}>
                                 {itemToShow()!.renderFull()}
                             </Show>
                         </div>

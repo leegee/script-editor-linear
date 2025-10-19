@@ -1,6 +1,6 @@
-import { locations } from "../../stores";
-import { TimelineItem } from "./TimelineItem";
 import "ol/ol.css";
+import { locations, setTimelineItems } from "../../stores";
+import { TimelineItem } from "./TimelineItem";
 import Map from "ol/Map";
 import View from "ol/View";
 import { Tile as TileLayer, Vector as VectorLayer } from "ol/layer";
@@ -11,9 +11,7 @@ import { Feature } from "ol";
 import Point from "ol/geom/Point";
 import Circle from "ol/geom/Circle";
 import { Style, Fill, Stroke, Icon } from "ol/style";
-import { get as getProjection } from "ol/proj";
-import { getTransform } from "ol/proj";
-import { transformExtent } from "ol/proj";
+import InlineEditable from "../InlineEditable";
 
 export class LocationItem extends TimelineItem {
     mapContainer: HTMLDivElement | null = null;
@@ -66,8 +64,13 @@ export class LocationItem extends TimelineItem {
         const radiusMeters = Number(loc.details?.radius ?? 100);
 
         return (
-            <div class="timeline-item location padding">
-                <h2>{loc.title}</h2>
+            <fieldset class="location padding">
+                <h2 class="field">
+                    <InlineEditable value={loc.title ?? "Untitled Location"}
+                        onUpdate={(v) => setTimelineItems(this.id, "title", v)}
+                    />
+                </h2>
+
                 <div>
                     Lat: {lat}, Lng: {lng}, Radius: {radiusMeters} m
                 </div>
@@ -90,7 +93,7 @@ export class LocationItem extends TimelineItem {
                             new Style({
                                 image: new Icon({
                                     src: "https://cdn-icons-png.flaticon.com/512/684/684908.png",
-                                    scale: 0.05,
+                                    scale: 0.04,
                                     anchor: [0.5, 1],
                                 }),
                             })
@@ -144,7 +147,7 @@ export class LocationItem extends TimelineItem {
                         this.mapContainer.dataset.mapInit = "true";
                     }}
                 ></div>
-            </div>
+            </fieldset>
         );
     }
 }

@@ -15,7 +15,7 @@ export class Location {
     }
 
     renderCompact() {
-        return this.title;
+        return this.title + ' xxx';
     }
 
     renderFull() {

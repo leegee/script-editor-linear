@@ -1,7 +1,7 @@
 import { formatHHMMSS } from "../../lib/formatSecondsToHMS";
 import { actDurations, setTimelineItems } from "../../stores";
-import InlineEditable from "../InlineEditable";
 import { TimelineItem } from "./TimelineItem";
+import InlineEditable from "../InlineEditable";
 
 export class ActItem extends TimelineItem {
     renderCompact() {

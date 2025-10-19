@@ -50,7 +50,7 @@ export default function InlineEditable(props: {
                     autofocus
                 />
         }>
-            <div class={props.class} onDblClick={() => setEditing(true)}>{props.value || "—"}</div>
+            <span class={props.class} onDblClick={() => setEditing(true)}>{props.value || "—"}</span>
         </Show>
     );
 }

@@ -19,10 +19,8 @@ export class ActItem extends TimelineItem {
     renderFull() {
         return (
             <fieldset>
-                <h2 class="act">
-                    <div class="field">
-                        <InlineEditable value={this.title ?? "Untitled Act"} onUpdate={(v) => setTimelineItems(this.id, "title", v)} />
-                    </div>
+                <h2 class="act field">
+                    <InlineEditable value={this.title ?? "Untitled Act"} onUpdate={(v) => setTimelineItems(this.id, "title", v)} />
                 </h2>
                 <div class="field">
                     <p>Duration {

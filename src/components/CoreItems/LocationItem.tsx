@@ -1,6 +1,7 @@
 import "ol/ol.css";
+import { createSignal, For } from "solid-js";
+import { A } from "@solidjs/router";
 import { addLocation, locations, setLocations, setTimelineItems } from "../../stores";
-import { TimelineItem, TimelineItemProps } from "./TimelineItem";
 import Map from "ol/Map";
 import View from "ol/View";
 import { Tile as TileLayer, Vector as VectorLayer } from "ol/layer";
@@ -11,9 +12,8 @@ import { Feature } from "ol";
 import Point from "ol/geom/Point";
 import Circle from "ol/geom/Circle";
 import { Style, Fill, Stroke, Icon } from "ol/style";
+import { TimelineItem, TimelineItemProps } from "./TimelineItem";
 import InlineEditable from "../InlineEditable";
-import { createSignal, For, Show } from "solid-js";
-import { A } from "@solidjs/router";
 
 export class LocationItem extends TimelineItem {
     mapContainer: HTMLDivElement | null = null;
@@ -48,7 +48,7 @@ export class LocationItem extends TimelineItem {
 
     renderCompact() {
         const canonical = locations[this.details.ref ?? this.id];
-        return <h5 class="timeline-item location">{canonical?.title ?? "Unknown Location"}</h5>;
+        return <h4 class="timeline-item location">{canonical?.title ?? "Unknown Location"}</h4>;
     }
 
     renderCreateNew(props: { duration?: number; onChange: (field: string, value: any) => void }) {
@@ -133,12 +133,12 @@ export class LocationItem extends TimelineItem {
 
         return (
             <fieldset class="location padding">
-                <h2 class="field" style="block-size: unset">
+                <h4 class="field" style="block-size: unset">
                     <InlineEditable
                         value={canonical.title ?? "Untitled Location"}
                         onUpdate={(v) => setTimelineItems(this.id, "title", v)}
                     />
-                </h2>
+                </h4>
 
                 <div>
                     Lat: {lat}, Lng: {lng}, Radius: {radiusMeters} m

@@ -20,11 +20,9 @@ export class SceneItem extends TimelineItem {
     renderFull() {
         return (
             <fieldset>
-                <h2 class="scene">
-                    <div class="field">
-                        <InlineEditable value={this.title ?? "Untitled Scene"} onUpdate={(v) => setTimelineItems(this.id, "title", v)} />
-                    </div>
-                </h2>
+                <h3 class="scene field">
+                    <InlineEditable value={this.title ?? "Untitled Scene"} onUpdate={(v) => setTimelineItems(this.id, "title", v)} />
+                </h3>
                 <div class="field">
                     <p>Duration {
                         formatHHMMSS(

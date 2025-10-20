@@ -10,7 +10,7 @@ export class SceneItem extends TimelineItem {
 
     renderCompact() {
         return (
-            <h3 class="timeline-item scene">
+            <h3 class="timeline-item">
                 <InlineEditable value={this.title ?? "Untitled Scene"} onUpdate={(v) => setTimelineItems(this.id, "title", v)} />
             </h3>
         );
@@ -20,7 +20,7 @@ export class SceneItem extends TimelineItem {
     renderFull() {
         return (
             <fieldset>
-                <h3 class="scene field">
+                <h3 class="field">
                     <InlineEditable value={this.title ?? "Untitled Scene"} onUpdate={(v) => setTimelineItems(this.id, "title", v)} />
                 </h3>
                 <div class="field">

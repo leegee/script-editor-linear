@@ -12,58 +12,84 @@ export async function createTimelineItem(
     options: CreateTimelineItemOptions = {}
 ): Promise<TimelineItem> {
     const id = crypto.randomUUID();
+
+    // Base props for all timeline items
     const baseProps: TimelineItemProps = {
         id,
         type: props.type,
-        title: props.title,
+        title: props.title ?? "",
         duration: props.duration,
         details: props.details ?? {},
         tags: props.tags ?? [],
         notes: props.notes ?? []
     };
 
-    // Handle missing location if needed
-    if (props.type === "location" && props.title) {
-        const locId = props.title;
-        if (!locations[locId]) {
+    // Special case: LOCATION ---
+    if (props.type === "location") {
+        const ref = props.details?.ref;
+
+        if (!ref) {
+            throw new Error(`Location timeline item missing details.ref`);
+        }
+
+        // Create placeholder or actual location if missing
+        if (!locations[ref]) {
             if (options.createMissingLocation) {
-                const placeholder = new LocationItem({
-                    id: locId,
-                    title: "Unnamed Location",
+                const newLoc = new LocationItem({
+                    id: ref,
+                    title: props.details?.title ?? "Untitled Location",
                     details: {
-                        lat: 0, lng: 0, radius: 0
+                        lat: props.details?.lat ?? 0,
+                        lng: props.details?.lng ?? 0,
+                        radius: props.details?.radius ?? 0
                     }
                 });
-                setLocations(locId, placeholder);
-                await storage.put("locations", placeholder);
+                setLocations(ref, newLoc);
+                await storage.put("locations", newLoc);
             } else {
-                throw new Error(`Location "${locId}" does not exist`);
+                throw new Error(`Location "${ref}" does not exist`);
             }
         }
     }
 
-    // Create the correct subclass
+    // Instantiate the correct subclass 
     let item: TimelineItem;
     switch (props.type) {
-        case "act": item = new ActItem(baseProps); break;
-        case "scene": item = new SceneItem(baseProps); break;
-        case "dialogue": item = new DialogueItem(baseProps); break;
-        case "transition": item = new TransitionItem(baseProps); break;
-        case "location": item = reviveLocation(baseProps); break;
-        default: item = new TimelineItem(baseProps);
+        case "act":
+            item = new ActItem(baseProps);
+            break;
+        case "scene":
+            item = new SceneItem(baseProps);
+            break;
+        case "dialogue":
+            item = new DialogueItem(baseProps);
+            break;
+        case "transition":
+            item = new TransitionItem(baseProps);
+            break;
+        case "location":
+            item = reviveLocation(baseProps);
+            break;
+        default:
+            item = new TimelineItem(baseProps);
     }
 
-    // Add to timelineItems store
+    // persist
     setTimelineItems(item.id, item);
     await storage.put("timelineItems", item);
 
-    // Update timeline sequence
+    // Insert into timeline sequence ---
     const seq = [...timelineSequence()];
-    if (options.insertAtIndex !== undefined && options.insertAtIndex >= 0 && options.insertAtIndex <= seq.length) {
+    if (
+        options.insertAtIndex !== undefined &&
+        options.insertAtIndex >= 0 &&
+        options.insertAtIndex <= seq.length
+    ) {
         seq.splice(options.insertAtIndex, 0, item.id);
     } else {
-        seq.push(item.id); // append
+        seq.push(item.id);
     }
+
     setTimelineSequence(seq);
     await storage.putMeta("timelineSequence", seq);
 

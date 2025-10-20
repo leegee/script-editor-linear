@@ -52,13 +52,12 @@ export default function NewTimelineItemSelector() {
             // Reset form
             setFields({});
             setDuration(undefined);
-            navigate("/"); // go back
+            navigate("/");
         } catch (err) {
             console.error("Failed to create timeline item:", err);
         }
     };
 
-    // Reactive memo for current item instance
     const itemInstance = createMemo(() => newTimelineItem(type()));
 
     return (
@@ -77,7 +76,6 @@ export default function NewTimelineItemSelector() {
                     <label>Type</label>
                 </div>
 
-                {/* Render type-specific form reactively */}
                 {itemInstance().renderCreateNew({
                     onChange: handleChange,
                     duration: duration()

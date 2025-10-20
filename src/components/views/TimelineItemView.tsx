@@ -1,6 +1,6 @@
 import { createMemo } from "solid-js";
 import { useParams } from "@solidjs/router";
-import { timelineItems } from "../stores/timelineItems";
+import { timelineItems } from "../../stores/timelineItems";
 
 export default function TimelineItemView() {
     const params = useParams();

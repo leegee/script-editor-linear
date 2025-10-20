@@ -1,6 +1,6 @@
 import { createMemo } from "solid-js";
 import { useParams } from "@solidjs/router";
-import { locations } from "../stores";
+import { locations } from "../../stores";
 
 export default function CharacterView() {
     const params = useParams();

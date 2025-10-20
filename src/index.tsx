@@ -6,9 +6,9 @@ import 'solid-devtools';
 import App from './App';
 import Default from './components/panels/Default';
 import NewTimelineItemSelector from './components/NewTimelineItemSelector';
-import TimelineItemView from './components/TimelineItemView';
-import CharacterView from './components/CharacterView';
-import LocationView from './components/LocationView';
+import TimelineItemView from './components/views/TimelineItemView';
+import CharacterView from './components/views/CharacterView';
+import LocationView from './components/views/LocationView';
 
 const root = document.getElementById('root');
 

@@ -6,6 +6,8 @@ import "beercss";
 import './index.css';
 
 import App from './App';
+import NewTimelineItemSelector from './components/NewTimelineItemSelector';
+import TimelineItemView from './components/TimelineItemView';
 
 const root = document.getElementById('root');
 
@@ -18,6 +20,8 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
 render(
   () => <HashRouter root={App}>
     <Route path="/" component={Default} />
+    <Route path="/new/:pos" component={NewTimelineItemSelector} />
+    <Route path="/item/:id" component={TimelineItemView} />
   </HashRouter>,
   root!
 );

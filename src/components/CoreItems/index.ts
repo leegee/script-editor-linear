@@ -25,3 +25,4 @@ export function reviveItem(obj: any): TimelineItem {
         default: return new TimelineItem(obj);
     }
 }
+

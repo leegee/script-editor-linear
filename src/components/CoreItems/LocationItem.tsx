@@ -18,8 +18,15 @@ export class LocationItem extends TimelineItem {
     mapContainer: HTMLDivElement | null = null;
     declare title: string;
 
-    constructor(props: Omit<TimelineItemProps, "type"> & { title: string; details: { lat: number; lng: number; radius: number } }) {
-        super({ ...props, type: "location" });
+    // constructor(props: Omit<TimelineItemProps, "type"> & { title: string; details: { lat: number; lng: number; radius: number } }) {
+    constructor(props: Partial<TimelineItemProps> & { type: "location" }) {
+        super({
+            ...props,
+            id: props.id || crypto.randomUUID(),
+            type: "location",
+            title: props.title ?? "",           // default if missing
+            details: props.details ?? { lat: 0, lng: 0, radius: 1 },
+        });
     }
 
     renderCompact() {

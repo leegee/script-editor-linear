@@ -1,5 +1,5 @@
 import { onMount, createSignal, Show, createEffect, Switch, Match, JSX, ParentProps } from "solid-js";
-
+import { useNavigate } from "@solidjs/router";
 import DragDropList from "./components/DragDropList";
 // import TimelineView from "./components/TimelineView";
 import { loadAll } from "./stores";
@@ -12,8 +12,7 @@ import { storage } from "./db";
 import { TimelineItem } from "./components/CoreItems";
 
 export default function App(props: ParentProps) {
-    const [insertNewItemPos, setInsertNewItemPos] = createSignal(-1);
-    const [itemToShow, setItemToShow] = createSignal<TimelineItem | null>(null);
+    const navigate = useNavigate();
     const [loaded, setLoaded] = createSignal(false);
     const [viewMode, setViewMode] = createSignal<"list" | "timeline">("list");
 
@@ -39,8 +38,8 @@ export default function App(props: ParentProps) {
                             <Show when={viewMode() === "list"}>
                                 <DragDropList
                                     items={items()}
-                                    showItem={item => setItemToShow(item)}
-                                    onInsert={(pos: number) => setInsertNewItemPos(pos)}
+                                    showItem={(item) => navigate(`/item/${item.id}`)}
+                                    onInsert={(pos: number) => navigate(`/new/${pos}`)}
                                     onReorder={(newOrder) => {
                                         const seq = timelineSequence();
                                         const newSeq = newOrder.map(i => seq[i]);
@@ -60,28 +59,7 @@ export default function App(props: ParentProps) {
 
                         <div class="s12 m6 l6">
                             {/* <!-- right panel --> */}
-
                             {props.children}
-
-                            {/* <Switch fallback={
-                                <>
-                                    {listLocations()}
-                                    {listCharacters()}
-                                </>
-                            }>
-                                <Match when={insertNewItemPos() > -1}>
-                                    <NewTimelineItemSelector
-                                        insertAtIndex={insertNewItemPos()}
-                                        onCancel={() => setInsertNewItemPos(-1)}
-                                        onCreated={() => setInsertNewItemPos(-1)}
-                                    />
-                                </Match>
-
-                                <Match when={itemToShow() !== null}>
-                                    {itemToShow()!.renderFull()}
-                                </Match>
-
-                            </Switch> */}
                         </div>
                     </div>
 

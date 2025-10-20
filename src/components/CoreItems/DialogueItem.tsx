@@ -27,10 +27,9 @@ export class DialogueItem extends TimelineItem {
         return (
             <>
                 <div class="field border label max">
-                    <input
-                        type="text"
+                    <textarea
                         value={this.details.text ?? ""}
-                        onInput={(e) => props.onChange("text", e.currentTarget.value)}
+                        onBlur={(e) => props.onChange("text", e.currentTarget.value)}
                     />
                     <label> Dialogue Text</label>
                 </div>

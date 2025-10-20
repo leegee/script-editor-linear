@@ -1,5 +1,5 @@
 import { createStore } from "solid-js/store";
-import { LocationItem, reviveLocation } from "../components/CoreItems/LocationItem";
+import { LocationItem } from "../components/CoreItems/LocationItem";
 import { storage } from "../db";
 
 export const [locations, setLocations] = createStore<Record<string, LocationItem>>({});
@@ -7,7 +7,7 @@ export const [locations, setLocations] = createStore<Record<string, LocationItem
 export async function loadAllLocations() {
     const items = await storage.getAll<LocationItem>("locations");
     const revived = Object.fromEntries(
-        Object.entries(items).map(([id, obj]) => [id, reviveLocation(obj)])
+        Object.entries(items).map(([id, obj]) => [id, LocationItem.revive(obj)])
     );
     setLocations(revived);
 }

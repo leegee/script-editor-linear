@@ -18,6 +18,13 @@ import { A } from "@solidjs/router";
 export class LocationItem extends TimelineItem {
     mapContainer: HTMLDivElement | null = null;
 
+    static revive(obj: any): LocationItem {
+        return new LocationItem({
+            ...obj,
+            details: obj.details ?? { ref: obj.title ?? obj.id },
+        });
+    }
+
     constructor(props: Omit<TimelineItemProps, "type">) {
         const canonicalId = props.details?.ref ?? props.id;
         const canonical = locations[canonicalId];
@@ -208,14 +215,6 @@ export class LocationItem extends TimelineItem {
             details: { ...fields, ref }
         };
     }
-}
-
-// Revive both canonical and reference items
-export function reviveLocation(obj: any): LocationItem {
-    return new LocationItem({
-        ...obj,
-        details: obj.details ?? { ref: obj.title ?? obj.id },
-    });
 }
 
 export function ListLocations() {

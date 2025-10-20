@@ -6,6 +6,10 @@ export class CharacterItem extends TimelineItem {
     name!: string;
     traits?: string[];
 
+    static revive(obj: any) {
+        return new CharacterItem(obj);
+    }
+
     constructor(props: { id: string; name: string; traits?: string[] }) {
         super({
             ...props,
@@ -18,9 +22,6 @@ export class CharacterItem extends TimelineItem {
     renderCompact() { return this.name; }
     renderFull() { return `${this.name} [${this.traits?.join(", ")}]`; }
 }
-
-
-export function reviveCharacter(obj: any) { return new CharacterItem(obj); }
 
 export function ListCharacters() {
     return <fieldset>

@@ -1,4 +1,4 @@
-import { TimelineItemProps, TimelineItem, ActItem, SceneItem, DialogueItem, LocationItem, TransitionItem, reviveLocation } from "../components/CoreItems";
+import { TimelineItemProps, TimelineItem, ActItem, SceneItem, DialogueItem, LocationItem, TransitionItem } from "../components/CoreItems";
 import { setTimelineItems, timelineItems, setTimelineSequence, timelineSequence, locations, setLocations } from "../stores";
 import { storage } from "../db";
 
@@ -68,7 +68,7 @@ export async function createTimelineItem(
             item = new TransitionItem(baseProps);
             break;
         case "location":
-            item = reviveLocation(baseProps);
+            item = LocationItem.revive(baseProps);
             break;
         default:
             item = new TimelineItem(baseProps);

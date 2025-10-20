@@ -1,9 +1,6 @@
 import { reviveItem } from "../components/CoreItems";
-import { ActItem } from "../components/CoreItems/ActItem";
 import { CharacterItem } from "../components/CoreItems/CharacterItem";
-import { DialogueItem } from "../components/CoreItems/DialogueItem";
-import { LocationItem, reviveLocation } from "../components/CoreItems/LocationItem";
-import { SceneItem } from "../components/CoreItems/SceneItem";
+import { LocationItem } from "../components/CoreItems/LocationItem";
 import { TimelineItemProps, TimelineItem } from "../components/CoreItems/TimelineItem";
 import { storage } from "../db";
 import { setTimelineItems, setTimelineSequence, setLocations, setCharacters } from "../stores";

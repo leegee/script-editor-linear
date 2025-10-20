@@ -25,12 +25,14 @@ export function reviveCharacter(obj: any) { return new CharacterItem(obj); }
 export function ListCharacters() {
     return <fieldset>
         <h2>Characters</h2>
-        <For each={Object.values(characters)}>
-            {(loc) => (
-                <div>
-                    {loc.name}
-                </div>
-            )}
-        </For>
+        <ul class="list border no-space">
+            <For each={Object.values(characters)}>
+                {(loc) => (
+                    <li>
+                        {loc.name}
+                    </li>
+                )}
+            </For>
+        </ul>
     </fieldset>
 }

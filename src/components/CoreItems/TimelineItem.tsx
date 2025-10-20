@@ -60,5 +60,26 @@ export class TimelineItem {
             </>
         );
     }
+
+    /**
+     * Generic instance method to prepare a timeline item from user-editable fields.
+     * Fields that exist on the instance go top-level; everything else goes into details.
+     */
+    prepareFromFields(fields: Record<string, any>) {
+        const instanceKeys = Object.keys(this); // own enumerable properties
+        const topLevel: Record<string, any> = {};
+        const details: Record<string, any> = {};
+
+        for (const key in fields) {
+            if (instanceKeys.includes(key)) {
+                topLevel[key] = fields[key];
+            } else {
+                details[key] = fields[key];
+            }
+        }
+
+        // Merge with existing details so we don't lose preexisting keys like details.ref
+        return { ...topLevel, details: { ...this.details, ...details } };
+    }
 }
 

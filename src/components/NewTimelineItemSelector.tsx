@@ -39,12 +39,16 @@ export default function NewTimelineItemSelector() {
 
     const handleCreate = async () => {
         try {
+            // Create a temporary instance of the right subclass
+            const itemInstance = newTimelineItem(type());
+
+            // Use reflection-based instance method to split fields
+            const prepared = itemInstance.prepareFromFields({ ...fields(), duration: duration() });
+
             await createTimelineItem(
                 {
-                    type: type(),
-                    title: fields().title,
-                    duration: duration(),
-                    details: { ...fields() }
+                    ...prepared,
+                    type: type()
                 },
                 { insertAtIndex }
             );

@@ -1,5 +1,5 @@
 import "ol/ol.css";
-import { locations, setTimelineItems } from "../../stores";
+import { addLocation, locations, setLocations, setTimelineItems } from "../../stores";
 import { TimelineItem, TimelineItemProps } from "./TimelineItem";
 import Map from "ol/Map";
 import View from "ol/View";
@@ -12,7 +12,7 @@ import Point from "ol/geom/Point";
 import Circle from "ol/geom/Circle";
 import { Style, Fill, Stroke, Icon } from "ol/style";
 import InlineEditable from "../InlineEditable";
-import { For } from "solid-js";
+import { createSignal, For, Show } from "solid-js";
 import { A } from "@solidjs/router";
 
 export class LocationItem extends TimelineItem {
@@ -45,35 +45,76 @@ export class LocationItem extends TimelineItem {
     }
 
     renderCreateNew(props: { duration?: number; onChange: (field: string, value: any) => void }) {
+        const [mode, setMode] = createSignal<"select" | "new">("select");
+
         return (
             <>
+                {/* Mode toggle */}
                 <div class="field border label max">
-                    <select
-                        value={this.details.ref ?? ""}
-                        onChange={(e) => props.onChange("ref", e.currentTarget.value)}
-                    >
-                        <option value="" disabled>
-                            Select a location
-                        </option>
-                        {Object.values(locations).map((loc) => (
-                            <option value={loc.id}>{loc.title}</option>
-                        ))}
+                    <select value={mode()} onChange={(e) => setMode(e.currentTarget.value as "select" | "new")}>
+                        <option value="select">Select Existing</option>
+                        <option value="new">Create New</option>
                     </select>
-                    <label>Select Location</label>
+                    <label>Mode</label>
                 </div>
 
-                <div class="field border label max">
-                    <input
-                        type="number"
-                        min={0}
-                        value={props.duration ?? ""}
-                        onInput={(e) => props.onChange("duration", Number(e.currentTarget.value))}
-                    />
-                    <label>Duration (seconds)</label>
-                </div>
+                {/* New location inputs */}
+                {mode() === "new" && (
+                    <>
+                        <div class="field border label max">
+                            <input
+                                type="text"
+                                value={this.details.title ?? ""}
+                                onInput={(e) => props.onChange("title", e.currentTarget.value)}
+                            />
+                            <label>Title</label>
+                        </div>
+                        <div class="field border label max">
+                            <input
+                                type="number"
+                                value={this.details.lat ?? 0}
+                                onInput={(e) => props.onChange("lat", parseFloat(e.currentTarget.value))}
+                            />
+                            <label>Latitude</label>
+                        </div>
+                        <div class="field border label max">
+                            <input
+                                type="number"
+                                value={this.details.lng ?? 0}
+                                onInput={(e) => props.onChange("lng", parseFloat(e.currentTarget.value))}
+                            />
+                            <label>Longitude</label>
+                        </div>
+                        <div class="field border label max">
+                            <input
+                                type="number"
+                                value={this.details.radius ?? 100}
+                                onInput={(e) => props.onChange("radius", parseFloat(e.currentTarget.value))}
+                            />
+                            <label>Radius (metres)</label>
+                        </div>
+                    </>
+                )}
+
+                {/* Existing location selector */}
+                {mode() === "select" && (
+                    <div class="field border label max">
+                        <select
+                            value={this.details.ref ?? ""}
+                            onChange={(e) => props.onChange("ref", e.currentTarget.value)}
+                        >
+                            <option value="" disabled>Select a Location</option>
+                            {Object.values(locations).map((loc) => (
+                                <option value={loc.id}>{loc.title}</option>
+                            ))}
+                        </select>
+                        <label>Existing Location</label>
+                    </div>
+                )}
             </>
         );
     }
+
 
     renderFull() {
         const canonical = locations[this.details.ref ?? this.id];
@@ -140,6 +181,33 @@ export class LocationItem extends TimelineItem {
             </fieldset>
         );
     }
+
+    prepareFromFields(fields: Record<string, any>) {
+        let ref = fields.ref;
+
+        // If no ref, create a new location
+        if (!ref) {
+            const loc = new LocationItem({
+                id: fields.id ?? fields.title.replace(/[^\p{L}\p{N}_]/gu, ''),
+                title: fields.title ?? "Untitled Location",
+                details: {
+                    lat: fields.lat ?? 0,
+                    lng: fields.lng ?? 0,
+                    radius: fields.radius ?? 100
+                }
+            });
+            setLocations(loc.id, loc);
+            addLocation(loc);
+            ref = loc.id;
+        }
+
+        return {
+            type: "location",
+            title: fields.title,
+            duration: fields.duration,
+            details: { ...fields, ref }
+        };
+    }
 }
 
 // Revive both canonical and reference items
@@ -153,7 +221,7 @@ export function reviveLocation(obj: any): LocationItem {
 export function ListLocations() {
     return <fieldset>
         <h2>Locations</h2>
-        <ul class="list border">
+        <ul class="list border no-space">
             <For each={Object.values(locations)}>
                 {(loc) => (
                     <li>
@@ -164,3 +232,4 @@ export function ListLocations() {
         </ul>
     </fieldset>
 }
+

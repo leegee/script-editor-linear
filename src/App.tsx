@@ -1,4 +1,4 @@
-import { onMount, createSignal, Show, createEffect } from "solid-js";
+import { onMount, createSignal, Show, createEffect, Switch, Match } from "solid-js";
 import DragDropList from "./components/DragDropList";
 // import TimelineView from "./components/TimelineView";
 import { loadAll } from "./stores";
@@ -9,7 +9,7 @@ import { ViewModeSwitch } from "./components/ViewModeSwitch";
 import { sampleScript, sampleCharacters, sampleLocations } from "./scripts/TheThreeBears";
 import { storage } from "./db";
 import NewTimelineItemSelector from "./components/NewTimelineItemSelector";
-import { TimelineItem } from "./components/CoreItems";
+import { listCharacters, listLocations, TimelineItem } from "./components/CoreItems";
 
 export default function App() {
     const [insertNewItemPos, setInsertNewItemPos] = createSignal(-1);
@@ -40,7 +40,6 @@ export default function App() {
                                 <DragDropList
                                     items={items()}
                                     showItem={item => setItemToShow(item)}
-                                    renderItem={(item) => item?.renderCompact() ?? null}
                                     onInsert={(pos: number) => setInsertNewItemPos(pos)}
                                     onReorder={(newOrder) => {
                                         const seq = timelineSequence();
@@ -61,22 +60,30 @@ export default function App() {
 
                         <div class="s12 m6 l6">
                             {/* <!-- right panel --> */}
-                            <Show when={insertNewItemPos() > -1}>
-                                <NewTimelineItemSelector
-                                    insertAtIndex={insertNewItemPos()}
-                                    onCancel={() => setInsertNewItemPos(-1)}
-                                    onCreated={() => setInsertNewItemPos(-1)}
-                                />
-                            </Show>
+                            <Switch fallback={
+                                <>
+                                    {listLocations()}
+                                    {listCharacters()}
+                                </>
+                            }>
+                                <Match when={insertNewItemPos() > -1}>
+                                    <NewTimelineItemSelector
+                                        insertAtIndex={insertNewItemPos()}
+                                        onCancel={() => setInsertNewItemPos(-1)}
+                                        onCreated={() => setInsertNewItemPos(-1)}
+                                    />
+                                </Match>
 
-                            <Show when={insertNewItemPos() === -1 && itemToShow() !== null}>
-                                {itemToShow()!.renderFull()}
-                            </Show>
+                                <Match when={itemToShow() !== null}>
+                                    {itemToShow()!.renderFull()}
+                                </Match>
+
+                            </Switch>
                         </div>
                     </div>
 
                 </Show>
-            </main>
+            </main >
 
             <nav class="bottom">
                 <ViewModeSwitch onChange={setViewMode} />

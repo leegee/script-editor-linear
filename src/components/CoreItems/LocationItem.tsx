@@ -12,6 +12,7 @@ import Point from "ol/geom/Point";
 import Circle from "ol/geom/Circle";
 import { Style, Fill, Stroke, Icon } from "ol/style";
 import InlineEditable from "../InlineEditable";
+import { For } from "solid-js";
 
 export class LocationItem extends TimelineItem {
     mapContainer: HTMLDivElement | null = null;
@@ -174,4 +175,17 @@ export function reviveLocation(obj: any): LocationItem {
         title: obj.title,
         details: { lat, lng, radius }
     });
+}
+
+export function listLocations() {
+    return <fieldset>
+        <h2>Locations</h2>
+        <For each={Object.values(locations)}>
+            {(loc) => (
+                <div>
+                    {loc.title}
+                </div>
+            )}
+        </For>
+    </fieldset>
 }

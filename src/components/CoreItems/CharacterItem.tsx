@@ -1,3 +1,5 @@
+import { For } from "solid-js";
+import { characters } from "../../stores";
 import { TimelineItem } from "./TimelineItem";
 
 export class CharacterItem extends TimelineItem {
@@ -19,3 +21,16 @@ export class CharacterItem extends TimelineItem {
 
 
 export function reviveCharacter(obj: any) { return new CharacterItem(obj); }
+
+export function listCharacters() {
+    return <fieldset>
+        <h2>Characters</h2>
+        <For each={Object.values(characters)}>
+            {(loc) => (
+                <div>
+                    {loc.name}
+                </div>
+            )}
+        </For>
+    </fieldset>
+}

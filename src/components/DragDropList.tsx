@@ -3,16 +3,17 @@ import { JSX, createSignal, createEffect, For, Accessor } from "solid-js";
 import DragHandleWithMenu from "./DragHandleWithMenu";
 import { duplicateTimelineItem } from "../lib/duplicateTimelineItem";
 import { deleteTimelineItem } from "../lib/createTimelineItem";
+import { TimelineItem } from "./CoreItems";
 
 interface HasIdAndDuration {
   id: string;
   duration?: number; // seconds
+  renderCompact: () => JSX.Element | null;
 }
 
 interface DragDropListProps<T extends HasIdAndDuration> {
   items: T[];
   showItem: (item: T) => void;
-  renderItem: (item: T, index: number) => JSX.Element | null;
   onReorder?: (newOrder: number[]) => void;
   onInsert: (pos: number) => void;
   className?: string;
@@ -197,11 +198,8 @@ export default function DragDropList<T extends HasIdAndDuration>(props: DragDrop
                 onDelete={() => deleteTimelineItem(item.id)}
               />
 
-              <div class="item-content">
-                <span style="width:100%" onClick={() => props.showItem(item)}>
-                  {props.renderItem(item, idx())}
-                </span>
-
+              <div class="item-content" onClick={() => props.showItem(item)}>
+                {item.renderCompact() ?? null}
                 <small class="time-label">{displayTime}</small>
               </div>
             </li>
@@ -217,7 +215,7 @@ export default function DragDropList<T extends HasIdAndDuration>(props: DragDrop
             top: `${dragY()! - offsetY}px`,
           }}
         >
-          {props.renderItem(props.items[order()[draggingIndex()!]], order()[draggingIndex()!])}
+          {props.items[order()[draggingIndex()!]].renderCompact() ?? null}
         </li>
       )}
     </ul>

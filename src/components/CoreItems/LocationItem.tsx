@@ -224,7 +224,7 @@ export function ListLocations() {
             <For each={Object.values(locations)}>
                 {(loc) => (
                     <li>
-                        <A href={"/item/" + loc.id}>{loc.title}</A>
+                        <A href={"/location/" + loc.id}>{loc.title}</A>
                     </li>
                 )}
             </For>

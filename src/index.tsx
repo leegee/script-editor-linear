@@ -1,13 +1,14 @@
+import './index.css';
+import "beercss";
 import { render } from 'solid-js/web';
 import { HashRouter, Route } from "@solidjs/router";
-import Default from './components/panels/Default';
 import 'solid-devtools';
-import "beercss";
-import './index.css';
-
 import App from './App';
+import Default from './components/panels/Default';
 import NewTimelineItemSelector from './components/NewTimelineItemSelector';
 import TimelineItemView from './components/TimelineItemView';
+import CharacterView from './components/CharacterView';
+import LocationView from './components/LocationView';
 
 const root = document.getElementById('root');
 
@@ -22,6 +23,8 @@ render(
     <Route path="/" component={Default} />
     <Route path="/new/:pos" component={NewTimelineItemSelector} />
     <Route path="/item/:id" component={TimelineItemView} />
+    <Route path="/character/:id" component={CharacterView} />
+    <Route path="/location/:id" component={LocationView} />
   </HashRouter>,
   root!
 );

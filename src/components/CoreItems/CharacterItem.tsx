@@ -1,6 +1,7 @@
 import { For } from "solid-js";
 import { characters } from "../../stores";
 import { TimelineItem } from "./TimelineItem";
+import { A } from "@solidjs/router";
 
 export class CharacterItem extends TimelineItem {
     name!: string;
@@ -30,7 +31,7 @@ export function ListCharacters() {
             <For each={Object.values(characters)}>
                 {(loc) => (
                     <li>
-                        {loc.name}
+                        <A href={"/character/" + loc.id}>{loc.name}</A>
                     </li>
                 )}
             </For>

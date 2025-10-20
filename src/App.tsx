@@ -1,4 +1,5 @@
-import { onMount, createSignal, Show, createEffect, Switch, Match } from "solid-js";
+import { onMount, createSignal, Show, createEffect, Switch, Match, JSX, ParentProps } from "solid-js";
+
 import DragDropList from "./components/DragDropList";
 // import TimelineView from "./components/TimelineView";
 import { loadAll } from "./stores";
@@ -8,10 +9,9 @@ import { ViewModeSwitch } from "./components/ViewModeSwitch";
 // import { layoutTimeline } from "./lib/timelineLayout";
 import { sampleScript, sampleCharacters, sampleLocations } from "./scripts/TheThreeBears";
 import { storage } from "./db";
-import NewTimelineItemSelector from "./components/NewTimelineItemSelector";
-import { listCharacters, listLocations, TimelineItem } from "./components/CoreItems";
+import { TimelineItem } from "./components/CoreItems";
 
-export default function App() {
+export default function App(props: ParentProps) {
     const [insertNewItemPos, setInsertNewItemPos] = createSignal(-1);
     const [itemToShow, setItemToShow] = createSignal<TimelineItem | null>(null);
     const [loaded, setLoaded] = createSignal(false);
@@ -60,7 +60,10 @@ export default function App() {
 
                         <div class="s12 m6 l6">
                             {/* <!-- right panel --> */}
-                            <Switch fallback={
+
+                            {props.children}
+
+                            {/* <Switch fallback={
                                 <>
                                     {listLocations()}
                                     {listCharacters()}
@@ -78,7 +81,7 @@ export default function App() {
                                     {itemToShow()!.renderFull()}
                                 </Match>
 
-                            </Switch>
+                            </Switch> */}
                         </div>
                     </div>
 

@@ -177,7 +177,7 @@ export function reviveLocation(obj: any): LocationItem {
     });
 }
 
-export function listLocations() {
+export function ListLocations() {
     return <fieldset>
         <h2>Locations</h2>
         <For each={Object.values(locations)}>

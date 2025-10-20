@@ -1,4 +1,6 @@
 import { render } from 'solid-js/web';
+import { HashRouter, Route } from "@solidjs/router";
+import Default from './components/panels/Default';
 import 'solid-devtools';
 import "beercss";
 import './index.css';
@@ -13,4 +15,9 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
   );
 }
 
-render(() => <App />, root!);
+render(
+  () => <HashRouter root={App}>
+    <Route path="/" component={Default} />
+  </HashRouter>,
+  root!
+);

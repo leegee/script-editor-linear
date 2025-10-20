@@ -15,7 +15,9 @@ export class DialogueItem extends TimelineItem {
 
         return (
             <div class="timeline-item">
-                {speakerName}
+                <span class="character-name">
+                    {speakerName}
+                </span>
                 <InlineEditable
                     class="dialogueText"
                     value={this.details.text}

@@ -12,4 +12,17 @@ h4,
 h5,
 h6 {
     margin-block-start: 0 !important;
+    zoom: 60%;
+}
+
+.character-name {
+    margin-right: 0.6em;
+    font-weight: bold;
+    opacity: 50%;
+}
+
+.time-label {
+    margin-right: 0.6em;
+    font-weight: 100;
+    opacity: 50%;
 }

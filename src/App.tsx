@@ -29,7 +29,8 @@ export default function App(props: ParentProps) {
                 <Show when={loaded()} fallback={<p>Loading script...</p>}>
 
                     <div class="grid" style="height: calc(100vh - 7em); overflow: hidden ">
-                        <div class="s12 m6 l6" style='height: auto; overflow-y: auto'>
+                        <div class="s12 m8 l8" style='height: auto; overflow-y: auto'>
+
                             <DragDropList
                                 items={items()}
                                 showItem={(item) => navigate(`/item/${item.id}`)}
@@ -42,7 +43,7 @@ export default function App(props: ParentProps) {
                             />
                         </div>
 
-                        <div class="s12 m6 l6">
+                        <div class="s12 m4 l4">
                             {/* <!-- right panel --> */}
                             {props.children}
                         </div>

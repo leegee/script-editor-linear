@@ -1,8 +1,12 @@
 import { characters, setTimelineItems } from "../../stores";
 import InlineEditable from "../InlineEditable";
-import { TimelineItem } from "./TimelineItem";
+import { TimelineItem, TimelineItemProps } from "./TimelineItem";
 
 export class DialogueItem extends TimelineItem {
+    constructor(props: Omit<TimelineItemProps, "type">) {
+        super({ ...props, type: 'dialogue' });
+    }
+
     renderCompact() {
         const char = characters[this.details.characterId];
         const speakerName = char?.name ?? "Unknown Speaker";

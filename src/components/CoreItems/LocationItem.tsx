@@ -13,37 +13,44 @@ import Circle from "ol/geom/Circle";
 import { Style, Fill, Stroke, Icon } from "ol/style";
 import InlineEditable from "../InlineEditable";
 import { For } from "solid-js";
+import { A } from "@solidjs/router";
 
 export class LocationItem extends TimelineItem {
     mapContainer: HTMLDivElement | null = null;
-    declare title: string;
 
-    // constructor(props: Omit<TimelineItemProps, "type"> & { title: string; details: { lat: number; lng: number; radius: number } }) {
-    constructor(props: Partial<TimelineItemProps> & { type: "location" }) {
+    constructor(props: Omit<TimelineItemProps, "type">) {
+        const canonicalId = props.details?.ref ?? props.id;
+        const canonical = locations[canonicalId];
+
+        // If a reference exists, fill in missing details from the canonical object
+        const details = {
+            lat: props.details?.lat ?? canonical?.details.lat ?? 0,
+            lng: props.details?.lng ?? canonical?.details.lng ?? 0,
+            radius: props.details?.radius ?? canonical?.details.radius ?? 1,
+            ref: canonicalId,
+        };
+
         super({
             ...props,
             id: props.id || crypto.randomUUID(),
             type: "location",
-            title: props.title ?? "",           // default if missing
-            details: props.details ?? { lat: 0, lng: 0, radius: 1 },
+            title: props.title ?? canonical?.title ?? "",
+            details,
         });
     }
 
     renderCompact() {
-        const loc = locations[this.title];
-        return <h5 class="timeline-item location">{loc?.title ?? "Unknown Location"}</h5>;
+        const canonical = locations[this.details.ref ?? this.id];
+        return <h5 class="timeline-item location">{canonical?.title ?? "Unknown Location"}</h5>;
     }
 
-    renderCreateNew(props: {
-        duration?: number;
-        onChange: (field: string, value: any) => void;
-    }) {
+    renderCreateNew(props: { duration?: number; onChange: (field: string, value: any) => void }) {
         return (
             <>
                 <div class="field border label max">
                     <select
-                        value={this.title ?? ""}
-                        onChange={(e) => props.onChange("title", e.currentTarget.value)}
+                        value={this.details.ref ?? ""}
+                        onChange={(e) => props.onChange("ref", e.currentTarget.value)}
                     >
                         <option value="" disabled>
                             Select a location
@@ -69,17 +76,18 @@ export class LocationItem extends TimelineItem {
     }
 
     renderFull() {
-        const loc = locations[this.title];
-        if (!loc) return "Unknown Location";
+        const canonical = locations[this.details.ref ?? this.id];
+        if (!canonical) return "Unknown Location";
 
-        const lat = Number(loc.details?.lat ?? 0);
-        const lng = Number(loc.details?.lng ?? 0);
-        const radiusMeters = Number(loc.details?.radius ?? 100);
+        const lat = Number(this.details.lat ?? canonical.details.lat);
+        const lng = Number(this.details.lng ?? canonical.details.lng);
+        const radiusMeters = Number(this.details.radius ?? canonical.details.radius);
 
         return (
             <fieldset class="location padding">
                 <h2 class="field" style="block-size: unset">
-                    <InlineEditable value={loc.title ?? "Untitled Location"}
+                    <InlineEditable
+                        value={canonical.title ?? "Untitled Location"}
                         onUpdate={(v) => setTimelineItems(this.id, "title", v)}
                     />
                 </h2>
@@ -98,10 +106,7 @@ export class LocationItem extends TimelineItem {
 
                         const center = fromLonLat([lng, lat]);
 
-                        // Create marker feature
-                        const marker = new Feature({
-                            geometry: new Point(center),
-                        });
+                        const marker = new Feature({ geometry: new Point(center) });
                         marker.setStyle(
                             new Style({
                                 image: new Icon({
@@ -112,50 +117,22 @@ export class LocationItem extends TimelineItem {
                             })
                         );
 
-                        // Create circle feature (radius in metres)
-                        const circleFeature = new Feature({
-                            geometry: new Circle(center, radiusMeters),
-                        });
+                        const circleFeature = new Feature({ geometry: new Circle(center, radiusMeters) });
                         circleFeature.setStyle(
                             new Style({
-                                stroke: new Stroke({
-                                    color: "rgba(239, 68, 68, 0.8)", // red
-                                    width: 2,
-                                }),
-                                fill: new Fill({
-                                    color: "rgba(239, 68, 68, 0.25)",
-                                }),
+                                stroke: new Stroke({ color: "rgba(239, 68, 68, 0.8)", width: 2 }),
+                                fill: new Fill({ color: "rgba(239, 68, 68, 0.25)" }),
                             })
                         );
 
-                        const vectorSource = new VectorSource({
-                            features: [circleFeature, marker],
-                        });
+                        const vectorLayer = new VectorLayer({ source: new VectorSource({ features: [circleFeature, marker] }) });
 
-                        const vectorLayer = new VectorLayer({
-                            source: vectorSource,
-                        });
-
-                        const map = new Map({
+                        new Map({
                             target: el,
-                            layers: [
-                                new TileLayer({
-                                    source: new OSM(),
-                                }),
-                                vectorLayer,
-                            ],
-                            view: new View({
-                                center,
-                                zoom: 14,
-                            }),
+                            layers: [new TileLayer({ source: new OSM() }), vectorLayer],
+                            view: new View({ center, zoom: 14 }),
                             controls: [],
                         });
-
-                        // Fit to circle extent
-                        const extent = circleFeature.getGeometry()?.getExtent();
-                        if (extent) {
-                            map.getView().fit(extent, { padding: [20, 20, 20, 20] });
-                        }
 
                         this.mapContainer.dataset.mapInit = "true";
                     }}
@@ -165,34 +142,25 @@ export class LocationItem extends TimelineItem {
     }
 }
 
+// Revive both canonical and reference items
 export function reviveLocation(obj: any): LocationItem {
-    let lat, lng, radius;
-    if (!obj.title) throw new Error("Missing title");
-    if (!obj.details) {
-        ({ lat, lng, radius } = locations[obj.title].details);
-    } else {
-        ({ lat, lng, radius } = obj.details);
-        if (typeof lat !== "number" || typeof lng !== "number" || typeof radius !== "number") {
-            throw new Error("Invalid location details");
-        }
-    }
-
     return new LocationItem({
         ...obj,
-        title: obj.title,
-        details: { lat, lng, radius }
+        details: obj.details ?? { ref: obj.title ?? obj.id },
     });
 }
 
 export function ListLocations() {
     return <fieldset>
         <h2>Locations</h2>
-        <For each={Object.values(locations)}>
-            {(loc) => (
-                <div>
-                    {loc.title}
-                </div>
-            )}
-        </For>
+        <ul class="list border">
+            <For each={Object.values(locations)}>
+                {(loc) => (
+                    <li>
+                        <A href={"/item/" + loc.id}>{loc.title}</A>
+                    </li>
+                )}
+            </For>
+        </ul>
     </fieldset>
 }

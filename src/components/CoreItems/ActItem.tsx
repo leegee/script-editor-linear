@@ -1,9 +1,13 @@
 import { formatHHMMSS } from "../../lib/formatSecondsToHMS";
 import { actDurations, setTimelineItems } from "../../stores";
-import { TimelineItem } from "./TimelineItem";
+import { TimelineItem, TimelineItemProps } from "./TimelineItem";
 import InlineEditable from "../InlineEditable";
 
 export class ActItem extends TimelineItem {
+    constructor(props: Omit<TimelineItemProps, "type">) {
+        super({ ...props, type: 'act' });
+    }
+
     renderCompact() {
         return (
             <h2 class="timeline-item act">

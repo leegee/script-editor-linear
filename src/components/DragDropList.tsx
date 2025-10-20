@@ -4,6 +4,7 @@ import DragHandleWithMenu from "./DragHandleWithMenu";
 import { duplicateTimelineItem } from "../lib/duplicateTimelineItem";
 import { deleteTimelineItem } from "../lib/createTimelineItem";
 import { TimelineItem } from "./CoreItems";
+import { useNavigate } from "@solidjs/router";
 
 interface HasIdAndDuration {
   id: string;
@@ -28,6 +29,7 @@ function formatTime(totalSeconds: number): string {
 }
 
 export default function DragDropList<T extends HasIdAndDuration>(props: DragDropListProps<T>) {
+  const navigate = useNavigate();
   const [order, setOrder] = createSignal(props.items.map((_, i) => i));
   const [draggingIndex, setDraggingIndex] = createSignal<number | null>(null);
   const [overIndex, setOverIndex] = createSignal<number | null>(null);
@@ -195,7 +197,7 @@ export default function DragDropList<T extends HasIdAndDuration>(props: DragDrop
                 onDuplicate={() => duplicateTimelineItem(item.id, { insertAtIndex: pos + 1 })}
                 onInsertBefore={() => props.onInsert(pos - 1)}
                 onInsertAfter={() => props.onInsert(pos + 1)}
-                onDelete={() => deleteTimelineItem(item.id)}
+                onDelete={() => { deleteTimelineItem(item.id); navigate('/') }}
               />
 
               <div class="item-content" onClick={() => props.showItem(item)}>

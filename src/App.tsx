@@ -1,5 +1,5 @@
 import { onMount, createSignal, Show, ParentProps } from "solid-js";
-import { useNavigate } from "@solidjs/router";
+import { A, useNavigate } from "@solidjs/router";
 import DragDropList from "./components/DragDropList";
 import { loadAll } from "./stores";
 import { timelineItems, timelineSequence, reorderTimeline } from "./stores/timelineItems";
@@ -52,7 +52,7 @@ export default function App(props: ParentProps) {
             </main >
 
             <nav class="bottom" style="height: 5em">
-                WIP
+                <A href="/"><i>home</i></A>
             </nav>
 
         </>

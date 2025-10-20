@@ -1,9 +1,13 @@
 import { formatHHMMSS } from "../../lib/formatSecondsToHMS";
 import { sceneDurations, setTimelineItems } from "../../stores";
 import InlineEditable from "../InlineEditable";
-import { TimelineItem } from "./TimelineItem";
+import { TimelineItem, TimelineItemProps } from "./TimelineItem";
 
 export class SceneItem extends TimelineItem {
+    constructor(props: Omit<TimelineItemProps, "type">) {
+        super({ ...props, type: 'scene' });
+    }
+
     renderCompact() {
         return (
             <h3 class="timeline-item scene">
@@ -16,7 +20,7 @@ export class SceneItem extends TimelineItem {
     renderFull() {
         return (
             <fieldset>
-                <h2 class="act">
+                <h2 class="scene">
                     <div class="field">
                         <InlineEditable value={this.title ?? "Untitled Scene"} onUpdate={(v) => setTimelineItems(this.id, "title", v)} />
                     </div>

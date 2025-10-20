@@ -1,8 +1,13 @@
 import { For } from "solid-js";
-import { TimelineItem } from "./TimelineItem";
+import { TimelineItem, TimelineItemProps } from "./TimelineItem";
 
 export class TransitionItem extends TimelineItem {
     transitionType?: "fade" | "cut" | "dissolve";
+
+    constructor(props: Omit<TimelineItemProps, "type">) {
+        super({ ...props, type: 'transition' });
+    }
+
     renderCompact() {
         return <div class="timeline-item">{this.transitionType?.toUpperCase()} →</div>;
     }

@@ -1,3 +1,4 @@
+import { reviveItem } from "../components/CoreItems";
 import { ActItem } from "../components/CoreItems/ActItem";
 import { CharacterItem } from "../components/CoreItems/CharacterItem";
 import { DialogueItem } from "../components/CoreItems/DialogueItem";
@@ -38,25 +39,7 @@ export async function ingest(
     }
 
     for (const props of sampleScript) {
-        let item: TimelineItem;
-
-        switch (props.type) {
-            case "act":
-                item = new ActItem(props);
-                break;
-            case "scene":
-                item = new SceneItem(props);
-                break;
-            case "dialogue":
-                item = new DialogueItem(props);
-                break;
-            case "location":
-                item = reviveLocation(props);
-                break;
-            default:
-                item = new TimelineItem(props);
-        }
-
+        const item = reviveItem(props);
         setTimelineItems(item.id, item);
         await storage.put("timelineItems", item);
         seq.push(item.id);

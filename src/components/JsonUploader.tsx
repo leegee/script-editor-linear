@@ -39,7 +39,7 @@ export default function JSONUploader() {
                 onChange={handleFileChange}
                 style={{ display: "none" }}
             />
-            <button class="transparent no-padding" onClick={openFilePicker}>
+            <button class="transparent no-padding no-margin" onClick={openFilePicker}>
                 Load script
             </button>
         </div>

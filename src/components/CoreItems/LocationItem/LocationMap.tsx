@@ -34,7 +34,6 @@ export function LocationMap(props: LocationMapProps) {
 
         const center = fromLonLat([props.lng, props.lat]);
 
-        // Marker
         marker = new Feature({ geometry: new Point(center) });
         marker.setStyle(
             new Style({
@@ -46,7 +45,6 @@ export function LocationMap(props: LocationMapProps) {
             })
         );
 
-        // Circle
         circleFeature = new Feature({ geometry: new Circle(center, props.radius) });
         circleFeature.setStyle(
             new Style({
@@ -66,7 +64,6 @@ export function LocationMap(props: LocationMapProps) {
             controls: [],
         });
 
-        // --- Make marker draggable ---
         const translate = new Translate({ features: new Collection([marker]) });
         map.addInteraction(translate);
         translate.on("translateend", () => {
@@ -77,7 +74,6 @@ export function LocationMap(props: LocationMapProps) {
             props.onChange?.(lat, lng, radius);
         });
 
-        // --- Make circle resizable ---
         const modify = new Modify({ features: new Collection([circleFeature]) });
         map.addInteraction(modify);
         modify.on("modifyend", () => {

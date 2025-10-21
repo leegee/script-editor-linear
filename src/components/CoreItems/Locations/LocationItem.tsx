@@ -161,15 +161,17 @@ export class TimelineLocationItem extends TimelineItem {
         const { lat, lng, radius } = canonical.details;
 
         return (
-            <fieldset class="location padding">
-                <h4 class="field">
-                    <InlineEditable
-                        value={canonical.title ?? "Untitled Location"}
-                        onUpdate={(v) => updateLocation(canonical.id, { title: v })}
-                    />
-                </h4>
+            <article>
+                <header>
+                    <h3 class="field">
+                        <InlineEditable
+                            value={canonical.title ?? "Untitled Location"}
+                            onUpdate={(v) => updateLocation(canonical.id, { title: v })}
+                        />
+                    </h3>
+                </header>
 
-                <div>
+                <div class="field">
                     Lat: {lat}, Lng: {lng}, Radius: {radius} m
                 </div>
 
@@ -183,7 +185,7 @@ export class TimelineLocationItem extends TimelineItem {
                         })
                     }
                 />
-            </fieldset>
+            </article>
         );
     }
 

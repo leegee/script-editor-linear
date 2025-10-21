@@ -1,7 +1,7 @@
 import "ol/ol.css";
 import { createSignal, For } from "solid-js";
 import { A } from "@solidjs/router";
-import { locations, setLocations, addLocation, updateLocation } from "../../../stores";
+import { locations, setLocations, addLocation, updateLocation, resolveTimelineRef } from "../../../stores";
 import { TimelineItem, TimelineItemProps } from "../TimelineItem";
 import InlineEditable from "../../InlineEditable";
 import { LocationMap } from "./LocationMap";
@@ -19,7 +19,25 @@ export class TimelineLocationItem extends TimelineItem {
         });
     }
 
+    static ListLocations() {
+        return (
+            <fieldset>
+                <h2>Locations</h2>
+                <ul class="list border no-space">
+                    <For each={Object.values(locations)}>
+                        {(loc) => (
+                            <li>
+                                <A href={`/location/${loc.id}`}>{loc.title}</A>
+                            </li>
+                        )}
+                    </For>
+                </ul>
+            </fieldset>
+        );
+    }
+
     constructor(props: Omit<TimelineItemProps, "type">) {
+        // The canonical reference must exist in locations, or we assume details.ref points to a new location
         const ref = props.details?.ref ?? props.id;
         const canonical = locations[ref];
 
@@ -36,7 +54,7 @@ export class TimelineLocationItem extends TimelineItem {
     }
 
     renderCompact() {
-        const canonical = locations[this.details.ref ?? this.id];
+        const canonical = resolveTimelineRef(this);
         return (
             <h4 class="timeline-item location">
                 {canonical?.title ?? "Unknown Location"}
@@ -73,9 +91,7 @@ export class TimelineLocationItem extends TimelineItem {
                             <input
                                 type="number"
                                 placeholder="Latitude"
-                                onInput={(e) =>
-                                    props.onChange("lat", parseFloat(e.currentTarget.value))
-                                }
+                                onInput={(e) => props.onChange("lat", parseFloat(e.currentTarget.value))}
                             />
                             <label>Latitude</label>
                         </div>
@@ -83,9 +99,7 @@ export class TimelineLocationItem extends TimelineItem {
                             <input
                                 type="number"
                                 placeholder="Longitude"
-                                onInput={(e) =>
-                                    props.onChange("lng", parseFloat(e.currentTarget.value))
-                                }
+                                onInput={(e) => props.onChange("lng", parseFloat(e.currentTarget.value))}
                             />
                             <label>Longitude</label>
                         </div>
@@ -93,9 +107,7 @@ export class TimelineLocationItem extends TimelineItem {
                             <input
                                 type="number"
                                 placeholder="Radius (metres)"
-                                onInput={(e) =>
-                                    props.onChange("radius", parseFloat(e.currentTarget.value))
-                                }
+                                onInput={(e) => props.onChange("radius", parseFloat(e.currentTarget.value))}
                             />
                             <label>Radius</label>
                         </div>
@@ -108,9 +120,7 @@ export class TimelineLocationItem extends TimelineItem {
                             value={this.details.ref ?? ""}
                             onChange={(e) => props.onChange("ref", e.currentTarget.value)}
                         >
-                            <option value="" disabled>
-                                Select a Location
-                            </option>
+                            <option value="" disabled>Select a Location</option>
                             {Object.values(locations).map((loc) => (
                                 <option value={loc.id}>{loc.title}</option>
                             ))}
@@ -123,8 +133,7 @@ export class TimelineLocationItem extends TimelineItem {
     }
 
     renderFull() {
-        const canonical: CanonicalLocation | undefined =
-            locations[this.details.ref ?? this.id];
+        const canonical = resolveTimelineRef(this);
         if (!canonical) return <p>Unknown Location</p>;
 
         const { lat, lng, radius } = canonical.details;
@@ -146,11 +155,11 @@ export class TimelineLocationItem extends TimelineItem {
                     lat={lat}
                     lng={lng}
                     radius={radius}
-                    onChange={(newLat, newLng, newRadius) => {
+                    onChange={(newLat, newLng, newRadius) =>
                         updateLocation(canonical.id, {
                             details: { lat: newLat, lng: newLng, radius: newRadius },
-                        });
-                    }}
+                        })
+                    }
                 />
             </fieldset>
         );
@@ -159,13 +168,8 @@ export class TimelineLocationItem extends TimelineItem {
     prepareFromFields(fields: Record<string, any>) {
         let ref = fields.ref;
 
-        // If no reference, create a new canonical location
         if (!ref) {
-            const id =
-                fields.id ??
-                fields.title?.replace(/[^\p{L}\p{N}_]/gu, "") ??
-                crypto.randomUUID();
-
+            const id = fields.id ?? crypto.randomUUID();
             const newCanonical: CanonicalLocation = {
                 id,
                 type: "location",
@@ -176,7 +180,6 @@ export class TimelineLocationItem extends TimelineItem {
                     radius: fields.radius ?? 100,
                 },
             };
-
             setLocations(newCanonical.id, newCanonical);
             addLocation(newCanonical);
             ref = newCanonical.id;
@@ -189,24 +192,5 @@ export class TimelineLocationItem extends TimelineItem {
             details: { ref },
         };
     }
-}
 
-/**
- * Displays all canonical locations in the store
- */
-export function ListLocations() {
-    return (
-        <fieldset>
-            <h2>Locations</h2>
-            <ul class="list border no-space">
-                <For each={Object.values(locations)}>
-                    {(loc) => (
-                        <li>
-                            <A href={`/location/${loc.id}`}>{loc.title}</A>
-                        </li>
-                    )}
-                </For>
-            </ul>
-        </fieldset>
-    );
 }

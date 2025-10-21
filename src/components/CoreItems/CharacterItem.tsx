@@ -12,6 +12,21 @@ export class CharacterItem extends TimelineItem {
         return new CharacterItem(obj);
     }
 
+    static ListCharacters() {
+        return <fieldset>
+            <h2>Characters</h2>
+            <ul class="list border no-space">
+                <For each={Object.values(characters)}>
+                    {(chr) => (
+                        <li>
+                            <A href={"/character/" + chr.id}>{chr.title}</A>
+                        </li>
+                    )}
+                </For>
+            </ul>
+        </fieldset>
+    }
+
     constructor(props: Omit<TimelineItemProps, "type"> & { traits?: string[] }) {
         super({
             ...props,
@@ -34,17 +49,3 @@ export class CharacterItem extends TimelineItem {
     }
 }
 
-export function ListCharacters() {
-    return <fieldset>
-        <h2>Characters</h2>
-        <ul class="list border no-space">
-            <For each={Object.values(characters)}>
-                {(chr) => (
-                    <li>
-                        <A href={"/character/" + chr.id}>{chr.title}</A>
-                    </li>
-                )}
-            </For>
-        </ul>
-    </fieldset>
-}

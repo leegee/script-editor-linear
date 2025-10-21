@@ -1,9 +1,9 @@
-import { ListCharacters, ListLocations, TimelineItem } from "../CoreItems";
+import { CharacterItem, TimelineLocationItem, TimelineItem } from "../CoreItems";
 
 export default function Default() {
     return <>
-        <ListLocations />
-        <ListCharacters />
+        <TimelineLocationItem.ListLocations />
+        <CharacterItem.ListCharacters />
     </>
 
 }

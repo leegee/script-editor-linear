@@ -80,10 +80,19 @@ export default function DragDropList<T extends HasIdAndDuration>(props: DragDrop
           Math.max(0, currentIndex + delta)
         );
         selectItem(props.items()[nextIndex], nextIndex);
-      } else if (e.key === "Enter" && !(e.currentTarget instanceof HTMLInputElement)) {
+      }
+
+      else if (e.key === "Enter" && !(e.currentTarget instanceof HTMLInputElement)) {
         e.preventDefault();
-        selectItem(props.items()[currentIndex], currentIndex);
-        props.showItem(props.items()[currentIndex])
+        // CTRL+Enter: create a new item
+        if (e.ctrlKey) {
+          props.onInsert(currentIndex + 1)
+        }
+        // Enter: show details of the item
+        else {
+          selectItem(props.items()[currentIndex], currentIndex);
+          props.showItem(props.items()[currentIndex])
+        }
       }
     }
 

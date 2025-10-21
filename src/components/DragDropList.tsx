@@ -3,8 +3,8 @@ import { JSX, createSignal, createEffect, For, Accessor } from "solid-js";
 import DragHandleWithMenu from "./DragHandleWithMenu";
 import { duplicateTimelineItem } from "../lib/duplicateTimelineItem";
 import { deleteTimelineItem } from "../lib/createTimelineItem";
-import { TimelineItem } from "./CoreItems";
 import { useNavigate } from "@solidjs/router";
+import { timelineSequence } from "../stores";
 
 interface HasIdAndDuration {
   id: string;
@@ -159,19 +159,30 @@ export default function DragDropList<T extends HasIdAndDuration>(props: DragDrop
     document.addEventListener("keydown", cancelDrag);
   }
 
+  let displayTime = '00:00';
+  let pos = 0;
+
   return (
     <ul class="drag-list list border no-space scroll">
+
       <For each={props.items}>
         {(item, idx: Accessor<number>) => {
+          // Get the item's position in the current order
           const pos = order().indexOf(idx());
+          if (pos === -1) return null; // safety check
+
           const isDragging = draggingIndex() === pos;
           const isPlaceholder = overIndex() === pos && draggingIndex() !== null;
 
-          // Compute cumulative time up to this item
+          // Compute cumulative time for this item
           const cumulativeSeconds = props.items
             .slice(0, pos)
             .reduce((sum, i) => sum + (i.duration ?? 0), 0);
           const displayTime = formatTime(cumulativeSeconds);
+
+          // Clamp insert indices
+          const insertBefore = pos > 0 ? pos - 1 : 0;
+          const insertAfter = pos >= 0 ? pos + 1 : timelineSequence().length;
 
           return (
             <li
@@ -185,7 +196,6 @@ export default function DragDropList<T extends HasIdAndDuration>(props: DragDrop
                 "drag-over": overIndex() === pos
               }}
             >
-
               <div class="item-content" onClick={() => props.showItem(item)}>
                 <small class="time-label">{displayTime}</small>
                 {item.renderCompact() ?? null}
@@ -194,9 +204,9 @@ export default function DragDropList<T extends HasIdAndDuration>(props: DragDrop
               <DragHandleWithMenu
                 class="show-on-hover"
                 onPointerDown={(e) => startDrag(pos, e)}
-                onDuplicate={() => duplicateTimelineItem(item.id, { insertAtIndex: pos + 1 })}
-                onInsertBefore={() => props.onInsert(pos - 1)}
-                onInsertAfter={() => props.onInsert(pos + 1)}
+                onDuplicate={() => duplicateTimelineItem(item.id, { insertAtIndex: insertAfter })}
+                onInsertBefore={() => props.onInsert(insertBefore)}
+                onInsertAfter={() => props.onInsert(insertAfter)}
                 onDelete={() => { deleteTimelineItem(item.id); navigate('/') }}
               />
             </li>
@@ -204,14 +214,22 @@ export default function DragDropList<T extends HasIdAndDuration>(props: DragDrop
         }}
       </For>
 
+      {/* NEW ITEM placeholder */}
+      <li class="dnd-item">
+        <div class="item-content" onClick={() => props.onInsert(timelineSequence().length)}>
+          <small class="time-label">{formatTime(
+            props.items.reduce((sum, i) => sum + (i.duration ?? 0), 0)
+          )}</small>
+          + NEW ITEM
+        </div>
+      </li>
+
+      {/* Floating drag preview */}
       {draggingIndex() !== null && dragX() !== null && dragY() !== null && (
         <li ref={floatingRef as HTMLLIElement}
           class="dnd-item floating large-elevate border no-margin no-padding secondary"
           classList={{ dragging: draggingIndex() !== null }}
-          style={{
-            top: `${dragY()! - offsetY}px`,
-          }}
-        >
+          style={{ top: `${dragY()! - offsetY}px` }}>
           {props.items[order()[draggingIndex()!]].renderCompact() ?? null}
         </li>
       )}

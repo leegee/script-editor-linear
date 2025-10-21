@@ -27,11 +27,19 @@ export default function DragHandleWithMenu(props: DragHandleWithMenuProps) {
                 <span>⋮</span>
 
                 {menuOpen() && (
-                    <menu class={"border surface-bright secondary elevate " + styles.menu} style={{ 'min-width': '120px', }} >
-                        {props.onDuplicate && <li onClick={props.onDuplicate}>Duplicate</li>}
-                        {props.onInsertBefore && <li onClick={props.onInsertBefore}>New Before</li>}
-                        {props.onInsertAfter && <li onClick={props.onInsertAfter}>New After</li>}
-                        {props.onDelete && <li onClick={props.onDelete}>Delete</li>}
+                    <menu class={"border surface-bright secondary elevate " + styles.menu}>
+                        {props.onDuplicate && <li onClick={props.onDuplicate}>
+                            <i>control_point_duplicate</i> Duplicate
+                        </li>}
+                        {props.onInsertBefore && <li onClick={props.onInsertBefore}>
+                            <i>arrow_upward</i> New Before
+                        </li>}
+                        {props.onInsertAfter && <li onClick={props.onInsertAfter}>
+                            <i>arrow_downward</i>  New After
+                        </li>}
+                        {props.onDelete && <li onClick={props.onDelete}>
+                            <i>delete</i> Delete
+                        </li>}
                     </menu>
                 )}
             </button>

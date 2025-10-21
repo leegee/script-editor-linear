@@ -30,15 +30,14 @@ function serialiseAll() {
     };
 }
 
-export async function ingestJSON(jsonPath: string) {
+export async function loadJSONfromPath(jsonPath: string) {
     const response = await fetch(jsonPath);
     const data = await response.json();
 
-    await _ingest(data.script, data.characters, data.locations);
+    await ingest(data.script, data.characters, data.locations);
 }
 
-
-async function _ingest(
+export async function ingest(
     sampleScript: TimelineItemProps[],
     sampleCharacters: CharacterItem[],
     sampleLocations: LocationItem[],

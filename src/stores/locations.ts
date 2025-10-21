@@ -23,9 +23,14 @@ export async function addLocation(item: LocationItem) {
 }
 
 export async function updateLocation(id: string, updatedFields: Partial<LocationItem>) {
-    setLocations(id, prev => ({ ...prev, ...updatedFields }));
+    setLocations(id, prev => ({
+        ...(prev ?? {}),
+        ...updatedFields
+    }));
 
-    const updated = { ...locations[id], ...updatedFields };
+    const loc = JSON.parse(JSON.stringify(locations[id]));
+    const updated = { ...loc, ...updatedFields };
+
     await storage.put("locations", updated);
 }
 

@@ -1,5 +1,5 @@
 import { createStore } from "solid-js/store";
-import { CharacterItem } from "../components/CoreItems/";
+import { CharacterItem, LocationItem } from "../components/CoreItems/";
 import { storage } from "../db";
 
 export const [characters, setCharacters] = createStore<Record<string, CharacterItem>>({});
@@ -30,3 +30,16 @@ export async function removeCharacter(id: string) {
     });
     await storage.delete("characters", id);
 }
+
+export async function updateCharacters(id: string, updatedFields: Partial<CharacterItem>) {
+    setCharacters(id, prev => ({
+        ...(prev ?? {}),
+        ...updatedFields
+    }));
+
+    const loc = JSON.parse(JSON.stringify(characters[id]));
+    const updated = { ...loc, ...updatedFields };
+
+    await storage.put("locations", updated);
+}
+

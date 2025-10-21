@@ -12,9 +12,21 @@ export async function loadAllLocations() {
     setLocations(revived);
 }
 
+export async function resetLocations() {
+    setLocations({});
+    await storage.clearTable("locations");
+}
+
 export async function addLocation(item: LocationItem) {
     setLocations(item.id, item);
     await storage.put("locations", item);
+}
+
+export async function updateLocation(id: string, updatedFields: Partial<LocationItem>) {
+    setLocations(id, prev => ({ ...prev, ...updatedFields }));
+
+    const updated = { ...locations[id], ...updatedFields };
+    await storage.put("locations", updated);
 }
 
 export async function removeLocation(id: string) {

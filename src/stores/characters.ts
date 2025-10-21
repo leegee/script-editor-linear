@@ -12,6 +12,11 @@ export async function loadAllCharacters() {
     setCharacters(revived);
 }
 
+export async function resetCharacters() {
+    setCharacters({});
+    await storage.clearTable("characters");
+}
+
 export async function addCharacter(item: CharacterItem) {
     setCharacters(item.id, item);
     await storage.put("characters", item);

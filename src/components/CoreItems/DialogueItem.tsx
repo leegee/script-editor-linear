@@ -118,7 +118,6 @@ export class DialogueItem extends TimelineItem {
                 id,
                 title: fields.characterName,
             });
-            setCharacters(id, newChar);
             addCharacter(newChar);
             characterId = id;
         }

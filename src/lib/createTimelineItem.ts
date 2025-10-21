@@ -1,5 +1,5 @@
 import { TimelineItemProps, TimelineItem, ActItem, SceneItem, DialogueItem, LocationItem, TransitionItem } from "../components/CoreItems";
-import { setTimelineItems, timelineItems, setTimelineSequence, timelineSequence, locations, setLocations } from "../stores";
+import { setTimelineItems, timelineItems, setTimelineSequence, timelineSequence, locations, addLocation } from "../stores";
 import { storage } from "../db";
 
 interface CreateTimelineItemOptions {
@@ -44,8 +44,7 @@ export async function createTimelineItem(
                         radius: props.details?.radius ?? 0
                     }
                 });
-                setLocations(ref, newLoc);
-                await storage.put("locations", newLoc);
+                addLocation(newLoc);
             } else {
                 throw new Error(`Location "${ref}" does not exist`);
             }

@@ -3,7 +3,7 @@ import { CharacterItem } from "../components/CoreItems/CharacterItem";
 import { LocationItem } from "../components/CoreItems/LocationItem";
 import { TimelineItemProps } from "../components/CoreItems/TimelineItem";
 import { storage } from "../db";
-import { setTimelineItems, setTimelineSequence, setLocations, setCharacters, locations, characters, timelineItems, loadAll } from "../stores";
+import { setTimelineItems, setTimelineSequence, resetLocations, setCharacters, locations, characters, timelineItems, loadAll, addLocation, resetCharacters, addCharacter, resetTimelineItems } from "../stores";
 
 export async function initNewScript() {
     await ingest([], [], []);
@@ -53,25 +53,19 @@ export async function ingest(
 
     // Clear stores and tables
     await Promise.all([
-        storage.clearTable("timelineItems"),
-        storage.clearTable("locations"),
-        storage.clearTable("characters")
+        resetTimelineItems(),
+        resetLocations(),
+        resetCharacters(),
     ]);
-    setTimelineItems({});
-    setLocations({});
-    setCharacters({});
-    setTimelineSequence([]);
 
     const seq: string[] = [];
 
     for (const char of sampleCharacters) {
-        setCharacters(char.id, char);
-        await storage.put("characters", char);
+        addCharacter(char);
     }
 
     for (const loc of sampleLocations) {
-        setLocations(loc.id, loc);
-        await storage.put("locations", loc);
+        addLocation(loc);
     }
 
     for (const props of sampleScript) {

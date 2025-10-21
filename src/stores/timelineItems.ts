@@ -25,7 +25,7 @@ const orderedItems = createMemo(() => {
 });
 
 // CRUD:
-export async function addScriptItem(item: TimelineItem) {
+export async function addTimeilneItem(item: TimelineItem) {
     setTimelineItems(item.id, item);
     const seq = [...timelineSequence(), item.id];
     setTimelineSequence(seq);
@@ -46,6 +46,12 @@ export async function removeTimelineItem(id: string) {
     });
     setTimelineSequence(timelineSequence().filter(x => x !== id));
     await storage.delete("timelineItems", id);
+}
+
+export async function resetTimelineItems() {
+    setTimelineItems({});
+    setTimelineSequence([]);
+    storage.clearTable("timelineItems");
 }
 
 // Derived:

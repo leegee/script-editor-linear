@@ -1,5 +1,7 @@
 import "ol/ol.css";
 import { createSignal, For } from "solid-js";
+import { A } from "@solidjs/router";
+
 import Map from "ol/Map";
 import View from "ol/View";
 import { Tile as TileLayer, Vector as VectorLayer } from "ol/layer";
@@ -11,10 +13,10 @@ import Circle from "ol/geom/Circle";
 import { Style, Fill, Stroke, Icon } from "ol/style";
 import Modify from "ol/interaction/Modify";
 import { fromLonLat, toLonLat } from "ol/proj";
-import { addLocation, locations, setLocations, setTimelineItems } from "../../stores";
+
+import { addLocation, locations, setLocations, updateLocation } from "../../stores";
 import { TimelineItem, TimelineItemProps } from "./TimelineItem";
 import InlineEditable from "../InlineEditable";
-import { A } from "@solidjs/router";
 
 export class LocationItem extends TimelineItem {
     mapContainer: HTMLDivElement | null = null;
@@ -100,21 +102,36 @@ export class LocationItem extends TimelineItem {
         return <h4 class="timeline-item location">{canonical?.title ?? "Unknown Location"}</h4>;
     }
 
+
     renderFull() {
         const canonical = locations[this.details.ref ?? this.id];
         if (!canonical) return "Unknown Location";
+
+        console.log(canonical);
+
+        const save = () => {
+            updateLocation(canonical.id, {
+                title: canonical.title,
+                details: canonical.details,
+            });
+        };
 
         return (
             <fieldset class="location padding">
                 <h4 class="field" style="block-size: unset">
                     <InlineEditable
                         value={canonical.title ?? "Untitled Location"}
-                        onUpdate={(v) => setTimelineItems(this.id, "title", v)}
+                        onUpdate={(v) => {
+                            canonical.title = v;
+                            save();
+                        }}
                     />
                 </h4>
+
                 <div>
                     Lat: {canonical.details.lat ?? 0}, Lng: {canonical.details.lng ?? 0}, Radius: {canonical.details.radius ?? 100} m
                 </div>
+
                 <div
                     class="padding"
                     style={{ width: "100%", height: "15em" }}
@@ -132,7 +149,7 @@ export class LocationItem extends TimelineItem {
                                 canonical.details.lat = lat;
                                 canonical.details.lng = lng;
                                 canonical.details.radius = radius;
-                                setTimelineItems(this.id, "details", { lat, lng, radius });
+                                save();
                             }
                         );
 
@@ -162,10 +179,14 @@ export class LocationItem extends TimelineItem {
                             <input
                                 type="text"
                                 value={this.details.title ?? ""}
-                                onInput={(e) => props.onChange("title", e.currentTarget.value)}
+                                onInput={(e) => {
+                                    props.onChange("title", e.currentTarget.value);
+                                    this.details.title = e.currentTarget.value;
+                                }}
                             />
                             <label>Title</label>
                         </div>
+
                         <div
                             class="padding"
                             style={{ width: "100%", height: "15em" }}
@@ -180,6 +201,9 @@ export class LocationItem extends TimelineItem {
                                         props.onChange("lat", lat);
                                         props.onChange("lng", lng);
                                         props.onChange("radius", radius);
+                                        this.details.lat = lat;
+                                        this.details.lng = lng;
+                                        this.details.radius = radius;
                                     }
                                 );
                             }}
@@ -205,6 +229,7 @@ export class LocationItem extends TimelineItem {
         );
     }
 
+
     prepareFromFields(fields: Record<string, any>) {
         let ref = fields.ref;
 
@@ -218,7 +243,6 @@ export class LocationItem extends TimelineItem {
                     radius: fields.radius ?? 100,
                 }
             });
-            setLocations(loc.id, loc);
             addLocation(loc);
             ref = loc.id;
         }

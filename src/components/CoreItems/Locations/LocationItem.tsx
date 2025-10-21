@@ -22,21 +22,34 @@ export class TimelineLocationItem extends TimelineItem {
     static ListLocations() {
         return (
             <article class="border">
-                <header class="left-margin right-margin">
-                    <nav>
-                        <h2 class="max"> Locations </h2>
-                        <i>location_on</i>
-                    </nav>
-                </header>
-                <ul class="list border no-space no-margin">
-                    <For each={Object.values(locations)}>
-                        {(loc) => (
-                            <li>
-                                <A href={`/location/${loc.id}`}>{loc.title}</A>
-                            </li>
-                        )}
-                    </For>
-                </ul>
+                <div class="responsive scroll surface">
+                    <table>
+                        <thead class="fixed">
+                            <tr>
+                                <th class="no-border">
+                                    <header class="no-padding">
+                                        <nav>
+                                            <h2 class="max"> Locations </h2>
+                                            <i>location_on</i>
+                                        </nav>
+                                    </header>
+
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <For each={Object.values(locations)}>
+                                {(loc) => (
+                                    <tr>
+                                        <td>
+                                            <A href={`/location/${loc.id}`}>{loc.title}</A>
+                                        </td>
+                                    </tr>
+                                )}
+                            </For>
+                        </tbody>
+                    </table>
+                </div>
             </article>
         );
     }

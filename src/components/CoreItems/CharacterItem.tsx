@@ -1,5 +1,5 @@
 import { For } from "solid-js";
-import { characters, setTimelineItems } from "../../stores";
+import { characters, locations, setTimelineItems } from "../../stores";
 import { TimelineItem, TimelineItemProps } from "./TimelineItem";
 import { A } from "@solidjs/router";
 import InlineEditable from "../InlineEditable";
@@ -13,23 +13,37 @@ export class CharacterItem extends TimelineItem {
     }
 
     static ListCharacters() {
-        return <article class="border">
-            <header class="left-margin right-margin">
-                <nav>
-                    <h2 class="max"> Characters </h2>
-                    <i>people</i>
-                </nav>
-            </header>
-            <ul class="list border no-space no-margin">
-                <For each={Object.values(characters)}>
-                    {(chr) => (
-                        <li>
-                            <A href={"/character/" + chr.id}>{chr.title}</A>
-                        </li>
-                    )}
-                </For>
-            </ul>
-        </article>
+        return (
+            <article class="border">
+                <div class="responsive scroll surface">
+                    <table>
+                        <thead class="fixed">
+                            <tr>
+                                <th class="no-border">
+                                    <header class="no-padding">
+                                        <nav>
+                                            <h2 class="max"> Locations </h2>
+                                            <i>location_on</i>
+                                        </nav>
+                                    </header>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <For each={Object.values(characters)}>
+                                {(chr) => (
+                                    <tr>
+                                        <td>
+                                            <A href={"/character/" + chr.id}>{chr.title}</A>
+                                        </td>
+                                    </tr>
+                                )}
+                            </For>
+                        </tbody>
+                    </table>
+                </div>
+            </article>
+        );
     }
 
     constructor(props: Omit<TimelineItemProps, "type"> & { traits?: string[] }) {

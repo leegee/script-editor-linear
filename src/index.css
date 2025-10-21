@@ -13,16 +13,6 @@ h5,
 h6 {
     margin-block-start: 0 !important;
     zoom: 60%;
-    opacity: 90%;
-}
-
-h1:hover,
-h2:hover,
-h3:hover,
-h4:hover,
-h5:hover,
-h6:hover {
-    opacity: 100%;
 }
 
 .character-name {

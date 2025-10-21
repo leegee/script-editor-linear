@@ -160,7 +160,7 @@ export default function DragDropList<T extends HasIdAndDuration>(props: DragDrop
   }
 
   return (
-    <ul class="drag-list list border no-space">
+    <ul class="drag-list list border no-space scroll">
       <For each={props.items}>
         {(item, idx: Accessor<number>) => {
           const pos = order().indexOf(idx());

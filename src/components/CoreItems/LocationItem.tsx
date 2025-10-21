@@ -1,7 +1,6 @@
 import "ol/ol.css";
 import { createSignal, For } from "solid-js";
 import { A } from "@solidjs/router";
-import { addLocation, locations, setLocations, setTimelineItems } from "../../stores";
 import Map from "ol/Map";
 import View from "ol/View";
 import { Tile as TileLayer, Vector as VectorLayer } from "ol/layer";
@@ -12,6 +11,7 @@ import { Feature } from "ol";
 import Point from "ol/geom/Point";
 import Circle from "ol/geom/Circle";
 import { Style, Fill, Stroke, Icon } from "ol/style";
+import { addLocation, locations, setLocations, setTimelineItems } from "../../stores";
 import { TimelineItem, TimelineItemProps } from "./TimelineItem";
 import InlineEditable from "../InlineEditable";
 

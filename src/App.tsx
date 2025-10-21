@@ -55,7 +55,7 @@ export default function App(props: ParentProps) {
             <nav class="bottom" style="height: 5em">
                 <A href="/"><i>list_alt</i></A>
                 <A href="/"><i>view_timeline</i></A>
-                <A href="/"><i>settings</i></A>
+                <A href="/settings"><i>settings</i></A>
             </nav>
 
         </>

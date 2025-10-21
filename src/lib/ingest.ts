@@ -1,7 +1,7 @@
 import { reviveItem } from "../components/CoreItems";
 import { CharacterItem } from "../components/CoreItems/CharacterItem";
 import { LocationItem } from "../components/CoreItems/LocationItem";
-import { TimelineItemProps, TimelineItem } from "../components/CoreItems/TimelineItem";
+import { TimelineItemProps } from "../components/CoreItems/TimelineItem";
 import { storage } from "../db";
 import { setTimelineItems, setTimelineSequence, setLocations, setCharacters } from "../stores";
 

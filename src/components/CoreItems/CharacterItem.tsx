@@ -1,27 +1,37 @@
 import { For } from "solid-js";
-import { characters } from "../../stores";
-import { TimelineItem } from "./TimelineItem";
+import { characters, setTimelineItems } from "../../stores";
+import { TimelineItem, TimelineItemProps } from "./TimelineItem";
 import { A } from "@solidjs/router";
+import InlineEditable from "../InlineEditable";
 
 export class CharacterItem extends TimelineItem {
-    name!: string;
+    declare title: string;
     traits?: string[];
 
     static revive(obj: any) {
         return new CharacterItem(obj);
     }
 
-    constructor(props: { id: string; name: string; traits?: string[] }) {
+    constructor(props: Omit<TimelineItemProps, "type"> & { traits?: string[] }) {
         super({
             ...props,
             type: 'character'
         });
-        this.name = props.name;
         this.traits = props.traits;
     }
 
-    renderCompact() { return this.name; }
-    renderFull() { return `${this.name} [${this.traits?.join(", ")}]`; }
+    renderCompact() { return this.title; }
+
+    renderFull() {
+        return <article>
+            <h4>
+                <InlineEditable
+                    value={this.title}
+                    onUpdate={(v) => setTimelineItems(this.title, "title", v)}
+                />
+            </h4>
+        </article>;
+    }
 }
 
 export function ListCharacters() {
@@ -29,9 +39,9 @@ export function ListCharacters() {
         <h2>Characters</h2>
         <ul class="list border no-space">
             <For each={Object.values(characters)}>
-                {(loc) => (
+                {(chr) => (
                     <li>
-                        <A href={"/character/" + loc.id}>{loc.name}</A>
+                        <A href={"/character/" + chr.id}>{chr.title}</A>
                     </li>
                 )}
             </For>

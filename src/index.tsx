@@ -9,6 +9,7 @@ import NewTimelineItemSelector from './components/NewTimelineItemSelector';
 import TimelineItemView from './components/views/TimelineItemView';
 import CharacterView from './components/views/CharacterView';
 import LocationView from './components/views/LocationView';
+import SettingsView from './components/views/SettingsView';
 
 const root = document.getElementById('root');
 
@@ -25,6 +26,7 @@ render(
     <Route path="/item/:id" component={TimelineItemView} />
     <Route path="/character/:id" component={CharacterView} />
     <Route path="/location/:id" component={LocationView} />
+    <Route path="/settings" component={SettingsView} />
   </HashRouter>,
   root!
 );

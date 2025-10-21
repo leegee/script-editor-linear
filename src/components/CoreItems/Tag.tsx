@@ -1,6 +1,6 @@
 export class Tag {
     id!: string;
-    name!: string;
+    title!: string;
     color?: string;
     notes?: string[];
 
@@ -8,7 +8,7 @@ export class Tag {
         Object.assign(this, data);
     }
 
-    renderCompact() { return this.name; }
+    renderCompact() { return this.title; }
 }
 
 export function reviveTag(obj: any) { return new Tag(obj); }

@@ -1,11 +1,11 @@
 import { TimelineItemProps, CharacterItem, LocationItem } from "../components/CoreItems/";
 
 export const sampleCharacters: CharacterItem[] = [
-    new CharacterItem({ id: "Narrator", name: "Narrator" }),
-    new CharacterItem({ id: "FatherBear", name: "Father Bear" }),
-    new CharacterItem({ id: "MotherBear", name: "Mother Bear" }),
-    new CharacterItem({ id: "BabyBear", name: "Baby Bear" }),
-    new CharacterItem({ id: "Goldilocks", name: "Goldilocks" }),
+    new CharacterItem({ id: "Narrator", title: "Narrator" }),
+    new CharacterItem({ id: "FatherBear", title: "Father Bear" }),
+    new CharacterItem({ id: "MotherBear", title: "Mother Bear" }),
+    new CharacterItem({ id: "BabyBear", title: "Baby Bear" }),
+    new CharacterItem({ id: "Goldilocks", title: "Goldilocks" }),
 ];
 
 export const sampleLocations: LocationItem[] = [

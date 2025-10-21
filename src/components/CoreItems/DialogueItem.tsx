@@ -11,7 +11,7 @@ export class DialogueItem extends TimelineItem {
 
     renderCompact() {
         const char = characters[this.details.characterId];
-        const speakerName = char?.name ?? "Unknown Speaker";
+        const speakerName = char?.title ?? "Unknown Speaker";
 
         return (
             <div class="timeline-item">
@@ -29,7 +29,7 @@ export class DialogueItem extends TimelineItem {
 
     renderFull() {
         const char = characters[this.details.characterId];
-        const speakerName = char?.name ?? "Unknown Speaker";
+        const speakerName = char?.title ?? "Unknown Speaker";
 
         return (
             <div class="timeline-item">
@@ -80,7 +80,7 @@ export class DialogueItem extends TimelineItem {
                         >
                             <option value="" disabled>Select a character</option>
                             {Object.values(characters).map((char) => (
-                                <option value={char.id}>{char.name}</option>
+                                <option value={char.id}>{char.title}</option>
                             ))}
                         </select>
                         <label>Existing Character</label>
@@ -116,7 +116,7 @@ export class DialogueItem extends TimelineItem {
             const id = fields.characterName.replace(/[^\p{L}\p{N}_]/gu, "");
             const newChar = new CharacterItem({
                 id,
-                name: fields.characterName,
+                title: fields.characterName,
             });
             setCharacters(id, newChar);
             addCharacter(newChar);

@@ -78,7 +78,7 @@ export async function createTimelineItem(
     setTimelineItems(item.id, item);
     await storage.put("timelineItems", item);
 
-    // Insert into timeline sequence ---
+    // Insert into timeline sequence 
     const seq = [...timelineSequence()];
     if (
         options.insertAtIndex !== undefined &&

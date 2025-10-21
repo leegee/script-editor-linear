@@ -32,7 +32,7 @@ export default function App(props: ParentProps) {
                         <div class="s12 m8 l8" style='height: auto; overflow-y: auto'>
 
                             <DragDropList
-                                items={items()}
+                                items={items}
                                 showItem={(item) => navigate(`/item/${item.id}`)}
                                 onInsert={(pos: number) => navigate(`/new/${pos}`)}
                                 onReorder={(newOrder) => {

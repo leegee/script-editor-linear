@@ -18,7 +18,11 @@ export async function loadAllTimelineItems() {
     if (savedSeq && savedSeq.length) setTimelineSequence(savedSeq);
 }
 
-const orderedItems = createMemo(() => timelineSequence().map(id => timelineItems[id]).filter(Boolean));
+const orderedItems = createMemo(() => {
+    return timelineSequence()
+        .map(id => timelineItems[id]) // reactive read of each id
+        .filter((item): item is TimelineItem => !!item); // filter out undefined
+});
 
 // CRUD:
 export async function addScriptItem(item: TimelineItem) {

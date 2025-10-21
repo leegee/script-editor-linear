@@ -1,9 +1,11 @@
 import "./DragDropList.scss";
 import { JSX, createSignal, createEffect, For, Accessor } from "solid-js";
+import { useNavigate } from "@solidjs/router";
+import { List } from '@solid-primitives/list';
+
 import DragHandleWithMenu from "./DragHandleWithMenu";
 import { duplicateTimelineItem } from "../lib/duplicateTimelineItem";
 import { deleteTimelineItem } from "../lib/createTimelineItem";
-import { useNavigate } from "@solidjs/router";
 import { timelineSequence } from "../stores";
 
 interface HasIdAndDuration {
@@ -13,7 +15,7 @@ interface HasIdAndDuration {
 }
 
 interface DragDropListProps<T extends HasIdAndDuration> {
-  items: T[];
+  items: Accessor<T[]>;
   showItem: (item: T) => void;
   onReorder?: (newOrder: number[]) => void;
   onInsert: (pos: number) => void;
@@ -30,7 +32,7 @@ function formatTime(totalSeconds: number): string {
 
 export default function DragDropList<T extends HasIdAndDuration>(props: DragDropListProps<T>) {
   const navigate = useNavigate();
-  const [order, setOrder] = createSignal(props.items.map((_, i) => i));
+  const [order, setOrder] = createSignal(props.items().map((_, i) => i));
   const [draggingIndex, setDraggingIndex] = createSignal<number | null>(null);
   const [overIndex, setOverIndex] = createSignal<number | null>(null);
   const [selectedId, setSelectedId] = createSignal<string | null>(null);
@@ -41,16 +43,19 @@ export default function DragDropList<T extends HasIdAndDuration>(props: DragDrop
 
   // Reconcile order with changes in props.items
   createEffect(() => {
-    const newIds = props.items.map(i => i.id);
-    const oldIds = order().map(i => props.items[i]?.id).filter(Boolean) as string[];
+    const newIds = props.items().map(i => i.id);
+    const oldIds = order().map(i => props.items()[i]?.id).filter(Boolean) as string[];
 
     const kept = oldIds.filter(id => newIds.includes(id));
     const added = newIds.filter(id => !kept.includes(id));
-    const nextOrder = [...kept, ...added].map(id => newIds.indexOf(id));
+
+    const addedIndices = added.map(id => newIds.indexOf(id));
+    const nextOrder = [...kept.map(id => newIds.indexOf(id)), ...addedIndices];
 
     const changed = nextOrder.length !== order().length || nextOrder.some((v, i) => v !== order()[i]);
     if (changed) setOrder(nextOrder);
   });
+
 
   function selectItem(item: T, index: number) {
     setSelectedId(item.id);
@@ -61,24 +66,24 @@ export default function DragDropList<T extends HasIdAndDuration>(props: DragDrop
   // Keyboard navigation
   createEffect(() => {
     function handleKey(e: KeyboardEvent) {
-      if (!props.items.length) return;
+      if (!props.items().length) return;
 
       const currentId = selectedId();
-      let currentIndex = props.items.findIndex(i => i.id === currentId);
+      let currentIndex = props.items().findIndex(i => i.id === currentId);
       if (currentIndex === -1) currentIndex = 0;
 
       if (e.key === "ArrowDown" || e.key === "ArrowUp") {
         e.preventDefault();
         const delta = e.key === "ArrowDown" ? 1 : -1;
         const nextIndex = Math.min(
-          props.items.length - 1,
+          props.items().length - 1,
           Math.max(0, currentIndex + delta)
         );
-        selectItem(props.items[nextIndex], nextIndex);
+        selectItem(props.items()[nextIndex], nextIndex);
       } else if (e.key === "Enter") {
         e.preventDefault();
-        selectItem(props.items[currentIndex], currentIndex);
-        props.showItem(props.items[currentIndex])
+        selectItem(props.items()[currentIndex], currentIndex);
+        props.showItem(props.items()[currentIndex])
       }
     }
 
@@ -159,23 +164,20 @@ export default function DragDropList<T extends HasIdAndDuration>(props: DragDrop
     document.addEventListener("keydown", cancelDrag);
   }
 
-  let displayTime = '00:00';
-  let pos = 0;
-
   return (
     <ul class="drag-list list border no-space scroll">
 
-      <For each={props.items}>
+      <List each={props.items()}>
         {(item, idx: Accessor<number>) => {
           // Get the item's position in the current order
-          const pos = order().indexOf(idx());
+          const pos = idx();
           if (pos === -1) return null; // safety check
 
           const isDragging = draggingIndex() === pos;
           const isPlaceholder = overIndex() === pos && draggingIndex() !== null;
 
           // Compute cumulative time for this item
-          const cumulativeSeconds = props.items
+          const cumulativeSeconds = props.items()
             .slice(0, pos)
             .reduce((sum, i) => sum + (i.duration ?? 0), 0);
           const displayTime = formatTime(cumulativeSeconds);
@@ -188,41 +190,43 @@ export default function DragDropList<T extends HasIdAndDuration>(props: DragDrop
             <li
               data-index={pos}
               class="dnd-item"
-              onClick={() => selectItem(item, pos)}
+              onClick={() => selectItem(item(), pos)}
               classList={{
-                selected: selectedId() === item.id,
+                selected: selectedId() === item().id,
                 dragging: isDragging,
                 placeholder: isPlaceholder,
                 "drag-over": overIndex() === pos
               }}
             >
-              <div class="item-content" onClick={() => props.showItem(item)}>
+              <div class="item-content" onClick={() => props.showItem(item())}>
                 <small class="time-label">{displayTime}</small>
-                {item.renderCompact() ?? null}
+                {item().renderCompact() ?? null}
               </div>
 
               <DragHandleWithMenu
                 class="show-on-hover"
                 onPointerDown={(e) => startDrag(pos, e)}
-                onDuplicate={() => duplicateTimelineItem(item.id, { insertAtIndex: insertAfter })}
+                onDuplicate={() => duplicateTimelineItem(item().id, { insertAtIndex: insertAfter })}
                 onInsertBefore={() => props.onInsert(insertBefore)}
                 onInsertAfter={() => props.onInsert(insertAfter)}
-                onDelete={() => { deleteTimelineItem(item.id); navigate('/') }}
+                onDelete={() => { deleteTimelineItem(item().id); navigate('/') }}
               />
             </li>
           );
         }}
-      </For>
+      </List>
 
       {/* NEW ITEM placeholder */}
-      <li class="dnd-item">
-        <div class="item-content" onClick={() => props.onInsert(timelineSequence().length)}>
-          <small class="time-label">{formatTime(
-            props.items.reduce((sum, i) => sum + (i.duration ?? 0), 0)
-          )}</small>
-          + NEW ITEM
-        </div>
-      </li>
+      {(() => (
+        <li class="dnd-item">
+          <div class="item-content" onClick={() => props.onInsert(timelineSequence().length)}>
+            <small class="time-label">{formatTime(
+              props.items().reduce((sum, i) => sum + (i.duration ?? 0), 0)
+            )}</small>
+            + NEW ITEM
+          </div>
+        </li>
+      ))()}
 
       {/* Floating drag preview */}
       {draggingIndex() !== null && dragX() !== null && dragY() !== null && (
@@ -230,7 +234,7 @@ export default function DragDropList<T extends HasIdAndDuration>(props: DragDrop
           class="dnd-item floating large-elevate border no-margin no-padding secondary"
           classList={{ dragging: draggingIndex() !== null }}
           style={{ top: `${dragY()! - offsetY}px` }}>
-          {props.items[order()[draggingIndex()!]].renderCompact() ?? null}
+          {props.items()[order()[draggingIndex()!]].renderCompact() ?? null}
         </li>
       )}
     </ul>

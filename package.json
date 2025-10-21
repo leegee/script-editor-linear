@@ -25,6 +25,7 @@
     "vitest": "^3.0.0"
   },
   "dependencies": {
+    "@solid-primitives/list": "^0.1.2",
     "@solid-primitives/storage": "^4.3.3",
     "beercss": "^3.12.11",
     "dexie": "^4.2.1",

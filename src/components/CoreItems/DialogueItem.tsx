@@ -27,6 +27,24 @@ export class DialogueItem extends TimelineItem {
         );
     }
 
+    renderFull() {
+        const char = characters[this.details.characterId];
+        const speakerName = char?.name ?? "Unknown Speaker";
+
+        return (
+            <div class="timeline-item">
+                <span class="character-name">
+                    {speakerName}
+                </span>
+                <InlineEditable
+                    class="dialogueText"
+                    value={this.details.text}
+                    onUpdate={(v) => setTimelineItems(this.id, "details", "text", v)}
+                />
+            </div>
+        );
+    }
+
     renderCreateNew(props: { duration?: number; onChange: (field: string, value: any) => void }) {
         const [mode, setMode] = createSignal<"select" | "new">("select");
 

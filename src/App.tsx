@@ -3,9 +3,7 @@ import { A, useNavigate } from "@solidjs/router";
 import DragDropList from "./components/DragDropList";
 import { loadAll } from "./stores";
 import { timelineItems, timelineSequence, reorderTimeline } from "./stores/timelineItems";
-import { ingest } from "./lib/ingest";
-import { ViewModeSwitch } from "./components/ViewModeSwitch";
-import { sampleScript, sampleCharacters, sampleLocations } from "./scripts/TheThreeBears";
+import { ingestJSON } from "./lib/ingest";
 import { storage } from "./db";
 
 export default function App(props: ParentProps) {
@@ -14,7 +12,7 @@ export default function App(props: ParentProps) {
 
     onMount(async () => {
         if ((await storage.getKeys("timelineItems")).length === 0) {
-            await ingest(sampleScript, sampleCharacters, sampleLocations);
+            await ingestJSON('/the-three-bears.json');
         }
 
         await loadAll();

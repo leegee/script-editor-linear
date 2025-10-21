@@ -5,7 +5,16 @@ import { TimelineItemProps } from "../components/CoreItems/TimelineItem";
 import { storage } from "../db";
 import { setTimelineItems, setTimelineSequence, setLocations, setCharacters } from "../stores";
 
-export async function ingest(
+
+export async function ingestJSON(jsonPath: string) {
+    const response = await fetch(jsonPath);
+    const data = await response.json();
+
+    await _ingest(data.script, data.characters, data.locations);
+}
+
+
+async function _ingest(
     sampleScript: TimelineItemProps[],
     sampleCharacters: CharacterItem[],
     sampleLocations: LocationItem[],

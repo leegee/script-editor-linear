@@ -140,7 +140,19 @@ export class LocationItem extends TimelineItem {
                     lng={lng}
                     radius={radiusMeters}
                     onChange={(newLat, newLng, newRadius) => {
-                        updateLocation(canonical.id, { details: { lat: newLat, lng: newLng, radius: newRadius } });
+                        // Update canonical object in the store
+                        updateLocation(canonical.id, {
+                            details: {
+                                lat: newLat,
+                                lng: newLng,
+                                radius: newRadius,
+                            }
+                        });
+
+                        // Also update LocationItem details so UI stays reactive
+                        this.details.lat = newLat;
+                        this.details.lng = newLng;
+                        this.details.radius = newRadius;
                     }}
                 />
             </fieldset>

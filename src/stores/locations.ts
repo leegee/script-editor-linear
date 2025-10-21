@@ -23,6 +23,7 @@ export async function addLocation(item: LocationItem) {
 }
 
 export async function updateLocation(id: string, updatedFields: Partial<LocationItem>) {
+    console.log('updateLocations ', id, updatedFields)
     setLocations(id, prev => ({
         ...(prev ?? {}),
         ...updatedFields

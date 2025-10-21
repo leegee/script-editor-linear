@@ -10,6 +10,7 @@ export async function initNewScript() {
 }
 
 export async function loadSampleScript() {
+    console.log('loadSampleScript enter');
     await loadJSONfromPath('/the-three-bears.json');
 }
 
@@ -49,7 +50,7 @@ export async function ingest(
     sampleCharacters: CharacterItem[],
     sampleLocations: LocationItem[],
 ) {
-    console.log("Starting ingestion...");
+    console.log("io/ingest: starting ingestion...");
 
     // Clear stores and tables
     await Promise.all([

@@ -14,7 +14,7 @@ export * from "./notes";
  * Loads all data from IndexedDB into the stores.
  */
 export async function loadAll() {
-    console.log('LOAD ALL')
+    console.log('stores/loadAll: Enter')
     await Promise.all([
         loadAllTimelineItems(),
         loadAllLocations(),
@@ -22,6 +22,6 @@ export async function loadAll() {
         loadAllTags(),
         loadAllNotes(),
     ]);
-    console.log("All stores loaded from IndexedDB.");
+    console.log("stores/loadAll: all stores loaded from IndexedDB.");
 }
 

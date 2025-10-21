@@ -3,4 +3,10 @@
     display: inline-flex;
     align-items: center;
     opacity: 0;
+
+    .menu {
+        position: absolute;
+        left: -7em;
+        width: 7em;
+    }
 }

@@ -27,7 +27,7 @@ export default function DragHandleWithMenu(props: DragHandleWithMenuProps) {
                 <span>⋮</span>
 
                 {menuOpen() && (
-                    <menu class="overflow-menu border surface-bright secondary elevate" style={{ 'min-width': '120px', }} >
+                    <menu class={"border surface-bright secondary elevate " + styles.menu} style={{ 'min-width': '120px', }} >
                         {props.onDuplicate && <li onClick={props.onDuplicate}>Duplicate</li>}
                         {props.onInsertBefore && <li onClick={props.onInsertBefore}>New Before</li>}
                         {props.onInsertAfter && <li onClick={props.onInsertAfter}>New After</li>}
@@ -35,7 +35,7 @@ export default function DragHandleWithMenu(props: DragHandleWithMenuProps) {
                     </menu>
                 )}
             </button>
-        </div >
+        </div>
 
     );
 }

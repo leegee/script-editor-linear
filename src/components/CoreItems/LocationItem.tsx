@@ -1,19 +1,10 @@
 import "ol/ol.css";
 import { createSignal, For } from "solid-js";
 import { A } from "@solidjs/router";
-import Map from "ol/Map";
-import View from "ol/View";
-import { Tile as TileLayer, Vector as VectorLayer } from "ol/layer";
-import { OSM } from "ol/source";
-import VectorSource from "ol/source/Vector";
-import { fromLonLat } from "ol/proj";
-import { Feature } from "ol";
-import Point from "ol/geom/Point";
-import Circle from "ol/geom/Circle";
-import { Style, Fill, Stroke, Icon } from "ol/style";
-import { addLocation, locations, setLocations, setTimelineItems, updateLocation } from "../../stores";
+import { addLocation, locations, setLocations, updateLocation } from "../../stores";
 import { TimelineItem, TimelineItemProps } from "./TimelineItem";
 import InlineEditable from "../InlineEditable";
+import { LocationMap } from "./LocationItem/LocationMap";
 
 export class LocationItem extends TimelineItem {
     mapContainer: HTMLDivElement | null = null;
@@ -133,12 +124,10 @@ export class LocationItem extends TimelineItem {
 
         return (
             <fieldset class="location padding">
-                <h4 class="field" style="block-size: unset">
+                <h4 class="field">
                     <InlineEditable
                         value={canonical.title ?? "Untitled Location"}
-                        onUpdate={(v) => {
-                            updateLocation(canonical.id, { title: v });
-                        }}
+                        onUpdate={(v) => updateLocation(canonical.id, { title: v })}
                     />
                 </h4>
 
@@ -146,49 +135,17 @@ export class LocationItem extends TimelineItem {
                     Lat: {lat}, Lng: {lng}, Radius: {radiusMeters} m
                 </div>
 
-                <div
-                    class="padding"
-                    style={{ width: "100%", height: "15em" }}
-                    ref={(el) => {
-                        if (!el) return;
-                        this.mapContainer = el;
-                        if (this.mapContainer.dataset.mapInit) return;
-
-                        const center = fromLonLat([lng, lat]);
-
-                        const marker = new Feature({ geometry: new Point(center) });
-                        marker.setStyle(
-                            new Style({
-                                image: new Icon({
-                                    src: "https://cdn-icons-png.flaticon.com/512/684/684908.png",
-                                    scale: 0.04,
-                                    anchor: [0.5, 1],
-                                }),
-                            })
-                        );
-
-                        const circleFeature = new Feature({ geometry: new Circle(center, radiusMeters) });
-                        circleFeature.setStyle(
-                            new Style({
-                                stroke: new Stroke({ color: "rgba(239, 68, 68, 0.8)", width: 2 }),
-                                fill: new Fill({ color: "rgba(239, 68, 68, 0.25)" }),
-                            })
-                        );
-
-                        const vectorLayer = new VectorLayer({ source: new VectorSource({ features: [circleFeature, marker] }) });
-
-                        new Map({
-                            target: el,
-                            layers: [new TileLayer({ source: new OSM() }), vectorLayer],
-                            view: new View({ center, zoom: 14 }),
-                            controls: [],
-                        });
-
-                        this.mapContainer.dataset.mapInit = "true";
+                <LocationMap
+                    lat={lat}
+                    lng={lng}
+                    radius={radiusMeters}
+                    onChange={(newLat, newLng, newRadius) => {
+                        updateLocation(canonical.id, { details: { lat: newLat, lng: newLng, radius: newRadius } });
                     }}
-                ></div>
+                />
             </fieldset>
         );
+
     }
 
     prepareFromFields(fields: Record<string, any>) {

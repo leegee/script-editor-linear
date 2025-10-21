@@ -80,7 +80,7 @@ export default function DragDropList<T extends HasIdAndDuration>(props: DragDrop
           Math.max(0, currentIndex + delta)
         );
         selectItem(props.items()[nextIndex], nextIndex);
-      } else if (e.key === "Enter") {
+      } else if (e.key === "Enter" && !(e.currentTarget instanceof HTMLInputElement)) {
         e.preventDefault();
         selectItem(props.items()[currentIndex], currentIndex);
         props.showItem(props.items()[currentIndex])

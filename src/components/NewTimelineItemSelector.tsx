@@ -65,31 +65,32 @@ export default function NewTimelineItemSelector() {
     const itemInstance = createMemo(() => newTimelineItem(type()));
 
     return (
-        <article>
-            <fieldset class={styles.component + " padding"} style={{ position: 'fixed', "max-width": "400px" }}>
-                <header>
-                    <h3>Create a new item</h3>
-                </header>
+        <article class={styles.component + " border padding"}>
+            <header>
+                <h3>Create a new item</h3>
+            </header>
 
-                <div class="field border label">
-                    <select value={type()} onChange={e => setType(e.currentTarget.value as TimelineItemType)}>
-                        <For each={types}>
-                            {t => <option value={t.value}>{t.label}</option>}
-                        </For>
-                    </select>
-                    <label>Type</label>
-                </div>
+            <div class="field border label">
+                <select value={type()} onChange={e => setType(e.currentTarget.value as TimelineItemType)}>
+                    <For each={types}>
+                        {t => <option value={t.value}>{t.label}</option>}
+                    </For>
+                </select>
+                <label>Type</label>
+            </div>
 
-                {itemInstance().renderCreateNew({
-                    onChange: handleChange,
-                    duration: duration()
-                })}
+            {itemInstance().renderCreateNew({
+                onChange: handleChange,
+                duration: duration()
+            })}
 
-                <div class="field border label top-margin" style={{ display: "flex", gap: "8px" }}>
+            <hr />
+            <footer class="field border label no-margin no-padding">
+                <nav>
                     <button onClick={() => navigate("/")} class="transparent">Cancel</button>
                     <button onClick={handleCreate} class="primary">Create Timeline Item</button>
-                </div>
-            </fieldset>
+                </nav>
+            </footer>
         </article>
     );
 }

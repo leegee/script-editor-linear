@@ -6,6 +6,7 @@ import { TimelineItem, TimelineItemProps } from "../TimelineItem";
 import InlineEditable from "../../InlineEditable";
 import { LocationMap } from "./LocationMap";
 import { CanonicalLocation } from "./CanonicalLocation";
+import MapLinks from "./MapLinks";
 
 
 export class TimelineLocationItem extends TimelineItem {
@@ -172,7 +173,9 @@ export class TimelineLocationItem extends TimelineItem {
                 </header>
 
                 <div class="field">
-                    Lat: {lat}, Lng: {lng}, Radius: {radius} m
+                    Lat: {lat} <br />
+                    Lng: {lng} <br />
+                    Radius: {radius} m
                 </div>
 
                 <LocationMap
@@ -185,6 +188,8 @@ export class TimelineLocationItem extends TimelineItem {
                         })
                     }
                 />
+
+                <MapLinks lat={lat} lng={lng} />
             </article>
         );
     }

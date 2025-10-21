@@ -1,7 +1,7 @@
 import { TimelineItemProps, TimelineItem, ActItem, SceneItem, DialogueItem, TimelineLocationItem, TransitionItem } from "../components/CoreItems";
 import { setTimelineItems, timelineItems, setTimelineSequence, timelineSequence, locations, addLocation } from "../stores";
 import { storage } from "../db";
-import { CanonicalLocation } from "../components/CoreItems/LocationItem/CanonicalLocation";
+import { CanonicalLocation } from "../components/CoreItems/Locations/CanonicalLocation";
 
 interface CreateTimelineItemOptions {
     insertAtIndex?: number;

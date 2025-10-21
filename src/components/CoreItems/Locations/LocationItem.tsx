@@ -1,11 +1,11 @@
 import "ol/ol.css";
 import { createSignal, For } from "solid-js";
 import { A } from "@solidjs/router";
-import { locations, setLocations, addLocation, updateLocation } from "../../stores";
-import { TimelineItem, TimelineItemProps } from "./TimelineItem";
-import InlineEditable from "../InlineEditable";
-import { LocationMap } from "./LocationItem/LocationMap";
-import { CanonicalLocation } from "./LocationItem/CanonicalLocation";
+import { locations, setLocations, addLocation, updateLocation } from "../../../stores";
+import { TimelineItem, TimelineItemProps } from "../TimelineItem";
+import InlineEditable from "../../InlineEditable";
+import { LocationMap } from "./LocationMap";
+import { CanonicalLocation } from "./CanonicalLocation";
 
 
 export class TimelineLocationItem extends TimelineItem {

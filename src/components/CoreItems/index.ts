@@ -1,6 +1,6 @@
 import { ActItem } from './ActItem';
 import { DialogueItem } from './DialogueItem';
-import { TimelineLocationItem } from './LocationItem';
+import { TimelineLocationItem } from './Locations/LocationItem';
 import { SceneItem } from './SceneItem';
 import { TimelineItem } from './TimelineItem';
 import { TransitionItem } from './TransitionItem';
@@ -8,7 +8,7 @@ import { TransitionItem } from './TransitionItem';
 export * from './ActItem';
 export * from './CharacterItem';
 export * from './DialogueItem';
-export * from './LocationItem';
+export * from './Locations/LocationItem';
 export * from './Note';
 export * from './SceneItem';
 export * from './Tag';

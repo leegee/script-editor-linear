@@ -1,6 +1,6 @@
 import { createStore, unwrap } from "solid-js/store";
 import { storage } from "../db";
-import { CanonicalLocation } from "../components/CoreItems/LocationItem/CanonicalLocation";
+import { CanonicalLocation } from "../components/CoreItems/Locations/CanonicalLocation";
 import { TimelineLocationItem } from "../components/CoreItems";
 
 export const [locations, setLocations] = createStore<Record<string, CanonicalLocation>>({});

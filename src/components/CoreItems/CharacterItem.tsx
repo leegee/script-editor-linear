@@ -13,9 +13,14 @@ export class CharacterItem extends TimelineItem {
     }
 
     static ListCharacters() {
-        return <fieldset>
-            <h2>Characters</h2>
-            <ul class="list border no-space">
+        return <article class="border">
+            <header class="left-margin right-margin">
+                <nav>
+                    <h2 class="max"> Characters </h2>
+                    <i>people</i>
+                </nav>
+            </header>
+            <ul class="list border no-space no-margin">
                 <For each={Object.values(characters)}>
                     {(chr) => (
                         <li>
@@ -24,7 +29,7 @@ export class CharacterItem extends TimelineItem {
                     )}
                 </For>
             </ul>
-        </fieldset>
+        </article>
     }
 
     constructor(props: Omit<TimelineItemProps, "type"> & { traits?: string[] }) {

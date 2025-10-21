@@ -21,9 +21,14 @@ export class TimelineLocationItem extends TimelineItem {
 
     static ListLocations() {
         return (
-            <fieldset>
-                <h2>Locations</h2>
-                <ul class="list border no-space">
+            <article class="border">
+                <header class="left-margin right-margin">
+                    <nav>
+                        <h2 class="max"> Locations </h2>
+                        <i>location_on</i>
+                    </nav>
+                </header>
+                <ul class="list border no-space no-margin">
                     <For each={Object.values(locations)}>
                         {(loc) => (
                             <li>
@@ -32,7 +37,7 @@ export class TimelineLocationItem extends TimelineItem {
                         )}
                     </For>
                 </ul>
-            </fieldset>
+            </article>
         );
     }
 
@@ -67,15 +72,18 @@ export class TimelineLocationItem extends TimelineItem {
 
         return (
             <>
-                <div class="field border label max">
-                    <select
-                        value={mode()}
-                        onChange={(e) => setMode(e.currentTarget.value as "select" | "new")}
-                    >
-                        <option value="select">Select Existing</option>
-                        <option value="new">Create New</option>
-                    </select>
-                    <label>Mode</label>
+                <div class="field border middle-align max">
+                    <label class="switch icon">
+                        <input
+                            type="checkbox"
+                            checked={mode() === "new"}
+                            onChange={(e) => setMode(e.currentTarget.checked ? "new" : "select")}
+                        />
+                        <span>
+                            <i>add_location</i>
+                        </span>
+                    </label>
+                    <span class='left-padding'>{mode() === "new" ? "Create New" : "Select Existing"}</span>
                 </div>
 
                 {mode() === "new" && (
@@ -83,6 +91,7 @@ export class TimelineLocationItem extends TimelineItem {
                         <div class="field border label max">
                             <input
                                 type="text"
+                                placeholder="Title"
                                 onInput={(e) => props.onChange("title", e.currentTarget.value)}
                             />
                             <label>Title</label>

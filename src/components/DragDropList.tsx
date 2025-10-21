@@ -37,8 +37,6 @@ export default function DragDropList<T extends HasIdAndDuration>(props: DragDrop
   const [dragX, setDragX] = createSignal<number | null>(null);
   const [dragY, setDragY] = createSignal<number | null>(null);
   let floatingRef: HTMLElement | undefined;
-
-  let offsetX = 0;
   let offsetY = 0;
 
   // Reconcile order with changes in props.items
@@ -54,13 +52,10 @@ export default function DragDropList<T extends HasIdAndDuration>(props: DragDrop
     if (changed) setOrder(nextOrder);
   });
 
-  // Function to handle click/selection logic
   function selectItem(item: T, index: number) {
     setSelectedId(item.id);
-    // Scroll into view
     const el = document.querySelector(`[data-index="${index}"]`) as HTMLElement | null;
     el?.scrollIntoView({ block: "nearest" });
-    // Any other click logic can go here
   }
 
   // Keyboard navigation
@@ -102,7 +97,6 @@ export default function DragDropList<T extends HasIdAndDuration>(props: DragDrop
     targetEl.classList.add("clicked");
     targetEl.setPointerCapture?.(e.pointerId);
     const rect = targetEl.getBoundingClientRect();
-    offsetX = e.clientX - rect.left;
     offsetY = e.clientY - rect.top;
 
     function move(me: PointerEvent) {
@@ -191,6 +185,12 @@ export default function DragDropList<T extends HasIdAndDuration>(props: DragDrop
                 "drag-over": overIndex() === pos
               }}
             >
+
+              <div class="item-content" onClick={() => props.showItem(item)}>
+                <small class="time-label">{displayTime}</small>
+                {item.renderCompact() ?? null}
+              </div>
+
               <DragHandleWithMenu
                 class="show-on-hover"
                 onPointerDown={(e) => startDrag(pos, e)}
@@ -199,11 +199,6 @@ export default function DragDropList<T extends HasIdAndDuration>(props: DragDrop
                 onInsertAfter={() => props.onInsert(pos + 1)}
                 onDelete={() => { deleteTimelineItem(item.id); navigate('/') }}
               />
-
-              <div class="item-content" onClick={() => props.showItem(item)}>
-                {item.renderCompact() ?? null}
-                <small class="time-label">{displayTime}</small>
-              </div>
             </li>
           );
         }}

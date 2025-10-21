@@ -1,4 +1,4 @@
-import { createStore } from "solid-js/store";
+import { createStore, unwrap } from "solid-js/store";
 import { CharacterItem, LocationItem } from "../components/CoreItems/";
 import { storage } from "../db";
 
@@ -37,7 +37,7 @@ export async function updateCharacters(id: string, updatedFields: Partial<Charac
         ...updatedFields
     }));
 
-    const loc = JSON.parse(JSON.stringify(characters[id]));
+    const loc = unwrap(characters[id]);
     const updated = { ...loc, ...updatedFields };
 
     await storage.put("locations", updated);

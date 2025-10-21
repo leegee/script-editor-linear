@@ -1,5 +1,5 @@
 import "ol/ol.css";
-import { onMount, onCleanup } from "solid-js";
+import { onMount } from "solid-js";
 import Map from "ol/Map";
 import View from "ol/View";
 import { Tile as TileLayer, Vector as VectorLayer } from "ol/layer";

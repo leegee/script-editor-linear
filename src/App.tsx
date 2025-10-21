@@ -3,7 +3,7 @@ import { A, useNavigate } from "@solidjs/router";
 import DragDropList from "./components/DragDropList";
 import { loadAll } from "./stores";
 import { timelineItems, timelineSequence, reorderTimeline } from "./stores/timelineItems";
-import { ingestJSON } from "./lib/ingest";
+import { ingestJSON } from "./lib/io";
 import { storage } from "./db";
 
 export default function App(props: ParentProps) {

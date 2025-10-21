@@ -3,8 +3,15 @@ import { CharacterItem } from "../components/CoreItems/CharacterItem";
 import { LocationItem } from "../components/CoreItems/LocationItem";
 import { TimelineItemProps } from "../components/CoreItems/TimelineItem";
 import { storage } from "../db";
-import { setTimelineItems, setTimelineSequence, setLocations, setCharacters, locations, characters, timelineItems } from "../stores";
+import { setTimelineItems, setTimelineSequence, setLocations, setCharacters, locations, characters, timelineItems, loadAll } from "../stores";
 
+export async function initNewScript() {
+    await ingest([], [], []);
+}
+
+export async function loadSampleScript() {
+    await loadJSONfromPath('/the-three-bears.json');
+}
 
 export function downloadJSON() {
     const jsonStr = JSON.stringify(serialiseAll(), null, 2);
@@ -76,6 +83,8 @@ export async function ingest(
 
     setTimelineSequence(seq);
     await storage.putMeta("timelineSequence", seq);
+
+    await loadAll();
 
     console.log("Ingestion complete. Sequence length:", seq.length);
 }

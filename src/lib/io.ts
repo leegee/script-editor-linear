@@ -3,8 +3,32 @@ import { CharacterItem } from "../components/CoreItems/CharacterItem";
 import { LocationItem } from "../components/CoreItems/LocationItem";
 import { TimelineItemProps } from "../components/CoreItems/TimelineItem";
 import { storage } from "../db";
-import { setTimelineItems, setTimelineSequence, setLocations, setCharacters } from "../stores";
+import { setTimelineItems, setTimelineSequence, setLocations, setCharacters, locations, characters, timelineItems } from "../stores";
 
+
+export function downloadJSON() {
+    const jsonStr = JSON.stringify(serialiseAll(), null, 2);
+    console.log(jsonStr)
+    const blob = new Blob([jsonStr], { type: "application/json" });
+
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "script.json";
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    URL.revokeObjectURL(link.href);
+}
+
+function serialiseAll() {
+    return {
+        locations: Object.entries(locations).map(([, value]) => ({ ...value })),
+        characters: Object.entries(characters).map(([, value]) => ({ ...value })),
+        script: Object.entries(timelineItems).map(([, value]) => ({ ...value })),
+    };
+}
 
 export async function ingestJSON(jsonPath: string) {
     const response = await fetch(jsonPath);

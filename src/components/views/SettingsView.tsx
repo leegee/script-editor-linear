@@ -1,3 +1,4 @@
+import { downloadJSON } from "../../lib/io";
 
 export default function SettingsView() {
     return <article>
@@ -9,7 +10,7 @@ export default function SettingsView() {
             <li>
                 Load script
             </li>
-            <li>
+            <li onclick={downloadJSON}>
                 Save script
             </li>
         </ul>

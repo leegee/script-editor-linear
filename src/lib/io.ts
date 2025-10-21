@@ -1,9 +1,9 @@
 import { reviveItem } from "../components/CoreItems";
 import { CharacterItem } from "../components/CoreItems/CharacterItem";
-import { LocationItem } from "../components/CoreItems/LocationItem";
+import { TimelineLocationItem } from "../components/CoreItems/LocationItem";
 import { TimelineItemProps } from "../components/CoreItems/TimelineItem";
 import { storage } from "../db";
-import { setTimelineItems, setTimelineSequence, resetLocations, setCharacters, locations, characters, timelineItems, loadAll, addLocation, resetCharacters, addCharacter, resetTimelineItems } from "../stores";
+import { setTimelineItems, setTimelineSequence, resetLocations, setCharacters, locations, characters, timelineItems, loadAll, addLocation, resetCharacters, addCharacter, resetTimelineItems, clearAll } from "../stores";
 
 export async function initNewScript() {
     await ingest([], [], []);
@@ -48,16 +48,11 @@ export async function loadJSONfromPath(jsonPath: string) {
 export async function ingest(
     sampleScript: TimelineItemProps[],
     sampleCharacters: CharacterItem[],
-    sampleLocations: LocationItem[],
+    sampleLocations: TimelineLocationItem[],
 ) {
     console.log("io/ingest: starting ingestion...");
 
-    // Clear stores and tables
-    await Promise.all([
-        resetTimelineItems(),
-        resetLocations(),
-        resetCharacters(),
-    ]);
+    clearAll();
 
     const seq: string[] = [];
 

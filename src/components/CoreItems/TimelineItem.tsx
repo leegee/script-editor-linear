@@ -1,10 +1,5 @@
 import "./CoreItems.scss";
-import { ActItem } from "./ActItem";
 import { JSX } from "solid-js/jsx-runtime";
-import { DialogueItem } from "./DialogueItem";
-import { LocationItem } from "./LocationItem";
-import { SceneItem } from "./SceneItem";
-import { TransitionItem } from "./TransitionItem";
 
 export interface TimelineItemProps {
     id: string;

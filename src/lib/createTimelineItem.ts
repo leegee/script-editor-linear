@@ -1,6 +1,7 @@
-import { TimelineItemProps, TimelineItem, ActItem, SceneItem, DialogueItem, LocationItem, TransitionItem } from "../components/CoreItems";
+import { TimelineItemProps, TimelineItem, ActItem, SceneItem, DialogueItem, TimelineLocationItem, TransitionItem } from "../components/CoreItems";
 import { setTimelineItems, timelineItems, setTimelineSequence, timelineSequence, locations, addLocation } from "../stores";
 import { storage } from "../db";
+import { CanonicalLocation } from "../components/CoreItems/LocationItem/CanonicalLocation";
 
 interface CreateTimelineItemOptions {
     insertAtIndex?: number;
@@ -35,7 +36,7 @@ export async function createTimelineItem(
         // Create placeholder or actual location if missing
         if (!locations[ref]) {
             if (options.createMissingLocation) {
-                const newLoc = new LocationItem({
+                const newLoc = new CanonicalLocation({
                     id: ref,
                     title: props.details?.title ?? "Untitled Location",
                     details: {
@@ -67,7 +68,7 @@ export async function createTimelineItem(
             item = new TransitionItem(baseProps);
             break;
         case "location":
-            item = LocationItem.revive(baseProps);
+            item = TimelineLocationItem.revive(baseProps);
             break;
         default:
             item = new TimelineItem(baseProps);

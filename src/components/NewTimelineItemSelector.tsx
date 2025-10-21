@@ -2,13 +2,13 @@ import styles from './NewTimelineItemSelector.module.scss';
 import { createSignal, createMemo, For } from "solid-js";
 import { useParams, useNavigate } from "@solidjs/router";
 import { createTimelineItem } from "../lib/createTimelineItem";
-import { ActItem, SceneItem, DialogueItem, LocationItem, TransitionItem, TimelineItem } from "../components/CoreItems";
+import { ActItem, SceneItem, DialogueItem, TimelineLocationItem, TransitionItem, TimelineItem } from "../components/CoreItems";
 
 export type TimelineItemType = "act" | "scene" | "dialogue" | "location" | "transition";
 
 function newTimelineItem(type: TimelineItemType, id = crypto.randomUUID()): TimelineItem {
     switch (type) {
-        case "location": return new LocationItem({ id });
+        case "location": return new TimelineLocationItem({ id });
         case "dialogue": return new DialogueItem({ id });
         case "scene": return new SceneItem({ id });
         case "act": return new ActItem({ id });

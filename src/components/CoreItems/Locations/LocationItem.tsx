@@ -160,23 +160,27 @@ export class TimelineLocationItem extends TimelineItem {
         const { lat, lng, radius } = canonical.details;
 
         return (
-            <article>
-                <header>
-                    <h3 class="field">
-                        <TimelineItemEditor
-                            store="locations"
-                            id={canonical.id}
-                            path="title"
-                            defaultValue={canonical.title ?? "Untitled Location"}
-                        />
-                    </h3>
-                </header>
+            <article class="border padding">
+                <h3 class="field">
+                    <TimelineItemEditor
+                        store="locations"
+                        id={canonical.id}
+                        path="title"
+                        defaultValue={canonical.title ?? "Untitled Location"}
+                    />
+                </h3>
 
-                <div class="field">
-                    Lat: {lat} <br />
-                    Lng: {lng} <br />
-                    Radius: {radius} m
-                </div>
+                <table class="bottom-margin">
+                    <tbody>
+                        <tr>
+                            <th>Latitude</th><td>{lat}</td>
+                        </tr><tr>
+                            <th>Longitude</th><td>{lng}</td>
+                        </tr><tr>
+                            <th>Radius</th><td>{radius}</td>
+                        </tr>
+                    </tbody>
+                </table>
 
                 <LocationMap
                     lat={lat}
@@ -189,7 +193,9 @@ export class TimelineLocationItem extends TimelineItem {
                     }
                 />
 
-                <MapLinks lat={lat} lng={lng} />
+                <div class="top-margin large-margin">
+                    <MapLinks lat={lat} lng={lng} />
+                </div>
             </article>
         );
     }

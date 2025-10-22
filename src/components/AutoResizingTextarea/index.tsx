@@ -25,8 +25,8 @@ export default function AutoResizingTextarea(props: AutoResizingTextareaProps) {
 
         const scrollHeight = textareaRef.scrollHeight;
         const maxH = props.maxHeight ?? 200;
-        const minH = props.minHeight ?? 24;
-        const finalHeight = Math.min(Math.max(scrollHeight, minH), maxH);
+        const minH = props.minHeight ?? 48;
+        const finalHeight = Math.min(Math.max(scrollHeight + 10, minH), maxH);
 
         // Set textarea height
         textareaRef.style.height = `${finalHeight}px`;

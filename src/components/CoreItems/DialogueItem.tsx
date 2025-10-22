@@ -28,21 +28,17 @@ export class DialogueItem extends TimelineItem {
     }
 
     renderFull() {
-        const char = characters[this.details.characterId];
-        const speakerName = char?.title ?? "Unknown Speaker";
+        const existing = this; // shorthand
+        const details = existing.details;
 
-        return (
-            <div class="timeline-item">
-                <span class="character-name">
-                    {speakerName}
-                </span>
-                <InlineEditable
-                    class="dialogueText"
-                    value={this.details.text}
-                    onUpdate={(v) => setTimelineItems(this.id, "details", "text", v)}
-                />
-            </div>
-        );
+        const handleChange = (field: string, value: any) => {
+            setTimelineItems(existing.id, "details", field, value);
+        };
+
+        return this.renderCreateNew({
+            duration: existing.duration,
+            onChange: handleChange
+        });
     }
 
     renderCreateNew(props: { duration?: number; onChange: (field: string, value: any) => void }) {
@@ -51,12 +47,18 @@ export class DialogueItem extends TimelineItem {
         return (
             <>
                 {/* Mode toggle */}
-                <div class="field border label max">
-                    <select value={mode()} onChange={(e) => setMode(e.currentTarget.value as "select" | "new")}>
-                        <option value="select">Select Existing</option>
-                        <option value="new">Create New</option>
-                    </select>
-                    <label>Character Mode</label>
+                <div class="field border middle-align max">
+                    <label class="switch icon">
+                        <input
+                            type="checkbox"
+                            checked={mode() === "new"}
+                            onChange={(e) => setMode(e.currentTarget.checked ? "new" : "select")}
+                        />
+                        <span>
+                            <i>person_add</i>
+                        </span>
+                    </label>
+                    <span class='left-padding'>{mode() === "new" ? "Create a new character" : "Select a character"}</span>
                 </div>
 
                 {/* New Character creation */}

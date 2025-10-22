@@ -6,11 +6,6 @@
     font-family: inherit;
     font-size: 1rem;
     line-height: 1.4;
-    padding: 0.5rem 0.75rem;
-    border: 1px solid var(--border-color, #ccc);
-    border-radius: 0.5rem;
-    background-color: var(--background-color, #fff);
-    color: var(--text-color, #222);
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
 
     &:focus {
@@ -21,7 +16,15 @@
 
     &:disabled {
         opacity: 0.6;
-        background-color: #f7f7f7;
         cursor: not-allowed;
     }
+}
+
+// BeerCSS is so strict :(
+:global(.field.textarea) {
+    display: block !important;
+    block-size: auto !important;
+    min-block-size: 2rem !important;
+    max-block-size: none !important;
+    overflow: visible !important;
 }

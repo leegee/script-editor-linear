@@ -3,7 +3,6 @@ import { ingest } from "../lib/io";
 
 export default function JSONUploader() {
     let fileInput: HTMLInputElement | undefined;
-    const [jsonData, setJsonData] = createSignal<any>(null);
 
     const handleFileChange = async (e: Event) => {
         const file = (e.currentTarget as HTMLInputElement).files?.[0];
@@ -17,10 +16,7 @@ export default function JSONUploader() {
         try {
             const text = await file.text();
             const data = JSON.parse(text);
-            setJsonData(data);
             console.log("Parsed JSON:", data);
-
-            // Call ingest with your JSON data
             await ingest(data.script, data.characters, data.locations);
         } catch (err) {
             console.error("Error reading or parsing JSON file:", err);

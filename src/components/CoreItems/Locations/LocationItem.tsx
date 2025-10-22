@@ -3,11 +3,10 @@ import { createSignal, For } from "solid-js";
 import { A } from "@solidjs/router";
 import { locations, setLocations, addLocation, updateLocation, resolveTimelineRef } from "../../../stores";
 import { TimelineItem, TimelineItemProps } from "../TimelineItem";
-import InlineEditable from "../../InlineEditable";
 import { LocationMap } from "./LocationMap";
 import { CanonicalLocation } from "./CanonicalLocation";
 import MapLinks from "./MapLinks";
-
+import TimelineItemEditor from "../../TimelineItemEditor";
 
 export class TimelineLocationItem extends TimelineItem {
     static revive(obj: any): TimelineLocationItem {
@@ -165,10 +164,7 @@ export class TimelineLocationItem extends TimelineItem {
             <article>
                 <header>
                     <h3 class="field">
-                        <InlineEditable
-                            value={canonical.title ?? "Untitled Location"}
-                            onUpdate={(v) => updateLocation(canonical.id, { title: v })}
-                        />
+                        <TimelineItemEditor id={canonical.id} path="title" defaultValue={canonical.title ?? "Untitled Location"} />
                     </h3>
                 </header>
 

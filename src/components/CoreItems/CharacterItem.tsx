@@ -2,7 +2,7 @@ import { For } from "solid-js";
 import { characters, updateTimelineItem } from "../../stores";
 import { TimelineItem, TimelineItemProps } from "./TimelineItem";
 import { A } from "@solidjs/router";
-import InlineEditable from "../InlineEditable";
+import TimelineItemEditor from "../TimelineItemEditor";
 
 export class CharacterItem extends TimelineItem {
     declare title: string;
@@ -59,10 +59,7 @@ export class CharacterItem extends TimelineItem {
     renderFull() {
         return <article>
             <h4>
-                <InlineEditable
-                    value={this.title}
-                    onUpdate={(v) => updateTimelineItem(this, "title", "", v)}
-                />
+                <TimelineItemEditor id={this.id} path="title" />
             </h4>
         </article>;
     }

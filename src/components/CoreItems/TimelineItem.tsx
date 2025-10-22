@@ -7,12 +7,15 @@ export interface TimelineItemProps {
     id: string;
     type: string; // "dialogue" | "location" | "transition" | "beat-marker" | "scene" | "act"
     title?: string;
-    duration?: number;     // in seconds
-    details?: Record<string, any>; // e.g., characterId, lat/lng, cues
+    duration?: number;                 // in seconds
+    details?: Record<string, any>;     // e.g., characterId, lat/lng, cues
     tags?: string[];
     notes?: string[];
 }
 
+/**
+ * Base model for any timeline item.
+ */
 export class TimelineItem {
     id: string;
     type: string;
@@ -32,14 +35,46 @@ export class TimelineItem {
         this.notes = props.notes || [];
     }
 
-    renderCompact() {
-        return <div>{this.type}: {this.title ?? this.details.text ?? ""}</div>;
+    /**
+     * Create a new instance with shallow-merged updates.
+     * Used for immutable store updates.
+     */
+    cloneWith(updates: Partial<TimelineItemProps>): this {
+        const props: TimelineItemProps = {
+            ...this,
+            ...updates,
+            details: { ...this.details, ...updates.details },
+            tags: updates.tags ?? [...this.tags],
+            notes: updates.notes ?? [...this.notes],
+        };
+
+        // @ts-ignore
+        return new (this.constructor as any)(props);
     }
 
-    renderFull() {
-        return <div>{JSON.stringify(this, null, 2)}</div>;
+
+    /**
+     * Compact display (e.g., in list views)
+     */
+    renderCompact(): JSX.Element {
+        return (
+            <div>
+                Base.renderCompact:
+                {this.type}: {this.title ?? this.details.text ?? ""}
+            </div>
+        );
     }
 
+    /**
+     * Full debug display
+     */
+    renderFull(): JSX.Element {
+        return <div>Base.renderFull: {JSON.stringify(this, null, 2)}</div>;
+    }
+
+    /**
+     * Form for creating / editing timeline items.
+     */
     renderCreateNew(props: {
         duration?: number;
         onChange: (field: string, value: any) => void;
@@ -47,28 +82,22 @@ export class TimelineItem {
         return (
             <>
                 <div class="field border label max">
-                    {/* <input
-                        type="text"
-                        value={this.title ?? ""}
-                        onInput={(e) => props.onChange("title", e.currentTarget.value)}
-                    /> */}
-
-                    <InlineEditable value={this.title ?? "Title"}
-                        onUpdate={(v) => updateTimelineItem(this, "title", "", v)}
+                    <InlineEditable
+                        value={this.title ?? "Title"}
+                        onUpdate={(v) => updateTimelineItem(this.id, "title", "", v)}
                     />
-
-                    <label> Title</label>
+                    <label>Title</label>
                 </div>
             </>
         );
     }
 
     /**
-     * Generic instance method to prepare a timeline item from user-editable fields.
-     * Fields that exist on the instance go top-level; everything else goes into details.
+     * Prepare a merged data object from user-editable fields.
+     * Fields matching instance keys become top-level; others go into `details`.
      */
     prepareFromFields(fields: Record<string, any>) {
-        const instanceKeys = Object.keys(this); // own enumerable properties
+        const instanceKeys = Object.keys(this);
         const topLevel: Record<string, any> = {};
         const details: Record<string, any> = {};
 
@@ -80,8 +109,9 @@ export class TimelineItem {
             }
         }
 
-        // Merge with existing details so we don't lose preexisting keys like details.ref
-        return { ...topLevel, details: { ...this.details, ...details } };
+        return {
+            ...topLevel,
+            details: { ...this.details, ...details },
+        };
     }
 }
-

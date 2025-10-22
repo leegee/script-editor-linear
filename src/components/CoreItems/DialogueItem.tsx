@@ -1,9 +1,10 @@
 import { createSignal, Show } from "solid-js";
-import { addCharacter, characters, updateTimelineItem } from "../../stores";
+import { addCharacter, characters, timelineItems, updateTimelineItem } from "../../stores";
 import InlineEditable from "../InlineEditable";
 import { TimelineItem, TimelineItemProps } from "./TimelineItem";
 import { CharacterItem } from "./CharacterItem";
 import AutoResizingTextarea from "../AutoRessizingTextarea";
+import TimelineItemEditor from "../TimelineItemEditor";
 
 export class DialogueItem extends TimelineItem {
     constructor(props: Omit<TimelineItemProps, "type">) {
@@ -19,25 +20,27 @@ export class DialogueItem extends TimelineItem {
                 <span class="character-name">
                     {speakerName}
                 </span>
-                <InlineEditable
+                <TimelineItemEditor
+                    id={this.id}
+                    path="details"
+                    key="text"
+                    defaultValue={this.details.text ?? "..."}
                     class="dialogueText"
-                    value={this.details.text}
-                    onUpdate={(v) => updateTimelineItem(this, "details", "text", v)}
+                    multiline
                 />
             </div>
         );
     }
 
     renderFull() {
-        const existing = this;
-        const details = existing.details;
+        const itemId = this.id;
 
         const handleChange = (field: string, value: any) => {
-            updateTimelineItem(existing, "details", field, value);
+            updateTimelineItem(itemId, "details", field, value);
         };
 
         return this.renderCreateNew({
-            duration: existing.duration,
+            duration: timelineItems[itemId].duration,
             onChange: handleChange
         });
     }

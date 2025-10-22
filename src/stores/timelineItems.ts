@@ -15,9 +15,6 @@ export const orderedItems = createMemo(() =>
 
 // CRUD API
 
-/**
- * Load all timeline items from storage
- */
 export async function loadAllTimelineItems() {
     const items = await storage.getAll<TimelineItemProps>("timelineItems");
     const revived = Object.fromEntries(
@@ -29,9 +26,6 @@ export async function loadAllTimelineItems() {
     if (savedSeq?.length) setTimelineSequence(savedSeq);
 }
 
-/**
- * Create a timeline item and insert at optional index
- */
 export async function createTimelineItem(item: TimelineItem, insertAtIndex?: number) {
     setTimelineItems(item.id, item);
 
@@ -48,17 +42,11 @@ export async function createTimelineItem(item: TimelineItem, insertAtIndex?: num
     await storage.putMeta("timelineSequence", seq);
 }
 
-/**
- * Replace an existing timeline item (sequence unchanged)
- */
 export async function replaceTimelineItem(id: string, newItem: TimelineItem) {
     setTimelineItems(id, newItem);
     await storage.put("timelineItems", newItem);
 }
 
-/**
- * Duplicate a timeline item and insert after original or at index
- */
 export async function duplicateTimelineItem(originalId: string, newItem: TimelineItem, insertAtIndex?: number) {
     const seq = [...timelineSequence()];
     const index = insertAtIndex ?? seq.findIndex(id => id === originalId) + 1;
@@ -72,39 +60,30 @@ export async function duplicateTimelineItem(originalId: string, newItem: Timelin
 }
 
 /**
- * Update a property on a timeline item
+ * Update a property on a timeline item with reactivity
  */
 export async function updateTimelineItem(
-    item: TimelineItem,
+    id: string,
     path: "details" | "title" | "duration",
     key: string,
     value: any
 ) {
-    if (path === "details") {
-        const newDetails = { ...item.details, [key]: value };  // replace object
-        item.details = newDetails;
-        setTimelineItems(item.id, "details", newDetails);      // triggers reactivity
-    } else {
-        (item as any)[path] = value;
-        setTimelineItems(item.id, path, value);
-    }
+    const item = timelineItems[id];
+    const newItem = item.cloneWith(
+        path === "details"
+            ? { details: { ...item.details, [key]: value } }
+            : { [path]: value }
+    );
 
-    await storage.put("timelineItems", item);
+    setTimelineItems(item.id, newItem);
+    await storage.put("timelineItems", newItem);
 }
 
-
-
-/**
- * Reorder timeline sequence
- */
 export async function reorderTimeline(newSeq: string[]) {
     setTimelineSequence(newSeq);
     await storage.putMeta("timelineSequence", newSeq);
 }
 
-/**
- * Delete a timeline item (also removes from sequence)
- */
 export async function deleteTimelineItem(id: string) {
     if (!timelineItems[id]) return;
 
@@ -120,9 +99,6 @@ export async function deleteTimelineItem(id: string) {
     await storage.putMeta("timelineSequence", timelineSequence());
 }
 
-/**
- * Delete all timeline items and reset sequence
- */
 export async function deleteAllTimelineItems() {
     setTimelineItems({});
     setTimelineSequence([]);

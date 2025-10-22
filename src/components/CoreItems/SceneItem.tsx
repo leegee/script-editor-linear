@@ -1,6 +1,6 @@
 import { formatHHMMSS } from "../../lib/formatSecondsToHMS";
-import { sceneDurations, updateTimelineItem } from "../../stores";
-import InlineEditable from "../InlineEditable";
+import { sceneDurations } from "../../stores";
+import TimelineItemEditor from "../TimelineItemEditor";
 import { TimelineItem, TimelineItemProps } from "./TimelineItem";
 
 export class SceneItem extends TimelineItem {
@@ -11,7 +11,11 @@ export class SceneItem extends TimelineItem {
     renderCompact() {
         return (
             <h3 class="timeline-item">
-                <InlineEditable value={this.title ?? "Untitled Scene"} onUpdate={(v) => updateTimelineItem(this, "title", "", v)} />
+                <TimelineItemEditor
+                    id={this.id}
+                    path="title"
+                    defaultValue={this.title ?? "Untitled Scene"}
+                />
             </h3>
         );
     }
@@ -21,7 +25,11 @@ export class SceneItem extends TimelineItem {
         return (
             <fieldset>
                 <h3 class="field">
-                    <InlineEditable value={this.title ?? "Untitled Scene"} onUpdate={(v) => updateTimelineItem(this, "title", "", v)} />
+                    <TimelineItemEditor
+                        id={this.id}
+                        path="title"
+                        defaultValue={this.title ?? "Untitled Scene"}
+                    />
                 </h3>
                 <div class="field">
                     <p>Duration {

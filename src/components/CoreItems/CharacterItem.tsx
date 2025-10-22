@@ -1,5 +1,5 @@
 import { For } from "solid-js";
-import { characters, updateTimelineItem } from "../../stores";
+import { characters } from "../../stores";
 import { TimelineItem, TimelineItemProps } from "./TimelineItem";
 import { A } from "@solidjs/router";
 import TimelineItemEditor from "../ItemEditor";
@@ -22,8 +22,8 @@ export class CharacterItem extends TimelineItem {
                                 <th class="no-border">
                                     <header class="no-padding">
                                         <nav>
-                                            <h2 class="max"> Locations </h2>
-                                            <i>location_on</i>
+                                            <h2 class="max"> Characters </h2>
+                                            <i>people</i>
                                         </nav>
                                     </header>
                                 </th>
@@ -59,7 +59,7 @@ export class CharacterItem extends TimelineItem {
     renderFull() {
         return <article>
             <h4>
-                <TimelineItemEditor id={this.id} path="title" />
+                <TimelineItemEditor id={this.id} path="title" store="characters" />
             </h4>
         </article>;
     }

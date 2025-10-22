@@ -3,6 +3,7 @@ import { addCharacter, characters, setCharacters, setTimelineItems } from "../..
 import InlineEditable from "../InlineEditable";
 import { TimelineItem, TimelineItemProps } from "./TimelineItem";
 import { CharacterItem } from "./CharacterItem";
+import AutoResizingTextarea from "../AutoRessizingTextarea";
 
 export class DialogueItem extends TimelineItem {
     constructor(props: Omit<TimelineItemProps, "type">) {
@@ -89,13 +90,20 @@ export class DialogueItem extends TimelineItem {
                     </div>
                 </Show>
 
-                <div class="field border label max">
-                    <textarea
+                {/* <div class="field border label max"> */}
+                {/* <textarea
                         value={this.details.text ?? ""}
                         onBlur={(e) => props.onChange("text", e.currentTarget.value)}
-                    />
-                    <label>Dialogue Text</label>
-                </div>
+                    /> */}
+                {/* <label>Dialogue Text</label>
+                    </div> */}
+                <AutoResizingTextarea
+                    label="Dialogue Text"
+                    class="field textarea border label max"
+                    value={this.details.text ?? ""}
+                    maxHeight={200}
+                    onInput={(v) => props.onChange("text", v)}
+                />
 
                 <div class="field border label max">
                     <input

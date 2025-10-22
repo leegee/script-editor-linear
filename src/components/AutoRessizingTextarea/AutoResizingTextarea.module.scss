@@ -1,0 +1,27 @@
+.textarea {
+    display: block;
+    width: 100%;
+    resize: none;
+    overflow-y: hidden;
+    font-family: inherit;
+    font-size: 1rem;
+    line-height: 1.4;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--border-color, #ccc);
+    border-radius: 0.5rem;
+    background-color: var(--background-color, #fff);
+    color: var(--text-color, #222);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+    &:focus {
+        outline: none;
+        border-color: var(--focus-border-color, #0077ff);
+        box-shadow: 0 0 0 2px rgba(0, 119, 255, 0.15);
+    }
+
+    &:disabled {
+        opacity: 0.6;
+        background-color: #f7f7f7;
+        cursor: not-allowed;
+    }
+}

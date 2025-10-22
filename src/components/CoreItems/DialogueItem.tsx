@@ -76,6 +76,7 @@ export class DialogueItem extends TimelineItem {
                             onInput={(e) => props.onChange("characterName", e.currentTarget.value)}
                         />
                         <label>Character Name</label>
+                        <i>arrow_drop_down</i>
                     </div>
                 </Show>
 
@@ -92,6 +93,7 @@ export class DialogueItem extends TimelineItem {
                             ))}
                         </select>
                         <label>Existing Character</label>
+                        <i>arrow_drop_down</i>
                     </div>
                 </Show>
 

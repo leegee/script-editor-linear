@@ -1,5 +1,6 @@
 import { createSignal } from "solid-js";
 import { ingest } from "../lib/io";
+import { showAlert, showConfirm } from "../stores/modals";
 
 export default function JSONUploader() {
     let fileInput: HTMLInputElement | undefined;
@@ -9,7 +10,7 @@ export default function JSONUploader() {
         if (!file) return;
 
         if (file.type !== "application/json" && !file.name.endsWith(".json")) {
-            alert("Please select a JSON file");
+            showAlert("Please select a JSON file");
             return;
         }
 
@@ -20,14 +21,18 @@ export default function JSONUploader() {
             await ingest(data.script, data.characters, data.locations);
         } catch (err) {
             console.error("Error reading or parsing JSON file:", err);
-            alert("Invalid JSON file");
+            showAlert("Invalid JSON file");
         }
     };
 
-    const openFilePicker = () => fileInput?.click();
+    async function openFilePicker() {
+        if (await showConfirm("This will over-write your script - OK?")) {
+            fileInput?.click();
+        }
+    };
 
     return (
-        <div>
+        <>
             <input
                 type="file"
                 accept=".json"
@@ -38,6 +43,6 @@ export default function JSONUploader() {
             <button class="transparent no-padding no-margin" onClick={openFilePicker}>
                 Load script
             </button>
-        </div>
+        </>
     );
 }

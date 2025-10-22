@@ -5,6 +5,7 @@ import { loadAll } from "./stores";
 import { timelineItems, timelineSequence, reorderTimeline } from "./stores/timelineItems";
 import { loadSampleScript } from "./lib/io";
 import { storage } from "./db";
+import AlertConfirm from "./components/modals/AlertConfirm";
 
 export default function App(props: ParentProps) {
     const navigate = useNavigate();
@@ -23,6 +24,8 @@ export default function App(props: ParentProps) {
 
     return (
         <>
+            <AlertConfirm />
+
             <main class="responsive">
                 <Show when={loaded()} fallback={<p>Loading script...</p>}>
 

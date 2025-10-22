@@ -90,13 +90,6 @@ export class DialogueItem extends TimelineItem {
                     </div>
                 </Show>
 
-                {/* <div class="field border label max"> */}
-                {/* <textarea
-                        value={this.details.text ?? ""}
-                        onBlur={(e) => props.onChange("text", e.currentTarget.value)}
-                    /> */}
-                {/* <label>Dialogue Text</label>
-                    </div> */}
                 <AutoResizingTextarea
                     label="Dialogue Text"
                     class="field textarea border label max"

@@ -1,10 +1,12 @@
 import { createSignal, createEffect, Show } from "solid-js";
 import { timelineItems, updateTimelineItem } from "../stores";
+import AutoResizingTextarea from "./AutoRessizingTextarea";
 
 interface TimelineItemEditorProps {
     id: string;                    // pass item.id, not full object
     path: "details" | "title" | "duration";
     key?: string;                  // nested key if path === "details"
+    label?: string;
     defaultValue?: any;            // fallback value
     multiline?: boolean;           // textarea instead of input
     class?: string;                // CSS class
@@ -16,7 +18,6 @@ export default function TimelineItemEditor(props: TimelineItemEditorProps) {
     const [value, setValue] = createSignal("");
 
     let inputRef: HTMLInputElement | undefined;
-    let textareaRef: HTMLTextAreaElement | undefined;
 
     const item = () => timelineItems[props.id];
 
@@ -37,10 +38,7 @@ export default function TimelineItemEditor(props: TimelineItemEditorProps) {
     // Autofocus when editing becomes true
     createEffect(() => {
         if (editing()) {
-            if (props.multiline && textareaRef) {
-                textareaRef.focus();
-                textareaRef.selectionStart = textareaRef.selectionEnd = textareaRef.value.length;
-            } else if (!props.multiline && inputRef) {
+            if (!props.multiline && inputRef) {
                 inputRef.focus();
                 inputRef.selectionStart = inputRef.selectionEnd = inputRef.value.length;
             }
@@ -64,13 +62,24 @@ export default function TimelineItemEditor(props: TimelineItemEditorProps) {
             }
         >
             {props.multiline ? (
-                <textarea
-                    ref={(el) => (textareaRef = el)}
+                // <textarea
+                //     ref={(el) => (textareaRef = el)}
+                //     class={props.class}
+                //     value={value()}
+                //     onInput={(e) => handleInput(e.currentTarget.value)}
+                //     onBlur={handleBlur}
+                //     autofocus
+                // />
+                <AutoResizingTextarea
                     class={props.class}
                     value={value()}
-                    onInput={(e) => handleInput(e.currentTarget.value)}
+                    onInput={handleInput}
                     onBlur={handleBlur}
-                    autofocus
+                    maxHeight={300}
+                    minHeight={50}
+                    disabled={false}
+                    autofocus={editing()}
+                    label={props.label}
                 />
             ) : (
                 <input

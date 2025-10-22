@@ -10,8 +10,9 @@ import { timelineSequence } from "../stores";
 
 interface HasIdAndDuration {
   id: string;
-  duration?: number; // seconds
+  duration?: number;
   renderCompact: () => JSX.Element | null;
+  openEditor: () => void;
 }
 
 interface DragDropListProps<T extends HasIdAndDuration> {
@@ -88,6 +89,7 @@ export default function DragDropList<T extends HasIdAndDuration>(props: DragDrop
           || e.currentTarget instanceof HTMLTextAreaElement
           || e.currentTarget instanceof HTMLSelectElement
         ) {
+          alert('ah')
           return;
         }
 
@@ -95,7 +97,12 @@ export default function DragDropList<T extends HasIdAndDuration>(props: DragDrop
 
         // CTRL+Enter: create a new item
         if (e.ctrlKey) {
-          props.onInsert(currentIndex + 1)
+          const currentIndex = props.items().findIndex(i => i.id === selectedId());
+          if (currentIndex !== -1) {
+            const item = props.items()[currentIndex];
+            item.openEditor();
+          }
+          return;
         }
         // Enter: show details of the item
         else {

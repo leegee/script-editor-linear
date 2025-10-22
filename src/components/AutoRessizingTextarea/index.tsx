@@ -2,14 +2,16 @@ import { createEffect, onMount } from "solid-js";
 import styles from "./AutoResizingTextarea.module.scss";
 
 interface AutoResizingTextareaProps {
-    label: string;
     value: string;
+    label?: string;
     onInput?: (value: string) => void;
+    onBlur?: (value: string) => void;
     class?: string;
     placeholder?: string;
     maxHeight?: number;
     minHeight?: number;
     disabled?: boolean;
+    autofocus?: boolean;
 }
 
 export default function AutoResizingTextarea(props: AutoResizingTextareaProps) {
@@ -27,7 +29,6 @@ export default function AutoResizingTextarea(props: AutoResizingTextareaProps) {
     };
 
     onMount(adjustHeight);
-
     createEffect(adjustHeight);
 
     return (
@@ -38,6 +39,9 @@ export default function AutoResizingTextarea(props: AutoResizingTextareaProps) {
                 placeholder={props.placeholder}
                 value={props.value}
                 disabled={props.disabled}
+                onBlur={(e) => {
+                    props.onBlur?.(e.currentTarget.value);
+                }}
                 onInput={(e) => {
                     props.onInput?.(e.currentTarget.value);
                     adjustHeight();
@@ -48,7 +52,7 @@ export default function AutoResizingTextarea(props: AutoResizingTextareaProps) {
                 }}
             />
 
-            <label>{props.label}</label>
+            {props.label && <label>{props.label}</label>}
         </div>
     );
 }

@@ -11,6 +11,10 @@ export class DialogueItem extends TimelineItem {
         super({ ...props, type: 'dialogue' });
     }
 
+    openEditor() {
+        alert(this.id)
+    }
+
     renderCompact() {
         const char = characters[this.details.characterId];
         const speakerName = char?.title ?? "Unknown Speaker";
@@ -93,14 +97,19 @@ export class DialogueItem extends TimelineItem {
                     </div>
                 </Show>
 
-                <AutoResizingTextarea
-                    label="Dialogue Text"
+                {/* Dialogue Text using TimelineItemEditor */}
+                <TimelineItemEditor
+                    id={this.id}
+                    path="details"
+                    key="text"
+                    defaultValue={this.details.text ?? ""}
                     class="field textarea border label max"
-                    value={this.details.text ?? ""}
-                    maxHeight={200}
-                    onInput={(v) => props.onChange("text", v)}
+                    multiline
+                    editMode={true}
+                    label="Dialogue"
                 />
 
+                {/* Duration input */}
                 <div class="field border label max">
                     <input
                         type="number"

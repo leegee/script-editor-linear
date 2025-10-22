@@ -22,7 +22,7 @@ export class DialogueItem extends TimelineItem {
                 <InlineEditable
                     class="dialogueText"
                     value={this.details.text}
-                    onUpdate={(v) => updateTimelineItem(this.id, "details", "text", v)}
+                    onUpdate={(v) => updateTimelineItem(this, "details", "text", v)}
                 />
             </div>
         );
@@ -33,7 +33,7 @@ export class DialogueItem extends TimelineItem {
         const details = existing.details;
 
         const handleChange = (field: string, value: any) => {
-            updateTimelineItem(existing.id, "details", field, value);
+            updateTimelineItem(existing, "details", field, value);
         };
 
         return this.renderCreateNew({

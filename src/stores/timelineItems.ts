@@ -75,16 +75,24 @@ export async function duplicateTimelineItem(originalId: string, newItem: Timelin
  * Update a property on a timeline item
  */
 export async function updateTimelineItem(
-    id: string,
+    item: TimelineItem,
     path: "details" | "title" | "duration",
     key: string,
     value: any
 ) {
-    setTimelineItems(id, path, key, value);
+    if (path === "details") {
+        const newDetails = { ...item.details, [key]: value };  // replace object
+        item.details = newDetails;
+        setTimelineItems(item.id, "details", newDetails);      // triggers reactivity
+    } else {
+        (item as any)[path] = value;
+        setTimelineItems(item.id, path, value);
+    }
 
-    const item = timelineItems[id];
-    if (item) await storage.put("timelineItems", item);
+    await storage.put("timelineItems", item);
 }
+
+
 
 /**
  * Reorder timeline sequence

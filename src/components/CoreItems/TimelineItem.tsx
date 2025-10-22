@@ -1,3 +1,5 @@
+import { updateTimelineItem } from "../../stores";
+import InlineEditable from "../InlineEditable";
 import "./CoreItems.scss";
 import { JSX } from "solid-js/jsx-runtime";
 
@@ -45,11 +47,16 @@ export class TimelineItem {
         return (
             <>
                 <div class="field border label max">
-                    <input
+                    {/* <input
                         type="text"
                         value={this.title ?? ""}
                         onInput={(e) => props.onChange("title", e.currentTarget.value)}
+                    /> */}
+
+                    <InlineEditable value={this.title ?? "Title"}
+                        onUpdate={(v) => updateTimelineItem(this, "title", "", v)}
                     />
+
                     <label> Title</label>
                 </div>
             </>

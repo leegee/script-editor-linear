@@ -61,7 +61,7 @@ export class CharacterItem extends TimelineItem {
             <h4>
                 <InlineEditable
                     value={this.title}
-                    onUpdate={(v) => updateTimelineItem(this.id, "title", "", v)}
+                    onUpdate={(v) => updateTimelineItem(this, "title", "", v)}
                 />
             </h4>
         </article>;

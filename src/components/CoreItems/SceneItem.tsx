@@ -11,7 +11,7 @@ export class SceneItem extends TimelineItem {
     renderCompact() {
         return (
             <h3 class="timeline-item">
-                <InlineEditable value={this.title ?? "Untitled Scene"} onUpdate={(v) => updateTimelineItem(this.id, "title", "", v)} />
+                <InlineEditable value={this.title ?? "Untitled Scene"} onUpdate={(v) => updateTimelineItem(this, "title", "", v)} />
             </h3>
         );
     }
@@ -21,7 +21,7 @@ export class SceneItem extends TimelineItem {
         return (
             <fieldset>
                 <h3 class="field">
-                    <InlineEditable value={this.title ?? "Untitled Scene"} onUpdate={(v) => updateTimelineItem(this.id, "title", "", v)} />
+                    <InlineEditable value={this.title ?? "Untitled Scene"} onUpdate={(v) => updateTimelineItem(this, "title", "", v)} />
                 </h3>
                 <div class="field">
                     <p>Duration {

@@ -26,7 +26,7 @@ export default function JSONUploader() {
     };
 
     async function openFilePicker() {
-        if (await showConfirm("This will over-write your script - OK?")) {
+        if (await showConfirm("This will over-write your script.")) {
             fileInput?.click();
         }
     };

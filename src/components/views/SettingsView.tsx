@@ -39,7 +39,7 @@ export default function SettingsView() {
                         <button
                             class="transparent no-padding"
                             onClick={async () => {
-                                if (await showConfirm("This will over-write your script - OK?"))
+                                if (await showConfirm("This will over-write your script."))
                                     initNewScript();
                             }}
                         >
@@ -65,7 +65,7 @@ export default function SettingsView() {
                         <button
                             class="transparent no-padding"
                             onClick={async () => {
-                                if (await showConfirm("This will over-write your script - OK?"))
+                                if (await showConfirm("This will over-write your script."))
                                     loadSampleScript();
                             }}
                         >

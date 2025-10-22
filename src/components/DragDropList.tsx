@@ -5,7 +5,7 @@ import { List } from '@solid-primitives/list';
 
 import DragHandleWithMenu from "./DragHandleWithMenu";
 import { duplicateTimelineItem } from "../lib/duplicateTimelineItem";
-import { deleteTimelineItem } from "../lib/createTimelineItem";
+import { deleteTimelineItemById } from "../lib/createTimelineItem";
 import { timelineSequence } from "../stores";
 
 interface HasIdAndDuration {
@@ -227,7 +227,7 @@ export default function DragDropList<T extends HasIdAndDuration>(props: DragDrop
                 onDuplicate={() => duplicateTimelineItem(item().id, { insertAtIndex: insertAfter })}
                 onInsertBefore={() => props.onInsert(insertBefore)}
                 onInsertAfter={() => props.onInsert(insertAfter)}
-                onDelete={() => { deleteTimelineItem(item().id); navigate('/') }}
+                onDelete={() => { deleteTimelineItemById(item().id); navigate('/') }}
               />
             </li>
           );

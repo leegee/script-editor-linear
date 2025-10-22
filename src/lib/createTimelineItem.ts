@@ -1,6 +1,21 @@
-import { TimelineItemProps, TimelineItem, ActItem, SceneItem, DialogueItem, TimelineLocationItem, TransitionItem } from "../components/CoreItems";
-import { setTimelineItems, timelineItems, setTimelineSequence, timelineSequence, locations, addLocation } from "../stores";
-import { storage } from "../db";
+// lib/createTimelineItem.ts
+import {
+    TimelineItemProps,
+    TimelineItem,
+    ActItem,
+    SceneItem,
+    DialogueItem,
+    TimelineLocationItem,
+    TransitionItem
+} from "../components/CoreItems";
+
+import {
+    timelineItems,
+    locations,
+    addLocation,
+    createTimelineItem as storeCreateTimelineItem,
+    deleteTimelineItem as storeDeleteTimelineItem,
+} from "../stores";
 import { CanonicalLocation } from "../components/CoreItems/Locations/CanonicalLocation";
 
 interface CreateTimelineItemOptions {
@@ -25,15 +40,11 @@ export async function createTimelineItem(
         notes: props.notes ?? []
     };
 
-    // Special case: LOCATION ---
+    // Special case: LOCATION
     if (props.type === "location") {
         const ref = props.details?.ref;
+        if (!ref) throw new Error(`Location timeline item missing details.ref`);
 
-        if (!ref) {
-            throw new Error(`Location timeline item missing details.ref`);
-        }
-
-        // Create placeholder or actual location if missing
         if (!locations[ref]) {
             if (options.createMissingLocation) {
                 const newLoc = new CanonicalLocation({
@@ -52,7 +63,7 @@ export async function createTimelineItem(
         }
     }
 
-    // Instantiate the correct subclass 
+    // Instantiate the correct subclass
     let item: TimelineItem;
     switch (props.type) {
         case "act":
@@ -74,50 +85,20 @@ export async function createTimelineItem(
             item = new TimelineItem(baseProps);
     }
 
-    // persist
-    setTimelineItems(item.id, item);
-    await storage.put("timelineItems", item);
-
-    // Insert into timeline sequence 
-    const seq = [...timelineSequence()];
-    if (
-        options.insertAtIndex !== undefined &&
-        options.insertAtIndex >= 0 &&
-        options.insertAtIndex <= seq.length
-    ) {
-        seq.splice(options.insertAtIndex, 0, item.id);
-    } else {
-        seq.push(item.id);
-    }
-
-    setTimelineSequence(seq);
-    await storage.putMeta("timelineSequence", seq);
+    // Create item via store (handles sequence append)
+    await storeCreateTimelineItem(item, options.insertAtIndex);
 
     return item;
 }
 
-export async function deleteTimelineItem(itemId: string): Promise<void> {
+/**
+ * Delete a timeline item by ID using store API
+ */
+export async function deleteTimelineItemById(itemId: string): Promise<void> {
     if (!timelineItems[itemId]) {
         console.warn(`Timeline item "${itemId}" does not exist`);
         return;
     }
 
-    // Remove from timelineItems store
-    setTimelineItems((items) => {
-        const copy = { ...items };
-        delete copy[itemId];
-        return copy;
-    });
-
-    // Remove from timelineSequence
-    const seq = [...timelineSequence()];
-    const index = seq.indexOf(itemId);
-    if (index !== -1) {
-        seq.splice(index, 1);
-        setTimelineSequence(seq);
-        await storage.putMeta("timelineSequence", seq);
-    }
-
-    // Delete from storage
-    await storage.delete("timelineItems", itemId);
+    await storeDeleteTimelineItem(itemId);
 }

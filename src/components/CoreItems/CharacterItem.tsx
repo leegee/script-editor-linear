@@ -1,5 +1,5 @@
 import { For } from "solid-js";
-import { characters, locations, setTimelineItems } from "../../stores";
+import { characters, updateTimelineItem } from "../../stores";
 import { TimelineItem, TimelineItemProps } from "./TimelineItem";
 import { A } from "@solidjs/router";
 import InlineEditable from "../InlineEditable";
@@ -61,7 +61,7 @@ export class CharacterItem extends TimelineItem {
             <h4>
                 <InlineEditable
                     value={this.title}
-                    onUpdate={(v) => setTimelineItems(this.title, "title", v)}
+                    onUpdate={(v) => updateTimelineItem(this.id, "title", "", v)}
                 />
             </h4>
         </article>;

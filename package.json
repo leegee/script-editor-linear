@@ -1,7 +1,7 @@
 {
-  "name": "vite-template-solid",
-  "version": "0.0.0",
-  "description": "",
+  "name": "story-editor-linear",
+  "version": "0.0.2",
+  "description": "A script editor with a flat data model",
   "type": "module",
   "scripts": {
     "start": "vite",
@@ -29,7 +29,6 @@
     "@solid-primitives/storage": "^4.3.3",
     "beercss": "^3.12.11",
     "dexie": "^4.2.1",
-    "idb": "^8.0.3",
     "ol": "^10.6.1"
   }
 }

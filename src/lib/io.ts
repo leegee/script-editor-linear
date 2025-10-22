@@ -3,7 +3,7 @@ import { CharacterItem } from "../components/CoreItems/CharacterItem";
 import { TimelineLocationItem } from "../components/CoreItems/Locations/LocationItem";
 import { TimelineItemProps } from "../components/CoreItems/TimelineItem";
 import { storage } from "../db";
-import { setTimelineItems, setTimelineSequence, resetLocations, setCharacters, locations, characters, timelineItems, loadAll, addLocation, resetCharacters, addCharacter, resetTimelineItems, clearAll } from "../stores";
+import { setTimelineItems, setTimelineSequence, resetLocations, setCharacters, locations, characters, timelineItems, loadAll, addLocation, resetCharacters, addCharacter, deleteAllTimelineItems, clearAll } from "../stores";
 
 export async function initNewScript() {
     await ingest([], [], []);

@@ -24,8 +24,9 @@ const orderedItems = createMemo(() => {
         .filter((item): item is TimelineItem => !!item); // filter out undefined
 });
 
+
 // CRUD:
-export async function addTimeilneItem(item: TimelineItem) {
+export async function createTimeilneItem(item: TimelineItem) {
     setTimelineItems(item.id, item);
     const seq = [...timelineSequence(), item.id];
     setTimelineSequence(seq);
@@ -48,10 +49,34 @@ export async function removeTimelineItem(id: string) {
     await storage.delete("timelineItems", id);
 }
 
-export async function resetTimelineItems() {
+export async function updateTimelineItem(
+    id: string,
+    path: "details" | "title" | "duration",
+    key: string,
+    value: any
+) {
+    setTimelineItems(id, path, key, value);
+
+    const item = timelineItems[id];
+    if (item) {
+        await storage.put("timelineItems", item);
+    }
+}
+
+export async function deleteTimelineItem(id: string) {
+    setTimelineItems(prev => {
+        const copy = { ...prev };
+        delete copy[id];
+        return copy;
+    });
+    setTimelineSequence(seq => seq.filter(x => x !== id));
+    await storage.delete("timelineItems", id);
+}
+
+export async function deleteAllTimelineItems() {
     setTimelineItems({});
     setTimelineSequence([]);
-    storage.clearTable("timelineItems");
+    await storage.clearTable("timelineItems");
 }
 
 // Derived:

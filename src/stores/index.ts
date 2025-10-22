@@ -1,7 +1,7 @@
 import { loadAllCharacters, resetCharacters } from "./characters";
 import { loadAllLocations, resetLocations } from "./locations";
 import { loadAllNotes } from "./notes";
-import { loadAllTimelineItems, resetTimelineItems } from "./timelineItems";
+import { loadAllTimelineItems, deleteAllTimelineItems } from "./timelineItems";
 import { loadAllTags } from "./tags";
 
 export * from "./timelineItems";
@@ -28,7 +28,7 @@ export async function loadAll() {
 export async function clearAll() {
     console.log('stores/clearAll: Enter')
     await Promise.all([
-        resetTimelineItems(),
+        deleteAllTimelineItems(),
         resetLocations(),
         resetCharacters
         // resetTags(),

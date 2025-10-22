@@ -1,4 +1,4 @@
-import { downloadJSON, initNewScript } from "../../lib/io";
+import { downloadJSON, initNewScript, loadSampleScript } from "../../lib/io";
 import JSONUploader from "../JsonUploader";
 
 export default function SettingsView() {
@@ -16,6 +16,11 @@ export default function SettingsView() {
             <li>
                 <i>download</i>
                 <button class='transparent no-padding' onclick={downloadJSON}>Save script</button>
+            </li>
+            <hr />
+            <li>
+                <i>book</i>
+                <button class='transparent no-padding' onclick={loadSampleScript}>Load sample script</button>
             </li>
         </ul>
     </article>;

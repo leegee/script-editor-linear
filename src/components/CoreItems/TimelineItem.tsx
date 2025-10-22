@@ -71,7 +71,7 @@ export class TimelineItem {
     //     return <div>Base.renderFull: {JSON.stringify(this, null, 2)}</div>;
     // }
 
-    renderCompact() { return this.title }
+    renderCompact() { return <span>{this.title}</span> }
 
     renderFull() {
         return <article>

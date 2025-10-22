@@ -52,23 +52,33 @@ export class TimelineItem {
     }
 
 
-    /**
-     * Compact display (e.g., in list views)
-     */
-    renderCompact(): JSX.Element {
-        return (
-            <div>
-                Base.renderCompact:
-                {this.type}: {this.title ?? this.details.text ?? ""}
-            </div>
-        );
-    }
+    // /**
+    //  * Compact display (e.g., in list views)
+    //  */
+    // renderCompact(): JSX.Element {
+    //     return (
+    //         <div>
+    //             Base.renderCompact:
+    //             {this.type}: {this.title ?? this.details.text ?? ""}
+    //         </div>
+    //     );
+    // }
 
-    /**
-     * Full debug display
-     */
-    renderFull(): JSX.Element {
-        return <div>Base.renderFull: {JSON.stringify(this, null, 2)}</div>;
+    // /**
+    //  * Full debug display
+    //  */
+    // renderFull(): JSX.Element {
+    //     return <div>Base.renderFull: {JSON.stringify(this, null, 2)}</div>;
+    // }
+
+    renderCompact() { return this.title }
+
+    renderFull() {
+        return <article>
+            <h2>
+                <TimelineItemEditor id={this.id} path="title" store="characters" />
+            </h2>
+        </article>;
     }
 
     /**

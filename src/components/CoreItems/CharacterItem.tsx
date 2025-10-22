@@ -6,7 +6,6 @@ import TimelineItemEditor from "../ItemEditor";
 
 export class CharacterItem extends TimelineItem {
     declare title: string;
-    traits?: string[];
 
     static revive(obj: any) {
         return new CharacterItem(obj);
@@ -46,12 +45,11 @@ export class CharacterItem extends TimelineItem {
         );
     }
 
-    constructor(props: Omit<TimelineItemProps, "type"> & { traits?: string[] }) {
+    constructor(props: Omit<TimelineItemProps, "type">) {
         super({
             ...props,
             type: 'character'
         });
-        this.traits = props.traits;
     }
 
     renderCompact() { return this.title; }

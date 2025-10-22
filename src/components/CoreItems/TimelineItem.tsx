@@ -114,4 +114,6 @@ export class TimelineItem {
             details: { ...this.details, ...details },
         };
     }
+
+    openEditor() { }
 }

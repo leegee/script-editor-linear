@@ -82,8 +82,17 @@ export default function DragDropList<T extends HasIdAndDuration>(props: DragDrop
         selectItem(props.items()[nextIndex], nextIndex);
       }
 
-      else if (e.key === "Enter" && !(e.currentTarget instanceof HTMLInputElement)) {
+      else if (e.key === "Enter") {
+        // Do not process Enter if in a form input
+        if (e.currentTarget instanceof HTMLInputElement
+          || e.currentTarget instanceof HTMLTextAreaElement
+          || e.currentTarget instanceof HTMLSelectElement
+        ) {
+          return;
+        }
+
         e.preventDefault();
+
         // CTRL+Enter: create a new item
         if (e.ctrlKey) {
           props.onInsert(currentIndex + 1)

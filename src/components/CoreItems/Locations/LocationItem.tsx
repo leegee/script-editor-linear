@@ -97,7 +97,7 @@ export class TimelineLocationItem extends TimelineItem {
                             <i>add_location</i>
                         </span>
                     </label>
-                    <span class='left-padding'>{mode() === "new" ? "Create New" : "Select Existing"}</span>
+                    <span class='left-padding'>{mode() === "new" ? "Create a new location" : "Select a location"}</span>
                 </div>
 
                 {mode() === "new" && (

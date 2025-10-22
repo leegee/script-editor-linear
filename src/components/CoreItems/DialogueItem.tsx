@@ -1,10 +1,8 @@
 import { createSignal, Show } from "solid-js";
 import { addCharacter, characters, timelineItems, updateTimelineItem } from "../../stores";
-import InlineEditable from "../InlineEditable";
 import { TimelineItem, TimelineItemProps } from "./TimelineItem";
 import { CharacterItem } from "./CharacterItem";
-import AutoResizingTextarea from "../AutoRessizingTextarea";
-import TimelineItemEditor from "../TimelineItemEditor";
+import TimelineItemEditor from "../ItemEditor";
 
 export class DialogueItem extends TimelineItem {
     constructor(props: Omit<TimelineItemProps, "type">) {

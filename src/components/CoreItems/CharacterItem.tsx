@@ -2,7 +2,7 @@ import { For } from "solid-js";
 import { characters, updateTimelineItem } from "../../stores";
 import { TimelineItem, TimelineItemProps } from "./TimelineItem";
 import { A } from "@solidjs/router";
-import TimelineItemEditor from "../TimelineItemEditor";
+import TimelineItemEditor from "../ItemEditor";
 
 export class CharacterItem extends TimelineItem {
     declare title: string;

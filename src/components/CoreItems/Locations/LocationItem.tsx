@@ -6,16 +6,15 @@ import { TimelineItem, TimelineItemProps } from "../TimelineItem";
 import { LocationMap } from "./LocationMap";
 import { CanonicalLocation } from "./CanonicalLocation";
 import MapLinks from "./MapLinks";
-import TimelineItemEditor from "../../TimelineItemEditor";
+import TimelineItemEditor from "../../ItemEditor";
 
 export class TimelineLocationItem extends TimelineItem {
     static revive(obj: any): TimelineLocationItem {
-        // Old data migration — create reference-only item
         return new TimelineLocationItem({
             ...obj,
             details: obj.details?.ref
                 ? obj.details
-                : { ref: obj.id }, // fallback for legacy inline items
+                : { ref: obj.id },
         });
     }
 
@@ -157,14 +156,19 @@ export class TimelineLocationItem extends TimelineItem {
     renderFull() {
         const canonical = resolveTimelineRef(this);
         if (!canonical) return <p>Unknown Location</p>;
-
+        console.log(canonical)
         const { lat, lng, radius } = canonical.details;
 
         return (
             <article>
                 <header>
                     <h3 class="field">
-                        <TimelineItemEditor id={canonical.id} path="title" defaultValue={canonical.title ?? "Untitled Location"} />
+                        <TimelineItemEditor
+                            store="locations"
+                            id={canonical.id}
+                            path="title"
+                            defaultValue={canonical.title ?? "Untitled Location"}
+                        />
                     </h3>
                 </header>
 

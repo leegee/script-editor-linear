@@ -1,6 +1,6 @@
 import { formatHHMMSS } from "../../lib/formatSecondsToHMS";
 import { sceneDurations } from "../../stores";
-import TimelineItemEditor from "../TimelineItemEditor";
+import TimelineItemEditor from "../ItemEditor";
 import { TimelineItem, TimelineItemProps } from "./TimelineItem";
 
 export class SceneItem extends TimelineItem {

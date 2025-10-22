@@ -27,7 +27,6 @@ export async function updateLocation(id: string, updatedFields: Partial<Canonica
     setLocations(id, prev => ({
         ...(prev ?? {}),
         ...updatedFields,
-        // merge nested details if provided
         details: {
             ...(prev?.details ?? {}),
             ...(updatedFields.details ?? {})

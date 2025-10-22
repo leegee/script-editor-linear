@@ -1,6 +1,5 @@
-import { updateTimelineItem } from "../../stores";
-import InlineEditable from "../InlineEditable";
 import "./CoreItems.scss";
+import TimelineItemEditor from "../ItemEditor";
 import { JSX } from "solid-js/jsx-runtime";
 
 export interface TimelineItemProps {
@@ -82,10 +81,12 @@ export class TimelineItem {
         return (
             <>
                 <div class="field border label max">
-                    <InlineEditable
-                        value={this.title ?? "Title"}
-                        onUpdate={(v) => updateTimelineItem(this.id, "title", "", v)}
+                    <TimelineItemEditor
+                        id={this.id}
+                        path="title"
+                        defaultValue={this.title ?? "Title"}
                     />
+
                     <label>Title</label>
                 </div>
             </>

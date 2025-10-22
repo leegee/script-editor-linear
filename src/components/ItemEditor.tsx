@@ -1,6 +1,6 @@
 import { createSignal, createEffect, Show } from "solid-js";
-import { timelineItems, updateTimelineItem } from "../stores";
-import AutoResizingTextarea from "./AutoRessizingTextarea";
+import { characters, locations, timelineItems, updateCharacter, updateLocation, updateTimelineItem } from "../stores";
+import AutoResizingTextarea from "./AutoResizingTextarea";
 
 interface TimelineItemEditorProps {
     id: string;                    // pass item.id, not full object
@@ -11,6 +11,7 @@ interface TimelineItemEditorProps {
     multiline?: boolean;           // textarea instead of input
     class?: string;                // CSS class
     editMode?: boolean;            // controlled edit mode
+    store?: "timeline" | "locations" | "characters";
 }
 
 export default function TimelineItemEditor(props: TimelineItemEditorProps) {
@@ -19,21 +20,23 @@ export default function TimelineItemEditor(props: TimelineItemEditorProps) {
 
     let inputRef: HTMLInputElement | undefined;
 
-    const item = () => timelineItems[props.id];
+    const item = () =>
+        props.store === "locations"
+            ? locations[props.id]
+            : props.store === "characters"
+                ? characters[props.id]
+                : timelineItems[props.id];
 
     // Initialise value on mount
     createEffect(() => {
         const i = item();
         if (!i) return;
-
-        let v: any;
-        if (props.path === "details" && props.key) {
-            v = i.details?.[props.key];
-        } else {
-            v = (i as any)[props.path];
-        }
+        const v =
+            props.path === "details" && props.key
+                ? (i.details as Record<string, any>)?.[props.key]
+                : (i as any)[props.path];
         setValue(v ?? props.defaultValue ?? "");
-    });
+    })
 
     // Autofocus when editing becomes true
     createEffect(() => {
@@ -47,9 +50,16 @@ export default function TimelineItemEditor(props: TimelineItemEditorProps) {
 
     const handleDblClick = () => setEditing(true);
     const handleInput = (v: string) => setValue(v);
+
     const handleBlur = () => {
         setEditing(false);
-        updateTimelineItem(props.id, props.path, props.key ?? "", value());
+        const updateFn =
+            props.store === "locations"
+                ? updateLocation
+                : props.store === "characters"
+                    ? updateCharacter
+                    : updateTimelineItem;
+        updateFn(props.id, props.path, props.key ?? "", value());
     };
 
     return (

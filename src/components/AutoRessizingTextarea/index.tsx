@@ -29,7 +29,15 @@ export default function AutoResizingTextarea(props: AutoResizingTextareaProps) {
     };
 
     onMount(adjustHeight);
-    createEffect(adjustHeight);
+    // createEffect(adjustHeight);
+
+    // createEffect(() => {
+    //     adjustHeight()
+    //     if (props.autofocus && textareaRef) {
+    //         textareaRef.focus();
+    //         textareaRef.selectionStart = textareaRef.selectionEnd = textareaRef.value.length;
+    //     }
+    // });
 
     return (
         <div class={props.class ?? ""}>

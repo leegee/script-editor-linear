@@ -41,6 +41,7 @@ export default function DragDropList<T extends HasIdAndDuration>(props: DragDrop
   const [dragY, setDragY] = createSignal<number | null>(null);
   let floatingRef: HTMLElement | undefined;
   let offsetY = 0;
+  let listRef: HTMLUListElement | undefined;
 
   // Reconcile order with changes in props.items
   createEffect(() => {
@@ -57,64 +58,50 @@ export default function DragDropList<T extends HasIdAndDuration>(props: DragDrop
     if (changed) setOrder(nextOrder);
   });
 
-
   function selectItem(item: T, index: number) {
+    if (selectedId() === item.id) return;
+
     setSelectedId(item.id);
     const el = document.querySelector(`[data-index="${index}"]`) as HTMLElement | null;
     el?.scrollIntoView({ block: "nearest" });
+
+    listRef?.focus();
   }
 
-  // Keyboard navigation
-  createEffect(() => {
-    function handleKey(e: KeyboardEvent) {
-      if (!props.items().length) return;
+  // Keyboard navigation attached to the list only
+  function handleKey(e: KeyboardEvent) {
+    if (!props.items().length) return;
 
-      const currentId = selectedId();
-      let currentIndex = props.items().findIndex(i => i.id === currentId);
-      if (currentIndex === -1) currentIndex = 0;
+    const currentId = selectedId();
+    let currentIndex = props.items().findIndex(i => i.id === currentId);
+    if (currentIndex === -1) currentIndex = 0;
 
-      if (e.key === "ArrowDown" || e.key === "ArrowUp") {
-        e.preventDefault();
-        const delta = e.key === "ArrowDown" ? 1 : -1;
-        const nextIndex = Math.min(
-          props.items().length - 1,
-          Math.max(0, currentIndex + delta)
-        );
-        selectItem(props.items()[nextIndex], nextIndex);
-      }
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+      e.preventDefault();
+      const delta = e.key === "ArrowDown" ? 1 : -1;
+      const nextIndex = Math.min(
+        props.items().length - 1,
+        Math.max(0, currentIndex + delta)
+      );
+      selectItem(props.items()[nextIndex], nextIndex);
+    } else if (e.key === "Enter") {
+      if (
+        e.currentTarget instanceof HTMLInputElement ||
+        e.currentTarget instanceof HTMLTextAreaElement ||
+        e.currentTarget instanceof HTMLSelectElement
+      ) return;
 
-      else if (e.key === "Enter") {
-        // Do not process Enter if in a form input
-        if (e.currentTarget instanceof HTMLInputElement
-          || e.currentTarget instanceof HTMLTextAreaElement
-          || e.currentTarget instanceof HTMLSelectElement
-        ) {
-          alert('ah')
-          return;
-        }
+      e.preventDefault();
 
-        e.preventDefault();
-
-        // CTRL+Enter: create a new item
-        if (e.ctrlKey) {
-          const currentIndex = props.items().findIndex(i => i.id === selectedId());
-          if (currentIndex !== -1) {
-            const item = props.items()[currentIndex];
-            item.openEditor();
-          }
-          return;
-        }
-        // Enter: show details of the item
-        else {
-          selectItem(props.items()[currentIndex], currentIndex);
-          props.showItem(props.items()[currentIndex])
-        }
+      if (e.ctrlKey) {
+        const idx = props.items().findIndex(i => i.id === selectedId());
+        if (idx !== -1) props.items()[idx].openEditor();
+      } else {
+        selectItem(props.items()[currentIndex], currentIndex);
+        props.showItem(props.items()[currentIndex]);
       }
     }
-
-    document.addEventListener("keydown", handleKey);
-    return () => document.removeEventListener("keydown", handleKey);
-  });
+  }
 
   function startDrag(index: number, e: PointerEvent) {
     e.stopPropagation();
@@ -190,24 +177,25 @@ export default function DragDropList<T extends HasIdAndDuration>(props: DragDrop
   }
 
   return (
-    <ul class="drag-list list border no-space scroll">
-
+    <ul
+      class="drag-list list border no-space scroll"
+      ref={listRef}
+      tabindex={0}
+      onKeyDown={handleKey}
+    >
       <List each={props.items()}>
         {(item, idx: Accessor<number>) => {
-          // Get the item's position in the current order
           const pos = idx();
-          if (pos === -1) return null; // safety check
+          if (pos === -1) return null;
 
           const isDragging = draggingIndex() === pos;
           const isPlaceholder = overIndex() === pos && draggingIndex() !== null;
 
-          // Compute cumulative time for this item
           const cumulativeSeconds = props.items()
             .slice(0, pos)
             .reduce((sum, i) => sum + (i.duration ?? 0), 0);
           const displayTime = formatTime(cumulativeSeconds);
 
-          // Clamp insert indices
           const insertBefore = pos > 0 ? pos - 1 : 0;
           const insertAfter = pos >= 0 ? pos + 1 : timelineSequence().length;
 
@@ -242,16 +230,14 @@ export default function DragDropList<T extends HasIdAndDuration>(props: DragDrop
       </List>
 
       {/* NEW ITEM placeholder */}
-      {(() => (
-        <li class="dnd-item">
-          <div class="item-content" onClick={() => props.onInsert(timelineSequence().length)}>
-            <small class="time-label">{formatTime(
-              props.items().reduce((sum, i) => sum + (i.duration ?? 0), 0)
-            )}</small>
-            + NEW ITEM
-          </div>
-        </li>
-      ))()}
+      <li class="dnd-item">
+        <div class="item-content" onClick={() => props.onInsert(timelineSequence().length)}>
+          <small class="time-label">{formatTime(
+            props.items().reduce((sum, i) => sum + (i.duration ?? 0), 0)
+          )}</small>
+          + NEW ITEM
+        </div>
+      </li>
 
       {/* Floating drag preview */}
       {draggingIndex() !== null && dragX() !== null && dragY() !== null && (

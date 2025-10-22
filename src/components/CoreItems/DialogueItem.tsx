@@ -30,7 +30,7 @@ export class DialogueItem extends TimelineItem {
                     key="text"
                     defaultValue={this.details.text ?? "..."}
                     class="dialogueText"
-                    multiline
+                    multiline={true}
                 />
             </div>
         );
@@ -104,7 +104,7 @@ export class DialogueItem extends TimelineItem {
                     key="text"
                     defaultValue={this.details.text ?? ""}
                     class="field textarea border label max"
-                    multiline
+                    multiline={true}
                     editMode={true}
                     label="Dialogue"
                 />

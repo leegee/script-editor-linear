@@ -103,10 +103,69 @@ export async function deleteAllTimelineItems() {
 
 // Derived memos
 
-// Ordered items derived
-export const orderedItems = createMemo(() =>
-    timelineSequence().map(id => timelineItems[id]).filter((item): item is TimelineItem => !!item)
-);
+export const orderedItems = createMemo(() => {
+    const items = timelineSequence()
+        .map(id => timelineItems[id])
+        .filter((item): item is TimelineItem => !!item);
+
+    const result: TimelineItem[] = [];
+    let now = 0;
+
+    // First pass: compute absolute start times and advance now for items with duration
+    for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        const start = now;
+
+        // Clone item with start in details (duration may be undefined)
+        const newItem = item.cloneWith({
+            details: { ...item.details, start },
+        });
+
+        result.push(newItem);
+
+        // Advance 'now' if item has duration
+        now = start + (item.duration ?? 0);
+    }
+
+    const totalDuration = now;
+
+    // Second pass: compute implicit durations for event markers (act, scene, beat)
+    for (let i = 0; i < result.length; i++) {
+        const item = result[i];
+
+        if (item.duration == null) {
+            const nextSameTypeIndex = result.slice(i + 1).findIndex(n => n.type === item.type);
+            const nextIndex = nextSameTypeIndex >= 0 ? i + 1 + nextSameTypeIndex : result.length;
+            const end = nextIndex < result.length
+                ? result[nextIndex].details.start
+                : totalDuration; // <-- use totalDuration if last of type
+            const duration = end - item.details.start;
+
+            result[i] = item.cloneWith({
+                details: { ...item.details, end: end },
+                duration,
+            });
+        }
+    }
+
+    return result;
+});
+
+
+// Should consolidate all the time processes into one
+export const actStartTimes = createMemo(() => {
+    const starts: Record<string, number> = {};
+    let currentStart = 0;
+
+    for (const item of orderedItems()) {
+        if (item.type === "act") {
+            starts[item.id] = currentStart;
+            currentStart += item.duration ?? 0;
+        }
+    }
+
+    return starts;
+});
 
 export const actDurations = createMemo(() => {
     const acts: Record<string, number> = {};
@@ -125,6 +184,20 @@ export const actDurations = createMemo(() => {
 
     if (currentActId) acts[currentActId] = sum;
     return acts;
+});
+
+export const sceneStartTimes = createMemo(() => {
+    const starts: Record<string, number> = {};
+    let currentStart = 0;
+
+    for (const item of orderedItems()) {
+        if (item.type === "scene") {
+            starts[item.id] = currentStart;
+            currentStart += item.duration ?? 0;
+        }
+    }
+
+    return starts;
 });
 
 export const sceneDurations = createMemo(() => {
@@ -184,3 +257,16 @@ export const sceneLocations = createMemo(() => {
     return scenes;
 });
 
+export const timelineitemStartTimes = createMemo(() => {
+    const starts: Record<string, number> = {};
+    let currentStart = 0;
+
+    for (const item of orderedItems()) {
+        if (item.type === "scene") {
+            starts[item.id] = currentStart;
+            currentStart += item.duration ?? 0;
+        }
+    }
+
+    return starts;
+});

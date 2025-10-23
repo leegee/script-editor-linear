@@ -89,6 +89,7 @@ export async function ingest(
     const seq: string[] = [];
     for (const props of sampleScript) {
         const item = reviveItem(props);
+        if (!item.id) item.id = crypto.randomUUID();
         await storeCreateTimelineItem(item);
         seq.push(item.id);
     }

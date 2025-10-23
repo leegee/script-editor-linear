@@ -22,6 +22,10 @@
   3. **Full Detail / Editor**:  complete editable form (with multimedia and links)
 - **Edits persist locally** (e.g., IndexedDB tables: `timelineItems`, `characters`, etc.)
 
+- Timeline items are linear, in timelineSequence() order.
+- Items without a duration (like acts, scenes, beats) are “start markers” — their end is implicitly the start of the next item of the same type or the timeline’s end.
+- Items with a duration (dialogue, action, etc.) have their start at the current time (now) and move now forward by their duration.
+
 ---
 
 ### Characters

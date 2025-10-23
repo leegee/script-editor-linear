@@ -37,7 +37,7 @@ export default function TimelineView() {
                 const rect = timelineEl.getBoundingClientRect();
                 const mouseX = e.clientX - rect.left + timelineEl.scrollLeft; // mouse position in content coords
                 const prevScale = scale();
-                const nextScale = Math.min(Math.max(prevScale * (e.deltaY > 0 ? 0.9 : 1.1), 2), 200);
+                const nextScale = Math.min(Math.max(prevScale * (e.deltaY > 0 ? 0.9 : 1.1), 1), 200);
 
                 // compute new scroll offset so the zoom point stays fixed
                 const scaleRatio = nextScale / prevScale;

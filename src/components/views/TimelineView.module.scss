@@ -43,9 +43,12 @@
         /* items are absolutely positioned inside rows */
     }
 
-    /* Each type gets its own row using a wrapper */
     .type-row {
         position: relative;
+
+        &> :nth-child(even) {
+            filter: brightness(0.8);
+        }
     }
 
     /* Timeline item styling (now inside its row) */

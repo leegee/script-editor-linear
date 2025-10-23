@@ -54,14 +54,12 @@
         {
             "id": "uuid-1",
             "type": "act",
-            "title": "Act 1",
-            "duration": 60
+            "title": "Act 1"
         },
         {
             "id": "uuid-2",
             "type": "scene",
-            "title": "Scene 1",
-            "duration": 15
+            "title": "Scene 1"
         },
         {
             "id": "uuid-3",
@@ -118,8 +116,7 @@
         {
             "id": "uuid-9",
             "type": "scene",
-            "title": "Scene 2",
-            "duration": 15
+            "title": "Scene 2"
         },
         {
             "id": "uuid-10",
@@ -158,8 +155,7 @@
         {
             "id": "uuid-14",
             "type": "scene",
-            "title": "Scene 3",
-            "duration": 20
+            "title": "Scene 3"
         },
         {
             "id": "uuid-15",

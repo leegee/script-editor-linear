@@ -1,0 +1,249 @@
+{
+    "characters": [
+        {
+            "id": "Narrator",
+            "title": "Narrator"
+        },
+        {
+            "id": "FatherBear",
+            "title": "Father Bear"
+        },
+        {
+            "id": "MotherBear",
+            "title": "Mother Bear"
+        },
+        {
+            "id": "BabyBear",
+            "title": "Baby Bear"
+        },
+        {
+            "id": "Goldilocks",
+            "title": "Goldilocks"
+        }
+    ],
+    "locations": [
+        {
+            "id": "cottage-1",
+            "title": "The Bears’ Cottage",
+            "details": {
+                "lat": 51.5074,
+                "lng": -0.1278,
+                "radius": 150
+            }
+        },
+        {
+            "id": "forest-path-1",
+            "title": "Forest Path",
+            "details": {
+                "lat": 51.5076,
+                "lng": -0.1281,
+                "radius": 200
+            }
+        },
+        {
+            "id": "cottage-inside-1",
+            "title": "Inside the Bears’ Cottage",
+            "details": {
+                "lat": 51.5075,
+                "lng": -0.1279,
+                "radius": 20
+            }
+        }
+    ],
+    "script": [
+        {
+            "id": "uuid-1",
+            "type": "act",
+            "title": "Act 1"
+        },
+        {
+            "id": "uuid-2",
+            "type": "scene",
+            "title": "Scene 1"
+        },
+        {
+            "id": "uuid-3",
+            "type": "location",
+            "details": {
+                "ref": "cottage-1"
+            }
+        },
+        {
+            "id": "uuid-4",
+            "type": "dialogue",
+            "details": {
+                "characterId": "Narrator",
+                "text": "Once upon a time, there were three bears living together."
+            },
+            "duration": 5
+        },
+        {
+            "id": "uuid-5",
+            "type": "dialogue",
+            "details": {
+                "characterId": "Narrator",
+                "text": "There was a great big father bear, a middle-sized mother bear, and a tiny little baby bear."
+            },
+            "duration": 5
+        },
+        {
+            "id": "uuid-6",
+            "type": "dialogue",
+            "details": {
+                "characterId": "FatherBear",
+                "text": "Breakfast time! My porridge is far too hot."
+            },
+            "duration": 3
+        },
+        {
+            "id": "uuid-7",
+            "type": "dialogue",
+            "details": {
+                "characterId": "MotherBear",
+                "text": "Mine too, dear. Let’s take a little walk while it cools."
+            },
+            "duration": 3
+        },
+        {
+            "id": "uuid-8",
+            "type": "dialogue",
+            "details": {
+                "characterId": "BabyBear",
+                "text": "Yes, let’s go! I love walks!"
+            },
+            "duration": 2
+        },
+        {
+            "id": "uuid-9",
+            "type": "scene",
+            "title": "Scene 2"
+        },
+        {
+            "id": "uuid-10",
+            "type": "location",
+            "details": {
+                "ref": "forest-path-1"
+            }
+        },
+        {
+            "id": "uuid-11",
+            "type": "dialogue",
+            "details": {
+                "characterId": "Narrator",
+                "text": "So the three bears set off for their walk in the woods."
+            },
+            "duration": 5
+        },
+        {
+            "id": "uuid-12",
+            "type": "dialogue",
+            "details": {
+                "characterId": "Narrator",
+                "text": "While they were away, Goldilocks wandered along the same path."
+            },
+            "duration": 5
+        },
+        {
+            "id": "uuid-13",
+            "type": "dialogue",
+            "details": {
+                "characterId": "Goldilocks",
+                "text": "What a lovely little house! I wonder who lives here..."
+            },
+            "duration": 5
+        },
+        {
+            "id": "uuid-14",
+            "type": "scene",
+            "title": "Scene 3"
+        },
+        {
+            "id": "uuid-15",
+            "type": "location",
+            "details": {
+                "ref": "cottage-inside-1"
+            }
+        },
+        {
+            "id": "uuid-16",
+            "type": "dialogue",
+            "details": {
+                "characterId": "Narrator",
+                "text": "Goldilocks knocked at the door, but no one answered."
+            },
+            "duration": 3
+        },
+        {
+            "id": "uuid-17",
+            "type": "dialogue",
+            "details": {
+                "characterId": "Goldilocks",
+                "text": "Mmm! What a delicious smell! Porridge!"
+            },
+            "duration": 3
+        },
+        {
+            "id": "uuid-18",
+            "type": "dialogue",
+            "details": {
+                "characterId": "Narrator",
+                "text": "On the table were three bowls of porridge."
+            },
+            "duration": 3
+        },
+        {
+            "id": "uuid-19",
+            "type": "dialogue",
+            "details": {
+                "characterId": "Goldilocks",
+                "text": "Ouch! This porridge is too hot!"
+            },
+            "duration": 2
+        },
+        {
+            "id": "uuid-20",
+            "type": "dialogue",
+            "details": {
+                "characterId": "Narrator",
+                "text": "She tasted the second bowl."
+            },
+            "duration": 2
+        },
+        {
+            "id": "uuid-21",
+            "type": "dialogue",
+            "details": {
+                "characterId": "Goldilocks",
+                "text": "This one’s too cold."
+            },
+            "duration": 2
+        },
+        {
+            "id": "uuid-22",
+            "type": "dialogue",
+            "details": {
+                "characterId": "Narrator",
+                "text": "Finally, she tasted the third bowl."
+            },
+            "duration": 2
+        },
+        {
+            "id": "uuid-23",
+            "type": "dialogue",
+            "details": {
+                "characterId": "Goldilocks",
+                "text": "Ahh! This porridge is just right."
+            },
+            "duration": 2
+        },
+        {
+            "id": "uuid-24",
+            "type": "dialogue",
+            "details": {
+                "characterId": "Narrator",
+                "text": "And she ate it all up."
+            },
+            "duration": 3
+        }
+    ]
+}

@@ -70,6 +70,22 @@
         },
         {
             "id": "uuid-4",
+            "type": "sound",
+            "details": {
+                "text": "Morning birds chirping"
+            },
+            "duration": 5
+        },
+        {
+            "id": "uuid-5",
+            "type": "lighting",
+            "details": {
+                "text": "Sunlight through window"
+            },
+            "duration": 5
+        },
+        {
+            "id": "uuid-6",
             "type": "dialogue",
             "details": {
                 "characterId": "Narrator",
@@ -78,7 +94,7 @@
             "duration": 5
         },
         {
-            "id": "uuid-5",
+            "id": "uuid-7",
             "type": "dialogue",
             "details": {
                 "characterId": "Narrator",
@@ -87,7 +103,13 @@
             "duration": 5
         },
         {
-            "id": "uuid-6",
+            "id": "uuid-7a",
+            "type": "beat",
+            "title": "Bear family introduction",
+            "duration": 2
+        },
+        {
+            "id": "uuid-8",
             "type": "dialogue",
             "details": {
                 "characterId": "FatherBear",
@@ -96,7 +118,7 @@
             "duration": 3
         },
         {
-            "id": "uuid-7",
+            "id": "uuid-9",
             "type": "dialogue",
             "details": {
                 "characterId": "MotherBear",
@@ -105,7 +127,7 @@
             "duration": 3
         },
         {
-            "id": "uuid-8",
+            "id": "uuid-10",
             "type": "dialogue",
             "details": {
                 "characterId": "BabyBear",
@@ -114,19 +136,41 @@
             "duration": 2
         },
         {
-            "id": "uuid-9",
+            "id": "uuid-10a",
+            "type": "action",
+            "details": {
+                "text": "The bears leave the cottage."
+            },
+            "duration": 2
+        },
+        {
+            "id": "uuid-10b",
+            "type": "transition",
+            "title": "Transition to scene 2",
+            "duration": 1
+        },
+        {
+            "id": "uuid-11",
             "type": "scene",
             "title": "Scene 2"
         },
         {
-            "id": "uuid-10",
+            "id": "uuid-12",
             "type": "location",
             "details": {
                 "ref": "forest-path-1"
             }
         },
         {
-            "id": "uuid-11",
+            "id": "uuid-13",
+            "type": "sound",
+            "details": {
+                "text": "Rustling leaves"
+            },
+            "duration": 5
+        },
+        {
+            "id": "uuid-14",
             "type": "dialogue",
             "details": {
                 "characterId": "Narrator",
@@ -135,7 +179,7 @@
             "duration": 5
         },
         {
-            "id": "uuid-12",
+            "id": "uuid-15",
             "type": "dialogue",
             "details": {
                 "characterId": "Narrator",
@@ -144,7 +188,13 @@
             "duration": 5
         },
         {
-            "id": "uuid-13",
+            "id": "uuid-15a",
+            "type": "beat",
+            "title": "Goldilocks enters forest",
+            "duration": 2
+        },
+        {
+            "id": "uuid-16",
             "type": "dialogue",
             "details": {
                 "characterId": "Goldilocks",
@@ -153,19 +203,49 @@
             "duration": 5
         },
         {
-            "id": "uuid-14",
+            "id": "uuid-16a",
+            "type": "action",
+            "details": {
+                "text": "Goldilocks knocks at the door."
+            },
+            "duration": 2
+        },
+        {
+            "id": "uuid-16b",
+            "type": "pause",
+            "title": "Door silence",
+            "duration": 1
+        },
+        {
+            "id": "uuid-16c",
+            "type": "camera",
+            "details": {
+                "text": "Close-up on door"
+            },
+            "duration": 3
+        },
+        {
+            "id": "uuid-17",
             "type": "scene",
             "title": "Scene 3"
         },
         {
-            "id": "uuid-15",
+            "id": "uuid-18",
             "type": "location",
             "details": {
                 "ref": "cottage-inside-1"
             }
         },
         {
-            "id": "uuid-16",
+            "id": "uuid-19",
+            "type": "lighting",
+            "details": {
+                "text": "Dim indoor light"
+            },
+            "duration": 3
+        },
+        {
+            "id": "uuid-20",
             "type": "dialogue",
             "details": {
                 "characterId": "Narrator",
@@ -174,7 +254,7 @@
             "duration": 3
         },
         {
-            "id": "uuid-17",
+            "id": "uuid-21",
             "type": "dialogue",
             "details": {
                 "characterId": "Goldilocks",
@@ -183,38 +263,10 @@
             "duration": 3
         },
         {
-            "id": "uuid-18",
-            "type": "dialogue",
+            "id": "uuid-21a",
+            "type": "action",
             "details": {
-                "characterId": "Narrator",
-                "text": "On the table were three bowls of porridge."
-            },
-            "duration": 3
-        },
-        {
-            "id": "uuid-19",
-            "type": "dialogue",
-            "details": {
-                "characterId": "Goldilocks",
-                "text": "Ouch! This porridge is too hot!"
-            },
-            "duration": 2
-        },
-        {
-            "id": "uuid-20",
-            "type": "dialogue",
-            "details": {
-                "characterId": "Narrator",
-                "text": "She tasted the second bowl."
-            },
-            "duration": 2
-        },
-        {
-            "id": "uuid-21",
-            "type": "dialogue",
-            "details": {
-                "characterId": "Goldilocks",
-                "text": "This one’s too cold."
+                "text": "Goldilocks enters the cottage."
             },
             "duration": 2
         },
@@ -223,16 +275,24 @@
             "type": "dialogue",
             "details": {
                 "characterId": "Narrator",
-                "text": "Finally, she tasted the third bowl."
+                "text": "On the table were three bowls of porridge."
             },
-            "duration": 2
+            "duration": 3
         },
         {
             "id": "uuid-23",
             "type": "dialogue",
             "details": {
                 "characterId": "Goldilocks",
-                "text": "Ahh! This porridge is just right."
+                "text": "Ouch! This porridge is too hot!"
+            },
+            "duration": 2
+        },
+        {
+            "id": "uuid-23a",
+            "type": "sound",
+            "details": {
+                "text": "Steam rises from hot porridge"
             },
             "duration": 2
         },
@@ -241,9 +301,502 @@
             "type": "dialogue",
             "details": {
                 "characterId": "Narrator",
-                "text": "And she ate it all up."
+                "text": "She tasted the second bowl."
+            },
+            "duration": 2
+        },
+        {
+            "id": "uuid-25",
+            "type": "dialogue",
+            "details": {
+                "characterId": "Goldilocks",
+                "text": "This one’s too cold."
+            },
+            "duration": 2
+        },
+        {
+            "id": "uuid-26",
+            "type": "dialogue",
+            "details": {
+                "characterId": "Narrator",
+                "text": "Finally, she tasted the third bowl."
+            },
+            "duration": 2
+        },
+        {
+            "id": "uuid-27",
+            "type": "dialogue",
+            "details": {
+                "characterId": "Goldilocks",
+                "text": "Ahh! This porridge is just right."
+            },
+            "duration": 2
+        },
+        {
+            "id": "uuid-28",
+            "type": "beat",
+            "title": "Goldilocks satisfied",
+            "duration": 1
+        },
+        {
+            "id": "uuid-29",
+            "type": "action",
+            "details": {
+                "text": "Goldilocks sits in the chair."
+            },
+            "duration": 2
+        },
+        {
+            "id": "uuid-30",
+            "type": "camera",
+            "details": {
+                "text": "Wide shot of cottage interior"
             },
             "duration": 3
+        },
+        {
+            "id": "uuid-31",
+            "type": "sound",
+            "details": {
+                "text": "Creaking chair"
+            },
+            "duration": 2
+        },
+        {
+            "id": "uuid-32",
+            "type": "lighting",
+            "details": {
+                "text": "Sunlight dims slightly"
+            },
+            "duration": 2
+        },
+        {
+            "id": "uuid-33",
+            "type": "action",
+            "details": {
+                "text": "Goldilocks falls asleep in Baby Bear's bed."
+            },
+            "duration": 3
+        },
+        {
+            "id": "uuid-34",
+            "type": "beat",
+            "title": "Sleeping moment",
+            "duration": 2
+        },
+        {
+            "id": "uuid-35",
+            "type": "pause",
+            "title": "Scene pause before bears return",
+            "duration": 2
+        },
+        {
+            "id": "uuid-36",
+            "type": "scene",
+            "title": "Scene 4"
+        },
+        {
+            "id": "uuid-37",
+            "type": "dialogue",
+            "details": {
+                "characterId": "FatherBear",
+                "text": "My porridge is just right now!"
+            },
+            "duration": 2
+        },
+        {
+            "id": "uuid-38",
+            "type": "dialogue",
+            "details": {
+                "characterId": "MotherBear",
+                "text": "Mine too!"
+            },
+            "duration": 2
+        },
+        {
+            "id": "uuid-39",
+            "type": "dialogue",
+            "details": {
+                "characterId": "BabyBear",
+                "text": "Delicious!"
+            },
+            "duration": 2
+        },
+        {
+            "id": "uuid-40",
+            "type": "sound",
+            "details": {
+                "text": "Chairs scrape"
+            },
+            "duration": 2
+        },
+        {
+            "id": "uuid-41",
+            "type": "action",
+            "details": {
+                "text": "Bears leave for a walk."
+            },
+            "duration": 2
+        },
+        {
+            "id": "uuid-42",
+            "type": "transition",
+            "title": "Transition",
+            "duration": 1
+        },
+        {
+            "id": "uuid-43",
+            "type": "scene",
+            "title": "Scene 5"
+        },
+        {
+            "id": "uuid-44",
+            "type": "dialogue",
+            "details": {
+                "characterId": "Goldilocks",
+                "text": "The bears are back! I must hide!"
+            },
+            "duration": 3
+        },
+        {
+            "id": "uuid-45",
+            "type": "action",
+            "details": {
+                "text": "Goldilocks hides under the covers."
+            },
+            "duration": 2
+        },
+        {
+            "id": "uuid-46",
+            "type": "sound",
+            "details": {
+                "text": "Door opens"
+            },
+            "duration": 1
+        },
+        {
+            "id": "uuid-47",
+            "type": "dialogue",
+            "details": {
+                "characterId": "Narrator",
+                "text": "The bears enter the cottage, surprised to find someone sleeping."
+            },
+            "duration": 4
+        },
+        {
+            "id": "uuid-48",
+            "type": "camera",
+            "details": {
+                "text": "Close-up on bears noticing Goldilocks"
+            },
+            "duration": 3
+        },
+        {
+            "id": "uuid-49",
+            "type": "lighting",
+            "details": {
+                "text": "Dramatic shadow over Goldilocks"
+            },
+            "duration": 2
+        },
+        {
+            "id": "uuid-50",
+            "type": "beat",
+            "title": "Tension",
+            "duration": 1
+        },
+        {
+            "id": "uuid-25",
+            "type": "act",
+            "title": "Act 2"
+        },
+        {
+            "id": "uuid-26",
+            "type": "scene",
+            "title": "Scene 1"
+        },
+        {
+            "id": "uuid-27",
+            "type": "location",
+            "details": {
+                "ref": "forest-path-1"
+            }
+        },
+        {
+            "id": "uuid-28",
+            "type": "action",
+            "details": {
+                "text": "The bears continue walking through the forest."
+            },
+            "duration": 5
+        },
+        {
+            "id": "uuid-29",
+            "type": "dialogue",
+            "details": {
+                "characterId": "FatherBear",
+                "text": "What a beautiful day for a walk!"
+            },
+            "duration": 3
+        },
+        {
+            "id": "uuid-30",
+            "type": "beat",
+            "details": {
+                "text": "A bird sings in the distance."
+            }
+        },
+        {
+            "id": "uuid-31",
+            "type": "dialogue",
+            "details": {
+                "characterId": "MotherBear",
+                "text": "Listen to that lovely song of the birds."
+            },
+            "duration": 3
+        },
+        {
+            "id": "uuid-32",
+            "type": "pause",
+            "details": {
+                "text": "They stop for a moment, enjoying the scenery."
+            },
+            "duration": 2
+        },
+        {
+            "id": "uuid-33",
+            "type": "scene",
+            "title": "Scene 2"
+        },
+        {
+            "id": "uuid-34",
+            "type": "location",
+            "details": {
+                "ref": "cottage-inside-1"
+            }
+        },
+        {
+            "id": "uuid-35",
+            "type": "dialogue",
+            "details": {
+                "characterId": "Goldilocks",
+                "text": "I hope no one is home. I want to explore!"
+            },
+            "duration": 3
+        },
+        {
+            "id": "uuid-36",
+            "type": "action",
+            "details": {
+                "text": "Goldilocks opens the door carefully and steps inside."
+            },
+            "duration": 4
+        },
+        {
+            "id": "uuid-37",
+            "type": "beat",
+            "details": {
+                "text": "Goldilocks notices the porridge on the table."
+            }
+        },
+        {
+            "id": "uuid-38",
+            "type": "dialogue",
+            "details": {
+                "characterId": "Goldilocks",
+                "text": "This porridge smells so good. I will try the first bowl."
+            },
+            "duration": 2
+        },
+        {
+            "id": "uuid-39",
+            "type": "action",
+            "details": {
+                "text": "She tastes the porridge; it is too hot."
+            },
+            "duration": 2
+        },
+        {
+            "id": "uuid-40",
+            "type": "pause",
+            "details": {
+                "text": "Goldilocks waits for the porridge to cool."
+            },
+            "duration": 1
+        },
+        {
+            "id": "uuid-41",
+            "type": "dialogue",
+            "details": {
+                "characterId": "Goldilocks",
+                "text": "This second bowl is too cold."
+            },
+            "duration": 2
+        },
+        {
+            "id": "uuid-42",
+            "type": "action",
+            "details": {
+                "text": "She tries the third bowl."
+            },
+            "duration": 2
+        },
+        {
+            "id": "uuid-43",
+            "type": "dialogue",
+            "details": {
+                "characterId": "Goldilocks",
+                "text": "Ahh! Just right. I will eat it all."
+            },
+            "duration": 2
+        },
+        {
+            "id": "uuid-44",
+            "type": "beat",
+            "details": {
+                "text": "Meanwhile, the bears return from their walk."
+            }
+        },
+        {
+            "id": "uuid-45",
+            "type": "scene",
+            "title": "Scene 3"
+        },
+        {
+            "id": "uuid-46",
+            "type": "location",
+            "details": {
+                "ref": "cottage-1"
+            }
+        },
+        {
+            "id": "uuid-47",
+            "type": "dialogue",
+            "details": {
+                "characterId": "FatherBear",
+                "text": "Someone has been eating my porridge!"
+            },
+            "duration": 2
+        },
+        {
+            "id": "uuid-48",
+            "type": "dialogue",
+            "details": {
+                "characterId": "MotherBear",
+                "text": "And mine too!"
+            },
+            "duration": 2
+        },
+        {
+            "id": "uuid-49",
+            "type": "dialogue",
+            "details": {
+                "characterId": "BabyBear",
+                "text": "And mine is gone!"
+            },
+            "duration": 2
+        },
+        {
+            "id": "uuid-50",
+            "type": "action",
+            "details": {
+                "text": "Goldilocks wakes up from her nap and sees the bears."
+            },
+            "duration": 3
+        },
+        {
+            "id": "uuid-51",
+            "type": "dialogue",
+            "details": {
+                "characterId": "Goldilocks",
+                "text": "Oh no! I didn’t mean to!"
+            },
+            "duration": 2
+        },
+        {
+            "id": "uuid-52",
+            "type": "beat",
+            "details": {
+                "text": "The bears look surprised but not angry."
+            }
+        },
+        {
+            "id": "uuid-53",
+            "type": "dialogue",
+            "details": {
+                "characterId": "Narrator",
+                "text": "Goldilocks quickly apologizes and promises to be more careful."
+            },
+            "duration": 3
+        },
+        {
+            "id": "uuid-54",
+            "type": "act",
+            "title": "Act 3"
+        },
+        {
+            "id": "uuid-55",
+            "type": "scene",
+            "title": "Scene 1"
+        },
+        {
+            "id": "uuid-56",
+            "type": "dialogue",
+            "details": {
+                "characterId": "FatherBear",
+                "text": "Let’s all have breakfast together now."
+            },
+            "duration": 3
+        },
+        {
+            "id": "uuid-57",
+            "type": "dialogue",
+            "details": {
+                "characterId": "MotherBear",
+                "text": "Yes, that would be nice."
+            },
+            "duration": 2
+        },
+        {
+            "id": "uuid-58",
+            "type": "dialogue",
+            "details": {
+                "characterId": "BabyBear",
+                "text": "I love porridge!"
+            },
+            "duration": 2
+        },
+        {
+            "id": "uuid-59",
+            "type": "beat",
+            "details": {
+                "text": "They sit down at the table and eat together."
+            }
+        },
+        {
+            "id": "uuid-60",
+            "type": "dialogue",
+            "details": {
+                "characterId": "Goldilocks",
+                "text": "Thank you for letting me join you."
+            },
+            "duration": 2
+        },
+        {
+            "id": "uuid-61",
+            "type": "dialogue",
+            "details": {
+                "characterId": "Narrator",
+                "text": "And from that day, they all became friends."
+            },
+            "duration": 3
+        },
+        {
+            "id": "uuid-62",
+            "type": "beat",
+            "details": {
+                "text": "Curtain closes."
+            }
         }
     ]
 }

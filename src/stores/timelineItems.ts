@@ -132,7 +132,9 @@ export const orderedItems = createMemo(() => {
         result.push(newItem);
 
         // Advance 'now' if item has duration
-        now = start + (item.duration ?? 0);
+        if (!item.details.doesNotAdvanceTime) {
+            now = start + (item.duration ?? 0);
+        }
     }
 
     const totalDuration = now;
@@ -146,7 +148,7 @@ export const orderedItems = createMemo(() => {
             const nextIndex = nextSameTypeIndex >= 0 ? i + 1 + nextSameTypeIndex : result.length;
             const end = nextIndex < result.length
                 ? result[nextIndex].details.start
-                : totalDuration; // <-- use totalDuration if last of type
+                : totalDuration;
             const duration = end - item.details.start;
 
             result[i] = item.cloneWith({

@@ -54,7 +54,7 @@ export default function TimelineView() {
                                                         <Show when={type2icon[item.type]}
                                                             fallback={<span> {item.title ?? item.type} </span>}
                                                         >
-                                                            <i>{type2icon[item.type]}</i>
+                                                            <i class="tiny">{type2icon[item.type]}</i>
                                                         </Show>
                                                     </div>
                                                 )}

@@ -1,7 +1,10 @@
 import { ActItem } from './ActItem';
+import { CameraItem } from './CameraItem';
 import { DialogueItem } from './DialogueItem';
+import { LightingItem } from './LightingItem';
 import { TimelineLocationItem } from './Locations/LocationItem';
 import { SceneItem } from './SceneItem';
+import { SoundItem } from './SoundItem';
 import { TimelineItem } from './TimelineItem';
 import { TransitionItem } from './TransitionItem';
 
@@ -22,6 +25,9 @@ export function reviveItem(obj: any): TimelineItem {
         case "dialogue": return new DialogueItem(obj);
         case "transition": return new TransitionItem(obj);
         case "location": return TimelineLocationItem.revive(obj);
+        case "sound": return new SoundItem(obj);
+        case "camera": return new CameraItem(obj);
+        case "lighting": return new LightingItem(obj);
         default: return new TimelineItem(obj);
     }
 }

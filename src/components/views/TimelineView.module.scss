@@ -1,27 +1,93 @@
-.timelineView {
+.timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    font-family: sans-serif;
+    color: #eee;
+    background: #111;
+    padding: 0.5rem;
+    border-radius: 8px;
+    overflow-x: auto;
+}
+
+.section {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.label {
+    width: 160px;
+    flex-shrink: 0;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #9fc;
+}
+
+.track {
     position: relative;
-    perspective: 1200px;
-    width: 100%;
+    flex: 1;
+    height: 1.75rem;
+    background: #222;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.item {
+    position: absolute;
+    top: 0;
     height: 100%;
-    overflow: auto;
-    padding: 1em;
+    border-radius: 3px;
+    color: #fff;
+    font-size: 0.8rem;
+    padding-left: 4px;
+    line-height: 1.75rem;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    box-shadow: 0 0 2px #000a;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
 
-    ul {
-        position: relative;
-        transform-style: preserve-3d;
-        list-style: none;
-        padding: 0;
-        margin: 0;
+    &:hover {
+        transform: scaleY(1.1);
+        box-shadow: 0 2px 4px #000c;
     }
+}
 
-    li {
-        transition: transform 0.2s ease;
-        transform: rotateY(-10deg);
-        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
-        border-radius: 4px;
-        padding: 0.25em 0.5em;
-        background: #222;
-        color: white;
-        white-space: nowrap;
-    }
+/* Type-specific colours */
+.type-act {
+    background: #3b82f6;
+}
+
+.type-scene {
+    background: #2563eb;
+}
+
+.type-beat {
+    background: #1e40af;
+}
+
+.type-dialogue {
+    background: #22c55e;
+}
+
+.type-action {
+    background: #15803d;
+}
+
+.type-sound {
+    background: #eab308;
+    color: #000;
+}
+
+.type-lighting {
+    background: #f97316;
+}
+
+.type-camera {
+    background: #f43f5e;
+}
+
+.type-transition {
+    background: #a855f7;
 }

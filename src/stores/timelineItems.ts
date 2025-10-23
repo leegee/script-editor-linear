@@ -8,11 +8,6 @@ const [timelineSequence, setTimelineSequence] = createSignal<string[]>([]);
 
 export { timelineItems, timelineSequence };
 
-// Ordered items derived
-export const orderedItems = createMemo(() =>
-    timelineSequence().map(id => timelineItems[id]).filter((item): item is TimelineItem => !!item)
-);
-
 // CRUD API
 
 export async function loadAllTimelineItems() {
@@ -107,6 +102,11 @@ export async function deleteAllTimelineItems() {
 }
 
 // Derived memos
+
+// Ordered items derived
+export const orderedItems = createMemo(() =>
+    timelineSequence().map(id => timelineItems[id]).filter((item): item is TimelineItem => !!item)
+);
 
 export const actDurations = createMemo(() => {
     const acts: Record<string, number> = {};

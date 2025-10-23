@@ -8,17 +8,15 @@ export default function ScriptView() {
     const items = () => timelineSequence().map(id => timelineItems[id]).filter(Boolean);
 
     return (
-        <>
-            <DragDropList
-                items={items}
-                showItem={(item) => navigate(`/item/${item.id}`)}
-                onInsert={(pos: number) => navigate(`/new/${pos}`)}
-                onReorder={(newOrder) => {
-                    const seq = timelineSequence();
-                    const newSeq = newOrder.map(i => seq[i]);
-                    reorderTimeline(newSeq);
-                }}
-            />
-        </>
+        <DragDropList
+            items={items}
+            showItem={(item) => navigate(`/item/${item.id}`)}
+            onInsert={(pos: number) => navigate(`/new/${pos}`)}
+            onReorder={(newOrder) => {
+                const seq = timelineSequence();
+                const newSeq = newOrder.map(i => seq[i]);
+                reorderTimeline(newSeq);
+            }}
+        />
     );
 }

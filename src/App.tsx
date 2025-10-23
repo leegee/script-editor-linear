@@ -1,64 +1,24 @@
-import { onMount, createSignal, Show, ParentProps } from "solid-js";
-import { A, useNavigate } from "@solidjs/router";
-import DragDropList from "./components/DragDropList";
-import { loadAll } from "./stores";
-import { timelineItems, timelineSequence, reorderTimeline } from "./stores/timelineItems";
-import { loadSampleScript } from "./lib/io";
-import { storage } from "./db";
+import { createSignal, onMount, ParentProps, Show } from "solid-js";
 import AlertConfirm from "./components/modals/AlertConfirm";
+import { storage } from "./db";
+import { loadSampleScript } from "./lib/io";
+import { loadAll } from "./stores";
 
 export default function App(props: ParentProps) {
-    const navigate = useNavigate();
     const [loaded, setLoaded] = createSignal(false);
 
     onMount(async () => {
-        if ((await storage.getKeys("timelineItems")).length === 0) {
-            loadSampleScript();
-        }
-
+        const keys = await storage.getKeys("timelineItems");
+        if (!keys?.length) await loadSampleScript();
         await loadAll();
         setLoaded(true);
     });
-
-    const items = () => timelineSequence().map(id => timelineItems[id]).filter(Boolean);
 
     return (
         <>
             <AlertConfirm />
 
-            <main class="responsive">
-                <Show when={loaded()} fallback={<p>Loading script...</p>}>
-
-                    <div class="grid" style="height: calc(100vh - 7em); overflow: hidden ">
-                        <div class="s12 m8 l8" style='height: auto; overflow-y: auto'>
-
-                            <DragDropList
-                                items={items}
-                                showItem={(item) => navigate(`/item/${item.id}`)}
-                                onInsert={(pos: number) => navigate(`/new/${pos}`)}
-                                onReorder={(newOrder) => {
-                                    const seq = timelineSequence();
-                                    const newSeq = newOrder.map(i => seq[i]);
-                                    reorderTimeline(newSeq);
-                                }}
-                            />
-                        </div>
-
-                        <div class="s12 m4 l4">
-                            {/* <!-- right panel --> */}
-                            {props.children}
-                        </div>
-                    </div>
-
-                </Show>
-            </main >
-
-            <nav class="bottom" style="height: 5em">
-                <A href="/"><i>list_alt</i></A>
-                <A href="/"><i>view_timeline</i></A>
-                <A href="/settings"><i>settings</i></A>
-            </nav>
-
+            {props.children}
         </>
     );
 }

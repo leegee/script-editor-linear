@@ -12,7 +12,7 @@ const type2icon: Record<string, string> = {
     camera: 'camera',
     lighting: 'brightness_6',
     pause: 'pause',
-    beat: 'cadence'
+    beat: 'music_note'
 }
 
 export default function TimelineView() {

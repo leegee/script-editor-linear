@@ -28,9 +28,8 @@
     /* Track now uses a grid: one row per type that exists */
     .track {
         position: relative;
-        // flex: 1;
         display: grid;
-        grid-auto-rows: 3em; // default height for each sub-lane
+        grid-auto-rows: 2em; // default height for each sub-lane
         row-gap: 0.6em;
         background: var(--surface-container);
         border-radius: 2pt;

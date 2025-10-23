@@ -6,6 +6,8 @@ export const timelineViewModel = createMemo(() => {
     const items = orderedItems();
     if (!items.length) return { sections: {}, totalDuration: 0 };
 
+    console.log(orderedItems())
+
     // Section mapping for display lanes
     const sectionMap: Record<string, string[]> = {
         "Structural Markers": ["act", "scene", "beat"],

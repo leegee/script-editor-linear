@@ -4,10 +4,11 @@ import NavBar from "../NavBar";
 export default function OnePanelLayout(props: ParentProps) {
     return (
         <>
-            <div class="">
-                {props.children}
+
+            {props.children}
+            <div style="position: fixed; bottom: 0; display: flex; width: 100vw; justify-content: center">
+                <NavBar />
             </div>
-            <NavBar />
         </>
     );
 }

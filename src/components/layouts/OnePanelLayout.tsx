@@ -4,9 +4,9 @@ import NavBar from "../NavBar";
 export default function OnePanelLayout(props: ParentProps) {
     return (
         <>
-            <main class="app responsive">
+            <div class="">
                 {props.children}
-            </main>
+            </div>
             <NavBar />
         </>
     );

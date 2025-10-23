@@ -7,111 +7,106 @@
     background: var(--surface-container-lowest);
     padding: 0.5em;
     border-radius: 8pt;
-    overflow-x: auto;
-}
+    overflow-x: auto !important;
+    min-width: max-content !important;
 
-.section {
-    display: flex;
-    align-items: center;
-    background: var(--surface-container-low);
-    gap: 0.5em;
-    padding: 0.6em;
-}
-
-.label {
-    width: 160pt;
-    flex-shrink: 0;
-    font-weight: 600;
-    font-size: 0.9em;
-    color: #9fc;
-}
-
-.track {
-    position: relative;
-    flex: 1;
-    display: flex;
-    height: 1.75em;
-    background: var(--surface-container);
-    border-radius: 2pt;
-    overflow: hidden;
-}
-
-.item {
-    position: absolute;
-    top: 0;
-    height: 100%;
-    border-radius: 2pt;
-    color: #fff;
-    font-size: 0.8em;
-    padding-left: 2pt;
-    line-height: 1.75em;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
-
-    &:hover {
-        transform: scaleY(1.1);
-        box-shadow: 0 2pt 4pt #000c;
+    .section {
+        display: flex;
+        align-items: center;
+        background: var(--surface-container-low);
+        gap: 0.5em;
+        padding: 0.6em;
     }
-}
 
-/* Type-specific colours */
-.type-act {
-    background: #3b82f6;
-}
+    .label {
+        width: 160pt;
+        flex-shrink: 0;
+        font-weight: 600;
+        font-size: 0.9em;
+    }
 
-.type-scene {
-    background: #2563eb;
-}
+    /* Track now uses a grid: one row per type that exists */
+    .track {
+        position: relative;
+        // flex: 1;
+        display: grid;
+        grid-auto-rows: 3em; // default height for each sub-lane
+        row-gap: 0.6em;
+        background: var(--surface-container);
+        border-radius: 2pt;
+        overflow: hidden;
+    }
 
-.type-beat {
-    background: #1e40af;
-}
+    /* Each type gets its own row using a wrapper */
+    .type-row {
+        position: relative;
+    }
 
-.type-dialogue {
-    background: #22c55e;
-}
+    /* Timeline item styling (now inside its row) */
+    .item {
+        position: absolute;
+        height: 100%; // fills its grid row
+        border-radius: 2pt;
+        color: #fff;
+        font-size: 0.8em;
+        padding-left: 2pt;
+        line-height: 20pt;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
 
-.type-action {
-    background: #15803d;
-}
+        &:hover {
+            transform: scaleY(1.5);
+            box-shadow: 0 2pt 4pt #000c;
+            z-index: 10;
+        }
+    }
 
-.type-sound {
-    background: #eab308;
-    color: #000;
-}
+    /* Type-specific colours */
+    .type-act {
+        background: hsl(244, 91%, 50%);
+    }
 
-.type-lighting {
-    background: #f97316;
-}
+    .type-scene {
+        background: #2563eb;
+    }
 
-.type-camera {
-    background: #f43f5e;
-}
+    .type-beat {
+        background: #1e40af;
+    }
 
-.type-transition {
-    background: #a855f7;
-}
+    .type-location {
+        background: hsl(300, 71%, 40%);
+    }
 
-.track {
-    position: relative;
-    height: 80pt;
-}
+    .type-dialogue {
+        background: #22c55e;
+    }
 
-.item {
-    position: absolute;
-    height: 20pt;
-}
+    .type-action {
+        background: #15803d;
+    }
 
-.type-act {
-    top: 0;
-}
+    .type-sound {
+        background: #eab308;
+        color: #000;
+    }
 
-.type-scene {
-    top: 25pt;
-}
+    .type-lighting {
+        background: #f97316;
+    }
 
-.type-beat {
-    top: 50pt;
+    .type-camera {
+        background: #f43f5e;
+    }
+
+    .type-transition {
+        background: #a855f7;
+    }
+
+    .type-pause {
+        background-color: darkslategray;
+    }
+
 }

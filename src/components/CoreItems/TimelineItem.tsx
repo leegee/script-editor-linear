@@ -51,35 +51,29 @@ export class TimelineItem {
         return new (this.constructor as any)(props);
     }
 
-
-    // /**
-    //  * Compact display (e.g., in list views)
-    //  */
-    // renderCompact(): JSX.Element {
-    //     return (
-    //         <div>
-    //             Base.renderCompact:
-    //             {this.type}: {this.title ?? this.details.text ?? ""}
-    //         </div>
-    //     );
-    // }
-
-    // /**
-    //  * Full debug display
-    //  */
-    // renderFull(): JSX.Element {
-    //     return <div>Base.renderFull: {JSON.stringify(this, null, 2)}</div>;
-    // }
-
-    renderCompact() { return <span>{this.title}</span> }
-
-    renderFull() {
-        return <article>
-            <h2>
-                <TimelineItemEditor id={this.id} path="title" store="characters" />
-            </h2>
-        </article>;
+    renderCompact(): JSX.Element {
+        return (
+            <div style="opacity:80%">
+                <code>{this.type.toLocaleUpperCase()}</code>
+                {" "} &mdash; {" "}
+                {this.title ?? this.details.text ?? ""}
+            </div>
+        );
     }
+
+    renderFull(): JSX.Element {
+        return <pre>{JSON.stringify(this, null, 2)}</pre>;
+    }
+
+    // renderCompact() { return <span>{this.title}</span> }
+
+    // renderFull() {
+    //     return <article>
+    //         <h2>
+    //             <TimelineItemEditor id={this.id} path="title" store="characters" />
+    //         </h2>
+    //     </article>;
+    // }
 
     /**
      * Form for creating / editing timeline items.

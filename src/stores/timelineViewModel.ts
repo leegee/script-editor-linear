@@ -11,7 +11,7 @@ export const timelineViewModel = createMemo(() => {
         "Structural Markers": ["act", "scene", "beat"],
         "Script Items": ["dialogue", "action"],
         "Technical Cues": ["sound", "lighting", "camera"],
-        "Meta / Transition": ["transition"],
+        "Meta / Transition": ["transition", "pause"],
         "Locations": ["location"],
     };
 

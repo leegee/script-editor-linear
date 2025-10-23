@@ -48,7 +48,13 @@ export class DialogueItem extends TimelineItem {
     }
 
     renderCreateNew(props: { duration?: number; onChange: (field: string, value: any) => void }) {
-        const [mode, setMode] = createSignal<"select" | "new">("select");
+        // Determine initial mode based on whether a character is already selected
+        const [mode, setMode] = createSignal<"select" | "new">(
+            this.details.characterId ? "select" : "new"
+        );
+
+        const [newCharName, setNewCharName] = createSignal(this.details.characterName ?? "");
+        const [duration, setDuration] = createSignal(props.duration ?? 0);
 
         return (
             <>
@@ -64,7 +70,9 @@ export class DialogueItem extends TimelineItem {
                             <i>person_add</i>
                         </span>
                     </label>
-                    <span class='left-padding'>{mode() === "new" ? "Create a new character" : "Select a character"}</span>
+                    <span class='left-padding'>
+                        {mode() === "new" ? "Create a new character" : "Select a character"}
+                    </span>
                 </div>
 
                 {/* New Character creation */}
@@ -72,11 +80,23 @@ export class DialogueItem extends TimelineItem {
                     <div class="field border label max">
                         <input
                             type="text"
-                            value={this.details.characterName ?? ""}
-                            onInput={(e) => props.onChange("characterName", e.currentTarget.value)}
+                            value={newCharName()}
+                            onInput={(e) => setNewCharName(e.currentTarget.value)}
                         />
-                        <label>Character Name</label>
-                        <i>arrow_drop_down</i>
+                        <label>New character name</label>
+                        <i>person</i>
+                        <button
+                            disabled={!newCharName().trim()}
+                            onclick={() => {
+                                const id = newCharName().replace(/[^\p{L}\p{N}_]/gu, "");
+                                const newChar = new CharacterItem({ id, title: newCharName() });
+                                addCharacter(newChar);
+                                props.onChange("characterId", id);
+                                setMode("select");
+                            }}
+                        >
+                            Create Character
+                        </button>
                     </div>
                 </Show>
 
@@ -114,8 +134,12 @@ export class DialogueItem extends TimelineItem {
                     <input
                         type="number"
                         min={0}
-                        value={props.duration ?? ""}
-                        onInput={(e) => props.onChange("duration", Number(e.currentTarget.value))}
+                        value={duration()}
+                        onInput={(e) => {
+                            const val = Number(e.currentTarget.value);
+                            setDuration(val);
+                            props.onChange("duration", val);
+                        }}
                     />
                     <label>Duration (seconds)</label>
                 </div>

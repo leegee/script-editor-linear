@@ -1,5 +1,5 @@
 import { formatHHMMSS } from "../../lib/formatSecondsToHMS";
-import { sceneDurations } from "../../stores";
+import { characters, locations, sceneCharacters, sceneDurations, sceneLocations } from "../../stores";
 import TimelineItemEditor from "../ItemEditor";
 import { TimelineItem, TimelineItemProps } from "./TimelineItem";
 
@@ -24,22 +24,36 @@ export class SceneItem extends TimelineItem {
     renderFull() {
         return (
             <fieldset>
-                <h3 class="field">
+                <h3>
                     <TimelineItemEditor
                         id={this.id}
                         path="title"
                         defaultValue={this.title ?? "Untitled Scene"}
                     />
                 </h3>
-                <div class="field">
-                    <p>Duration {
-                        formatHHMMSS(
-                            sceneDurations()[this.id]
-                        )
 
-                    }</p>
-                </div>
-            </fieldset>
+                <article>
+                    <h4>Duration: {formatHHMMSS(sceneDurations()[this.id])} </h4>
+                </article>
+
+                <article>
+                    <h4>Characters in this scene:</h4>
+                    <ul class="list no-space border scroll">
+                        {[...(sceneCharacters()[this.id] ?? [])].map(charId => (
+                            <li>{characters[charId].title}</li>
+                        ))}
+                    </ul>
+                </article>
+
+                <article>
+                    <h4>Locations in this scene:</h4>
+                    <ul class="list no-space border scroll">
+                        {[...(sceneLocations()[this.id] ?? [])].map(locId => (
+                            <li>{locations[locId].title}</li>
+                        ))}
+                    </ul>
+                </article>
+            </fieldset >
         );
     }
 }

@@ -145,3 +145,42 @@ export const sceneDurations = createMemo(() => {
     if (currentSceneId) scenes[currentSceneId] = sum;
     return scenes;
 });
+
+export const sceneCharacters = createMemo(() => {
+    const scenes: Record<string, Set<string>> = {};
+    let currentSceneId: string | null = null;
+    let charIds: Set<string> = new Set();
+
+    for (const item of orderedItems()) {
+        if (item.type === "scene") {
+            if (currentSceneId) scenes[currentSceneId] = new Set(charIds);
+            currentSceneId = item.id;
+            charIds = new Set();
+        } else if (currentSceneId && item.type === 'dialogue') {
+            charIds.add(item.details.characterId);
+        }
+    }
+
+    if (currentSceneId) scenes[currentSceneId] = new Set(charIds);
+    return scenes;
+});
+
+export const sceneLocations = createMemo(() => {
+    const scenes: Record<string, Set<string>> = {};
+    let currentSceneId: string | null = null;
+    let locIds: Set<string> = new Set();
+
+    for (const item of orderedItems()) {
+        if (item.type === "scene") {
+            if (currentSceneId) scenes[currentSceneId] = new Set(locIds);
+            currentSceneId = item.id;
+            locIds = new Set();
+        } else if (currentSceneId && item.type === 'location') {
+            locIds.add(item.details.ref);
+        }
+    }
+
+    if (currentSceneId) scenes[currentSceneId] = new Set(locIds);
+    return scenes;
+});
+

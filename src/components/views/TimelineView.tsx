@@ -112,6 +112,7 @@ export default function TimelineView() {
                                                                     ? item.details.text
                                                                     : item.type)
                                                             }
+                                                        // data-tooltip={item.details.text ?? item.title ?? item.type}
                                                         >
                                                             <Show
                                                                 when={type2icon[item.type]}

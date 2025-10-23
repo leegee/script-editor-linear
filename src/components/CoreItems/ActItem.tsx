@@ -1,5 +1,5 @@
 import { formatHHMMSS } from "../../lib/formatSecondsToHMS";
-import { actDurations, updateTimelineItem } from "../../stores";
+import { actDurations } from "../../stores";
 import { TimelineItem, TimelineItemProps } from "./TimelineItem";
 import TimelineItemEditor from "../ItemEditor";
 

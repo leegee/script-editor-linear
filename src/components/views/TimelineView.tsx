@@ -1,9 +1,19 @@
 import styles from "./TimelineView.module.scss";
-import { For, createMemo } from "solid-js";
+import { For, Show } from "solid-js";
 import { timelineViewModel } from "../../stores/timelineViewModel";
-import { orderedItems } from "../../stores";
 
 const scale = 10;
+
+const type2icon: Record<string, string> = {
+    dialogue: '3p',
+    action: 'electric_bolt',
+    transition: 'transition_fade',
+    sound: 'brand_awareness',
+    camera: 'camera',
+    lighting: 'brightness_6',
+    pause: 'pause',
+    beat: 'cadence'
+}
 
 export default function TimelineView() {
     const viewModel = () => timelineViewModel();
@@ -37,9 +47,10 @@ export default function TimelineView() {
                                                         }}
                                                         title={item.title || (item.type === "dialogue" ? item.details.text : item.type)}
                                                     >
-                                                        <span>
-                                                            {item.title ?? item.type}
-                                                        </span>
+                                                        <Show when={type2icon[item.type]}
+                                                            fallback={<span> {item.title ?? item.type} </span>}>
+                                                            <i>{type2icon[item.type]}</i>
+                                                        </Show>
                                                         <div class="tooltip">Test</div>
                                                     </div>
                                                 )}

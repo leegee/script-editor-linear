@@ -2,38 +2,45 @@
     display: flex;
     flex-direction: column;
     gap: 0.75em;
-    font-family: sans-serif;
     color: #eee;
     background: var(--surface-container-lowest);
     padding: 0.5em;
     border-radius: 8pt;
-    overflow-x: auto !important;
-    min-width: max-content !important;
+
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    position: relative;
 
     .section {
         display: flex;
-        align-items: center;
-        background: var(--surface-container-low);
+        align-items: flex-start;
+        /* don't vertically center the track so its full height counts */
         gap: 0.5em;
         padding: 0.6em;
+        background: var(--surface-container-low);
     }
 
     .label {
-        width: 10em;
-        flex-shrink: 0;
+        width: 6em;
+        flex: 0 0 6em;
+        /* fixed width, won't shrink or grow */
         font-weight: 600;
-        font-size: 0.9em;
+        font-size: 60%;
     }
 
-    /* Track now uses a grid: one row per type that exists */
     .track {
+        /* Do not let flexbox override the inline width we set from JS */
+        flex: 0 0 auto;
+        /* don't grow, don't shrink; size is the inline width */
         position: relative;
         display: grid;
-        grid-auto-rows: 2em; // default height for each sub-lane
+        grid-auto-rows: 2em;
         row-gap: 0.6em;
         background: var(--surface-container);
         border-radius: 2pt;
-        overflow: hidden;
+        overflow: visible;
+        /* items are absolutely positioned inside rows */
     }
 
     /* Each type gets its own row using a wrapper */

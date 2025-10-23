@@ -18,6 +18,10 @@ const type2icon: Record<string, string> = {
 export default function TimelineView() {
     const viewModel = () => timelineViewModel();
 
+    console.log('viewModel().totalDuration', viewModel().totalDuration);
+    console.log('viewModel().totalDuration', viewModel().totalDuration * scale);
+    // width: 1780px;
+
     return (
         <div class={styles.timeline}>
             <For each={Object.entries(viewModel().sections)}>
@@ -48,10 +52,10 @@ export default function TimelineView() {
                                                         title={item.title || (item.type === "dialogue" ? item.details.text : item.type)}
                                                     >
                                                         <Show when={type2icon[item.type]}
-                                                            fallback={<span> {item.title ?? item.type} </span>}>
+                                                            fallback={<span> {item.title ?? item.type} </span>}
+                                                        >
                                                             <i>{type2icon[item.type]}</i>
                                                         </Show>
-                                                        <div class="tooltip">Test</div>
                                                     </div>
                                                 )}
                                             </For>

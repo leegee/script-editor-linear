@@ -47,7 +47,6 @@ export class TimelineItem {
             notes: updates.notes ?? [...this.notes],
         };
 
-        // @ts-ignore
         return new (this.constructor as any)(props);
     }
 

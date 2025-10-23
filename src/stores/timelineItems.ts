@@ -110,14 +110,22 @@ export const orderedItems = createMemo(() => {
 
     const result: TimelineItem[] = [];
     let now = 0;
+    let act = 0;
 
     // First pass: compute absolute start times and advance now for items with duration
     for (let i = 0; i < items.length; i++) {
         const item = items[i];
         const start = now;
+        let body: Record<string, string> = { ...item.details };
+
+        if (item.type === 'act') act++;
+        if (item.type === 'scene') {
+            body.title = 'Act ' + act + ', ' + item.title;
+        };
 
         // Clone item with start in details (duration may be undefined)
         const newItem = item.cloneWith({
+            ...body,
             details: { ...item.details, start },
         });
 

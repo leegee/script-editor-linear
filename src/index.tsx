@@ -12,7 +12,6 @@ import SettingsView from './components/views/SettingsView';
 import TimelineItemView from './components/views/TimelineItemView';
 import OnePanelLayout from './components/layouts/OnePanelLayout';
 import TimelineView from './components/views/TimelineView';
-import Navbar from './components/NavBar';
 
 const root = document.getElementById('root');
 

@@ -1,38 +1,29 @@
-import { TimelineItemProps } from "../TimelineItem";
-import { TimelineLocationItem } from "./TimelineLocationItem";
+import { LocationRenderMixin } from "./LocationRenderMixin";
 
-export type CanonicalLocationProps = {
+/**
+ * CanonicalLocation represents a real-world location.
+ * It does NOT have a `ref`. TimelineLocationItem.details.ref points to its id.
+ */
+class BaseCanonicalLocation {
     id: string;
     title: string;
-    details: {
-        lat: number;
-        lng: number;
-        radius: number;
-    },
-}
+    details: { lat: number; lng: number; radius: number };
 
-export class CanonicalLocation extends TimelineLocationItem {
-    id: string;
-    type: "location" = "location";
-    title: string;
-    details: {
-        lat: number;
-        lng: number;
-        radius: number;
-    };
-
-    constructor(obj: Partial<CanonicalLocation>) {
-        super(obj as TimelineItemProps);
+    constructor(obj: Partial<BaseCanonicalLocation>) {
+        if (!obj.title) throw new TypeError('CanonicalLocation must have a title');
+        if (!obj.details) throw new TypeError('CanonicalLocation must have details (lat, lng, radius)');
         this.id = obj.id ?? crypto.randomUUID();
-        this.title = obj.title ?? "";
+        this.title = obj.title;
         this.details = {
-            lat: obj.details?.lat ?? 0,
-            lng: obj.details?.lng ?? 0,
-            radius: obj.details?.radius ?? 100,
+            lat: obj.details.lat,
+            lng: obj.details.lng,
+            radius: obj.details.radius,
         };
     }
 
-    static revive(obj: any): CanonicalLocation {
+    static revive(obj: any) {
         return new CanonicalLocation(obj);
     }
 }
+
+export const CanonicalLocation = LocationRenderMixin(BaseCanonicalLocation);

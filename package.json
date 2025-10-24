@@ -27,7 +27,7 @@
     "vitest": "^3.0.0"
   },
   "dependencies": {
-    "beercss": "^3.12.11",
+    "beercss": "^3.12.13",
     "dexie": "^4.2.1",
     "ol": "^10.6.1"
   }

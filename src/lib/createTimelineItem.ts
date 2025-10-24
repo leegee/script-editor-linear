@@ -17,6 +17,7 @@ import {
     deleteTimelineItem as storeDeleteTimelineItem,
 } from "../stores";
 import { CanonicalLocation } from "../components/CoreItems/Locations/CanonicalLocation";
+import { timelineItemClasses } from "./timelineItemRegistry";
 
 interface CreateTimelineItemOptions {
     insertAtIndex?: number;
@@ -28,8 +29,6 @@ export async function createTimelineItem(
     options: CreateTimelineItemOptions = {}
 ): Promise<TimelineItem> {
     const id = crypto.randomUUID();
-
-    // Base props for all timeline items
     const baseProps: TimelineItemProps = {
         id,
         type: props.type,
@@ -40,54 +39,38 @@ export async function createTimelineItem(
         notes: props.notes ?? []
     };
 
-    // Special case: LOCATION
+    // Special case: LOCATION creation / validation
     if (props.type === "location") {
-        const ref = props.details?.ref;
-        if (!ref) throw new Error(`Location timeline item missing details.ref`);
-
+        const ref = baseProps.details?.ref;
+        if (!ref) throw new Error("Location item missing details.ref");
         if (!locations[ref]) {
             if (options.createMissingLocation) {
+                if (!baseProps.details) {
+                    throw new TypeError("Location requires details");
+                }
                 const newLoc = new CanonicalLocation({
                     id: ref,
-                    title: props.details?.title ?? "Untitled Location",
+                    title: baseProps.title || "Untitled Location",
                     details: {
-                        lat: props.details?.lat ?? 0,
-                        lng: props.details?.lng ?? 0,
-                        radius: props.details?.radius ?? 0
+                        lat: baseProps.details.lat ?? 0,
+                        lng: baseProps.details.lng ?? 0,
+                        radius: baseProps.details.radius ?? 100
                     }
                 });
                 addLocation(newLoc);
             } else {
-                throw new Error(`Location "${ref}" does not exist`);
+                throw new Error(`Unknown location ref: ${ref}`);
             }
         }
     }
 
-    // Instantiate the correct subclass
-    let item: TimelineItem;
-    switch (props.type) {
-        case "act":
-            item = new ActItem(baseProps);
-            break;
-        case "scene":
-            item = new SceneItem(baseProps);
-            break;
-        case "dialogue":
-            item = new DialogueItem(baseProps);
-            break;
-        case "transition":
-            item = new TransitionItem(baseProps);
-            break;
-        case "location":
-            item = TimelineLocationItem.revive(baseProps);
-            break;
-        default:
-            item = new TimelineItem(baseProps);
-    }
+    const Cls = timelineItemClasses[props.type] ?? TimelineItem;
+    const item =
+        props.type === "location"
+            ? TimelineLocationItem.revive(baseProps)
+            : new Cls(baseProps);
 
-    // Create item via store (handles sequence append)
     await storeCreateTimelineItem(item, options.insertAtIndex);
-
     return item;
 }
 

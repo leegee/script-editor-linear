@@ -6,11 +6,12 @@ const type2icon: Record<string, string> = {
     dialogue: "3p",
     action: "electric_bolt",
     transition: "transition_fade",
-    sound: "brand_awareness",
+    music: "music_note",
+    soundfx: "brand_awareness",
     camera: "camera",
     lighting: "brightness_6",
     pause: "pause",
-    beat: "music_note",
+    beat: "swipe_down_out",
 };
 
 const TOAST_MS = 2_000;

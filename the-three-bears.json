@@ -66,7 +66,14 @@
             }
         },
         {
-            "type": "sound",
+            "type": "music",
+            "details": {
+                "text": "Opening Theme"
+            },
+            "duration": 5
+        },
+        {
+            "type": "soundfx",
             "details": {
                 "text": "Morning birds chirping"
             },
@@ -147,7 +154,7 @@
             }
         },
         {
-            "type": "sound",
+            "type": "soundfx",
             "details": {
                 "text": "Rustling leaves"
             },
@@ -258,7 +265,7 @@
             "duration": 2
         },
         {
-            "type": "sound",
+            "type": "soundfx",
             "details": {
                 "text": "Steam rises from hot porridge"
             },
@@ -316,7 +323,7 @@
             "duration": 3
         },
         {
-            "type": "sound",
+            "type": "soundfx",
             "details": {
                 "text": "Creaking chair"
             },
@@ -375,7 +382,7 @@
             "duration": 2
         },
         {
-            "type": "sound",
+            "type": "soundfx",
             "details": {
                 "text": "Chairs scrape"
             },
@@ -413,7 +420,7 @@
             "duration": 2
         },
         {
-            "type": "sound",
+            "type": "soundfx",
             "details": {
                 "text": "Door opens"
             },

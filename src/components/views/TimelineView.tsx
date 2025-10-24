@@ -11,7 +11,7 @@ const type2icon: Record<string, string> = {
     camera: "camera",
     lighting: "brightness_6",
     pause: "pause",
-    beat: "swipe_down_out",
+    beat: "swipe_down_alt",
 };
 
 const TOAST_MS = 2_000;

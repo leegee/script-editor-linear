@@ -1,23 +1,29 @@
 {
     "characters": [
         {
-            "title": "Narrator"
+            "title": "Narrator",
+            "id": "Narrator"
         },
         {
-            "title": "Father Bear"
+            "title": "Father Bear",
+            "id": "FatherBear"
         },
         {
-            "title": "Mother Bear"
+            "title": "Mother Bear",
+            "id": "MotherBear"
         },
         {
-            "title": "Baby Bear"
+            "title": "Baby Bear",
+            "id": "BabyBear"
         },
         {
-            "title": "Goldilocks"
+            "title": "Goldilocks",
+            "id": "Goldilocks"
         }
     ],
     "locations": [
         {
+            "id": "cottage-1",
             "title": "The Bears’ Cottage",
             "details": {
                 "lat": 51.5074,
@@ -26,6 +32,7 @@
             }
         },
         {
+            "id": "forest-path",
             "title": "Forest Path",
             "details": {
                 "lat": 51.5076,
@@ -34,6 +41,7 @@
             }
         },
         {
+            "id": "cottage-inside-1",
             "title": "Inside the Bears’ Cottage",
             "details": {
                 "lat": 51.5075,

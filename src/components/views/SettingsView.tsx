@@ -1,5 +1,5 @@
 import { createSignal } from "solid-js";
-import { downloadJSON, initNewScript, loadSampleScript } from "../../lib/io";
+import { downloadJSON, initNewScript, loadJSONfromPath } from "../../lib/io";
 import { showConfirm } from "../../stores/modals";
 import JSONUploader from "../JsonUploader";
 
@@ -59,17 +59,31 @@ export default function SettingsView() {
                             Save script
                         </button>
                     </li>
+
                     <hr />
+
                     <li>
                         <i>book</i>
                         <button
                             class="transparent no-padding"
                             onClick={async () => {
                                 if (await showConfirm("This will over-write your script."))
-                                    loadSampleScript();
+                                    await loadJSONfromPath('/the-three-bears.json');
                             }}
                         >
                             Load sample script
+                        </button>
+                    </li>
+                    <li>
+                        <i>book</i>
+                        <button
+                            class="transparent no-padding"
+                            onClick={async () => {
+                                if (await showConfirm("This will over-write your script."))
+                                    await loadJSONfromPath('/the-three-bears-small.json');
+                            }}
+                        >
+                            Load small sample script
                         </button>
                     </li>
                 </ul>

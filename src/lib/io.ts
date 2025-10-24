@@ -22,14 +22,6 @@ export async function initNewScript() {
 }
 
 /**
- * Load sample script from predefined JSON
- */
-export async function loadSampleScript() {
-    console.log('loadSampleScript enter');
-    await loadJSONfromPath('/the-three-bears.json');
-}
-
-/**
  * Download current script as JSON
  */
 export function downloadJSON() {

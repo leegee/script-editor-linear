@@ -1,0 +1,7 @@
+.sidePanel {
+    display: none;
+
+    &.visible {
+        display: block;
+    }
+}

@@ -1,8 +1,13 @@
-import { ParentProps } from "solid-js";
+import styles from "./ScriptLayout.module.scss";
+import { type ParentProps } from "solid-js";
 import ScriptView from "../components/views/ScriptView";
 import NavBar from "../components/NavBar";
+import { useLocation } from "@solidjs/router";
 
-export default function TwoPanelLayout(props: ParentProps) {
+export default function ScriptLayout(props: ParentProps) {
+    const location = useLocation();
+    const isDetailRoute = () => /^(\/script)?\/[^/]+\/[^/]+/.test(location.pathname);
+
     return (
         <>
             <main class="app responsive">
@@ -12,7 +17,7 @@ export default function TwoPanelLayout(props: ParentProps) {
                         <ScriptView />
                     </div>
 
-                    <div class="s12 m4 l4">
+                    <div class="s12 m4 l4" >
                         {props.children}
                     </div>
                 </div>

@@ -4,18 +4,17 @@ import "beercss";
 import { render } from "solid-js/web";
 import { HashRouter, Route } from "@solidjs/router";
 
-// Views
-import Default from "./components/panels/Default";
+import ScriptLayout from "./layouts/ScriptLayout";
+import TimelineLayout from "./layouts/TimelineLayout";
+import MainLayout from "./layouts/MainLayout";
+import ScriptView from "./components/views/ScriptView";
+import TimelineView from "./components/views/TimelineView";
 import NewTimelineItemSelector from "./components/NewTimelineItemSelector";
-import TimelineItemView from "./components/views/TimelineItemView";
+import Default from "./components/panels/Default";
 import CharacterView from "./components/views/CharacterView";
 import LocationView from "./components/views/LocationView";
 import SettingsView from "./components/views/SettingsView";
-
-// Layouts
-import MainLayout from "./layouts/MainLayout";
-import OnePanelLayout from "./layouts/OnePanelLayout";
-import TwoPanelLayout from "./layouts/TwoPanelLayout";
+import TimelineItemView from "./components/views/TimelineItemView";
 
 const root = document.getElementById("root");
 
@@ -37,11 +36,11 @@ const commonRoutes = (
 render(
   () => (
     <HashRouter root={MainLayout}>
-      <Route path="/" component={TwoPanelLayout}>
+      <Route path="/" component={ScriptLayout}>
         {commonRoutes}
       </Route>
 
-      <Route path="/timeline" component={OnePanelLayout}>
+      <Route path="/timeline" component={TimelineLayout}>
         {commonRoutes}
       </Route>
     </HashRouter>

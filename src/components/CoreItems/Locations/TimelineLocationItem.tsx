@@ -6,9 +6,8 @@ import { TimelineItem, TimelineItemProps } from "../TimelineItem";
 import { LocationRenderMixin } from "./LocationRenderMixin";
 import { CanonicalLocation } from "./CanonicalLocation";
 
-type TimelineLocationItemType = InstanceType<typeof TimelineLocationItem>;
+export type TimelineLocationItemType = InstanceType<typeof TimelineLocationItem>;
 
-// Keep TimelineLocationItem extending TimelineItem
 class BaseTimelineLocationItem extends TimelineItem {
     static revive(obj: any): TimelineLocationItemType {
         return new TimelineLocationItem({

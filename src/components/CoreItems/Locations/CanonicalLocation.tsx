@@ -27,3 +27,5 @@ class BaseCanonicalLocation {
 }
 
 export const CanonicalLocation = LocationRenderMixin(BaseCanonicalLocation);
+export type CanonicalLocationType = InstanceType<typeof CanonicalLocation>;
+

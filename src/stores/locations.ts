@@ -1,12 +1,12 @@
 import { createStore, unwrap } from "solid-js/store";
 import { storage } from "../db";
-import { CanonicalLocation } from "../components/CoreItems/Locations/CanonicalLocation";
-import { TimelineLocationItem } from "../components/CoreItems";
+import { CanonicalLocation, type CanonicalLocationType } from "../components/CoreItems/Locations/CanonicalLocation";
+import { TimelineLocationItemType } from "../components/CoreItems";
 
-export const [locations, setLocations] = createStore<Record<string, CanonicalLocation>>({});
+export const [locations, setLocations] = createStore<Record<string, CanonicalLocationType>>({});
 
 export async function loadAllLocations() {
-    const items = await storage.getAll<CanonicalLocation>("locations");
+    const items = await storage.getAll<CanonicalLocationType>("locations");
     const revived = Object.fromEntries(
         Object.entries(items).map(([id, obj]) => [id, CanonicalLocation.revive(obj)])
     );
@@ -18,12 +18,12 @@ export async function resetLocations() {
     await storage.clearTable("locations");
 }
 
-export async function addLocation(item: CanonicalLocation) {
+export async function addLocation(item: CanonicalLocationType) {
     setLocations(item.id, item);
     await storage.put("locations", item);
 }
 
-export async function updateLocation(id: string, updatedFields: Partial<CanonicalLocation>) {
+export async function updateLocation(id: string, updatedFields: Partial<CanonicalLocationType>) {
     setLocations(id, prev => ({
         ...(prev ?? {}),
         ...updatedFields,
@@ -47,7 +47,7 @@ export async function removeLocation(id: string) {
     await storage.delete("locations", id);
 }
 
-export function resolveTimelineRef(item: TimelineLocationItem): CanonicalLocation | undefined {
+export function resolveTimelineRef(item: TimelineLocationItemType): CanonicalLocationType | undefined {
     const ref = item.details?.ref ?? item.id;
     return locations[ref];
 }

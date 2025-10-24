@@ -1,6 +1,6 @@
 import { ParentProps } from "solid-js";
-import ScriptView from "../views/ScriptView";
-import NavBar from "../NavBar";
+import ScriptView from "../components/views/ScriptView";
+import NavBar from "../components/NavBar";
 
 export default function TwoPanelLayout(props: ParentProps) {
     return (

@@ -1,8 +1,8 @@
 import { createSignal, onMount, ParentProps, Show } from "solid-js";
-import AlertConfirm from "./components/modals/AlertConfirm";
-import { loadAll } from "./stores";
+import AlertConfirm from "../components/modals/AlertConfirm";
+import { loadAll } from "../stores";
 
-export default function App(props: ParentProps) {
+export default function MainLayout(props: ParentProps) {
     const [loaded, setLoaded] = createSignal(false);
 
     onMount(async () => {

@@ -3,11 +3,6 @@ import "./index.css";
 import "beercss";
 import { render } from "solid-js/web";
 import { HashRouter, Route } from "@solidjs/router";
-import App from "./App";
-
-// Layouts
-import TwoPanelLayout from "./components/layouts/TwoPanelLayout";
-import OnePanelLayout from "./components/layouts/OnePanelLayout";
 
 // Views
 import Default from "./components/panels/Default";
@@ -17,13 +12,17 @@ import CharacterView from "./components/views/CharacterView";
 import LocationView from "./components/views/LocationView";
 import SettingsView from "./components/views/SettingsView";
 
+// Layouts
+import MainLayout from "./layouts/MainLayout";
+import OnePanelLayout from "./layouts/OnePanelLayout";
+import TwoPanelLayout from "./layouts/TwoPanelLayout";
+
 const root = document.getElementById("root");
 
 if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
   throw new Error("Root element not found in index.html (check id='root').");
 }
 
-// Shared route definitions (to avoid duplication)
 const commonRoutes = (
   <>
     <Route path="/" component={Default} />
@@ -37,7 +36,7 @@ const commonRoutes = (
 
 render(
   () => (
-    <HashRouter root={App}>
+    <HashRouter root={MainLayout}>
       <Route path="/" component={TwoPanelLayout}>
         {commonRoutes}
       </Route>

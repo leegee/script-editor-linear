@@ -1,6 +1,6 @@
 import { ParentProps } from "solid-js";
-import NavBar from "../NavBar";
-import TimelineView from "../views/TimelineView";
+import NavBar from "../components/NavBar";
+import TimelineView from "../components/views/TimelineView";
 
 export default function OnePanelLayout(props: ParentProps) {
     return (

@@ -74,7 +74,6 @@ export default function TimelineView() {
             <div ref={timelineEl} class={styles.timeline}>
                 <For each={Object.entries(viewModel().sections)}>
                     {([sectionName, items]) => {
-                        // Get the type order for this section from sectionMap
                         const types =
                             sectionMap.find((s) => s.name === sectionName)?.types ??
                             Array.from(new Set(items.map((i) => i.type)));

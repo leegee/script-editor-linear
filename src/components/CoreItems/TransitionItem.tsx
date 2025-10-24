@@ -2,6 +2,7 @@ import { For } from "solid-js";
 import { TimelineItem, TimelineItemProps } from "./TimelineItem";
 
 export class TransitionItem extends TimelineItem {
+
     transitionType?: "fade" | "cut" | "dissolve";
 
     constructor(props: Omit<TimelineItemProps, "type">) {

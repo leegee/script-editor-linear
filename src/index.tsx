@@ -7,13 +7,11 @@ import { HashRouter, Route } from "@solidjs/router";
 import ScriptLayout from "./layouts/ScriptLayout";
 import TimelineLayout from "./layouts/TimelineLayout";
 import MainLayout from "./layouts/MainLayout";
-import ScriptView from "./components/views/ScriptView";
-import TimelineView from "./components/views/TimelineView";
 import NewTimelineItemSelector from "./components/NewTimelineItemSelector";
 import Default from "./components/panels/Default";
-import CharacterView from "./components/views/CharacterView";
-import LocationView from "./components/views/LocationView";
-import SettingsView from "./components/views/SettingsView";
+import CharacterView from "./components/panels/CharacterView";
+import LocationView from "./components/panels/LocationView";
+import SettingsView from "./components/panels/SettingsView";
 import TimelineItemView from "./components/views/TimelineItemView";
 
 const root = document.getElementById("root");

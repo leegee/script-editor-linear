@@ -4,7 +4,7 @@ import { A } from "@solidjs/router";
 import { locations, setLocations, addLocation, updateLocation, resolveTimelineRef } from "../../../stores";
 import { TimelineItem, TimelineItemProps } from "../TimelineItem";
 import { LocationMap } from "./LocationMap";
-import { CanonicalLocation } from "./CanonicalLocation";
+import { CanonicalLocation, CanonicalLocationProps } from "./CanonicalLocation";
 import MapLinks from "./MapLinks";
 import TimelineItemEditor from "../../ItemEditor";
 
@@ -41,7 +41,7 @@ export class TimelineLocationItem extends TimelineItem {
                                 {(loc) => (
                                     <tr>
                                         <td>
-                                            <A href={`/location/${loc.id}`}>{loc.title}</A>
+                                            <A href={`location/${loc.id}`}>{loc.title}</A>
                                         </td>
                                     </tr>
                                 )}
@@ -205,9 +205,8 @@ export class TimelineLocationItem extends TimelineItem {
 
         if (!ref) {
             const id = fields.id ?? crypto.randomUUID();
-            const newCanonical: CanonicalLocation = {
+            const newCanonical: CanonicalLocationProps = {
                 id,
-                type: "location",
                 title: fields.title ?? "Untitled Location",
                 details: {
                     lat: fields.lat ?? 0,

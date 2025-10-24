@@ -1,5 +1,17 @@
-// CanonicalLocation.ts
-export class CanonicalLocation {
+import { TimelineItemProps } from "../TimelineItem";
+import { TimelineLocationItem } from "./TimelineLocationItem";
+
+export type CanonicalLocationProps = {
+    id: string;
+    title: string;
+    details: {
+        lat: number;
+        lng: number;
+        radius: number;
+    },
+}
+
+export class CanonicalLocation extends TimelineLocationItem {
     id: string;
     type: "location" = "location";
     title: string;
@@ -10,6 +22,7 @@ export class CanonicalLocation {
     };
 
     constructor(obj: Partial<CanonicalLocation>) {
+        super(obj as TimelineItemProps);
         this.id = obj.id ?? crypto.randomUUID();
         this.title = obj.title ?? "";
         this.details = {

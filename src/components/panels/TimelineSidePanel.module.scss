@@ -1,0 +1,43 @@
+.container {
+    --tsp-width: 300px;
+    position: fixed;
+    top: 0;
+    right: calc(-1 * var(--tsp-width));
+    width: var(--tsp-width);
+    height: 100%;
+    background: var(--surface-container);
+    border: 3pt solid var(--surface-container-highest);
+    box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+    transition: right 0.3s ease;
+    z-index: 100;
+
+    &.open {
+        right: 0; // slide in
+    }
+
+    .tab {
+        --tsp-tab-width: 30px;
+        position: absolute;
+        left: calc(-1 * var(--tsp-tab-width)); // stick out 
+        top: 50%;
+        transform: translateY(-50%);
+        width: var(--tsp-tab-width);
+        height: 80px;
+        background: var(--surface-container-highest);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        border-radius: 4px 0 0 4px;
+        user-select: none;
+
+        &:hover {
+            color: white;
+        }
+    }
+
+    .content {
+        overflow-y: auto;
+        height: 100%;
+    }
+}

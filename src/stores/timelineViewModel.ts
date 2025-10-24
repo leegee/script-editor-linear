@@ -4,11 +4,12 @@ import { TimelineItem } from "../components/CoreItems/";
 
 // Ordered section map
 export const sectionMap = [
+    { name: "Locations", types: ["location"] },
     { name: "Structure", types: ["act", "scene", "beat"] },
     { name: "Script", types: ["dialogue", "action"] },
-    { name: "Cues", types: ["soundfx", "music", "lighting", "camera"] },
-    { name: "Meta", types: ["transition", "pause"] },
-    { name: "Locations", types: ["location"] },
+    { name: "Sound Cues", types: ["soundfx", "music"] },
+    { name: "Visual Cues", types: ["lighting", "camera", "transition", "pause"] },
+    // { name: "Meta", types: [] },
 ];
 
 // Map type → section for quick lookup

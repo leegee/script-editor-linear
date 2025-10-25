@@ -1,9 +1,9 @@
-import { type JSX } from 'solid-js';
+import { type JSX } from "solid-js";
 import { TimelineItem, TimelineItemProps } from "./TimelineItem";
 
-export class CameraItem extends TimelineItem {
+export class BeatItem extends TimelineItem {
     constructor(props: TimelineItemProps) {
-        super({ ...props, type: "camera" });
+        super({ ...props, type: "lighting" });
         this.details = {
             ...this.details,
             doesNotAdvanceTime: true,
@@ -11,7 +11,7 @@ export class CameraItem extends TimelineItem {
     }
 
     timelineContent(zoom: number): JSX.Element | string | undefined {
-        return <i>camera</i>;
+        return <i>swipe_down_alt</i>;
     }
 
 }

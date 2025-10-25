@@ -1,4 +1,4 @@
-import { For } from "solid-js";
+import { type JSX, For } from "solid-js";
 import { TimelineItem, TimelineItemProps } from "./TimelineItem";
 
 export class TransitionItem extends TimelineItem {
@@ -45,5 +45,9 @@ export class TransitionItem extends TimelineItem {
                 </div>
             </>
         );
+    }
+
+    timelineContent(zoom: number): JSX.Element | string | undefined {
+        return <i>transition_fade</i>;
     }
 }

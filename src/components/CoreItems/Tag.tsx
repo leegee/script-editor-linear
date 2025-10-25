@@ -1,3 +1,5 @@
+import { type JSX } from 'solid-js';
+
 export class Tag {
     id!: string;
     title!: string;

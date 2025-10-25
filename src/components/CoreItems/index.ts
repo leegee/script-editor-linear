@@ -1,3 +1,4 @@
+import { type JSX } from "solid-js";
 import { timelineItemClasses } from '../../lib/timelineItemRegistry';
 import { TimelineLocationItem } from './Locations/TimelineLocationItem';
 import { TimelineItem } from './TimelineItem';

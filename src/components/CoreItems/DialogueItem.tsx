@@ -1,4 +1,4 @@
-import { createSignal, Show } from "solid-js";
+import { type JSX, createSignal, Show } from "solid-js";
 import { addCharacter, characters, timelineItems, updateTimelineItem } from "../../stores";
 import { TimelineItem, TimelineItemProps } from "./TimelineItem";
 import { CharacterItem } from "./CharacterItem";
@@ -170,6 +170,10 @@ export class DialogueItem extends TimelineItem {
                 characterId,
             },
         };
+    }
+
+    timelineContent(zoom: number): JSX.Element | string | undefined {
+        return <i>3p</i>;
     }
 }
 

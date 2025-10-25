@@ -1,3 +1,4 @@
+import { type JSX } from "solid-js";
 export class Note {
     id!: string;
     parentId!: string;

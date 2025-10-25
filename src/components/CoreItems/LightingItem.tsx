@@ -1,3 +1,4 @@
+import { type JSX } from "solid-js";
 import { TimelineItem, TimelineItemProps } from "./TimelineItem";
 
 export class LightingItem extends TimelineItem {
@@ -7,6 +8,10 @@ export class LightingItem extends TimelineItem {
             ...this.details,
             doesNotAdvanceTime: true,
         }
+    }
+
+    timelineContent(zoom: number): JSX.Element | string | undefined {
+        return <i>brightness_6</i>;
     }
 
 }

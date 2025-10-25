@@ -120,4 +120,8 @@ export class TimelineItem {
     }
 
     openEditor() { }
+
+    timelineContent(zoom: number): JSX.Element | string | undefined {
+        return undefined;
+    }
 }

@@ -1,3 +1,4 @@
+import { type JSX } from "solid-js";
 import { formatHHMMSS } from "../../lib/formatSecondsToHMS";
 import { characters, locations, sceneCharacters, sceneDurations, sceneLocations } from "../../stores";
 import TimelineItemEditor from "../ItemEditor";

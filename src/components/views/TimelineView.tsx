@@ -1,19 +1,10 @@
 import styles from "./TimelineView.module.scss";
-import { onCleanup, onMount, createSignal, Show, For } from "solid-js";
+import { type JSX, onCleanup, onMount, createSignal, Show, For } from "solid-js";
 import { timelineViewModel, sectionMap } from "../../stores/timelineViewModel";
 import { TimelineItem } from "../CoreItems";
 import { useNavigate } from "@solidjs/router";
 
 const type2icon: Record<string, string> = {
-    dialogue: "3p",
-    action: "electric_bolt",
-    transition: "transition_fade",
-    music: "music_note",
-    soundfx: "brand_awareness",
-    camera: "camera",
-    lighting: "brightness_6",
-    pause: "pause",
-    beat: "swipe_down_alt",
 };
 
 const TOAST_MS = 2_000;
@@ -116,10 +107,12 @@ export default function TimelineView() {
                                                                 }
                                                             >
                                                                 <Show
-                                                                    when={type2icon[item.type]}
+                                                                    when={item.timelineContent(scale()) ?? type2icon[item.type]}
                                                                     fallback={<span>{item.title ?? item.type}</span>}
                                                                 >
-                                                                    <i class="tiny">{type2icon[item.type]}</i>
+                                                                    {
+                                                                        item.timelineContent(scale()) ?? <i class="tiny">{type2icon[item.type]} </i>
+                                                                    }
                                                                 </Show>
                                                             </div>
                                                         )}

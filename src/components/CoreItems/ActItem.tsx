@@ -1,3 +1,4 @@
+import { type JSX } from 'solid-js';
 import { formatHHMMSS } from "../../lib/formatSecondsToHMS";
 import { actDurations } from "../../stores";
 import { TimelineItem, TimelineItemProps } from "./TimelineItem";

@@ -1,4 +1,4 @@
-import { createMemo, For } from "solid-js";
+import { type JSX, createMemo, For } from "solid-js";
 import { characters, removeCharacter, timelineItems } from "../../stores";
 import { TimelineItem, TimelineItemProps } from "./TimelineItem";
 import { A } from "@solidjs/router";

@@ -1,3 +1,4 @@
+import { type JSX } from "solid-js";
 import { TimelineItem, TimelineItemProps } from "./TimelineItem";
 
 export class MusicItem extends TimelineItem {
@@ -9,4 +10,7 @@ export class MusicItem extends TimelineItem {
         }
     }
 
+    timelineContent(zoom: number): JSX.Element | string | undefined {
+        return <i>music_note</i>;
+    }
 }

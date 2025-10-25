@@ -1,5 +1,5 @@
 import "ol/ol.css";
-import { createSignal, For } from "solid-js";
+import { createSignal, For, type JSX } from "solid-js";
 import { A } from "@solidjs/router";
 import { locations, addLocation } from "../../../stores";
 import { TimelineItem, TimelineItemProps } from "../TimelineItem";
@@ -137,6 +137,11 @@ class BaseTimelineLocationItem extends TimelineItem {
             details: { ref },
         };
     }
+
+    timelineContent(zoom: number): JSX.Element | string | undefined {
+        return this.title;
+    }
+
 }
 
 export const TimelineLocationItem = LocationRenderMixin(BaseTimelineLocationItem);

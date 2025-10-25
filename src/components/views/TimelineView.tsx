@@ -87,40 +87,41 @@ export default function TimelineView() {
                                 >
                                     <For each={types}>
                                         {(type) => {
-                                            const typeItems = items.filter((i) => i.type === type);
+                                            const typeItems = items.filter(i => i.type === type);
                                             if (!typeItems.length) return null;
 
                                             return (
-                                                <div class={styles["type-row"]}>
-                                                    <For each={typeItems}>
-                                                        {(item) => (
-                                                            <div onClick={() => showDetails(item)}
-                                                                class={styles.item + " " + styles[`type-${item.type}`]}
-                                                                style={{
-                                                                    left: `${item.details.start * scale()}px`,
-                                                                    width: `${item.duration != null ? item.duration * scale() : 2
-                                                                        }px`,
-                                                                }}
-                                                                title={
-                                                                    item.title ??
-                                                                    (item.type === "dialogue" ? item.details.text : item.type)
-                                                                }
-                                                            >
-                                                                <Show
-                                                                    when={item.timelineContent(scale()) ?? type2icon[item.type]}
-                                                                    fallback={<span>{item.title ?? item.type}</span>}
-                                                                >
-                                                                    {
-                                                                        item.timelineContent(scale()) ?? <i class="tiny">{type2icon[item.type]} </i>
-                                                                    }
-                                                                </Show>
-                                                            </div>
-                                                        )}
-                                                    </For>
+                                                <div class={styles["track-row"]}>
+                                                    {/* Track label, outside the grid */}
+                                                    <div class={styles["track-label"]}>{type}</div>
+
+                                                    {/* The actual track row, grid container stays intact */}
+                                                    <div class={styles.track}>
+                                                        <div class={styles["type-row"]}>
+                                                            <For each={typeItems}>
+                                                                {(item) => (
+                                                                    <div
+                                                                        onClick={() => showDetails(item)}
+                                                                        class={styles.item + " " + styles[`type-${item.type}`]}
+                                                                        style={{
+                                                                            left: `${item.details.start * scale()}px`,
+                                                                            width: `${item.duration != null ? item.duration * scale() : 2}px`
+                                                                        }}
+                                                                        title={item.title ?? (item.type === "dialogue" ? item.details.text : item.type)}
+                                                                    >
+                                                                        <Show when={item.timelineContent(scale()) ?? type2icon[item.type]} fallback={<span>{item.title ?? item.type}</span>}>
+                                                                            {item.timelineContent(scale()) ?? <i class="tiny">{type2icon[item.type]}</i>}
+                                                                        </Show>
+                                                                    </div>
+                                                                )}
+                                                            </For>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             );
                                         }}
                                     </For>
+
                                 </div>
                             </article>
                         );

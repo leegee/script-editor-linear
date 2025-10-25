@@ -143,3 +143,29 @@
     opacity: 1;
     transform: translateX(-50%) translateY(0);
 }
+
+
+.track-row {
+    display: flex;
+    align-items: stretch; // label and track row same height
+    gap: 0.5em;
+}
+
+.track-label {
+    width: 6em; // same as section label
+    font-size: 80%;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    color: #eee;
+}
+
+.track {
+    flex: 1;
+    display: grid;
+    grid-auto-rows: 2em;
+    row-gap: 0.6em;
+    position: relative;
+    overflow: visible;
+}

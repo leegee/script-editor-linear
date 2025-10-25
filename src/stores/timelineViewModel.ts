@@ -1,6 +1,6 @@
 import { createMemo } from "solid-js";
 import { orderedItems } from ".";
-import { TimelineItem } from "../components/CoreItems/";
+import { type TimelineItem } from "../components/CoreItems/";
 
 // Ordered section map
 export const sectionMap = [

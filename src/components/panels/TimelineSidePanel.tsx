@@ -1,9 +1,18 @@
 import styles from "./TimelineSidePanel.module.scss";
-import { createSignal, onMount, onCleanup, type ParentProps, Match, Switch } from "solid-js";
+import { createSignal, onMount, onCleanup, type ParentProps, Match, Switch, createEffect } from "solid-js";
+import { useLocation } from "@solidjs/router";
+
 
 export default function TimelineSidePanel(props: ParentProps) {
+    const location = useLocation();
     const [open, setOpen] = createSignal(false);
     let containerRef: HTMLDivElement | undefined;
+
+    createEffect(() =>
+        setOpen(/(^\/\w+)?\/+[^/]+\/+[^/]+$/.test(
+            location.pathname.slice(1)
+        ))
+    );
 
     // Click outside to auto-hide
     const handleClickOutside = (e: MouseEvent) => {

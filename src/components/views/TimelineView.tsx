@@ -1,6 +1,8 @@
 import styles from "./TimelineView.module.scss";
 import { onCleanup, onMount, createSignal, Show, For } from "solid-js";
 import { timelineViewModel, sectionMap } from "../../stores/timelineViewModel";
+import { TimelineItem } from "../CoreItems";
+import { useNavigate } from "@solidjs/router";
 
 const type2icon: Record<string, string> = {
     dialogue: "3p",
@@ -17,6 +19,7 @@ const type2icon: Record<string, string> = {
 const TOAST_MS = 2_000;
 
 export default function TimelineView() {
+    const navigate = useNavigate();
     const viewModel = () => timelineViewModel();
     const [scale, setScale] = createSignal(10);
     const [toastScale, setToastScale] = createSignal<number | null>(null);
@@ -60,6 +63,12 @@ export default function TimelineView() {
         onCleanup(() => timelineEl?.removeEventListener("wheel", wheelHandler));
     });
 
+    function showDetails(item: TimelineItem) {
+        const url = '/timeline/item/' + item.id;
+        console.log('Go to', url)
+        navigate(url)
+    }
+
     return (
         <>
             <Show when={toastScale() !== null}>
@@ -94,9 +103,8 @@ export default function TimelineView() {
                                                 <div class={styles["type-row"]}>
                                                     <For each={typeItems}>
                                                         {(item) => (
-                                                            <div
-                                                                class={styles.item}
-                                                                classList={{ [styles[`type-${item.type}`]]: true }}
+                                                            <div onClick={() => showDetails(item)}
+                                                                class={styles.item + " " + styles[`type-${item.type}`]}
                                                                 style={{
                                                                     left: `${item.details.start * scale()}px`,
                                                                     width: `${item.duration != null ? item.duration * scale() : 2

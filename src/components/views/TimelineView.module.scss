@@ -1,4 +1,5 @@
 .timeline {
+    --label-width: 6em;
     display: flex;
     flex-direction: column;
     gap: 0.75em;
@@ -6,123 +7,143 @@
     background: var(--surface-container-lowest);
     padding: 0.5em;
     border-radius: 8pt;
-
     width: 100%;
     overflow-x: auto;
     overflow-y: hidden;
     position: relative;
+    padding: 0;
 
     .section {
         display: flex;
-        align-items: flex-start;
-        /* don't vertically center the track so its full height counts */
+        align-items: flex-start; // keep full track height
         gap: 0.5em;
         padding: 0.6em;
-        background: var(--surface-container-low);
-    }
-
-    .label {
-        width: 6em;
-        flex: 0 0 6em;
-        /* fixed width, won't shrink or grow */
-        font-weight: 600;
-        font-size: 80%;
-    }
-
-    .track {
-        /* Do not let flexbox override the inline width we set from JS */
-        flex: 0 0 auto;
-        /* don't grow, don't shrink; size is the inline width */
-        position: relative;
-        display: grid;
-        grid-auto-rows: 2em;
-        row-gap: 0.6em;
-        background: var(--surface-container);
-        border-radius: 2pt;
-        overflow: visible;
-        /* items are absolutely positioned inside rows */
-    }
-
-    .type-row {
         position: relative;
 
-        &> :nth-child(even) {
-            filter: brightness(0.8);
+        .label {
+            border-radius: 0;
+            width: var(--label-width);
+            flex: 0 0 var(--label-width);
+            font-weight: 600;
+            font-size: 80%;
+            position: sticky;
+            left: 0;
+            background: var(--surface-container);
+            z-index: 5;
+        }
+
+        .track {
+            flex: 1;
+            display: grid;
+            grid-auto-rows: 2em;
+            row-gap: 0.6em;
+            background: var(--surface-container);
+            border-radius: 2pt;
+            overflow: visible;
+
+            .track-row {
+                display: flex;
+                align-items: stretch;
+                gap: 0.5em;
+                position: relative;
+                background-color: var(surface-container-low);
+
+                .track-label {
+                    width: var(--label-width);
+                    font-size: 80%;
+                    font-weight: 600;
+                    display: flex;
+                    align-items: center;
+                    justify-content: flex-end;
+                    color: #eee;
+                    position: sticky;
+                    left: var(--label-width);
+                    background: var(--surface-container); // match track bg
+                    z-index: 4;
+                }
+
+                .type-row {
+                    flex: 1;
+                    position: relative;
+
+                    &> :nth-child(even) {
+                        filter: brightness(0.8);
+                    }
+
+                    .item {
+                        position: absolute;
+                        height: 100%; // fills its grid row
+                        border-radius: 2pt;
+                        color: #fff;
+                        font-size: 0.8em;
+                        padding-left: 2pt;
+                        line-height: 20pt;
+                        white-space: nowrap;
+                        text-overflow: ellipsis;
+                        overflow: hidden;
+                        transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+                        &:hover {
+                            transform: scaleY(1.5);
+                            box-shadow: 0 2pt 4pt #000c;
+                            z-index: 10;
+                        }
+                    }
+
+                    /* Type-specific colours */
+                    .type-act {
+                        background: hsl(244, 91%, 50%);
+                    }
+
+                    .type-scene {
+                        background: #2563eb;
+                    }
+
+                    .type-beat {
+                        background: #1e40af;
+                    }
+
+                    .type-location {
+                        background: hsl(300, 71%, 40%);
+                    }
+
+                    .type-dialogue {
+                        background: #22c55e;
+                    }
+
+                    .type-action {
+                        background: #15803d;
+                    }
+
+                    .type-music {
+                        background: hsl(59, 73%, 37%);
+                        color: #000;
+                    }
+
+                    .type-soundfx {
+                        background: #eab308;
+                        color: #000;
+                    }
+
+                    .type-lighting {
+                        background: #f97316;
+                    }
+
+                    .type-camera {
+                        background: #f43f5e;
+                    }
+
+                    .type-transition {
+                        background: #a855f7;
+                    }
+
+                    .type-pause {
+                        background-color: darkslategray;
+                    }
+                }
+            }
         }
     }
-
-    /* Timeline item styling (now inside its row) */
-    .item {
-        position: absolute;
-        height: 100%; // fills its grid row
-        border-radius: 2pt;
-        color: #fff;
-        font-size: 0.8em;
-        padding-left: 2pt;
-        line-height: 20pt;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        transition: transform 0.15s ease, box-shadow 0.15s ease;
-
-        &:hover {
-            transform: scaleY(1.5);
-            box-shadow: 0 2pt 4pt #000c;
-            z-index: 10;
-        }
-    }
-
-    /* Type-specific colours */
-    .type-act {
-        background: hsl(244, 91%, 50%);
-    }
-
-    .type-scene {
-        background: #2563eb;
-    }
-
-    .type-beat {
-        background: #1e40af;
-    }
-
-    .type-location {
-        background: hsl(300, 71%, 40%);
-    }
-
-    .type-dialogue {
-        background: #22c55e;
-    }
-
-    .type-action {
-        background: #15803d;
-    }
-
-    .type-music {
-        background: hsl(59, 73%, 37%);
-        color: #000;
-    }
-
-    .type-soundfx {
-        background: #eab308;
-        color: #000;
-    }
-
-    .type-lighting {
-        background: #f97316;
-    }
-
-    .type-camera {
-        background: #f43f5e;
-    }
-
-    .type-transition {
-        background: #a855f7;
-    }
-
-    .type-pause {
-        background-color: darkslategray;
-    }
-
 }
 
 .toast {
@@ -137,35 +158,9 @@
 
     opacity: 0;
     transition: opacity 0.5s ease, transform 0.5s ease;
-}
 
-.toast.visible {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-}
-
-
-.track-row {
-    display: flex;
-    align-items: stretch; // label and track row same height
-    gap: 0.5em;
-}
-
-.track-label {
-    width: 6em; // same as section label
-    font-size: 80%;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    color: #eee;
-}
-
-.track {
-    flex: 1;
-    display: grid;
-    grid-auto-rows: 2em;
-    row-gap: 0.6em;
-    position: relative;
-    overflow: visible;
+    &.visible {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
 }

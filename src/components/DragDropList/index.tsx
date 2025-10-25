@@ -4,9 +4,9 @@ import { useNavigate } from "@solidjs/router";
 import { List } from '@solid-primitives/list';
 
 import DragHandleWithMenu from "./DragHandleWithMenu";
-import { duplicateTimelineItem } from "../lib/duplicateTimelineItem";
-import { deleteTimelineItemById } from "../lib/createTimelineItem";
-import { timelineSequence } from "../stores";
+import { duplicateTimelineItem } from "../../lib/duplicateTimelineItem";
+import { deleteTimelineItemById } from "../../lib/createTimelineItem";
+import { timelineSequence } from "../../stores";
 
 interface HasIdAndDuration {
   id: string;

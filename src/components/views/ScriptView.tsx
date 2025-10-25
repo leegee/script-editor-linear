@@ -1,5 +1,5 @@
 import { useNavigate } from "@solidjs/router";
-import DragDropList from "../DragDropList";
+import DragDropList from "../DragDropList/";
 import { timelineItems, timelineSequence, reorderTimeline } from "../../stores/timelineItems";
 
 export default function ScriptView() {

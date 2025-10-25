@@ -59,7 +59,7 @@ export class DialogueItem extends TimelineItem {
         return (
             <>
                 {/* Mode toggle */}
-                <div class="field border middle-align max">
+                <div class="field border middle-align max" title="Select or create a character">
                     <label class="switch icon">
                         <input
                             type="checkbox"

@@ -6,9 +6,9 @@ import { type TimelineItem } from "../components/CoreItems/";
 export const sectionMap = [
     { name: "Locations", types: ["location"] },
     { name: "Structure", types: ["act", "scene", "beat"] },
-    { name: "Script", types: ["dialogue", "action"] },
+    { name: "Script", types: ["dialogue", "action", "pause"] },
     { name: "Sound Cues", types: ["soundfx", "music"] },
-    { name: "Visual Cues", types: ["lighting", "camera", "transition", "pause"] },
+    { name: "Visual Cues", types: ["lighting", "camera", "transition"] },
     // { name: "Meta", types: [] },
 ];
 

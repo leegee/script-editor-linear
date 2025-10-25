@@ -4,9 +4,9 @@ export const db = new Dexie("ScriptDB");
 
 db.version(1).stores({
     timelineItems: "id,type",
-    characters: "id,name",
-    locations: "id,name",
-    tags: "id,name",
+    characters: "id,title",
+    locations: "id,title",
+    tags: "id,title",
     notes: "id,parentId,parentType",
     meta: "key",
 });

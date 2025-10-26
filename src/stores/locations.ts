@@ -19,11 +19,18 @@ export async function resetLocations() {
 }
 
 export async function addLocation(item: CanonicalLocationType) {
+    if (Object.hasOwn(item, 'ref')) {
+        throw new TypeError('addLocation fields should not contain ref, this is a Canonical Location');
+    }
+
     setLocations(item.id, item);
     await storage.put("locations", item);
 }
 
 export async function updateLocation(id: string, updatedFields: Partial<CanonicalLocationType>) {
+    if (Object.hasOwn(updatedFields, 'ref')) {
+        throw new TypeError('updateLocation fields should not contain ref, this is a Canonical Location');
+    }
     setLocations(id, prev => ({
         ...(prev ?? {}),
         ...updatedFields,

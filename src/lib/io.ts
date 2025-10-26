@@ -1,6 +1,6 @@
 import { reviveItem } from "../components/CoreItems";
 import { CharacterItem } from "../components/CoreItems/CharacterItem";
-import { CanonicalLocation } from "../components/CoreItems/Locations/CanonicalLocation";
+import { type CanonicalLocationType } from "../components/CoreItems/Locations/CanonicalLocation";
 import { TimelineItemProps } from "../components/CoreItems/TimelineItem";
 import {
     locations,
@@ -66,7 +66,7 @@ export async function loadJSONfromPath(jsonPath: string) {
 export async function ingest(
     sampleScript: TimelineItemProps[],
     sampleCharacters: CharacterItem[],
-    sampleLocations: CanonicalLocation[],
+    sampleLocations: CanonicalLocationType[],
 ) {
     console.log("io/ingest: starting ingestion...");
 

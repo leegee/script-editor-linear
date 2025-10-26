@@ -1,4 +1,4 @@
-import { type JSX, createSignal, Show } from "solid-js";
+import { type JSX, createSignal, Match, Show, Switch } from "solid-js";
 import { addCharacter, characters, timelineItems, updateTimelineItem } from "../../stores";
 import { TimelineItem, TimelineItemProps } from "./TimelineItem";
 import { CharacterItem } from "./CharacterItem";
@@ -76,46 +76,53 @@ export class DialogueItem extends TimelineItem {
                 </div>
 
                 {/* New Character creation */}
-                <Show when={mode() === "new"}>
-                    <div class="field border label max">
-                        <input
-                            type="text"
-                            value={newCharName()}
-                            onInput={(e) => setNewCharName(e.currentTarget.value)}
-                        />
-                        <label>New character name</label>
-                        <i>person</i>
-                        <button
-                            disabled={!newCharName().trim()}
-                            onclick={() => {
-                                const id = newCharName().replace(/[^\p{L}\p{N}_]/gu, "");
-                                const newChar = new CharacterItem({ id, title: newCharName() });
-                                addCharacter(newChar);
-                                props.onChange("characterId", id);
-                                setMode("select");
-                            }}
-                        >
-                            Create Character
-                        </button>
-                    </div>
-                </Show>
+                <Switch>
+                    <Match when={mode() === "new"}>
+                        <div class="bottom-padding max">
+                            <nav class="no-space">
+                                <div class="field border label max small-round left-round">
+                                    <input
+                                        type="text"
+                                        value={newCharName()}
+                                        onInput={(e) => setNewCharName(e.currentTarget.value)}
+                                    />
+                                    <label>New character name</label>
+                                </div>
+                                <button class="large small-round right-round"
+                                    disabled={!newCharName().trim()}
+                                    onclick={() => {
+                                        const id = newCharName().replace(/[^\p{L}\p{N}_]/gu, "");
+                                        const newChar = new CharacterItem({ id, title: newCharName() });
+                                        addCharacter(newChar);
+                                        props.onChange("characterId", id);
+                                        setMode("select");
+                                    }}
+                                >
+                                    <span>Create</span>
+                                    <i>person</i>
 
-                {/* Select existing Character */}
-                <Show when={mode() === "select"}>
-                    <div class="field border label max">
-                        <select
-                            value={this.details.characterId ?? ""}
-                            onChange={(e) => props.onChange("characterId", e.currentTarget.value)}
-                        >
-                            <option value="" disabled>Select a character</option>
-                            {Object.values(characters).map((char) => (
-                                <option value={char.id}>{char.title}</option>
-                            ))}
-                        </select>
-                        <label>Existing Character</label>
-                        <i>arrow_drop_down</i>
-                    </div>
-                </Show>
+                                </button>
+                            </nav>
+                        </div>
+                    </Match>
+
+                    {/* Select existing Character */}
+                    <Match when={mode() === "select"}>
+                        <div class="field border label max">
+                            <select
+                                value={this.details.characterId ?? ""}
+                                onChange={(e) => props.onChange("characterId", e.currentTarget.value)}
+                            >
+                                <option value="" disabled>Select a character</option>
+                                {Object.values(characters).map((char) => (
+                                    <option value={char.id}>{char.title}</option>
+                                ))}
+                            </select>
+                            <label>Existing Character</label>
+                            <i>arrow_drop_down</i>
+                        </div>
+                    </Match>
+                </Switch>
 
                 {/* Dialogue Text using TimelineItemEditor */}
                 <TimelineItemEditor
@@ -150,7 +157,7 @@ export class DialogueItem extends TimelineItem {
     prepareFromFields(fields: Record<string, any>) {
         let characterId = fields.characterId;
 
-        // Create a new Character if user entered one in "new" mode
+        // Create a new Character
         if (!characterId && fields.characterName) {
             const id = fields.characterName.replace(/[^\p{L}\p{N}_]/gu, "");
             const newChar = new CharacterItem({

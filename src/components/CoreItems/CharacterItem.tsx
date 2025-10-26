@@ -40,7 +40,7 @@ export class CharacterItem extends TimelineItem {
                                 {(chr) => (
                                     <tr>
                                         <td>
-                                            <A href={"/character/" + chr.id}>{chr.title}</A>
+                                            <A href={"/script/character/" + chr.id}>{chr.title}</A>
                                         </td>
                                     </tr>
                                 )}

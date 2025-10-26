@@ -8,15 +8,21 @@ import { CameraItem } from "../components/CoreItems/CameraItem";
 import { LightingItem } from "../components/CoreItems/LightingItem";
 import { SoundFxItem } from "../components/CoreItems/SoundFxItem";
 import { MusicItem } from "../components/CoreItems/MusicItem";
+import { ActionItem } from "../components/CoreItems/ActionItem";
+import { BeatItem } from "../components/CoreItems/BeatItem";
+import { PauseItem } from "../components/CoreItems/PauseItem";
 
 export const timelineItemClasses: Record<string, typeof TimelineItem> = {
     act: ActItem,
-    scene: SceneItem,
-    dialogue: DialogueItem,
-    transition: TransitionItem,
-    location: TimelineLocationItem,
-    soundfx: SoundFxItem,
-    music: MusicItem,
+    action: ActionItem,
+    beat: BeatItem,
     camera: CameraItem,
-    lighting: LightingItem
+    dialogue: DialogueItem,
+    lighting: LightingItem,
+    location: TimelineLocationItem,
+    music: MusicItem,
+    pause: PauseItem,
+    scene: SceneItem,
+    soundfx: SoundFxItem,
+    transition: TransitionItem,
 };

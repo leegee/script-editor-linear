@@ -53,7 +53,7 @@ export class ActItem extends TimelineItem {
                     <h4>Locations in this act:</h4>
                     <ul class="list no-space border scroll">
                         {[...(actLocations()[this.id] ?? [])].map(locId => (
-                            <li>{locations[locId].title}</li>
+                            <li>{locations[locId]?.title ?? "Unknown Location " + locId}</li>
                         ))}
                     </ul>
                 </article>

@@ -23,6 +23,14 @@ export async function loadAllTimelineItems() {
 }
 
 export async function createTimelineItem(item: TimelineItem, insertAtIndex?: number) {
+    if (item.type === "location") {
+        const ref = item.details?.ref;
+        if (!ref || !locations[ref]) {
+            console.error('Bad input', item);
+            throw new TypeError(`Cannot add location: ref "${ref}" does not exist in locations store.`);
+        }
+    }
+
     setTimelineItems(item.id, item);
 
     const seq = [...timelineSequence()];

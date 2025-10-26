@@ -3,7 +3,7 @@
     display: flex;
     flex-direction: column;
     gap: 0.75em;
-    color: #eee;
+    color: var(--on-surface-container-lowest);
     background: var(--surface-container-lowest);
     padding: 0.5em;
     border-radius: 8pt;
@@ -64,10 +64,10 @@
                     display: flex;
                     align-items: center;
                     justify-content: flex-end;
-                    color: #eee;
                     position: sticky;
                     left: var(--label-width);
-                    background: var(--surface-container); // match track bg
+                    background: var(--surface-container);
+                    color: var(--on-surface-container);
                     z-index: 100;
                     margin: 0;
                     padding: 0 0.6em;

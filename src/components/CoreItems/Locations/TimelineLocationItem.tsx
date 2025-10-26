@@ -12,7 +12,7 @@ class BaseTimelineLocationItem extends TimelineItem {
     static revive(obj: any): TimelineLocationItemType {
         return new TimelineLocationItem({
             ...obj,
-            details: obj.details?.ref ? obj.details : { ref: obj.id },
+            details: obj.details ?? { ref: obj.id },
         });
     }
 

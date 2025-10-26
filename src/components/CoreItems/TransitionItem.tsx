@@ -67,6 +67,6 @@ export class TransitionItem extends TimelineItem {
     }
 
     timelineContent(zoom: number): JSX.Element | string | undefined {
-        return <i>transition_{this.details.transitionType}</i>;
+        return <i>transition_{this.details.transitionType ?? 'transition_fade'}</i>;
     }
 }

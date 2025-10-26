@@ -162,110 +162,87 @@ export const orderedItems = createMemo(() => {
 });
 
 
-// Should consolidate all the time processes into one
-export const actStartTimes = createMemo(() => {
-    const starts: Record<string, number> = {};
-    let currentStart = 0;
+function _collectStartTimes(containerType: "act" | "scene") {
+    return createMemo(() => {
+        const starts: Record<string, number> = {};
+        let currentStart = 0;
 
-    for (const item of orderedItems()) {
-        if (item.type === "act") {
-            starts[item.id] = currentStart;
-            currentStart += item.duration ?? 0;
+        for (const item of orderedItems()) {
+            if (item.type === containerType) {
+                starts[item.id] = currentStart;
+                currentStart += item.duration ?? 0;
+            }
         }
-    }
 
-    return starts;
-});
+        return starts;
+    });
+}
 
-export const actDurations = createMemo(() => {
-    const acts: Record<string, number> = {};
-    let currentActId: string | null = null;
-    let sum = 0;
 
-    for (const item of orderedItems()) {
-        if (item.type === "act") {
-            if (currentActId) acts[currentActId] = sum;
-            currentActId = item.id;
-            sum = item.duration ?? 0;
-        } else if (currentActId) {
-            sum += item.duration ?? 0;
+function _collectDurations(containerType: "act" | "scene") {
+    return createMemo(() => {
+        const result: Record<string, number> = {};
+        let currentId: string | null = null;
+        let sum = 0;
+
+        for (const item of orderedItems()) {
+            if (item.type === containerType) {
+                if (currentId) result[currentId] = sum;
+                currentId = item.id;
+                sum = item.duration ?? 0;
+            } else if (currentId) {
+                sum += item.duration ?? 0;
+            }
         }
-    }
 
-    if (currentActId) acts[currentActId] = sum;
-    return acts;
-});
+        if (currentId) result[currentId] = sum;
+        return result;
+    });
+}
 
-export const sceneStartTimes = createMemo(() => {
-    const starts: Record<string, number> = {};
-    let currentStart = 0;
+function _collectCharacters(containerType: "act" | "scene") {
+    return createMemo(() => {
+        const result: Record<string, Set<string>> = {};
+        let currentId: string | null = null;
+        let charIds: Set<string> = new Set();
 
-    for (const item of orderedItems()) {
-        if (item.type === "scene") {
-            starts[item.id] = currentStart;
-            currentStart += item.duration ?? 0;
+        for (const item of orderedItems()) {
+            if (item.type === containerType) {
+                if (currentId) result[currentId] = new Set(charIds);
+                currentId = item.id;
+                charIds = new Set();
+            } else if (currentId && item.type === "dialogue") {
+                charIds.add(item.details.characterId);
+            }
         }
-    }
 
-    return starts;
-});
+        if (currentId) result[currentId] = new Set(charIds);
+        return result;
+    });
+}
 
-export const sceneDurations = createMemo(() => {
-    const scenes: Record<string, number> = {};
-    let currentSceneId: string | null = null;
-    let sum = 0;
 
-    for (const item of orderedItems()) {
-        if (item.type === "scene") {
-            if (currentSceneId) scenes[currentSceneId] = sum;
-            currentSceneId = item.id;
-            sum = item.duration ?? 0;
-        } else if (currentSceneId) {
-            sum += item.duration ?? 0;
+function _collectLocationRefs(containerType: "act" | "scene") {
+    return createMemo(() => {
+        const result: Record<string, Set<string>> = {};
+        let currentContainerId: string | null = null;
+        let locIds = new Set<string>();
+
+        for (const item of orderedItems()) {
+            if (item.type === containerType) {
+                if (currentContainerId) result[currentContainerId] = new Set(locIds);
+                currentContainerId = item.id;
+                locIds = new Set();
+            } else if (currentContainerId && item.type === "location") {
+                locIds.add(item.details.ref);
+            }
         }
-    }
 
-    if (currentSceneId) scenes[currentSceneId] = sum;
-    return scenes;
-});
+        if (currentContainerId) result[currentContainerId] = new Set(locIds);
+        return result;
+    });
+}
 
-export const sceneCharacters = createMemo(() => {
-    const scenes: Record<string, Set<string>> = {};
-    let currentSceneId: string | null = null;
-    let charIds: Set<string> = new Set();
-
-    for (const item of orderedItems()) {
-        if (item.type === "scene") {
-            if (currentSceneId) scenes[currentSceneId] = new Set(charIds);
-            currentSceneId = item.id;
-            charIds = new Set();
-        } else if (currentSceneId && item.type === 'dialogue') {
-            charIds.add(item.details.characterId);
-        }
-    }
-
-    if (currentSceneId) scenes[currentSceneId] = new Set(charIds);
-    return scenes;
-});
-
-export const sceneLocations = createMemo(() => {
-    const scenes: Record<string, Set<string>> = {};
-    let currentSceneId: string | null = null;
-    let locIds: Set<string> = new Set();
-
-    for (const item of orderedItems()) {
-        if (item.type === "scene") {
-            if (currentSceneId) scenes[currentSceneId] = new Set(locIds);
-            currentSceneId = item.id;
-            locIds = new Set();
-        } else if (currentSceneId && item.type === 'location') {
-            locIds.add(item.details.ref);
-        }
-    }
-
-    if (currentSceneId) scenes[currentSceneId] = new Set(locIds);
-    return scenes;
-});
 
 export const timelineitemStartTimes = createMemo(() => {
     const starts: Record<string, number> = {};
@@ -280,3 +257,16 @@ export const timelineitemStartTimes = createMemo(() => {
 
     return starts;
 });
+
+
+export const actCharacters = _collectCharacters("act");
+export const sceneCharacters = _collectCharacters("scene");
+
+export const sceneLocations = _collectLocationRefs("scene");
+export const actLocations = _collectLocationRefs("act");
+
+export const actStartTimes = _collectStartTimes("act");
+export const sceneStartTimes = _collectStartTimes("scene");
+
+export const actDurations = _collectDurations("act");
+export const sceneDurations = _collectDurations("scene");

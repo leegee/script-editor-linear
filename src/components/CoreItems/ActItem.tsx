@@ -1,6 +1,5 @@
-import { type JSX } from 'solid-js';
 import { formatHHMMSS } from "../../lib/formatSecondsToHMS";
-import { actDurations } from "../../stores";
+import { actCharacters, actDurations, actLocations, characters, locations } from "../../stores";
 import { TimelineItem, TimelineItemProps } from "./TimelineItem";
 import TimelineItemEditor from "../ItemEditor";
 
@@ -31,14 +30,34 @@ export class ActItem extends TimelineItem {
                         defaultValue={this.title ?? "Untitled Act"}
                     />
                 </h2>
-                <div class="field">
+
+                <article class="field">
                     <p>Duration {
                         formatHHMMSS(
                             actDurations()[this.id]
                         )
 
                     }</p>
-                </div>
+                </article>
+
+                <article>
+                    <h4>Characters in this act:</h4>
+                    <ul class="list no-space border scroll">
+                        {[...(actCharacters()[this.id] ?? [])].map(charId => (
+                            <li>{characters[charId].title}</li>
+                        ))}
+                    </ul>
+                </article>
+
+                <article>
+                    <h4>Locations in this act:</h4>
+                    <ul class="list no-space border scroll">
+                        {[...(actLocations()[this.id] ?? [])].map(locId => (
+                            <li>{locations[locId].title}</li>
+                        ))}
+                    </ul>
+                </article>
+
             </fieldset>
         );
     }

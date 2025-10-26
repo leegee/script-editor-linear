@@ -13,6 +13,7 @@ import CharacterView from "./components/panels/CharacterView";
 import LocationView from "./components/panels/LocationView";
 import SettingsView from "./components/panels/SettingsView";
 import TimelineItemView from "./components/views/TimelineItemView";
+import { loadAll } from "./stores";
 
 const root = document.getElementById("root");
 
@@ -30,6 +31,8 @@ const commonRoutes = (
     <Route path="/settings" component={SettingsView} />
   </>
 );
+
+await loadAll();
 
 render(
   () => (

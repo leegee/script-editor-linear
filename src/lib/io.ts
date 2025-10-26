@@ -82,16 +82,14 @@ export async function ingest(
     console.log('Shall add timilne itmes')
 
     // Add timeline items using store API (handles sequence & storage)
-    const tlPromises = [];
     const seq: string[] = [];
     for (const props of sampleScript) {
         const item = reviveItem(props);
         if (!item.id) item.id = crypto.randomUUID();
-        tlPromises.push(storeCreateTimelineItem(item));
+        await storeCreateTimelineItem(item);
         seq.push(item.id);
     }
 
-    await Promise.allSettled(tlPromises);
 
     // Ensure sequence is consistent with store
     await reorderTimeline(seq);

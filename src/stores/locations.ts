@@ -14,8 +14,8 @@ export async function loadAllLocations() {
 }
 
 export async function resetLocations() {
-    setLocations({});
     await storage.clearTable("locations");
+    setLocations({});
 }
 
 export async function addLocation(item: CanonicalLocationType) {

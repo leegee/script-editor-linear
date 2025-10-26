@@ -13,8 +13,8 @@ export async function loadAllCharacters() {
 }
 
 export async function resetCharacters() {
-    setCharacters({});
     await storage.clearTable("characters");
+    setCharacters({});
 }
 
 export async function addCharacter(item: CharacterItem) {

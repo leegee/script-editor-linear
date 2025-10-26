@@ -15,13 +15,11 @@ export * from "./notes";
  */
 export async function loadAll() {
     console.log('stores/loadAll: Enter')
-    await Promise.all([
-        loadAllTimelineItems(),
-        loadAllLocations(),
-        loadAllCharacters(),
-        loadAllTags(),
-        loadAllNotes(),
-    ]);
+    await loadAllTimelineItems();
+    await loadAllLocations();
+    await loadAllCharacters();
+    await loadAllTags();
+    await loadAllNotes();
     console.log("stores/loadAll: all stores loaded from IndexedDB.");
 }
 

@@ -4,8 +4,9 @@ import { TimelineItem, TimelineItemProps, reviveItem } from "../components/CoreI
 import { storage } from "../db";
 import { locations } from "./locations";
 
-const [timelineItems, setTimelineItems] = createStore<Record<string, TimelineItem>>({});
-const [timelineSequence, setTimelineSequence] = createSignal<string[]>([]);
+const [timelineItems, _setTimelineItems] = createStore<Record<string, TimelineItem>>({});
+
+const [timelineSequence, _setTimelineSequence] = createSignal<string[]>([]);
 
 export { timelineItems, timelineSequence };
 
@@ -16,10 +17,10 @@ export async function loadAllTimelineItems() {
     const revived = Object.fromEntries(
         Object.entries(items).map(([id, props]) => [id, reviveItem(props)])
     );
-    setTimelineItems(revived);
+    _setTimelineItems(revived);
 
     const savedSeq = await storage.getMeta<string[]>("timelineSequence");
-    if (savedSeq?.length) setTimelineSequence(savedSeq);
+    if (savedSeq?.length) _setTimelineSequence(savedSeq);
 }
 
 export async function createTimelineItem(item: TimelineItem, insertAtIndex?: number) {
@@ -37,7 +38,7 @@ export async function createTimelineItem(item: TimelineItem, insertAtIndex?: num
     }
 
     // Add item to timeline store
-    setTimelineItems(item.id, item);
+    _setTimelineItems(item.id, item);
 
     // Update timeline sequence
     const seq = [...timelineSequence()];
@@ -46,17 +47,15 @@ export async function createTimelineItem(item: TimelineItem, insertAtIndex?: num
     } else {
         seq.push(item.id);
     }
-    setTimelineSequence(seq);
+    _setTimelineSequence(seq);
 
     // Persist to storage
     await storage.put("timelineItems", item);
     await storage.putMeta("timelineSequence", seq);
-
-    console.log(`TimelineItem added: ${item.type} ${item.id}`);
 }
 
 export async function replaceTimelineItem(id: string, newItem: TimelineItem) {
-    setTimelineItems(id, newItem);
+    _setTimelineItems(id, newItem);
     await storage.put("timelineItems", newItem);
 }
 
@@ -65,8 +64,8 @@ export async function duplicateTimelineItem(originalId: string, newItem: Timelin
     const index = insertAtIndex ?? seq.findIndex(id => id === originalId) + 1;
     seq.splice(index, 0, newItem.id);
 
-    setTimelineItems(newItem.id, newItem);
-    setTimelineSequence(seq);
+    _setTimelineItems(newItem.id, newItem);
+    _setTimelineSequence(seq);
 
     await storage.put("timelineItems", newItem);
     await storage.putMeta("timelineSequence", seq);
@@ -88,35 +87,35 @@ export async function updateTimelineItem(
             : { [path]: value }
     );
 
-    setTimelineItems(item.id, newItem);
+    _setTimelineItems(item.id, newItem);
     await storage.put("timelineItems", newItem);
 }
 
 export async function reorderTimeline(newSeq: string[]) {
-    setTimelineSequence(newSeq);
+    _setTimelineSequence(newSeq);
     await storage.putMeta("timelineSequence", newSeq);
 }
 
 export async function deleteTimelineItem(id: string) {
     if (!timelineItems[id]) return;
 
-    setTimelineItems(prev => {
+    _setTimelineItems(prev => {
         const copy = { ...prev };
         delete copy[id];
         return copy;
     });
 
-    setTimelineSequence(seq => seq.filter(x => x !== id));
+    _setTimelineSequence(seq => seq.filter(x => x !== id));
 
     await storage.delete("timelineItems", id);
     await storage.putMeta("timelineSequence", timelineSequence());
 }
 
 export async function deleteAllTimelineItems() {
-    setTimelineItems({});
-    setTimelineSequence([]);
     await storage.clearTable("timelineItems");
     await storage.putMeta("timelineSequence", []);
+    _setTimelineItems({});
+    _setTimelineSequence([]);
 }
 
 // Derived memos

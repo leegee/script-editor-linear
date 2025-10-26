@@ -1,22 +1,43 @@
 import { type JSX, For } from "solid-js";
 import { TimelineItem, TimelineItemProps } from "./TimelineItem";
+import { timelineItems, updateTimelineItem } from "../../stores";
 
 export class TransitionItem extends TimelineItem {
-
-    transitionType?: "fade" | "cut" | "dissolve";
-
     constructor(props: Omit<TimelineItemProps, "type">) {
-        super({ ...props, type: 'transition' });
+        super({ ...props, type: "transition" });
+    }
+
+    get transitionType(): string | undefined {
+        return this.details?.transitionType;
+    }
+
+    set transitionType(value: string | undefined) {
+        if (this.details) this.details.transitionType = value;
     }
 
     renderCompact() {
         return <div class="timeline-item">{this.transitionType?.toUpperCase()} →</div>;
     }
+
     renderFull() {
-        return <div class="timeline-item">{this.transitionType?.toUpperCase()} →</div>;
+        const itemId = this.id;
+
+        const handleChange = (field: string, value: any) => {
+            if (field === "duration") {
+                updateTimelineItem(itemId, "duration", "", value);
+            } else {
+                updateTimelineItem(itemId, "details", field, value);
+            }
+        };
+
+        return this.renderCreateNew({
+            duration: timelineItems[itemId]?.duration,
+            onChange: handleChange,
+        });
     }
+
     renderCreateNew(props: { duration?: number; onChange: (field: string, value: any) => void }) {
-        const transitionTypes = ['chop', 'dissolve', 'fade', 'push', 'slide',];
+        const transitionTypes = ["chop", "dissolve", "fade", "push", "slide"];
         return (
             <>
                 <div class="field border label max">
@@ -26,9 +47,7 @@ export class TransitionItem extends TimelineItem {
                     >
                         <option value="" disabled>Select transition type</option>
                         <For each={transitionTypes}>
-                            {(item) => (
-                                <option value={item}>{item}</option>
-                            )}
+                            {(item) => <option value={item}>{item}</option>}
                         </For>
                     </select>
                     <label> Transition Type</label>
@@ -48,6 +67,6 @@ export class TransitionItem extends TimelineItem {
     }
 
     timelineContent(zoom: number): JSX.Element | string | undefined {
-        return <i>transition_fade</i>;
+        return <i>transition_{this.details.transitionType}</i>;
     }
 }

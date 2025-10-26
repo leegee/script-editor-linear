@@ -23,13 +23,13 @@ export class ActItem extends TimelineItem {
     renderFull() {
         return (
             <fieldset>
-                <h2 class="field">
+                <h3 class="field">
                     <TimelineItemEditor
                         id={this.id}
                         path="title"
                         defaultValue={this.title ?? "Untitled Act"}
                     />
-                </h2>
+                </h3>
 
                 <article class="field">
                     <p>Duration {

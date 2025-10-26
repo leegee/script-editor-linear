@@ -61,7 +61,10 @@ export class TimelineItem {
     }
 
     renderFull(): JSX.Element {
-        return <pre>{JSON.stringify(this, null, 2)}</pre>;
+        return <fieldset>
+            <h3>{this.type}</h3>
+            <pre>{JSON.stringify(this, null, 2)}</pre>
+        </fieldset>;
     }
 
     // renderCompact() { return <span>{this.title}</span> }

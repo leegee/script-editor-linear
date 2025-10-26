@@ -39,7 +39,10 @@ export class TransitionItem extends TimelineItem {
     renderCreateNew(props: { duration?: number; onChange: (field: string, value: any) => void }) {
         const transitionTypes = ["chop", "dissolve", "fade", "push", "slide"];
         return (
-            <>
+            <article>
+                <header>
+                    <h3>Transition</h3>
+                </header>
                 <div class="field border label max">
                     <select
                         value={this.transitionType ?? ""}
@@ -62,7 +65,7 @@ export class TransitionItem extends TimelineItem {
                     />
                     <label> Duration (seconds)</label>
                 </div>
-            </>
+            </article>
         );
     }
 

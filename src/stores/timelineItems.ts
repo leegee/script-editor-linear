@@ -2,6 +2,7 @@ import { createStore } from "solid-js/store";
 import { createSignal, createMemo } from "solid-js";
 import { TimelineItem, TimelineItemProps, reviveItem } from "../components/CoreItems/";
 import { storage } from "../db";
+import { locations } from "./locations";
 
 const [timelineItems, setTimelineItems] = createStore<Record<string, TimelineItem>>({});
 const [timelineSequence, setTimelineSequence] = createSignal<string[]>([]);
@@ -230,15 +231,26 @@ function _collectLocationRefs(containerType: "act" | "scene") {
 
         for (const item of orderedItems()) {
             if (item.type === containerType) {
+                // Save collected locations for the previous container
                 if (currentContainerId) result[currentContainerId] = new Set(locIds);
+
+                // Start new container
                 currentContainerId = item.id;
                 locIds = new Set();
-            } else if (currentContainerId && item.type === "location") {
-                locIds.add(item.details.ref);
+            }
+            // Collect location refs for current container
+            else if (currentContainerId && item.type === "location") {
+                if (item.details?.ref) {
+                    locIds.add(item.details.ref);
+                } else {
+                    throw new TypeError('No details.ref in location');
+                }
             }
         }
 
+        // Save the last container
         if (currentContainerId) result[currentContainerId] = new Set(locIds);
+
         return result;
     });
 }

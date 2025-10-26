@@ -5,6 +5,9 @@ import { createTimelineItemInstance, timelineItemTypes } from "../lib/timelineIt
 
 type TimelineItemType = (typeof timelineItemTypes)[number];
 
+/**
+ * a select list that allows the user to create a new timeline item.
+ */
 export default function NewTimelineItemSelector() {
     const navigate = useNavigate();
     const params = useParams();

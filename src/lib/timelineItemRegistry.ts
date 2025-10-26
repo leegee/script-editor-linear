@@ -12,7 +12,7 @@ import { ActionItem } from "../components/CoreItems/ActionItem";
 import { BeatItem } from "../components/CoreItems/BeatItem";
 import { PauseItem } from "../components/CoreItems/PauseItem";
 
-// Centralized registry
+// The central registry of Timeine Item sub-classes
 export const timelineItemClasses: Record<string, typeof TimelineItem> = {
     act: ActItem,
     action: ActionItem,
@@ -28,10 +28,10 @@ export const timelineItemClasses: Record<string, typeof TimelineItem> = {
     transition: TransitionItem,
 };
 
-// Helper to get all type keys
+// Get all type keys
 export const timelineItemTypes = Object.keys(timelineItemClasses) as (keyof typeof timelineItemClasses)[];
 
-// Factory: create instance of any type
+// Factory to create instance of any type
 export function createTimelineItemInstance<T extends keyof typeof timelineItemClasses>(
     type: T,
     id = crypto.randomUUID()

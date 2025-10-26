@@ -1,14 +1,5 @@
 // lib/createTimelineItem.ts
-import {
-    TimelineItemProps,
-    TimelineItem,
-    ActItem,
-    SceneItem,
-    DialogueItem,
-    TimelineLocationItem,
-    TransitionItem
-} from "../components/CoreItems";
-
+import { TimelineItemProps, TimelineItem, TimelineLocationItem, } from "../components/CoreItems";
 import {
     timelineItems,
     locations,

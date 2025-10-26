@@ -9,10 +9,19 @@ import { CanonicalLocation } from "./CanonicalLocation";
 export type TimelineLocationItemType = InstanceType<typeof TimelineLocationItem>;
 
 class BaseTimelineLocationItem extends TimelineItem {
+    /**
+     * Safely reconstructs a TimelineLocationItem from serialized data.
+     * Preserves coordinate details if they exist.
+     */
     static revive(obj: any): TimelineLocationItemType {
+        const details =
+            obj.details && typeof obj.details === "object"
+                ? obj.details
+                : { ref: obj.id };
+
         return new TimelineLocationItem({
             ...obj,
-            details: obj.details ?? { ref: obj.id },
+            details,
         });
     }
 
@@ -73,29 +82,70 @@ class BaseTimelineLocationItem extends TimelineItem {
                         <input
                             type="checkbox"
                             checked={mode() === "new"}
-                            onChange={(e) => setMode(e.currentTarget.checked ? "new" : "select")}
+                            onChange={(e) =>
+                                setMode(e.currentTarget.checked ? "new" : "select")
+                            }
                         />
-                        <span><i>add_location</i></span>
+                        <span>
+                            <i>add_location</i>
+                        </span>
                     </label>
-                    <span class='left-padding'>{mode() === "new" ? "Create a new location" : "Select a location"}</span>
+                    <span class="left-padding">
+                        {mode() === "new"
+                            ? "Create a new location"
+                            : "Select a location"}
+                    </span>
                 </div>
 
                 {mode() === "new" && (
                     <>
                         <div class="field border label max">
-                            <input type="text" placeholder="Title" onInput={(e) => props.onChange("title", e.currentTarget.value)} />
+                            <input
+                                type="text"
+                                placeholder="Title"
+                                onInput={(e) =>
+                                    props.onChange("title", e.currentTarget.value)
+                                }
+                            />
                             <label>Title</label>
                         </div>
                         <div class="field border label max">
-                            <input type="number" placeholder="Latitude" onInput={(e) => props.onChange("lat", parseFloat(e.currentTarget.value))} />
+                            <input
+                                type="number"
+                                placeholder="Latitude"
+                                onInput={(e) =>
+                                    props.onChange(
+                                        "lat",
+                                        parseFloat(e.currentTarget.value)
+                                    )
+                                }
+                            />
                             <label>Latitude</label>
                         </div>
                         <div class="field border label max">
-                            <input type="number" placeholder="Longitude" onInput={(e) => props.onChange("lng", parseFloat(e.currentTarget.value))} />
+                            <input
+                                type="number"
+                                placeholder="Longitude"
+                                onInput={(e) =>
+                                    props.onChange(
+                                        "lng",
+                                        parseFloat(e.currentTarget.value)
+                                    )
+                                }
+                            />
                             <label>Longitude</label>
                         </div>
                         <div class="field border label max">
-                            <input type="number" placeholder="Radius (metres)" onInput={(e) => props.onChange("radius", parseFloat(e.currentTarget.value))} />
+                            <input
+                                type="number"
+                                placeholder="Radius (metres)"
+                                onInput={(e) =>
+                                    props.onChange(
+                                        "radius",
+                                        parseFloat(e.currentTarget.value)
+                                    )
+                                }
+                            />
                             <label>Radius</label>
                         </div>
                     </>
@@ -103,9 +153,16 @@ class BaseTimelineLocationItem extends TimelineItem {
 
                 {mode() === "select" && (
                     <div class="field border label max">
-                        <select value={this.details.ref ?? ""} onChange={(e) => props.onChange("ref", e.currentTarget.value)}>
-                            <option value="" disabled>Select a Location</option>
-                            {Object.values(locations).map((loc) => <option value={loc.id}>{loc.title}</option>)}
+                        <select
+                            value={this.details.ref ?? ""}
+                            onChange={(e) => props.onChange("ref", e.currentTarget.value)}
+                        >
+                            <option value="" disabled>
+                                Select a Location
+                            </option>
+                            {Object.values(locations).map((loc) => (
+                                <option value={loc.id}>{loc.title}</option>
+                            ))}
                         </select>
                         <label>Existing Location</label>
                     </div>
@@ -141,7 +198,6 @@ class BaseTimelineLocationItem extends TimelineItem {
     timelineContent(zoom: number): JSX.Element | string | undefined {
         return this.title;
     }
-
 }
 
 export const TimelineLocationItem = LocationRenderMixin(BaseTimelineLocationItem);

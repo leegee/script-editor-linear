@@ -26,43 +26,68 @@ export function LocationRenderMixin<TBase extends Constructor>(Base: TBase) {
             const title = obj.title ?? "Unknown Location";
 
             // Determine if this is a TimelineLocationItem by checking if it has a 'details.ref'
-            const isTimelineItem = "ref" in details && typeof details.ref === "string";
-            const canonical = isTimelineItem ? locations[details.ref] ?? details : details;
+            const isTimelineItem = details && typeof details.ref === "string";
+
+            // Either fetch canonical location or fall back to a safe stub
+            const canonical = isTimelineItem
+                ? locations[details.ref] || { id: details.ref, title: obj.title, details: { lat, lng, radius } }
+                : { details };
+
+            // Type guard: ensure canonical has id/title before accessing
+            const hasCanonicalFields = (
+                c: any
+            ): c is { id: string; title: string; details: any } =>
+                typeof c.id === "string" && typeof c.title === "string";
+
+            const canonicalId = hasCanonicalFields(canonical) ? canonical.id : undefined;
+            const canonicalTitle = hasCanonicalFields(canonical)
+                ? canonical.title ?? title
+                : title;
+            const canonicalDetails = canonical.details ?? { lat, lng, radius };
 
             return (
                 <article class="border padding">
                     <h3 class="field">
-                        {isTimelineItem ? (
+                        {isTimelineItem && canonicalId ? (
                             <TimelineItemEditor
                                 store="locations"
-                                id={canonical.id}
+                                id={canonicalId}
                                 path="title"
-                                defaultValue={canonical.title ?? title}
+                                defaultValue={canonicalTitle}
                             />
                         ) : (
-                            <span>{title}</span>
+                            <span>{canonicalTitle}</span>
                         )}
                     </h3>
 
                     <table class="bottom-margin">
                         <tbody>
-                            <tr><th>Latitude</th><td>{canonical.details?.lat ?? lat}</td></tr>
-                            <tr><th>Longitude</th><td>{canonical.details?.lng ?? lng}</td></tr>
-                            <tr><th>Radius</th><td>{canonical.details?.radius ?? radius}</td></tr>
+                            <tr>
+                                <th>Latitude</th>
+                                <td>{canonicalDetails.lat}</td>
+                            </tr>
+                            <tr>
+                                <th>Longitude</th>
+                                <td>{canonicalDetails.lng}</td>
+                            </tr>
+                            <tr>
+                                <th>Radius</th>
+                                <td>{canonicalDetails.radius}</td>
+                            </tr>
                         </tbody>
                     </table>
 
                     <LocationMap
-                        lat={canonical.details?.lat ?? lat}
-                        lng={canonical.details?.lng ?? lng}
-                        radius={canonical.details?.radius ?? radius}
-                        onChange={() => { }} // optionally override in timeline items
+                        lat={canonicalDetails.lat}
+                        lng={canonicalDetails.lng}
+                        radius={canonicalDetails.radius}
+                        onChange={() => { }}
                     />
 
                     <div class="top-margin large-margin">
                         <MapLinks
-                            lat={canonical.details?.lat ?? lat}
-                            lng={canonical.details?.lng ?? lng}
+                            lat={canonicalDetails.lat}
+                            lng={canonicalDetails.lng}
                         />
                     </div>
                 </article>

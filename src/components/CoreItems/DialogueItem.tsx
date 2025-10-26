@@ -57,7 +57,7 @@ export class DialogueItem extends TimelineItem {
         const [duration, setDuration] = createSignal(props.duration ?? 0);
 
         return (
-            <>
+            <article>
                 {/* Mode toggle */}
                 <div class="field border middle-align max" title="Select or create a character">
                     <label class="switch icon">
@@ -143,7 +143,7 @@ export class DialogueItem extends TimelineItem {
                     />
                     <label>Duration (seconds)</label>
                 </div>
-            </>
+            </article>
         );
     }
 

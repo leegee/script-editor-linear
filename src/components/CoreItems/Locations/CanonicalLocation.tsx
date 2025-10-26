@@ -10,15 +10,18 @@ class BaseCanonicalLocation {
     details: { lat: number; lng: number; radius: number };
 
     constructor(obj: Partial<BaseCanonicalLocation>) {
-        if (!obj.title) throw new TypeError('CanonicalLocation must have a title');
-        if (!obj.details) throw new TypeError('CanonicalLocation must have details (lat, lng, radius)');
+        if (!obj.title) throw new TypeError("CanonicalLocation must have a title");
+
+        const details: Partial<{ lat: number; lng: number; radius: number }> = obj.details ?? {};
+
+        this.details = {
+            lat: typeof details.lat === "number" ? details.lat : 0,
+            lng: typeof details.lng === "number" ? details.lng : 0,
+            radius: typeof details.radius === "number" ? details.radius : 100,
+        };
+
         this.id = obj.id ?? crypto.randomUUID();
         this.title = obj.title;
-        this.details = {
-            lat: obj.details.lat,
-            lng: obj.details.lng,
-            radius: obj.details.radius,
-        };
     }
 
     static revive(obj: any) {
@@ -28,4 +31,3 @@ class BaseCanonicalLocation {
 
 export const CanonicalLocation = LocationRenderMixin(BaseCanonicalLocation);
 export type CanonicalLocationType = InstanceType<typeof CanonicalLocation>;
-

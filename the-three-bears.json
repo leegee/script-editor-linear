@@ -89,7 +89,7 @@
         {
             "type": "dialogue",
             "details": {
-                "characterId": "Narrator",
+                "ref": "Narrator",
                 "text": "Once upon a time, there were three bears living together."
             },
             "duration": 5
@@ -97,7 +97,7 @@
         {
             "type": "dialogue",
             "details": {
-                "characterId": "Narrator",
+                "ref": "Narrator",
                 "text": "There was a great big father bear, a middle-sized mother bear, and a tiny little baby bear."
             },
             "duration": 5
@@ -110,7 +110,7 @@
         {
             "type": "dialogue",
             "details": {
-                "characterId": "FatherBear",
+                "ref": "FatherBear",
                 "text": "Breakfast time! My porridge is far too hot."
             },
             "duration": 3
@@ -118,7 +118,7 @@
         {
             "type": "dialogue",
             "details": {
-                "characterId": "MotherBear",
+                "ref": "MotherBear",
                 "text": "Mine too, dear. Let’s take a little walk while it cools."
             },
             "duration": 3
@@ -126,7 +126,7 @@
         {
             "type": "dialogue",
             "details": {
-                "characterId": "BabyBear",
+                "ref": "BabyBear",
                 "text": "Yes, let’s go! I love walks!"
             },
             "duration": 2
@@ -163,7 +163,7 @@
         {
             "type": "dialogue",
             "details": {
-                "characterId": "Narrator",
+                "ref": "Narrator",
                 "text": "So the three bears set off for their walk in the woods."
             },
             "duration": 5
@@ -171,7 +171,7 @@
         {
             "type": "dialogue",
             "details": {
-                "characterId": "Narrator",
+                "ref": "Narrator",
                 "text": "While they were away, Goldilocks wandered along the same path."
             },
             "duration": 5
@@ -184,7 +184,7 @@
         {
             "type": "dialogue",
             "details": {
-                "characterId": "Goldilocks",
+                "ref": "Goldilocks",
                 "text": "What a lovely little house! I wonder who lives here..."
             },
             "duration": 5
@@ -228,7 +228,7 @@
         {
             "type": "dialogue",
             "details": {
-                "characterId": "Narrator",
+                "ref": "Narrator",
                 "text": "Goldilocks knocked at the door, but no one answered."
             },
             "duration": 3
@@ -236,7 +236,7 @@
         {
             "type": "dialogue",
             "details": {
-                "characterId": "Goldilocks",
+                "ref": "Goldilocks",
                 "text": "Mmm! What a delicious smell! Porridge!"
             },
             "duration": 3
@@ -251,7 +251,7 @@
         {
             "type": "dialogue",
             "details": {
-                "characterId": "Narrator",
+                "ref": "Narrator",
                 "text": "On the table were three bowls of porridge."
             },
             "duration": 3
@@ -259,7 +259,7 @@
         {
             "type": "dialogue",
             "details": {
-                "characterId": "Goldilocks",
+                "ref": "Goldilocks",
                 "text": "Ouch! This porridge is too hot!"
             },
             "duration": 2
@@ -274,7 +274,7 @@
         {
             "type": "dialogue",
             "details": {
-                "characterId": "Narrator",
+                "ref": "Narrator",
                 "text": "She tasted the second bowl."
             },
             "duration": 2
@@ -282,7 +282,7 @@
         {
             "type": "dialogue",
             "details": {
-                "characterId": "Goldilocks",
+                "ref": "Goldilocks",
                 "text": "This one’s too cold."
             },
             "duration": 2
@@ -290,7 +290,7 @@
         {
             "type": "dialogue",
             "details": {
-                "characterId": "Narrator",
+                "ref": "Narrator",
                 "text": "Finally, she tasted the third bowl."
             },
             "duration": 2
@@ -298,7 +298,7 @@
         {
             "type": "dialogue",
             "details": {
-                "characterId": "Goldilocks",
+                "ref": "Goldilocks",
                 "text": "Ahh! This porridge is just right."
             },
             "duration": 2
@@ -360,7 +360,7 @@
         {
             "type": "dialogue",
             "details": {
-                "characterId": "FatherBear",
+                "ref": "FatherBear",
                 "text": "My porridge is just right now!"
             },
             "duration": 2
@@ -368,7 +368,7 @@
         {
             "type": "dialogue",
             "details": {
-                "characterId": "MotherBear",
+                "ref": "MotherBear",
                 "text": "Mine too!"
             },
             "duration": 2
@@ -376,7 +376,7 @@
         {
             "type": "dialogue",
             "details": {
-                "characterId": "BabyBear",
+                "ref": "BabyBear",
                 "text": "Delicious!"
             },
             "duration": 2
@@ -407,7 +407,7 @@
         {
             "type": "dialogue",
             "details": {
-                "characterId": "Goldilocks",
+                "ref": "Goldilocks",
                 "text": "The bears are back! I must hide!"
             },
             "duration": 3
@@ -429,7 +429,7 @@
         {
             "type": "dialogue",
             "details": {
-                "characterId": "Narrator",
+                "ref": "Narrator",
                 "text": "The bears enter the cottage, surprised to find someone sleeping."
             },
             "duration": 4
@@ -477,7 +477,7 @@
         {
             "type": "dialogue",
             "details": {
-                "characterId": "FatherBear",
+                "ref": "FatherBear",
                 "text": "What a beautiful day for a walk!"
             },
             "duration": 3
@@ -491,7 +491,7 @@
         {
             "type": "dialogue",
             "details": {
-                "characterId": "MotherBear",
+                "ref": "MotherBear",
                 "text": "Listen to that lovely song of the birds."
             },
             "duration": 3
@@ -516,7 +516,7 @@
         {
             "type": "dialogue",
             "details": {
-                "characterId": "Goldilocks",
+                "ref": "Goldilocks",
                 "text": "I hope no one is home. I want to explore!"
             },
             "duration": 3
@@ -537,7 +537,7 @@
         {
             "type": "dialogue",
             "details": {
-                "characterId": "Goldilocks",
+                "ref": "Goldilocks",
                 "text": "This porridge smells so good. I will try the first bowl."
             },
             "duration": 2
@@ -559,7 +559,7 @@
         {
             "type": "dialogue",
             "details": {
-                "characterId": "Goldilocks",
+                "ref": "Goldilocks",
                 "text": "This second bowl is too cold."
             },
             "duration": 2
@@ -574,7 +574,7 @@
         {
             "type": "dialogue",
             "details": {
-                "characterId": "Goldilocks",
+                "ref": "Goldilocks",
                 "text": "Ahh! Just right. I will eat it all."
             },
             "duration": 2
@@ -598,7 +598,7 @@
         {
             "type": "dialogue",
             "details": {
-                "characterId": "FatherBear",
+                "ref": "FatherBear",
                 "text": "Someone has been eating my porridge!"
             },
             "duration": 2
@@ -606,7 +606,7 @@
         {
             "type": "dialogue",
             "details": {
-                "characterId": "MotherBear",
+                "ref": "MotherBear",
                 "text": "And mine too!"
             },
             "duration": 2
@@ -614,7 +614,7 @@
         {
             "type": "dialogue",
             "details": {
-                "characterId": "BabyBear",
+                "ref": "BabyBear",
                 "text": "And mine is gone!"
             },
             "duration": 2
@@ -629,7 +629,7 @@
         {
             "type": "dialogue",
             "details": {
-                "characterId": "Goldilocks",
+                "ref": "Goldilocks",
                 "text": "Oh no! I didn’t mean to!"
             },
             "duration": 2
@@ -643,7 +643,7 @@
         {
             "type": "dialogue",
             "details": {
-                "characterId": "Narrator",
+                "ref": "Narrator",
                 "text": "Goldilocks quickly apologizes and promises to be more careful."
             },
             "duration": 3
@@ -659,7 +659,7 @@
         {
             "type": "dialogue",
             "details": {
-                "characterId": "FatherBear",
+                "ref": "FatherBear",
                 "text": "Let’s all have breakfast together now."
             },
             "duration": 3
@@ -667,7 +667,7 @@
         {
             "type": "dialogue",
             "details": {
-                "characterId": "MotherBear",
+                "ref": "MotherBear",
                 "text": "Yes, that would be nice."
             },
             "duration": 2
@@ -675,7 +675,7 @@
         {
             "type": "dialogue",
             "details": {
-                "characterId": "BabyBear",
+                "ref": "BabyBear",
                 "text": "I love porridge!"
             },
             "duration": 2
@@ -689,7 +689,7 @@
         {
             "type": "dialogue",
             "details": {
-                "characterId": "Goldilocks",
+                "ref": "Goldilocks",
                 "text": "Thank you for letting me join you."
             },
             "duration": 2
@@ -697,7 +697,7 @@
         {
             "type": "dialogue",
             "details": {
-                "characterId": "Narrator",
+                "ref": "Narrator",
                 "text": "And from that day, they all became friends."
             },
             "duration": 3

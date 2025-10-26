@@ -221,7 +221,7 @@ function _collectCharacters(containerType: "act" | "scene") {
                 currentId = item.id;
                 charIds = new Set();
             } else if (currentId && item.type === "dialogue") {
-                charIds.add(item.details.characterId);
+                charIds.add(item.details.ref);
             }
         }
 

@@ -7,7 +7,7 @@ export interface TimelineItemProps {
     type: string; // "dialogue" | "location" | "transition" | "beat-marker" | "scene" | "act"
     title?: string;
     duration?: number;                 // in seconds
-    details?: Record<string, any>;     // e.g., characterId, lat/lng, cues
+    details?: Record<string, any>;     // e.g., ref, lat/lng, cues
     tags?: string[];
     notes?: string[];
 }

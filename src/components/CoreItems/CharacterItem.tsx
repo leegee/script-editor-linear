@@ -7,7 +7,7 @@ import { showAlert } from "../../stores/modals";
 
 function isCharacterUsed(id: string) {
     return Object.values(timelineItems).some(
-        item => item.type === "dialogue" && item.details.characterId === id
+        item => item.type === "dialogue" && item.details.ref === id
     );
 }
 

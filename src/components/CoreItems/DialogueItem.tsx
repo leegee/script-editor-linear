@@ -14,7 +14,7 @@ export class DialogueItem extends TimelineItem {
     }
 
     renderCompact() {
-        const char = characters[this.details.characterId];
+        const char = characters[this.details.ref];
         const speakerName = char?.title ?? "Unknown Speaker";
 
         return (
@@ -50,7 +50,7 @@ export class DialogueItem extends TimelineItem {
     renderCreateNew(props: { duration?: number; onChange: (field: string, value: any) => void }) {
         // Determine initial mode based on whether a character is already selected
         const [mode, setMode] = createSignal<"select" | "new">(
-            this.details.characterId ? "select" : "new"
+            this.details.ref ? "select" : "new"
         );
 
         const [newCharName, setNewCharName] = createSignal(this.details.characterName ?? "");
@@ -94,7 +94,7 @@ export class DialogueItem extends TimelineItem {
                                         const id = newCharName().replace(/[^\p{L}\p{N}_]/gu, "");
                                         const newChar = new CharacterItem({ id, title: newCharName() });
                                         addCharacter(newChar);
-                                        props.onChange("characterId", id);
+                                        props.onChange("ref", id);
                                         setMode("select");
                                     }}
                                 >
@@ -110,8 +110,8 @@ export class DialogueItem extends TimelineItem {
                     <Match when={mode() === "select"}>
                         <div class="field border label max">
                             <select
-                                value={this.details.characterId ?? ""}
-                                onChange={(e) => props.onChange("characterId", e.currentTarget.value)}
+                                value={this.details.ref ?? ""}
+                                onChange={(e) => props.onChange("ref", e.currentTarget.value)}
                             >
                                 <option value="" disabled>Select a character</option>
                                 {Object.values(characters).map((char) => (
@@ -155,17 +155,17 @@ export class DialogueItem extends TimelineItem {
     }
 
     prepareFromFields(fields: Record<string, any>) {
-        let characterId = fields.characterId;
+        let ref = fields.ref;
 
         // Create a new Character
-        if (!characterId && fields.characterName) {
+        if (!ref && fields.characterName) {
             const id = fields.characterName.replace(/[^\p{L}\p{N}_]/gu, "");
             const newChar = new CharacterItem({
                 id,
                 title: fields.characterName,
             });
             addCharacter(newChar);
-            characterId = id;
+            ref = id;
         }
 
         return {
@@ -174,7 +174,7 @@ export class DialogueItem extends TimelineItem {
             duration: fields.duration,
             details: {
                 text: fields.text ?? "...",
-                characterId,
+                ref,
             },
         };
     }

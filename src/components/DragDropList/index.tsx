@@ -222,7 +222,7 @@ export default function DragDropList<T extends HasIdAndDuration>(props: DragDrop
                 onDuplicate={() => duplicateTimelineItem(item().id, { insertAtIndex: insertAfter })}
                 onInsertBefore={() => props.onInsert(insertBefore)}
                 onInsertAfter={() => props.onInsert(insertAfter)}
-                onDelete={() => { deleteTimelineItemById(item().id); navigate('/') }}
+                onDelete={() => { deleteTimelineItemById(item().id); navigate('/script') }}
               />
             </li>
           );

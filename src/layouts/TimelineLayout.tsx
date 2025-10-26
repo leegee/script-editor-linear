@@ -15,10 +15,6 @@ export default function TimelineLayout(props: ParentProps) {
             <TimelineSidePanel>
                 {props.children}
             </TimelineSidePanel>
-
-            <div style="position: fixed; bottom: 0; display: flex; width: 100vw; justify-content: center">
-                <NavBar />
-            </div>
         </div>
     );
 }

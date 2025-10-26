@@ -56,7 +56,7 @@ export default function NewTimelineItemSelector() {
             // Reset form
             setFields({});
             setDuration(undefined);
-            navigate("/");
+            navigate("/script");
         } catch (err) {
             console.error("Failed to create timeline item:", err);
         }
@@ -87,7 +87,7 @@ export default function NewTimelineItemSelector() {
             <hr />
             <footer class="field border label no-margin no-padding">
                 <nav>
-                    <button onClick={() => navigate("/")} class="transparent">Cancel</button>
+                    <button onClick={() => navigate("/script")} class="transparent">Cancel</button>
                     <button onClick={handleCreate} class="primary">Create Timeline Item</button>
                 </nav>
             </footer>

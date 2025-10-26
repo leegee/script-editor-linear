@@ -2,7 +2,7 @@
 import "./index.css";
 import "beercss";
 import { render } from "solid-js/web";
-import { HashRouter, Route } from "@solidjs/router";
+import { HashRouter, Navigate, Route } from "@solidjs/router";
 
 import ScriptLayout from "./layouts/ScriptLayout";
 import TimelineLayout from "./layouts/TimelineLayout";
@@ -34,7 +34,7 @@ const commonRoutes = (
 render(
   () => (
     <HashRouter root={MainLayout}>
-      <Route path="/" component={ScriptLayout}>
+      <Route path="/script" component={ScriptLayout}>
         {commonRoutes}
       </Route>
 

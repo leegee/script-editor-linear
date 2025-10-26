@@ -10,8 +10,8 @@ export default function ScriptView() {
     return (
         <DragDropList
             items={items}
-            showItem={(item) => navigate(`/item/${item.id}`)}
-            onInsert={(pos: number) => navigate(`/new/${pos}`)}
+            showItem={(item) => navigate(`/script/item/${item.id}`)}
+            onInsert={(pos: number) => navigate(`/script/new/${pos}`)}
             onReorder={(newOrder) => {
                 const seq = timelineSequence();
                 const newSeq = newOrder.map(i => seq[i]);

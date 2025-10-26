@@ -73,18 +73,25 @@ export async function ingest(
     // Clear all existing data
     clearAll();
 
-    // Add characters and locations first
-    for (const char of sampleCharacters) addCharacter(char);
-    for (const loc of sampleLocations) addLocation(loc);
+    console.log('Shall add characters')
+    for (const char of sampleCharacters) await addCharacter(char);
+
+    console.log('Shall add locations')
+    for (const loc of sampleLocations) await addLocation(loc);
+
+    console.log('Shall add timilne itmes')
 
     // Add timeline items using store API (handles sequence & storage)
+    const tlPromises = [];
     const seq: string[] = [];
     for (const props of sampleScript) {
         const item = reviveItem(props);
         if (!item.id) item.id = crypto.randomUUID();
-        await storeCreateTimelineItem(item);
+        tlPromises.push(storeCreateTimelineItem(item));
         seq.push(item.id);
     }
+
+    await Promise.allSettled(tlPromises);
 
     // Ensure sequence is consistent with store
     await reorderTimeline(seq);

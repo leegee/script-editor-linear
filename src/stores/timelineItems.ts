@@ -23,27 +23,36 @@ export async function loadAllTimelineItems() {
 }
 
 export async function createTimelineItem(item: TimelineItem, insertAtIndex?: number) {
+    // Validate location refs
     if (item.type === "location") {
         const ref = item.details?.ref;
-        if (!ref || !locations[ref]) {
-            console.error('Bad input', item);
+        if (!ref) {
+            console.error("Location item missing details.ref", item);
+            throw new TypeError(`Cannot add location: details.ref is missing for item "${item.id}".`);
+        }
+        if (!locations[ref]) {
+            console.error("Location ref not found in store", item, ref);
             throw new TypeError(`Cannot add location: ref "${ref}" does not exist in locations store.`);
         }
     }
 
+    // Add item to timeline store
     setTimelineItems(item.id, item);
 
+    // Update timeline sequence
     const seq = [...timelineSequence()];
     if (insertAtIndex !== undefined && insertAtIndex >= 0 && insertAtIndex <= seq.length) {
         seq.splice(insertAtIndex, 0, item.id);
     } else {
         seq.push(item.id);
     }
-
     setTimelineSequence(seq);
 
+    // Persist to storage
     await storage.put("timelineItems", item);
     await storage.putMeta("timelineSequence", seq);
+
+    console.log(`TimelineItem added: ${item.type} ${item.id}`);
 }
 
 export async function replaceTimelineItem(id: string, newItem: TimelineItem) {

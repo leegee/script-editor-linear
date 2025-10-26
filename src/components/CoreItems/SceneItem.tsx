@@ -50,7 +50,7 @@ export class SceneItem extends TimelineItem {
                     <h4>Locations in this scene:</h4>
                     <ul class="list no-space border scroll">
                         {[...(sceneLocations()[this.id] ?? [])].map(locId => (
-                            <li>{locations[locId].title}</li>
+                            <li>{locations[locId]?.title ?? "Unknown Location " + locId}</li>
                         ))}
                     </ul>
                 </article>

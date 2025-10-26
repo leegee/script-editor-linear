@@ -25,6 +25,7 @@ export async function addLocation(item: CanonicalLocationType) {
 
     setLocations(item.id, item);
     await storage.put("locations", item);
+    console.log('Added canonical location', item.id, item)
 }
 
 export async function updateLocation(id: string, updatedFields: Partial<CanonicalLocationType>) {

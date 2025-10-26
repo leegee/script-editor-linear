@@ -57,6 +57,7 @@ export async function createTimelineItem(
                         radius: baseProps.details.radius ?? 100
                     }
                 });
+                console.log('createTimelineItem')
                 addLocation(newLoc);
             } else {
                 throw new Error(`Unknown location ref: ${ref}`);

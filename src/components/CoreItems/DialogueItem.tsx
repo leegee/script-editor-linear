@@ -50,20 +50,18 @@ export class DialogueItem extends TimelineItem {
     renderCreateNew(props: { duration?: number; onChange: (field: string, value: any) => void }) {
         // Determine initial mode based on whether a character is already selected
         const [newCharName, setNewCharName] = createSignal(this.details.characterName ?? "");
-        const [phonemesPerSecond, setPhonemesPerSecond] = createSignal(this.details.speed || 12);
+        const [autoDuration, setAutoDuration] = createSignal(false);
+        const [phonemesPerSecond, setPhonemesPerSecond] = createSignal(12);
         const [duration, setDuration] = createSignal(props.duration ?? 0);
         const [mode, setMode] = createSignal<"select" | "new">(
             this.details.ref ? "select" : "new"
         );
 
-        const setAndStorePhonemesPerSecond = (pps: number) => {
-            setPhonemesPerSecond(pps);
-            updateTimelineItem(this.id, 'details', 'speed', pps);
-        }
-
         function maybeUpdateDuration(phonemeCount: number) {
-            const duration = phonemeCount / phonemesPerSecond();
-            setDuration(duration);
+            if (autoDuration()) {
+                const duration = phonemeCount / phonemesPerSecond();
+                setDuration(duration);
+            }
         }
 
         return (
@@ -110,6 +108,7 @@ export class DialogueItem extends TimelineItem {
                                 >
                                     <span>Create</span>
                                     <i>person</i>
+
                                 </button>
                             </nav>
                         </div>
@@ -154,26 +153,39 @@ export class DialogueItem extends TimelineItem {
                             min={0}
                             value={duration()}
                             onInput={(e) => {
-                                const val = Number(Number(e.currentTarget.value).toFixed(2));
+                                const val = Number(e.currentTarget.value);
                                 setDuration(val);
                                 props.onChange("duration", val);
                             }}
                         />
                         <label>Duration (seconds)</label>
                         <span class="helper tertiary-text">
-                            {(phonemesPerSecond() / 60).toFixed(2)} minutes
+                            {phonemesPerSecond() / 60} minutes
                         </span>
                     </div>
 
                     <hr class='space transparent' />
 
-                    <label class="slider">
-                        <input type="range" value={phonemesPerSecond()} min={8} max={25}
-                            onChange={(e) => setAndStorePhonemesPerSecond(Number(e.currentTarget.value))}
-                        />
-                        <span></span>
-                        <div class="tooltip bottom"></div>
-                    </label>
+                    <nav>
+                        <label class="slider">
+                            <label class="switch icon">
+                                <input type="checkbox" onChange={(e) => setAutoDuration(e.target.checked)} />
+                                <span>
+                                    <i>timer</i>
+                                </span>
+                            </label>
+                            <div class="helper left-margin">Auto</div>
+                        </label>
+
+                        <label class="slider">
+                            <input type="range" value={12} min={8} max={25}
+                                disabled={!autoDuration()}
+                                onChange={setPhonemesPerSecond}
+                            />
+                            <span></span>
+                            <div class="tooltip bottom"></div>
+                        </label>
+                    </nav>
                 </fieldset>
             </article>
         );

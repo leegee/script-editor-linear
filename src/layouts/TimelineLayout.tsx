@@ -1,7 +1,6 @@
 import styles from "./TimelineLayout.module.scss";
-import { createMemo, type ParentProps } from "solid-js";
+import { type ParentProps } from "solid-js";
 import TimelineView from "../components/views/TimelineView";
-import NavBar from "../components/NavBar";
 import TimelineSidePanel from "../components/panels/TimelineSidePanel";
 
 

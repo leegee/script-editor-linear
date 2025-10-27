@@ -7,11 +7,11 @@ export default function MainLayout(props: ParentProps) {
     return (
         <>
             <AlertConfirm />
-            <div>
+            <main style="height: 100vh">
                 <div class="tabs">
                     <A class="transparent" href="/script"><i class="small">list_alt</i></A>
                     <A class="transparent" href="/timeline"><i class="small">view_timeline</i></A>
-                    <A class="transparent" href="/script/settings"><i class="small">settings</i></A>
+                    <A class="transparent" href="/settings"><i class="small">settings</i></A>
                 </div>
 
                 <div>
@@ -19,7 +19,7 @@ export default function MainLayout(props: ParentProps) {
                         {props.children}
                     </div>
                 </div>
-            </div>
+            </main>
         </>
     );
 }

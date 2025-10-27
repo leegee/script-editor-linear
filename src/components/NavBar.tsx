@@ -1,11 +1,15 @@
 import { A } from "@solidjs/router";
 
-export default function Navbar() {
+interface NavBarProps {
+    root: string;
+}
+
+export default function Navbar(props: NavBarProps) {
     return (
-        <nav class="bottom small-padding">
-            <A class="round small transparent border" href="/"><i class="small">list_alt</i></A>
-            <A class="round small transparent border" href="/timeline"><i class="small">view_timeline</i></A>
-            <A class="round small transparent border" href="/settings"><i class="small">settings</i></A>
+        <nav class="top">
+            <A class="round small transparent border" href={`${props.root}/locations`}><i class="small">filter_alt</i></A>
+            <A class="round small transparent border" href={`${props.root}/characters`}><i class="small">people</i></A>
+            <A class="round small transparent border" href={`${props.root}/filters`}><i class="small">location_on</i></A>
         </nav>
     );
 }

@@ -11,9 +11,10 @@ import NewTimelineItemSelector from "./components/NewTimelineItemSelector";
 import Default from "./components/panels/Default";
 import CharacterView from "./components/panels/CharacterView";
 import LocationView from "./components/panels/LocationView";
-import SettingsView from "./components/panels/SettingsView";
 import TimelineItemView from "./components/views/TimelineItemView";
 import { loadAll } from "./stores";
+import SettingsLayout from "./layouts/SettingsLayout";
+import FiltersView from "./components/panels/FiltersView";
 
 const root = document.getElementById("root");
 
@@ -25,10 +26,12 @@ const commonRoutes = (
   <>
     <Route path="/" component={Default} />
     <Route path="/new/:pos" component={NewTimelineItemSelector} />
-    <Route path="/item/:id" component={TimelineItemView} />
-    <Route path="/character/:id" component={CharacterView} />
-    <Route path="/location/:id" component={LocationView} />
-    <Route path="/settings" component={SettingsView} />
+    <Route path="/items/:id" component={TimelineItemView} />
+    <Route path="/characters/:id" component={CharacterView} />
+    <Route path="/characters" component={CharacterView} />
+    <Route path="/locations/:id" component={LocationView} />
+    <Route path="/locations" component={LocationView} />
+    <Route path="/filters" component={FiltersView} />
   </>
 );
 
@@ -44,6 +47,8 @@ render(
       <Route path="/timeline" component={TimelineLayout}>
         {commonRoutes}
       </Route>
+
+      <Route path="/settings" component={SettingsLayout} />
     </HashRouter>
   ),
   root!

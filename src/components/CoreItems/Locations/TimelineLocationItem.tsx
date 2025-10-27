@@ -47,7 +47,7 @@ class BaseTimelineLocationItem extends TimelineItem {
                                 {(loc) => (
                                     <tr>
                                         <td>
-                                            <A href={`location/${loc.id}`}>{loc.title}</A>
+                                            <A href={`locations/${loc.id}`}>{loc.title}</A>
                                         </td>
                                     </tr>
                                 )}

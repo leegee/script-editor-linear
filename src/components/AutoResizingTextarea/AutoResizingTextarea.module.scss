@@ -6,7 +6,10 @@
     font-family: inherit;
     font-size: 1rem;
     line-height: 1.4;
+    padding: 0.3em;
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    background-color: var(--surface-container-low);
+    color: var(--on-surface);
 
     &:focus {
         outline: none;

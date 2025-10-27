@@ -8,6 +8,11 @@ export default function SettingsView() {
 
     return (
         <article>
+
+            <header>
+                <h2>Settings</h2>
+            </header>
+
             <nav class="tabbed small medium-margin margin-bottom">
                 <a
                     class={activeTab() === "file" ? "active" : ""}

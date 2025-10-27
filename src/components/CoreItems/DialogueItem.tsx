@@ -169,7 +169,7 @@ export class DialogueItem extends TimelineItem {
                             type="number"
                             min={0}
                             value={duration()} // reactive value
-                            onInput={(e) => {
+                            onBlur={(e) => {
                                 const val = Number(e.currentTarget.value);
                                 setUiState(this.id, "duration", val);
                                 updateTimelineItem(this.id, "duration", "", val);

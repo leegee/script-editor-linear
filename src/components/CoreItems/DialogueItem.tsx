@@ -164,7 +164,7 @@ export class DialogueItem extends TimelineItem {
 
                 {/* Duration input */}
                 <fieldset>
-                    <div class="field border label max">
+                    <div class="field border label max no-padding">
                         <input
                             type="number"
                             min={0}
@@ -183,22 +183,8 @@ export class DialogueItem extends TimelineItem {
 
                     <hr class='space transparent' />
 
-                    <nav>
-                        <label class="slider">
-                            <label class="switch icon">
-                                <input
-                                    type="checkbox"
-                                    checked={autoDuration()}
-                                    onChange={(e) => {
-                                        setUiState(this.id, "autoDuration", e.currentTarget.checked);
-                                        setDurationByPhonemes(this.details.text);
-                                    }}
-                                />
-                                <span><i>timer</i></span>
-                            </label>
-                            <div class="helper left-margin">Auto</div>
-                        </label>
-
+                    <h6>Compute duration</h6>
+                    <div class="field max no-border">
                         <label class="slider">
                             <input
                                 type="range"
@@ -214,12 +200,30 @@ export class DialogueItem extends TimelineItem {
                                         setDurationByPhonemes(this.details.text);
                                     }
                                 }}
-
                             />
                             <span></span>
-                            <div class="tooltip bottom"></div>
+                            <div class="tooltip bottom">phonemes per second</div>
                         </label>
-                    </nav>
+                    </div>
+
+                    <div class="field max">
+                        <label class="slider tiny">
+                            <label class="switch icon">
+                                <input
+                                    type="checkbox"
+                                    checked={autoDuration()}
+                                    onChange={(e) => {
+                                        setUiState(this.id, "autoDuration", e.currentTarget.checked);
+                                        setDurationByPhonemes(this.details.text);
+                                    }}
+                                />
+                                <span><i>timer</i></span>
+                            </label>
+                            <div class="helper small small-margin left-margin">
+                                Set the speed of the dialogue using the slider
+                            </div>
+                        </label>
+                    </div>
                 </fieldset>
             </article>
         );

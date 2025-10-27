@@ -154,7 +154,7 @@ export class DialogueItem extends TimelineItem {
                             min={0}
                             value={duration()}
                             onInput={(e) => {
-                                const val = Number(e.currentTarget.value).toFixed(2);
+                                const val = Number(Number(e.currentTarget.value).toFixed(2));
                                 setDuration(val);
                                 props.onChange("duration", val);
                             }}

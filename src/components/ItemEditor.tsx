@@ -12,6 +12,7 @@ interface TimelineItemEditorProps {
     class?: string;                // CSS class
     editMode?: boolean;            // controlled edit mode
     store?: "timeline" | "locations" | "characters";
+    onChange?: (newTextValue: string) => void;
 }
 
 export default function TimelineItemEditor(props: TimelineItemEditorProps) {
@@ -60,6 +61,7 @@ export default function TimelineItemEditor(props: TimelineItemEditorProps) {
                     ? updateCharacter
                     : updateTimelineItem;
         updateFn(props.id, props.path, props.key ?? "", value());
+        if (props.onChange) props.onChange(value());
     };
 
     return (

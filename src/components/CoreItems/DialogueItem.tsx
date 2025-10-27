@@ -1,10 +1,22 @@
-import { type JSX, createSignal, Match, Show, Switch } from "solid-js";
-import { addCharacter, characters, timelineItems, updateTimelineItem } from "../../stores";
+import { type JSX, createSignal, Match, type Signal, Switch } from "solid-js";
+import { addCharacter, characters, updateTimelineItem } from "../../stores";
 import { TimelineItem, TimelineItemProps } from "./TimelineItem";
 import { CharacterItem } from "./CharacterItem";
 import TimelineItemEditor from "../ItemEditor";
+import { countPhonemes } from "../../lib/countPhonems";
+import { createStore } from "solid-js/store";
+
+type DialogueUiState = {
+    autoDuration: boolean;
+    phonemesPerSecond: number;
+    duration: number;
+    mode: "select" | "new";
+};
+
+const [uiState, setUiState] = createStore<Record<string, DialogueUiState>>({});
 
 export class DialogueItem extends TimelineItem {
+
     constructor(props: Omit<TimelineItemProps, "type">) {
         super({ ...props, type: 'dialogue' });
     }
@@ -34,35 +46,42 @@ export class DialogueItem extends TimelineItem {
         );
     }
 
-    renderFull() {
-        const itemId = this.id;
-
-        const handleChange = (field: string, value: any) => {
-            updateTimelineItem(itemId, "details", field, value);
-        };
-
-        return this.renderCreateNew({
-            duration: timelineItems[itemId].duration,
-            onChange: handleChange
-        });
+    renderCreateNew(props: { duration?: number; onChange: (field: string, value: any) => void }) {
+        throw new Error('TODO');
+        return <div>TODO</div>;
     }
 
-    renderCreateNew(props: { duration?: number; onChange: (field: string, value: any) => void }) {
-        // Determine initial mode based on whether a character is already selected
-        const [newCharName, setNewCharName] = createSignal(this.details.characterName ?? "");
-        const [autoDuration, setAutoDuration] = createSignal(false);
-        const [phonemesPerSecond, setPhonemesPerSecond] = createSignal(12);
-        const [duration, setDuration] = createSignal(props.duration ?? 0);
-        const [mode, setMode] = createSignal<"select" | "new">(
-            this.details.ref ? "select" : "new"
-        );
 
-        function maybeUpdateDuration(phonemeCount: number) {
-            if (autoDuration()) {
-                const duration = phonemeCount / phonemesPerSecond();
-                setDuration(duration);
-            }
+    renderFull() {
+        // Local signal for the new character name input
+        const [newCharName, setNewCharName] = createSignal(this.details.characterName ?? "");
+
+        // Initialize per-item UI state if missing
+        if (!uiState[this.id]) {
+            setUiState(this.id, {
+                autoDuration: false,
+                phonemesPerSecond: this.details.speed ?? 12,
+                mode: this.details.ref ? "select" : "new",
+                duration: this.duration ?? 0, // reactive duration
+            });
         }
+
+        // Reactive accessors
+        const getUI = () => uiState[this.id]!;
+        const autoDuration = () => getUI().autoDuration;
+        const phonemesPerSecond = () => getUI().phonemesPerSecond;
+        const mode = () => getUI().mode;
+        const duration = () => getUI().duration;
+
+        // Compute duration from phonemes
+        const setDurationByPhonemes = (text: string) => {
+            if (autoDuration()) {
+                const phonemeCount = countPhonemes(text);
+                const dur = Number((phonemeCount / phonemesPerSecond()).toFixed(2));
+                setUiState(this.id, "duration", dur); // reactive update
+                updateTimelineItem(this.id, "duration", "", dur);
+            }
+        };
 
         return (
             <article>
@@ -72,18 +91,18 @@ export class DialogueItem extends TimelineItem {
                         <input
                             type="checkbox"
                             checked={mode() === "new"}
-                            onChange={(e) => setMode(e.currentTarget.checked ? "new" : "select")}
+                            onChange={(e) =>
+                                setUiState(this.id, "mode", e.currentTarget.checked ? "new" : "select")
+                            }
                         />
-                        <span>
-                            <i>person_add</i>
-                        </span>
+                        <span><i>person_add</i></span>
                     </label>
                     <span class='left-padding'>
                         {mode() === "new" ? "Create a new character" : "Select a character"}
                     </span>
                 </div>
 
-                {/* New Character creation */}
+                {/* Character creation / selection */}
                 <Switch>
                     <Match when={mode() === "new"}>
                         <div class="bottom-padding max">
@@ -96,30 +115,28 @@ export class DialogueItem extends TimelineItem {
                                     />
                                     <label>New character name</label>
                                 </div>
-                                <button class="large small-round right-round"
+                                <button
+                                    class="large small-round right-round"
                                     disabled={!newCharName().trim()}
                                     onclick={() => {
-                                        const id = newCharName().replace(/[^\p{L}\p{N}_]/gu, "");
-                                        const newChar = new CharacterItem({ id, title: newCharName() });
+                                        const newCharId = newCharName().replace(/[^\p{L}\p{N}_]/gu, "");
+                                        const newChar = new CharacterItem({ id: newCharId, title: newCharName() });
                                         addCharacter(newChar);
-                                        props.onChange("ref", id);
-                                        setMode("select");
+                                        updateTimelineItem(this.id, "details", "ref", newCharId);
+                                        setUiState(this.id, "mode", "select");
                                     }}
                                 >
                                     <span>Create</span>
                                     <i>person</i>
-
                                 </button>
                             </nav>
                         </div>
                     </Match>
-
-                    {/* Select existing Character */}
                     <Match when={mode() === "select"}>
                         <div class="field border label max">
                             <select
                                 value={this.details.ref ?? ""}
-                                onChange={(e) => props.onChange("ref", e.currentTarget.value)}
+                                onChange={(e) => updateTimelineItem(this.id, "details", "ref", e.currentTarget.value)}
                             >
                                 <option value="" disabled>Select a character</option>
                                 {Object.values(characters).map((char) => (
@@ -132,7 +149,7 @@ export class DialogueItem extends TimelineItem {
                     </Match>
                 </Switch>
 
-                {/* Dialogue Text  */}
+                {/* Dialogue Text Editor */}
                 <TimelineItemEditor
                     id={this.id}
                     path="details"
@@ -142,7 +159,7 @@ export class DialogueItem extends TimelineItem {
                     multiline={true}
                     editMode={true}
                     label="Dialogue"
-                    onPhonemeCount={maybeUpdateDuration}
+                    onChange={setDurationByPhonemes}
                 />
 
                 {/* Duration input */}
@@ -151,16 +168,16 @@ export class DialogueItem extends TimelineItem {
                         <input
                             type="number"
                             min={0}
-                            value={duration()}
+                            value={duration()} // reactive value
                             onInput={(e) => {
                                 const val = Number(e.currentTarget.value);
-                                setDuration(val);
-                                props.onChange("duration", val);
+                                setUiState(this.id, "duration", val);
+                                updateTimelineItem(this.id, "duration", "", val);
                             }}
                         />
                         <label>Duration (seconds)</label>
                         <span class="helper tertiary-text">
-                            {phonemesPerSecond() / 60} minutes
+                            {(phonemesPerSecond() / 60).toFixed(2)} minutes
                         </span>
                     </div>
 
@@ -169,18 +186,35 @@ export class DialogueItem extends TimelineItem {
                     <nav>
                         <label class="slider">
                             <label class="switch icon">
-                                <input type="checkbox" onChange={(e) => setAutoDuration(e.target.checked)} />
-                                <span>
-                                    <i>timer</i>
-                                </span>
+                                <input
+                                    type="checkbox"
+                                    checked={autoDuration()}
+                                    onChange={(e) => {
+                                        setUiState(this.id, "autoDuration", e.currentTarget.checked);
+                                        setDurationByPhonemes(this.details.text);
+                                    }}
+                                />
+                                <span><i>timer</i></span>
                             </label>
                             <div class="helper left-margin">Auto</div>
                         </label>
 
                         <label class="slider">
-                            <input type="range" value={12} min={8} max={25}
+                            <input
+                                type="range"
+                                value={phonemesPerSecond()}
+                                min={8}
+                                max={25}
                                 disabled={!autoDuration()}
-                                onChange={setPhonemesPerSecond}
+                                onChange={(e) => {
+                                    const newPPS = Number(e.currentTarget.value);
+                                    setUiState(this.id, "phonemesPerSecond", newPPS);
+                                    // Recompute duration immediately if autoDuration is on
+                                    if (autoDuration()) {
+                                        setDurationByPhonemes(this.details.text);
+                                    }
+                                }}
+
                             />
                             <span></span>
                             <div class="tooltip bottom"></div>

@@ -87,6 +87,7 @@ export async function updateTimelineItem(
             : { [path]: value }
     );
 
+    console.log('Store', newItem);
     _setTimelineItems(item.id, newItem);
     await storage.put("timelineItems", newItem);
 }

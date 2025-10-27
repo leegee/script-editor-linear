@@ -51,11 +51,16 @@ export class DialogueItem extends TimelineItem {
         // Determine initial mode based on whether a character is already selected
         const [newCharName, setNewCharName] = createSignal(this.details.characterName ?? "");
         const [autoDuration, setAutoDuration] = createSignal(false);
-        const [phonemesPerSecond, setPhonemesPerSecond] = createSignal(12);
+        const [phonemesPerSecond, setPhonemesPerSecond] = createSignal(this.details.speed || 12);
         const [duration, setDuration] = createSignal(props.duration ?? 0);
         const [mode, setMode] = createSignal<"select" | "new">(
             this.details.ref ? "select" : "new"
         );
+
+        const setAndStorePhonemesPerSecond = (pps: number) => {
+            setPhonemesPerSecond(pps);
+            updateTimelineItem(this.id, 'details', 'speed', pps);
+        }
 
         function maybeUpdateDuration(phonemeCount: number) {
             if (autoDuration()) {
@@ -108,7 +113,6 @@ export class DialogueItem extends TimelineItem {
                                 >
                                     <span>Create</span>
                                     <i>person</i>
-
                                 </button>
                             </nav>
                         </div>
@@ -168,8 +172,8 @@ export class DialogueItem extends TimelineItem {
 
                     <nav>
                         <label class="slider">
-                            <label class="switch icon">
-                                <input type="checkbox" onChange={(e) => setAutoDuration(e.target.checked)} />
+                            <label class="checkbox icon">
+                                <input type="checkbox" checked={autoDuration()} onChange={(e) => setAutoDuration(e.currentTarget.checked)} />
                                 <span>
                                     <i>timer</i>
                                 </span>
@@ -180,7 +184,7 @@ export class DialogueItem extends TimelineItem {
                         <label class="slider">
                             <input type="range" value={12} min={8} max={25}
                                 disabled={!autoDuration()}
-                                onChange={setPhonemesPerSecond}
+                                onChange={(e) => setAndStorePhonemesPerSecond(Number(e.currentTarget.value))}
                             />
                             <span></span>
                             <div class="tooltip bottom"></div>

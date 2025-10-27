@@ -2,6 +2,8 @@ import { type JSX, For } from "solid-js";
 import { TimelineItem, TimelineItemProps } from "./TimelineItem";
 import { timelineItems, updateTimelineItem } from "../../stores";
 
+const transitionTypes = ["chop", "dissolve", "fade", "push", "slide"];
+
 export class TransitionItem extends TimelineItem {
     constructor(props: Omit<TimelineItemProps, "type">) {
         super({ ...props, type: "transition" });
@@ -16,7 +18,11 @@ export class TransitionItem extends TimelineItem {
     }
 
     renderCompact() {
-        return <div class="timeline-item">{this.transitionType?.toUpperCase()} →</div>;
+        return <span><code style="opacity:80%">Transition</code> <i class="large">{'transition_' + (this.details.transitionType ?? 'chop')}</i> </span>;
+    }
+
+    timelineContent(zoom: number): JSX.Element | string | undefined {
+        return <i>{'transition_' + (this.details.transitionType ?? 'chop')}</i>;
     }
 
     renderFull() {
@@ -37,7 +43,6 @@ export class TransitionItem extends TimelineItem {
     }
 
     renderCreateNew(props: { duration?: number; onChange: (field: string, value: any) => void }) {
-        const transitionTypes = ["chop", "dissolve", "fade", "push", "slide"];
         return (
             <article>
                 <header>
@@ -69,7 +74,4 @@ export class TransitionItem extends TimelineItem {
         );
     }
 
-    timelineContent(zoom: number): JSX.Element | string | undefined {
-        return <i>transition_{this.details.transitionType ?? 'transition_fade'}</i>;
-    }
 }

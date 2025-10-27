@@ -1,7 +1,6 @@
-import { createSignal, createEffect, Show, onCleanup } from "solid-js";
+import { createSignal, createEffect, Show } from "solid-js";
 import { characters, locations, timelineItems, updateCharacter, updateLocation, updateTimelineItem } from "../stores";
 import AutoResizingTextarea from "./AutoResizingTextarea";
-import { dictionary } from "cmu-pronouncing-dictionary";
 
 interface TimelineItemEditorProps {
     id: string;                    // pass item.id, not full object
@@ -13,30 +12,6 @@ interface TimelineItemEditorProps {
     class?: string;                // CSS class
     editMode?: boolean;            // controlled edit mode
     store?: "timeline" | "locations" | "characters";
-    onPhonemeCount?: (count: number) => void;
-}
-
-function countPhonemes(text: string): number {
-    const words = text.toUpperCase().match(/[A-Z']+/g);
-    if (!words) return 0;
-
-    return words.reduce((total, word) => {
-        const phonemes = dictionary[word];
-        if (phonemes) return total + phonemes.length;
-        // Weak heuristic fallback
-        const syllables = (word.match(/[AEIOUY]+/g) || []).length || 1;
-        return total + syllables * 3;
-    }, 0);
-}
-
-function debounce<T extends (...args: any[]) => void>(fn: T, delay = 800) {
-    let timeoutId: number | undefined;
-    const debounced = (...args: Parameters<T>) => {
-        clearTimeout(timeoutId);
-        timeoutId = window.setTimeout(() => fn(...args), delay);
-    };
-    onCleanup(() => clearTimeout(timeoutId));
-    return debounced;
 }
 
 export default function TimelineItemEditor(props: TimelineItemEditorProps) {
@@ -61,25 +36,16 @@ export default function TimelineItemEditor(props: TimelineItemEditorProps) {
                 ? (i.details as Record<string, any>)?.[props.key]
                 : (i as any)[props.path];
         setValue(v ?? props.defaultValue ?? "");
-    });
+    })
 
     // Autofocus when editing becomes true
     createEffect(() => {
-        if (editing() && !props.multiline && inputRef) {
-            inputRef.focus();
-            inputRef.selectionStart = inputRef.selectionEnd = inputRef.value.length;
+        if (editing()) {
+            if (!props.multiline && inputRef) {
+                inputRef.focus();
+                inputRef.selectionStart = inputRef.selectionEnd = inputRef.value.length;
+            }
         }
-    });
-
-    const debouncedPhonemeCheck = debounce((text: string) => {
-        if (props.onPhonemeCount) {
-            const count = countPhonemes(text);
-            props.onPhonemeCount(count);
-        }
-    }, 800);
-
-    createEffect(() => {
-        debouncedPhonemeCheck(value());
     });
 
     const handleDblClick = () => setEditing(true);
@@ -106,6 +72,14 @@ export default function TimelineItemEditor(props: TimelineItemEditorProps) {
             }
         >
             {props.multiline ? (
+                // <textarea
+                //     ref={(el) => (textareaRef = el)}
+                //     class={props.class}
+                //     value={value()}
+                //     onInput={(e) => handleInput(e.currentTarget.value)}
+                //     onBlur={handleBlur}
+                //     autofocus
+                // />
                 <AutoResizingTextarea
                     class={props.class}
                     value={value()}

@@ -25,7 +25,6 @@ export default function NewTimelineItemSelector() {
         try {
             const itemInstance = createTimelineItemInstance(type());
             const prepared = itemInstance.prepareFromFields({ ...fields(), duration: duration() });
-
             await createTimelineItem({ ...prepared, type: type() }, { insertAtIndex });
 
             setFields({});

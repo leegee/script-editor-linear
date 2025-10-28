@@ -5,8 +5,9 @@ import { List } from '@solid-primitives/list';
 
 import DragHandleWithMenu from "./DragHandleWithMenu";
 import { duplicateTimelineItem } from "../../lib/duplicateTimelineItem";
-import { deleteTimelineItemById } from "../../lib/createTimelineItem";
+import { createTimelineItem, deleteTimelineItemById } from "../../lib/createTimelineItem";
 import { reorderTimeline, timelineSequence } from "../../stores";
+import { createTimelineItemInstance } from "../../lib/timelineItemRegistry";
 
 interface HasIdAndDuration {
   id: string;
@@ -67,7 +68,7 @@ export default function DragDropList<T extends HasIdAndDuration>(props: DragDrop
   }
 
   // Keyboard navigation attached to the list only
-  function handleKey(e: KeyboardEvent) {
+  async function handleKey(e: KeyboardEvent) {
     if (!props.items().length) return;
 
     const currentId = selectedId();
@@ -98,7 +99,14 @@ export default function DragDropList<T extends HasIdAndDuration>(props: DragDrop
         if (idx === -1) return;
         // props.items()[idx].openEditor();
         // Add a new dialogue item and open it
-
+        // newTimelineItem
+        const insertAtIndex = idx + 1;
+        const itemInstance = createTimelineItemInstance("dialogue");
+        const prepared = itemInstance.prepareFromFields({});
+        const newItem = await createTimelineItem({ ...prepared, type: "dialogue" }, { insertAtIndex });
+        currentIndex = insertAtIndex;
+        selectItem(props.items()[currentIndex], currentIndex);
+        navigate(`/script/items/${newItem.id}`);
       }
       else {
         selectItem(props.items()[currentIndex], currentIndex);

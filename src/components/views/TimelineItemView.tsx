@@ -7,5 +7,17 @@ export default function TimelineItemView() {
 
     const item = createMemo(() => timelineItems[params.id]);
 
-    return <>{item()?.renderFull() ?? <p>Item not found</p>}</>;
+    return <>{item()?.renderFull() ?? (
+        <article>
+            <p>Item not found</p>
+            <p>Item:</p>
+            <pre>
+                {JSON.stringify(item, null, 4)}
+            </pre>
+            <p>Params:</p>
+            <pre>
+                {JSON.stringify(params, null, 4)}
+            </pre>
+        </article>
+    )}</>;
 }

@@ -15,6 +15,8 @@ import TimelineItemView from "./components/views/TimelineItemView";
 import { loadAll } from "./stores";
 import SettingsLayout from "./layouts/SettingsLayout";
 import FiltersView from "./components/panels/FiltersView";
+import FileMenuView from "./components/panels/FileMenuView";
+import MenuView from "./components/panels/MenuView";
 
 const root = document.getElementById("root");
 
@@ -32,6 +34,7 @@ const commonRoutes = (
     <Route path="/locations/:id" component={LocationView} />
     <Route path="/locations" component={LocationView} />
     <Route path="/filters" component={FiltersView} />
+
   </>
 );
 
@@ -49,6 +52,11 @@ render(
       </Route>
 
       <Route path="/settings" component={SettingsLayout} />
+
+      <Route path="/menu" component={MenuView} >
+        <Route path="/file" component={FileMenuView} />
+      </Route>
+
     </HashRouter>
   ),
   root!

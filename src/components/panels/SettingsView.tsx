@@ -1,7 +1,5 @@
 import { createSignal } from "solid-js";
-import { downloadJSON, initNewScript, loadJSONfromPath } from "../../lib/io";
-import { showConfirm } from "../../stores/modals";
-import JSONUploader from "../JsonUploader";
+import FieMenuView from "./FileMenuView";
 
 export default function SettingsView() {
     const [activeTab, setActiveTab] = createSignal("file");
@@ -38,60 +36,7 @@ export default function SettingsView() {
             </nav>
 
             <div class={`page padding ${activeTab() === "file" ? "active" : ""}`}>
-                <ul class="list border no-space">
-                    <li>
-                        <i>article</i>
-                        <button
-                            class="transparent no-padding"
-                            onClick={async () => {
-                                if (await showConfirm("This will over-write your script."))
-                                    initNewScript();
-                            }}
-                        >
-                            New script
-                        </button>
-                    </li>
-                    <li>
-                        <i>upload</i>
-                        <JSONUploader />
-                    </li>
-                    <li>
-                        <i>download</i>
-                        <button
-                            class="transparent no-padding"
-                            onClick={downloadJSON}
-                        >
-                            Save script
-                        </button>
-                    </li>
-
-                    <hr />
-
-                    <li>
-                        <i>book</i>
-                        <button
-                            class="transparent no-padding"
-                            onClick={async () => {
-                                if (await showConfirm("This will over-write your script."))
-                                    await loadJSONfromPath('/the-three-bears.json');
-                            }}
-                        >
-                            Load sample script
-                        </button>
-                    </li>
-                    <li>
-                        <i>book</i>
-                        <button
-                            class="transparent no-padding"
-                            onClick={async () => {
-                                if (await showConfirm("This will over-write your script."))
-                                    await loadJSONfromPath('/the-three-bears-small.json');
-                            }}
-                        >
-                            Load small sample script
-                        </button>
-                    </li>
-                </ul>
+                <FieMenuView />
             </div>
 
             <div class={`page padding ${activeTab() === "options" ? "active" : ""}`}>

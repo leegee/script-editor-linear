@@ -89,7 +89,7 @@ export default function TimelineView() {
                                             if (!typeItems.length) return null;
 
                                             return (
-                                                <div class={styles["track-row"]}>
+                                                <div class={styles["track-row"] + ' ' + type}>
                                                     {/* Track label, outside the grid */}
                                                     <div class={styles["track-label"]}>{type}</div>
 

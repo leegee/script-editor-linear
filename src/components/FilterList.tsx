@@ -56,36 +56,34 @@ export class FilterList {
                             section.types.some((t) => filters[t]) && !allOn();
 
                         return (
-                            <li class="no-padding no-margin">
-                                <label class="field checkbox no-padding no-margin">
+                            <li class="no-padding no-margin bottom-margin large-margin">
+                                <label class="field checkbox no-padding no-margin bottom-margin">
                                     <input type="checkbox"
                                         checked={allOn()}
                                         ref={(el) => (el.indeterminate = someOn())}
                                         onInput={() => toggleSection(section.types)}
                                         title={`Toggle all ${section.name}`}
-                                        class="right-margin tiny-margin"
+                                        class="tiny-margin"
                                     />
                                     <span>
                                         {section.name}
                                     </span>
                                 </label>
 
-                                <ul>
+                                <nav class='no-margin no-padding left-margin large-margin'>
                                     <For each={section.types}>
                                         {(item) => (
                                             <label class="field checkbox">
                                                 <input
                                                     type="checkbox"
                                                     checked={filters[item]}
-                                                    onInput={(e) =>
-                                                        setFilters(item, e.currentTarget.checked)
-                                                    }
+                                                    onInput={(e) => setFilters(item, e.currentTarget.checked)}
                                                 />
                                                 <span>{item}</span>
                                             </label>
                                         )}
                                     </For>
-                                </ul>
+                                </nav>
                             </li>
                         );
                     }}

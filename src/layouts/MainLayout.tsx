@@ -9,7 +9,7 @@ export default function MainLayout(props: ParentProps) {
         <>
             <AlertConfirm />
             <main style="height: 100vh">
-                <div class="tabs">
+                <div class="tabs max">
                     <button class="transparent">
                         <i>more_vert</i>
                         <menu style="z-index:9999">
@@ -23,9 +23,9 @@ export default function MainLayout(props: ParentProps) {
                             <li>Item 3</li>
                         </menu>
                     </button>
-                    <A class="transparent" href="/script"><i class="small">list_alt</i></A>
-                    <A class="transparent" href="/timeline"><i class="small">view_timeline</i></A>
-                    <A class="transparent" href="/settings"><i class="small">settings</i></A>
+                    <A title="Script view" class="transparent" href="/script"><i class="small">list_alt</i></A>
+                    <A title="Timeline view" class="transparent" href="/timeline"><i class="small">view_timeline</i></A>
+                    <A title="View settings" class="transparent" href="/settings"><i class="small">settings</i></A>
                 </div>
 
                 <div>

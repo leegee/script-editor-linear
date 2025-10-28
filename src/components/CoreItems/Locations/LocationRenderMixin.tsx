@@ -1,7 +1,7 @@
 import { JSX } from "solid-js";
 import { LocationMap } from "./LocationMap";
 import MapLinks from "./MapLinks";
-import TimelineItemEditor from "../../ItemEditor";
+import TimelineItemEditor from "../../TimelineItemEditor";
 import { locations } from "../../../stores";
 
 type Constructor<T = {}> = new (...args: any[]) => T;

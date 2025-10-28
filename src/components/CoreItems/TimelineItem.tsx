@@ -1,5 +1,5 @@
 import "./CoreItems.scss";
-import TimelineItemEditor from "../ItemEditor";
+import TimelineItemEditor from "../TimelineItemEditor";
 import { JSX } from "solid-js/jsx-runtime";
 
 export interface TimelineItemProps {

@@ -1,7 +1,7 @@
 import { formatHHMMSS } from "../../lib/formatSecondsToHMS";
 import { actCharacters, actDurations, actLocations, characters, locations } from "../../stores";
 import { TimelineItem, TimelineItemProps } from "./TimelineItem";
-import TimelineItemEditor from "../ItemEditor";
+import TimelineItemEditor from "../TimelineItemEditor";
 
 export class ActItem extends TimelineItem {
     constructor(props: Omit<TimelineItemProps, "type">) {

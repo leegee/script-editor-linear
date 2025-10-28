@@ -2,7 +2,7 @@ import { type JSX, createSignal, Match, type Signal, Switch } from "solid-js";
 import { addCharacter, characters, updateTimelineItem } from "../../stores";
 import { TimelineItem, TimelineItemProps } from "./TimelineItem";
 import { CharacterItem } from "./CharacterItem";
-import TimelineItemEditor from "../ItemEditor";
+import TimelineItemEditor from "../TimelineItemEditor";
 import { countPhonemes } from "../../lib/countPhonems";
 import { createStore } from "solid-js/store";
 

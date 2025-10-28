@@ -4,7 +4,7 @@ import { JSX } from "solid-js/jsx-runtime";
 
 export interface TimelineItemProps {
     id: string;
-    type: string; // "dialogue" | "location" | "transition" | "beat-marker" | "scene" | "act"
+    type: string;                       // "dialogue" | "location" | "transition" | "beat-marker" | "scene" | "act"
     title?: string;
     duration?: number;                 // in seconds
     details?: Record<string, any>;     // e.g., ref, lat/lng, cues

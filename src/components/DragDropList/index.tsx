@@ -1,5 +1,5 @@
 import "./DragDropList.scss";
-import { JSX, createSignal, createEffect, For, Accessor } from "solid-js";
+import { JSX, createSignal, createEffect, Accessor, onMount } from "solid-js";
 import { useNavigate } from "@solidjs/router";
 import { List } from '@solid-primitives/list';
 
@@ -190,8 +190,11 @@ export default function DragDropList<T extends HasIdAndDuration>(props: DragDrop
     document.addEventListener("keydown", cancelDrag);
   }
 
+  onMount(() => listRef?.focus())
+
   return (
     <ul
+      tabIndex={0}
       class="drag-list list border no-space scroll"
       ref={listRef}
       tabindex={0}

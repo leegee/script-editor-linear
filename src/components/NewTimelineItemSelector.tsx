@@ -19,7 +19,7 @@ export default function NewTimelineItemSelector() {
 
     const types = timelineItemTypes.map(t => ({ value: t, label: t[0].toUpperCase() + t.slice(1) }));
 
-    const handleChange = (field: string, value: any) => setFields(prev => ({ ...prev, [field]: value }));
+    // const handleChange = (field: string, value: any) => setFields(prev => ({ ...prev, [field]: value }));
 
     const handleCreate = async () => {
         try {

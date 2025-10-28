@@ -7,7 +7,7 @@ export class FilterList {
             <header class="no-padding">
                 <nav>
                     <h2 class="max"> Filters </h2>
-                    <i>location_on</i>
+                    <i>filter_alt</i>
                 </nav>
             </header>
         )

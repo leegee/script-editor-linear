@@ -11,6 +11,7 @@ import { timelineSequence } from "../../stores";
 interface HasIdAndDuration {
   id: string;
   duration?: number;
+  type: string;
   renderCompact: () => JSX.Element | null;
   openEditor: () => void;
 }
@@ -205,6 +206,7 @@ export default function DragDropList<T extends HasIdAndDuration>(props: DragDrop
               class="dnd-item"
               onClick={() => selectItem(item(), pos)}
               classList={{
+                [item().type]: true,
                 selected: selectedId() === item().id,
                 dragging: isDragging,
                 placeholder: isPlaceholder,

@@ -55,9 +55,7 @@ export default function TimelineView() {
     });
 
     function showDetails(item: TimelineItem) {
-        const url = '/timeline/items/' + item.id;
-        console.log('Go to', url)
-        navigate(url)
+        navigate('/timeline/items/' + item.id)
     }
 
     return (

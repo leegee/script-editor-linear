@@ -12,10 +12,10 @@ export default function MainLayout(props: ParentProps) {
                 <div class="tabs">
                     <button class="transparent">
                         <i>more_vert</i>
-                        <menu>
+                        <menu style="z-index:9999">
                             <li>
                                 <A href='/menu/file'> File </A>
-                                <menu>
+                                <menu class="no-wrap">
                                     <FileMenuItms />
                                 </menu>
                             </li>

@@ -114,7 +114,7 @@ export default function DragDropList<T extends HasIdAndDuration>(props: DragDrop
       }
       else {
         selectItem(props.items()[currentIndex], currentIndex);
-        navigate(`/script/items/${props.items()[currentIndex]}`)
+        navigate(`/script/items/${props.items()[currentIndex].id}`)
       }
     }
   }
@@ -233,7 +233,7 @@ export default function DragDropList<T extends HasIdAndDuration>(props: DragDrop
                 "drag-over": overIndex() === pos
               }}
             >
-              <div class="item-content" onClick={() => navigate(`/script/items/${item()}`)}>
+              <div class="item-content" onClick={() => navigate(`/script/items/${item().id}`)}>
                 <small class="time-label">{displayTime}</small>
                 {item().renderCompact() ?? null}
               </div>

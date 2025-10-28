@@ -92,7 +92,6 @@ export class TimelineItem {
                         path="title"
                         defaultValue={this.title ?? "Title"}
                     />
-
                     <label>Title</label>
                 </div>
             </>

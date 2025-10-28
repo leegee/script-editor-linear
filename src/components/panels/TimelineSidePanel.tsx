@@ -31,7 +31,12 @@ export default function TimelineSidePanel(props: ParentProps) {
     });
 
     return (
-        <article ref={containerRef} class={styles.container} classList={{ [styles.open]: open() }}>
+        <article ref={containerRef}
+            classList={{
+                [styles.open]: open(),
+                [styles.container]: true,
+            }}
+        >
             <div class={styles.tab} onClick={() => setOpen(!open())}>
                 <Switch fallback={<i>chevron_backward</i>}>
                     <Match when={open()}>
@@ -41,7 +46,9 @@ export default function TimelineSidePanel(props: ParentProps) {
 
             </div>
 
-            <div class={styles.content}>{props.children}</div>
+            <div class={styles.content + ' right-padding'}>
+                {props.children}
+            </div>
         </article>
     );
 }

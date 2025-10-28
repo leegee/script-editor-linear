@@ -2,7 +2,7 @@ import { createSignal } from "solid-js";
 import FieMenuView from "./FileMenuView";
 
 export default function SettingsView() {
-    const [activeTab, setActiveTab] = createSignal("file");
+    const [activeTab, setActiveTab] = createSignal("options");
 
     return (
         <article>
@@ -28,7 +28,7 @@ export default function SettingsView() {
                 </a>
             </nav>
 
-            <div class={`page active padding ${activeTab() === "options" ? "active" : ""}`}>
+            <div class={`page padding ${activeTab() === "options" ? "active" : ""}`}>
                 <p>Options go here…</p>
             </div>
 

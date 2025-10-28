@@ -24,6 +24,11 @@ const toggleSection = (sectionTypes: string[]) => {
     sectionTypes.forEach((t) => setFilters(t, !allOn));
 };
 
+const toggleAll = () => {
+    const allOn = Object.values(filters).every(Boolean);
+    Object.keys(filters).forEach((t) => setFilters(t, !allOn));
+};
+
 
 export class FilterList {
     static ListFiltersHeader() {
@@ -47,48 +52,68 @@ export class FilterList {
     }
 
     static ListFilters() {
+        const allOn = () => Object.values(filters).every(Boolean);
+        const someOn = () =>
+            Object.values(filters).some(Boolean) && !allOn();
+
         return (
-            <ul class="responsive scroll surface">
-                <For each={sectionsWithMisc}>
-                    {(section) => {
-                        const allOn = () => section.types.every((t) => filters[t]);
-                        const someOn = () =>
-                            section.types.some((t) => filters[t]) && !allOn();
+            <nav class="wrap vertical responsive scroll surface">
+                <div class="no-padding no-margin bottom-margin large-margin">
+                    <label class="field checkbox large small-opacity no-padding small-margin bottom-margin">
+                        <input
+                            type="checkbox"
+                            checked={allOn()}
+                            ref={(el) => (el.indeterminate = someOn())}
+                            onInput={() => toggleAll()}
+                            title="Toggle all filters"
+                            class="tiny-margin"
+                        />
+                        <span>All Filters</span>
+                    </label>
 
-                        return (
-                            <li class="no-padding no-margin bottom-margin large-margin">
-                                <label class="field checkbox no-padding no-margin bottom-margin">
-                                    <input type="checkbox"
-                                        checked={allOn()}
-                                        ref={(el) => (el.indeterminate = someOn())}
-                                        onInput={() => toggleSection(section.types)}
-                                        title={`Toggle all ${section.name}`}
-                                        class="tiny-margin"
-                                    />
-                                    <span>
-                                        {section.name}
-                                    </span>
-                                </label>
+                    <For each={sectionsWithMisc}>
+                        {(section) => {
+                            const allOn = () => section.types.every((t) => filters[t]);
+                            const someOn = () =>
+                                section.types.some((t) => filters[t]) && !allOn();
 
-                                <nav class='no-margin no-padding left-margin large-margin'>
-                                    <For each={section.types}>
-                                        {(item) => (
-                                            <label class="field checkbox">
-                                                <input
-                                                    type="checkbox"
-                                                    checked={filters[item]}
-                                                    onInput={(e) => setFilters(item, e.currentTarget.checked)}
-                                                />
-                                                <span>{item}</span>
-                                            </label>
-                                        )}
-                                    </For>
-                                </nav>
-                            </li>
-                        );
-                    }}
-                </For>
-            </ul>
+                            return (
+                                <div class="no-padding bottom-margin left-margin large-margin">
+                                    <label class="field checkbox no-padding no-margin">
+                                        <input
+                                            type="checkbox"
+                                            checked={allOn()}
+                                            ref={(el) => (el.indeterminate = someOn())}
+                                            onInput={() => toggleSection(section.types)}
+                                            title={`Toggle all ${section.name}`}
+                                            class="tiny-margin"
+                                        />
+                                        <span>{section.name}</span>
+                                    </label>
+
+                                    <nav class="no-margin no-padding left-margin large-margin">
+                                        <For each={section.types}>
+                                            {(item) => (
+                                                <label class="field checkbox small">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={filters[item]}
+                                                        onInput={(e) =>
+                                                            setFilters(item, e.currentTarget.checked)
+                                                        }
+                                                    />
+                                                    <span>{item}</span>
+                                                </label>
+                                            )}
+                                        </For>
+                                    </nav>
+                                </div>
+                            );
+                        }}
+                    </For>
+
+                </div>
+            </nav>
         );
     }
 }

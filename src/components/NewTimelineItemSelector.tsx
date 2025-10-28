@@ -30,7 +30,7 @@ export default function NewTimelineItemSelector() {
 
             setFields({});
             setDuration(undefined);
-            navigate("/script");
+            navigate(`/script/item/${insertAtIndex}`);
         } catch (err) {
             console.error("Failed to create timeline item:", err);
         }
@@ -49,10 +49,11 @@ export default function NewTimelineItemSelector() {
                 <label>Type</label>
             </div>
 
-            {itemInstance().renderCreateNew({ onChange: handleChange, duration: duration() })}
+            {/* {itemInstance().renderCreateNew({ onChange: handleChange, duration: duration() })} */}
 
             <hr />
-            <footer class="field border label no-margin no-padding">
+
+            <footer class="field border label no-margin no-padding top-padding right-align">
                 <nav>
                     <button onClick={() => navigate("/script")} class="transparent">Cancel</button>
                     <button onClick={handleCreate} class="primary">Create Timeline Item</button>

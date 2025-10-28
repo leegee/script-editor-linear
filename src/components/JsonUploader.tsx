@@ -32,7 +32,7 @@ export default function JSONUploader() {
     };
 
     return (
-        <>
+        <div class="small-padding left-padding">
             <input
                 type="file"
                 accept=".json"
@@ -43,6 +43,6 @@ export default function JSONUploader() {
             <button class="transparent no-padding no-margin" onClick={openFilePicker}>
                 Load script
             </button>
-        </>
+        </div>
     );
 }

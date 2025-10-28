@@ -2,6 +2,7 @@ import { createSignal, onMount, ParentProps, Show } from "solid-js";
 import AlertConfirm from "../components/modals/AlertConfirm";
 import { loadAll } from "../stores";
 import { A } from "@solidjs/router";
+import { FileMenuItms } from "../components/panels/FileMenuView";
 
 export default function MainLayout(props: ParentProps) {
     return (
@@ -9,21 +10,22 @@ export default function MainLayout(props: ParentProps) {
             <AlertConfirm />
             <main style="height: 100vh">
                 <div class="tabs">
-                    <A class="transparent" href="/script"><i class="small">list_alt</i></A>
-                    <A class="transparent" href="/timeline"><i class="small">view_timeline</i></A>
-                    <A class="transparent" href="/settings"><i class="small">settings</i></A>
                     <button class="transparent">
                         <i>more_vert</i>
                         <menu>
                             <li>
-                                <A href='/menu/file'>
-                                    File
-                                </A>
+                                <A href='/menu/file'> File </A>
+                                <menu>
+                                    <FileMenuItms />
+                                </menu>
                             </li>
                             <li>Item 2</li>
                             <li>Item 3</li>
                         </menu>
                     </button>
+                    <A class="transparent" href="/script"><i class="small">list_alt</i></A>
+                    <A class="transparent" href="/timeline"><i class="small">view_timeline</i></A>
+                    <A class="transparent" href="/settings"><i class="small">settings</i></A>
                 </div>
 
                 <div>

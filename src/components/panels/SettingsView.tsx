@@ -13,13 +13,6 @@ export default function SettingsView() {
 
             <nav class="tabbed small medium-margin margin-bottom">
                 <a
-                    class={activeTab() === "file" ? "active" : ""}
-                    onClick={() => setActiveTab("file")}
-                >
-                    <i>description</i>
-                    <span>File</span>
-                </a>
-                <a
                     class={activeTab() === "options" ? "active" : ""}
                     onClick={() => setActiveTab("options")}
                 >
@@ -35,11 +28,7 @@ export default function SettingsView() {
                 </a>
             </nav>
 
-            <div class={`page padding ${activeTab() === "file" ? "active" : ""}`}>
-                <FieMenuView />
-            </div>
-
-            <div class={`page padding ${activeTab() === "options" ? "active" : ""}`}>
+            <div class={`page active padding ${activeTab() === "options" ? "active" : ""}`}>
                 <p>Options go here…</p>
             </div>
 

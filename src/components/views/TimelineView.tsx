@@ -69,7 +69,7 @@ export default function TimelineView() {
                 </article>
             </Show>
 
-            <div ref={timelineEl} class={styles.timeline}>
+            <div ref={timelineEl} class={styles.timeline + ' top-padding large-padding'}>
                 <For each={Object.entries(viewModel().sections)}>
                     {([sectionName, items]) => {
                         const types =

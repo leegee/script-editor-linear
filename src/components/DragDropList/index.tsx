@@ -8,6 +8,7 @@ import { duplicateTimelineItem } from "../../lib/duplicateTimelineItem";
 import { createTimelineItem, deleteTimelineItemById } from "../../lib/createTimelineItem";
 import { reorderTimeline, timelineSequence } from "../../stores";
 import { createTimelineItemInstance } from "../../lib/timelineItemRegistry";
+import { showAlert } from "../../stores/modals";
 
 interface HasIdAndDuration {
   id: string;
@@ -96,7 +97,10 @@ export default function DragDropList<T extends HasIdAndDuration>(props: DragDrop
 
       if (e.ctrlKey) {
         const idx = props.items().findIndex(i => i.id === selectedId());
-        if (idx === -1) return;
+        if (idx === -1) {
+          showAlert('To insert a new dialogue item, select a position in the script.')
+          return;
+        }
         // props.items()[idx].openEditor();
         // Add a new dialogue item and open it
         // newTimelineItem

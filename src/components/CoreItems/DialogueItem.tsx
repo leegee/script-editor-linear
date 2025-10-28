@@ -46,11 +46,11 @@ export class DialogueItem extends TimelineItem {
         );
     }
 
-    renderCreateNew(props: { duration?: number; onChange: (field: string, value: any) => void }) {
-        throw new Error('TODO');
-        return <div>TODO</div>;
-    }
-
+    // renderCreateNew(props: { duration?: number; onChange: (field: string, value: any) => void }) {
+    //     return super.renderCreateNew({
+    //         ...props,
+    //     })
+    // }
 
     renderFull() {
         // Local signal for the new character name input

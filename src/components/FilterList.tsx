@@ -73,7 +73,7 @@ export class FilterList {
                                 <ul>
                                     <For each={section.types}>
                                         {(item) => (
-                                            <label class="field checkbox ml-4">
+                                            <label class="field checkbox">
                                                 <input
                                                     type="checkbox"
                                                     checked={filters[item]}

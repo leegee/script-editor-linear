@@ -1,7 +1,11 @@
-import FilterList from "../FilterList";
+import { FilterList } from "../FilterList";
 
 export default function SettingsView() {
     return (
-        <FilterList />
+        <article class="border">
+            <FilterList.ListFiltersHeader />
+            <FilterList.ListFilters />
+        </article>
+
     );
 }

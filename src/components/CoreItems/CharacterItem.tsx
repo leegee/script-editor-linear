@@ -18,37 +18,28 @@ export class CharacterItem extends TimelineItem {
         return new CharacterItem(obj);
     }
 
+    static ListCharactersHeaeder() {
+        return (
+            <header class="no-padding">
+                <nav>
+                    <h2 class="max"> Characters </h2>
+                    <i>people</i>
+                </nav>
+            </header>
+        );
+    }
+
     static ListCharacters() {
         return (
-            <article class="border">
-                <div class="responsive scroll surface">
-                    <table>
-                        <thead class="fixed">
-                            <tr>
-                                <th class="no-border">
-                                    <header class="no-padding">
-                                        <nav>
-                                            <h2 class="max"> Characters </h2>
-                                            <i>people</i>
-                                        </nav>
-                                    </header>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <For each={Object.values(characters).sort((a, b) => a.title.toLowerCase().localeCompare(b.title.toLowerCase()))}>
-                                {(chr) => (
-                                    <tr>
-                                        <td>
-                                            <A href={"characters/" + chr.id}>{chr.title}</A>
-                                        </td>
-                                    </tr>
-                                )}
-                            </For>
-                        </tbody>
-                    </table>
-                </div>
-            </article>
+            <ul class="responsive scroll surface">
+                <For each={Object.values(characters).sort((a, b) => a.title.toLowerCase().localeCompare(b.title.toLowerCase()))}>
+                    {(chr) => (
+                        <li>
+                            <A href={"characters/" + chr.id}>{chr.title}</A>
+                        </li>
+                    )}
+                </For>
+            </ul>
         );
     }
 

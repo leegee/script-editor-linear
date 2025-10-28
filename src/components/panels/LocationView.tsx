@@ -9,6 +9,11 @@ export default function CharacterView() {
     const item = createMemo(() => locations[params.id]);
 
     return <div>
-        {item()?.renderFull() ?? <TimelineLocationItem.ListLocations />}
+        {item()?.renderFull() ?? (
+            <article class="border">
+                <TimelineLocationItem.ListLocationsHeader />
+                <TimelineLocationItem.ListLocations />
+            </article>
+        )}
     </div>
 }

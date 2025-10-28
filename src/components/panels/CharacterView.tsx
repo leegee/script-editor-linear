@@ -9,6 +9,11 @@ export default function CharacterView() {
     const item = createMemo(() => characters[params.id]);
 
     return <div>
-        {item()?.renderFull() ?? <CharacterItem.ListCharacters />}
+        {item()?.renderFull() ?? (
+            <article class="border">
+                <CharacterItem.ListCharactersHeaeder />
+                <CharacterItem.ListCharacters />
+            </article>
+        )}
     </div>;
 }

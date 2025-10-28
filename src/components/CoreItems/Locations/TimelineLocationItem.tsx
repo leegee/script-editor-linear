@@ -25,37 +25,28 @@ class BaseTimelineLocationItem extends TimelineItem {
         });
     }
 
+    static ListLocationsHeader() {
+        return (
+            <header class="no-padding">
+                <nav>
+                    <h2 class="max"> Locations </h2>
+                    <i>location_on</i>
+                </nav>
+            </header>
+        );
+    }
+
     static ListLocations() {
         return (
-            <article class="border">
-                <div class="responsive scroll surface">
-                    <table>
-                        <thead class="fixed">
-                            <tr>
-                                <th class="no-border">
-                                    <header class="no-padding">
-                                        <nav>
-                                            <h2 class="max"> Locations </h2>
-                                            <i>location_on</i>
-                                        </nav>
-                                    </header>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <For each={Object.values(locations)}>
-                                {(loc) => (
-                                    <tr>
-                                        <td>
-                                            <A href={`locations/${loc.id}`}>{loc.title}</A>
-                                        </td>
-                                    </tr>
-                                )}
-                            </For>
-                        </tbody>
-                    </table>
-                </div>
-            </article>
+            <ul class="responsive scroll surface">
+                <For each={Object.values(locations)}>
+                    {(loc) => (
+                        <li>
+                            <A href={`locations/${loc.id}`}>{loc.title}</A>
+                        </li>
+                    )}
+                </For>
+            </ul>
         );
     }
 

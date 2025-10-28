@@ -18,7 +18,6 @@ interface HasIdAndDuration {
 
 interface DragDropListProps<T extends HasIdAndDuration> {
   items: Accessor<T[]>;
-  onReorder?: (newOrder: number[]) => void;
   className?: string;
   viewMode?: "list" | "timeline";
   getItemX?: (item: T) => number;

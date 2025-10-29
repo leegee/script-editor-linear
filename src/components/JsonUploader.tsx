@@ -1,8 +1,9 @@
-import { createSignal } from "solid-js";
+import { useNavigate } from "@solidjs/router";
 import { ingest } from "../lib/io";
 import { showAlert, showConfirm } from "../stores/modals";
 
 export default function JSONUploader() {
+    const navigate = useNavigate();
     let fileInput: HTMLInputElement | undefined;
 
     const handleFileChange = async (e: Event) => {
@@ -15,10 +16,12 @@ export default function JSONUploader() {
         }
 
         try {
+            console.log('Shall parse upload file')
             const text = await file.text();
             const data = JSON.parse(text);
             console.log("Parsed JSON:", data);
             await ingest(data.script, data.characters, data.locations);
+            navigate('/script/');
         } catch (err) {
             console.error("Error reading or parsing JSON file:", err);
             showAlert("Invalid JSON file");

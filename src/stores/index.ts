@@ -3,6 +3,7 @@ import { loadAllLocations, resetLocations } from "./locations";
 import { loadAllNotes } from "./notes";
 import { loadAllTimelineItems, deleteAllTimelineItems } from "./timelineItems";
 import { loadAllTags } from "./tags";
+import { storage } from "../db";
 
 export * from "./timelineItems";
 export * from "./locations";
@@ -25,12 +26,6 @@ export async function loadAll() {
 
 export async function clearAll() {
     console.log('stores/clearAll: Enter')
-    await Promise.all([
-        deleteAllTimelineItems(),
-        resetLocations(),
-        resetCharacters
-        // resetTags(),
-        // resetNotes(),
-    ]);
+    await storage.deleteDatabase();
     console.log("stores/clearAll: all stores wiped in IndexedDB.");
 }

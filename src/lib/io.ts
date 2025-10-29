@@ -71,7 +71,7 @@ export async function ingest(
     console.log("io/ingest: starting ingestion...");
 
     // Clear all existing data
-    clearAll();
+    await clearAll();
 
     console.log('Shall add characters')
     for (const char of sampleCharacters) await addCharacter(char);

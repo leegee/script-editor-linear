@@ -3,7 +3,7 @@ import AutoResizingTextarea from "../../AutoResizingTextarea";
 import { addNote, timelineItems, updateTimelineItemAddNote } from "../../../stores";
 import { CanonicalNote } from "./CanonicalNote";
 import { createSignal, createMemo } from "solid-js";
-import { resolveRoute } from "../../../lib/routeResolver";
+import { childRoute } from "../../../lib/routeResolver";
 
 export default function NoteCreator() {
     const navigate = useNavigate();
@@ -33,7 +33,7 @@ export default function NoteCreator() {
         await addNote(note);
         await updateTimelineItemAddNote(params.itemId, note.id);
 
-        navigate(resolveRoute("../../../items/" + params.itemId));
+        navigate(childRoute("items/" + params.itemId));
     }
 
     return (

@@ -1,7 +1,9 @@
 import { formatHHMMSS } from "../../lib/formatSecondsToHMS";
-import { actCharacters, actDurations, actLocations, characters, locations } from "../../stores";
+import { actCharacters, actDurations, actLocations, characters, locations, notes } from "../../stores";
 import { TimelineItem, TimelineItemProps } from "./TimelineItem";
 import TimelineItemEditor from "../TimelineItemEditor";
+import { A } from "@solidjs/router";
+import { childRoute } from "../../lib/routeResolver";
 
 export class ActItem extends TimelineItem {
     constructor(props: Omit<TimelineItemProps, "type">) {
@@ -41,21 +43,54 @@ export class ActItem extends TimelineItem {
                 </article>
 
                 <article>
-                    <h4>Characters in this act:</h4>
-                    <ul class="list no-space border scroll">
-                        {[...(actCharacters()[this.id] ?? [])].map(charId => (
-                            <li>{characters[charId].title}</li>
-                        ))}
-                    </ul>
+                    <details>
+                        <summary>
+                            <h4>Notes</h4>
+                        </summary>
+                        <ul class="list no-space border scroll">
+                            {[...(this.notes ?? [])].map(noteId => (
+                                <li>
+                                    <A href={childRoute("/notes/" + noteId)}>
+                                        {notes[noteId].title}
+                                    </A>
+                                </li>
+                            ))}
+                        </ul>
+                    </details>
                 </article>
 
                 <article>
-                    <h4>Locations in this act:</h4>
-                    <ul class="list no-space border scroll">
-                        {[...(actLocations()[this.id] ?? [])].map(locId => (
-                            <li>{locations[locId]?.title ?? "Unknown Location " + locId}</li>
-                        ))}
-                    </ul>
+                    <details>
+                        <summary>
+                            <h4>Characters in this act</h4>
+                        </summary>
+                        <ul class="list no-space border scroll">
+                            {[...(actCharacters()[this.id] ?? [])].map(charId => (
+                                <li>
+                                    <A href={childRoute("/characters/" + charId)}>
+                                        {characters[charId].title}
+                                    </A>
+                                </li>
+                            ))}
+                        </ul>
+                    </details>
+                </article>
+
+                <article>
+                    <details>
+                        <summary>
+                            <h4>Locations in this act</h4>
+                        </summary>
+                        <ul class="list no-space border scroll">
+                            {[...(actLocations()[this.id] ?? [])].map(locId => (
+                                <li>
+                                    <A href={childRoute("/locations/" + locId)}>
+                                        {locations[locId]?.title ?? "Unknown Location " + locId}
+                                    </A>
+                                </li>
+                            ))}
+                        </ul>
+                    </details>
                 </article>
 
             </fieldset>

@@ -1,5 +1,4 @@
 import { createSignal } from "solid-js";
-import FieMenuView from "./FileMenuView";
 
 export default function SettingsView() {
     const [activeTab, setActiveTab] = createSignal("options");

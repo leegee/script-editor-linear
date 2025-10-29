@@ -1,20 +1,49 @@
-import { createStore } from "solid-js/store";
-import { Note, reviveNote } from "../components/CoreItems/";
+import { createStore, unwrap } from "solid-js/store";
 import { storage } from "../db";
+import { CanonicalNote, type CanonicalNoteType } from "../components/CoreItems/Notes/CanonicalNote";
+import { TimelineNoteItemType } from "../components/CoreItems";
 
-export const [notes, setNotes] = createStore<Record<string, Note>>({});
+export const [notes, setNotes] = createStore<Record<string, CanonicalNoteType>>({});
 
 export async function loadAllNotes() {
-    const items = await storage.getAll<Note>("notes");
+    const items = await storage.getAll<CanonicalNoteType>("notes");
     const revived = Object.fromEntries(
-        Object.entries(items).map(([id, obj]) => [id, reviveNote(obj)])
+        Object.entries(items).map(([id, obj]) => [id, CanonicalNote.revive(obj)])
     );
     setNotes(revived);
 }
 
-export async function addNote(item: Note) {
+export async function resetNotes() {
+    await storage.clearTable("notes");
+    setNotes({});
+}
+
+export async function addNote(item: CanonicalNoteType) {
+    if (Object.hasOwn(item, 'ref')) {
+        throw new TypeError('addNote fields should not contain ref, this is a Canonical Note');
+    }
+
     setNotes(item.id, item);
     await storage.put("notes", item);
+    console.log('Added canonical note', item.id, item)
+}
+
+export async function updateNote(id: string, updatedFields: Partial<CanonicalNoteType>) {
+    if (Object.hasOwn(updatedFields, 'ref')) {
+        throw new TypeError('updateNote fields should not contain ref, this is a Canonical Note');
+    }
+    setNotes(id, prev => ({
+        ...(prev ?? {}),
+        ...updatedFields,
+        details: {
+            ...(prev?.details ?? {}),
+            ...(updatedFields.details ?? {})
+        }
+    }));
+
+    const loc = unwrap(notes[id]);
+    const updated = { ...loc };
+    await storage.put("notes", updated);
 }
 
 export async function removeNote(id: string) {
@@ -24,4 +53,9 @@ export async function removeNote(id: string) {
         return copy;
     });
     await storage.delete("notes", id);
+}
+
+export function resolveNoteRef(item: TimelineNoteItemType): CanonicalNoteType | undefined {
+    const ref = item.details?.ref ?? item.id;
+    return notes[ref];
 }

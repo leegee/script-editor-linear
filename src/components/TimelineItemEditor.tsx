@@ -4,14 +4,14 @@ import AutoResizingTextarea from "./AutoResizingTextarea";
 
 interface TimelineItemEditorProps {
     id: string;                    // pass item.id, not full object
-    path: "details" | "title" | "duration";
+    path: "details" | "title" | "duration" | "notes";
     key?: string;                  // nested key if path === "details"
     label?: string;
     defaultValue?: any;            // fallback value
     multiline?: boolean;           // textarea instead of input
     class?: string;                // CSS class
     editMode?: boolean;            // controlled edit mode
-    store?: "timeline" | "locations" | "characters";
+    store?: "timeline" | "locations" | "characters" | "notes";
     onChange?: (newTextValue: string) => void;
 }
 

@@ -21,6 +21,7 @@ export default function JSONUploader() {
             const data = JSON.parse(text);
             console.log("Parsed JSON:", data);
             await ingest(data.script, data.characters, data.locations);
+            // TODO Pass this in an onCompete prop
             navigate('/script/');
         } catch (err) {
             console.error("Error reading or parsing JSON file:", err);

@@ -4,6 +4,7 @@ import styles from "./DragHandleWithMenu.module.scss";
 interface DragHandleWithMenuProps {
     class: string;
     onPointerDown: (e: PointerEvent) => void;
+    onAddNote?: () => void;
     onDuplicate?: () => void;
     onInsertBefore?: () => void;
     onInsertAfter?: () => void;
@@ -28,6 +29,9 @@ export default function DragHandleWithMenu(props: DragHandleWithMenuProps) {
 
                 {menuOpen() && (
                     <menu class={"border surface-bright secondary elevate " + styles.menu}>
+                        {props.onAddNote && <li onClick={props.onAddNote}>
+                            <i>note_add</i> Add Note
+                        </li>}
                         {props.onDuplicate && <li onClick={props.onDuplicate}>
                             <i>control_point_duplicate</i> Duplicate
                         </li>}

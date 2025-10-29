@@ -55,7 +55,7 @@ export async function removeLocation(id: string) {
     await storage.delete("locations", id);
 }
 
-export function resolveTimelineRef(item: TimelineLocationItemType): CanonicalLocationType | undefined {
+export function resolveLocationRef(item: TimelineLocationItemType): CanonicalLocationType | undefined {
     const ref = item.details?.ref ?? item.id;
     return locations[ref];
 }

@@ -1,16 +1,16 @@
-import { type JSX } from "solid-js";
-export class Note {
-    id!: string;
-    parentId!: string;
-    parentType!: string;
-    text!: string;
-    media?: string[];
+// import { type JSX } from "solid-js";
+// export class Note {
+//     id!: string;
+//     parentId!: string;
+//     parentType!: string;
+//     text!: string;
+//     media?: string[];
 
-    constructor(data: Partial<Note>) {
-        Object.assign(this, data);
-    }
+//     constructor(data: Partial<Note>) {
+//         Object.assign(this, data);
+//     }
 
-    renderCompact() { return this.text; }
-}
+//     renderCompact() { return this.text; }
+// }
 
-export function reviveNote(obj: any) { return new Note(obj); }
+// export function reviveNote(obj: any) { return new Note(obj); }

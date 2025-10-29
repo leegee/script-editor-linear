@@ -8,17 +8,11 @@ type Constructor<T = {}> = new (...args: any[]) => T;
 
 export function LocationRenderMixin<TBase extends Constructor>(Base: TBase) {
     return class extends Base {
-        /**
-         * Renders compact view: simple title
-         */
         renderCompact(): JSX.Element {
             const title = (this as any).title ?? "Unknown Location";
             return <h4 class="timeline-item location">{title}</h4>;
         }
 
-        /**
-         * Renders full view: includes table, map, and optionally TimelineItemEditor if this is a timeline item
-         */
         renderFull(): JSX.Element {
             const obj: any = this;
             const details = obj.details ?? { lat: 0, lng: 0, radius: 0 };

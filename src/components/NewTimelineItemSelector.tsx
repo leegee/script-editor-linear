@@ -29,13 +29,13 @@ export default function NewTimelineItemSelector() {
 
             setFields({});
             setDuration(undefined);
-            navigate(`/script/item/${insertAtIndex}`);
+            navigate(`/script/items/${insertAtIndex}`);
         } catch (err) {
             console.error("Failed to create timeline item:", err);
         }
     };
 
-    const itemInstance = createMemo(() => createTimelineItemInstance(type()));
+    // const itemInstance = createMemo(() => createTimelineItemInstance(type()));
 
     return (
         <article class="border padding">

@@ -3,6 +3,7 @@ import { createSignal, createMemo } from "solid-js";
 import { TimelineItem, TimelineItemProps, reviveItem } from "../components/CoreItems/";
 import { storage } from "../db";
 import { locations } from "./locations";
+import { CanonicalNoteType } from "../components/CoreItems/Notes/CanonicalNote";
 
 const [timelineItems, _setTimelineItems] = createStore<Record<string, TimelineItem>>({});
 
@@ -76,7 +77,7 @@ export async function duplicateTimelineItem(originalId: string, newItem: Timelin
  */
 export async function updateTimelineItem(
     id: string,
-    path: "details" | "title" | "duration",
+    path: "details" | "title" | "duration" | "notes",
     key: string,
     value: any
 ) {
@@ -88,6 +89,16 @@ export async function updateTimelineItem(
     );
 
     console.log('Store', newItem);
+    _setTimelineItems(item.id, newItem);
+    await storage.put("timelineItems", newItem);
+}
+
+export async function updateTimelineItemAddNote(id: string, noteId: string) {
+    const item = timelineItems[id];
+    const newItem = item.cloneWith(
+        { notes: [...item.notes as string[], noteId] }
+    );
+    console.log('Store with new note', newItem);
     _setTimelineItems(item.id, newItem);
     await storage.put("timelineItems", newItem);
 }

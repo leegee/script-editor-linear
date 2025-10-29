@@ -9,6 +9,8 @@ import { createTimelineItem, deleteTimelineItemById } from "../../lib/createTime
 import { reorderTimeline, timelineSequence } from "../../stores";
 import { createTimelineItemInstance } from "../../lib/timelineItemRegistry";
 import { showAlert } from "../../stores/modals";
+import { CanonicalNote } from "../CoreItems/Notes/CanonicalNote";
+import { type TimelineItem } from "../CoreItems";
 
 interface HasIdAndDuration {
   id: string;
@@ -241,6 +243,7 @@ export default function DragDropList<T extends HasIdAndDuration>(props: DragDrop
               <DragHandleWithMenu
                 class="show-on-hover"
                 onPointerDown={(e) => startDrag(pos, e)}
+                onAddNote={() => navigate('/script/new/note/' + item().id)}
                 onDuplicate={() => duplicateTimelineItem(item().id, { insertAtIndex: insertAfter })}
                 onInsertBefore={() => navigate(`/script/new/${insertBefore}`)}
                 onInsertAfter={() => navigate(`/script/new/${insertAfter}`)}

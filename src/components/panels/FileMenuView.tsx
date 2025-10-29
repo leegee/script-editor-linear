@@ -1,3 +1,4 @@
+import { useNavigate } from "@solidjs/router";
 import { downloadJSON, initNewScript, loadJSONfromPath } from "../../lib/io";
 import { showConfirm } from "../../stores/modals";
 import JSONUploader from "../JsonUploader";
@@ -16,6 +17,7 @@ export default function FieMenuView() {
 }
 
 export function FileMenuItms() {
+    const navigate = useNavigate();
     return (
         <>
             <li>
@@ -53,8 +55,10 @@ export function FileMenuItms() {
                 <button
                     class="transparent no-padding"
                     onClick={async () => {
-                        if (await showConfirm("This will over-write your script."))
+                        if (await showConfirm("This will over-write your script.")) {
                             await loadJSONfromPath('/the-three-bears.json');
+                            navigate('/script/');
+                        }
                     }}
                 >
                     Load sample script
@@ -66,8 +70,10 @@ export function FileMenuItms() {
                 <button
                     class="transparent no-padding"
                     onClick={async () => {
-                        if (await showConfirm("This will over-write your script."))
+                        if (await showConfirm("This will over-write your script.")) {
                             await loadJSONfromPath('/the-three-bears-small.json');
+                            navigate('/script/');
+                        }
                     }}
                 >
                     Load small sample script

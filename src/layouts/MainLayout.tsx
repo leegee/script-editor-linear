@@ -1,18 +1,24 @@
-import { createSignal, onMount, ParentProps, Show } from "solid-js";
+import { ParentProps } from "solid-js";
 import AlertConfirm from "../components/modals/AlertConfirm";
-import { loadAll } from "../stores";
 import { A } from "@solidjs/router";
 import { FileMenuItms } from "../components/panels/FileMenuView";
 
 export default function MainLayout(props: ParentProps) {
+    let menuRef: HTMLMenuElement | undefined;
+
+    function closeMenu(e: MouseEvent) {
+        if (menuRef && menuRef.contains(e.target as HTMLElement)) menuRef.classList.remove("active");
+    };
+
     return (
         <>
             <AlertConfirm />
+
             <main style="height: 100vh">
                 <div class="tabs max">
                     <button class="transparent">
                         <i>more_vert</i>
-                        <menu style="z-index:9999">
+                        <menu ref={(el) => menuRef = el} style="z-index:999" onClick={closeMenu}>
                             <li>
                                 <A href='/menu/file'> File </A>
                                 <menu class="no-wrap">

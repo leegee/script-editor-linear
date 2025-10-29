@@ -5,8 +5,8 @@ export default function AlertConfirm() {
     return (
         <>
             <Show when={alertState()}>
-                <div class="overlay blur active"></div>
-                <dialog class="active">
+                <div class="overlay blur active" style="z-index: 9999"></div>
+                <dialog class="active" style="z-index: 10000">
                     <header>
                         <h5>{alertState()!.message}</h5>
                     </header>
@@ -17,8 +17,8 @@ export default function AlertConfirm() {
             </Show>
 
             <Show when={confirmState()}>
-                <div class="overlay blur active"></div>
-                <dialog class="active">
+                <div class="overlay blur active" style="z-index: 9999"></div>
+                <dialog class="active" style="z-index: 10000">
                     <header>
                         <h5>{confirmState()!.message}</h5>
                     </header>

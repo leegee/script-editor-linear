@@ -9,17 +9,8 @@ import { createTimelineItem, deleteTimelineItemById } from "../../lib/createTime
 import { reorderTimeline, timelineItems, timelineSequence } from "../../stores";
 import { createTimelineItemInstance } from "../../lib/timelineItemRegistry";
 import { showAlert } from "../../stores/modals";
-import { CanonicalNote } from "../CoreItems/Notes/CanonicalNote";
 import { type TimelineItem } from "../CoreItems";
 import { childRoute } from "../../lib/routeResolver";
-
-interface HasIdAndDuration {
-  id: string;
-  duration?: number;
-  type: string;
-  renderCompact: () => JSX.Element | null;
-  openEditor: () => void;
-}
 
 function formatTime(totalSeconds: number): string {
   const minutes = Math.floor(totalSeconds / 60);
@@ -30,8 +21,8 @@ function formatTime(totalSeconds: number): string {
 export default function DragDropList() {
   const navigate = useNavigate();
   const items = () => timelineSequence().map(id => timelineItems[id]).filter(Boolean);
-  const [order, setOrder] = createSignal(items().map((_, i) => i));
   const [draggingIndex, setDraggingIndex] = createSignal<number | null>(null);
+  const draggingId = () => timelineSequence()[draggingIndex()!];
   const [overIndex, setOverIndex] = createSignal<number | null>(null);
   const [selectedId, setSelectedId] = createSignal<string | null>(null);
   const [dragX, setDragX] = createSignal<number | null>(null);
@@ -39,22 +30,6 @@ export default function DragDropList() {
   let floatingRef: HTMLElement | undefined;
   let offsetY = 0;
   let listRef: HTMLUListElement | undefined;
-
-
-  // Reconcile order with changes in items
-  createEffect(() => {
-    const newIds = items().map(i => i.id);
-    const oldIds = order().map(i => items()[i]?.id).filter(Boolean) as string[];
-
-    const kept = oldIds.filter(id => newIds.includes(id));
-    const added = newIds.filter(id => !kept.includes(id));
-
-    const addedIndices = added.map(id => newIds.indexOf(id));
-    const nextOrder = [...kept.map(id => newIds.indexOf(id)), ...addedIndices];
-
-    const changed = nextOrder.length !== order().length || nextOrder.some((v, i) => v !== order()[i]);
-    if (changed) setOrder(nextOrder);
-  });
 
   function selectItem(item: TimelineItem, index: number) {
     if (selectedId() === item.id) return;
@@ -123,7 +98,6 @@ export default function DragDropList() {
     setOverIndex(index);
     setDragX(e.clientX);
     setDragY(e.clientY);
-    const originalOrder = [...order()];
     const targetEl = e.currentTarget as HTMLElement;
     targetEl.classList.add("clicked");
     targetEl.setPointerCapture?.(e.pointerId);
@@ -154,13 +128,10 @@ export default function DragDropList() {
       const src = draggingIndex();
       const dest = overIndex();
       if (src !== null && dest !== null && src !== dest) {
-        const next = [...order()];
-        const [moved] = next.splice(src, 1);
-        next.splice(dest, 0, moved);
-        setOrder(next);
-        const seq = timelineSequence();
-        const newSeq = next.map(i => seq[i]);
-        reorderTimeline(newSeq);
+        const seq = [...timelineSequence()];
+        const [movedId] = seq.splice(src, 1);
+        seq.splice(dest, 0, movedId);
+        reorderTimeline(seq);
       }
 
       setDraggingIndex(null);
@@ -172,7 +143,6 @@ export default function DragDropList() {
     function cancelDrag(ke: KeyboardEvent) {
       if (ke.key !== "Escape") return;
       try {
-        setOrder(originalOrder);
         targetEl.classList.remove("clicked");
         targetEl.releasePointerCapture?.(e.pointerId);
       } catch { }
@@ -192,6 +162,8 @@ export default function DragDropList() {
     document.addEventListener("keydown", cancelDrag);
   }
 
+
+
   onMount(() => listRef?.focus())
 
   return (
@@ -202,8 +174,11 @@ export default function DragDropList() {
       tabindex={0}
       onKeyDown={handleKey}
     >
-      <List each={items()}>
-        {(item, idx: Accessor<number>) => {
+      <List each={timelineSequence()}>
+        {(id, idx) => {
+          const item = () => timelineItems[id()];
+          if (!item()) return null;
+
           const pos = idx();
           if (pos === -1) return null;
 
@@ -268,7 +243,7 @@ export default function DragDropList() {
           class="dnd-item floating large-elevate border no-margin no-padding secondary"
           classList={{ dragging: draggingIndex() !== null }}
           style={{ top: `${dragY()! - offsetY}px` }}>
-          {items()[order()[draggingIndex()!]].renderCompact() ?? null}
+          {timelineItems[draggingId()]?.renderCompact?.() ?? null}
         </li>
       )}
     </ul>

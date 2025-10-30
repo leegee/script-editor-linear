@@ -3,7 +3,8 @@ import { characters, locations, timelineItems, updateCharacter, updateLocation, 
 import AutoResizingTextarea from "./AutoResizingTextarea";
 
 interface TimelineItemEditorProps {
-    id: string;                    // pass item.id, not full object
+    item?: any;                    // Pass the full object directly (unsaved or existing)
+    id?: string;                    // Only needed if updating a store item
     path: "details" | "title" | "duration" | "notes";
     key?: string;                  // nested key if path === "details"
     label?: string;
@@ -21,31 +22,31 @@ export default function TimelineItemEditor(props: TimelineItemEditorProps) {
 
     let inputRef: HTMLInputElement | undefined;
 
-    const item = () =>
+    // Return the object to edit: either passed directly, or from the store by id
+    const currentItem = () => props.item ?? (
         props.store === "locations"
-            ? locations[props.id]
+            ? locations[props.id!]
             : props.store === "characters"
-                ? characters[props.id]
-                : timelineItems[props.id];
+                ? characters[props.id!]
+                : timelineItems[props.id!]
+    );
 
-    // Initialise value on mount
+    // Initialize value
     createEffect(() => {
-        const i = item();
+        const i = currentItem();
         if (!i) return;
         const v =
             props.path === "details" && props.key
                 ? (i.details as Record<string, any>)?.[props.key]
                 : (i as any)[props.path];
         setValue(v ?? props.defaultValue ?? "");
-    })
+    });
 
     // Autofocus when editing becomes true
     createEffect(() => {
-        if (editing()) {
-            if (!props.multiline && inputRef) {
-                inputRef.focus();
-                inputRef.selectionStart = inputRef.selectionEnd = inputRef.value.length;
-            }
+        if (editing() && !props.multiline && inputRef) {
+            inputRef.focus();
+            inputRef.selectionStart = inputRef.selectionEnd = inputRef.value.length;
         }
     });
 
@@ -54,13 +55,26 @@ export default function TimelineItemEditor(props: TimelineItemEditorProps) {
 
     const handleBlur = () => {
         setEditing(false);
-        const updateFn =
-            props.store === "locations"
-                ? updateLocation
-                : props.store === "characters"
-                    ? updateCharacter
-                    : updateTimelineItem;
-        updateFn(props.id, props.path, props.key ?? "", value());
+
+        // Only update the store if id + store are provided
+        if (props.id && props.store) {
+            const updateFn =
+                props.store === "locations"
+                    ? updateLocation
+                    : props.store === "characters"
+                        ? updateCharacter
+                        : updateTimelineItem;
+            updateFn(props.id, props.path, props.key ?? "", value());
+        } else if (props.item && props.path) {
+            // Otherwise update the object directly (for unsaved local objects)
+            if (props.path === "details" && props.key) {
+                props.item.details ??= {};
+                props.item.details[props.key] = value();
+            } else {
+                props.item[props.path] = value();
+            }
+        }
+
         if (props.onChange) props.onChange(value());
     };
 
@@ -74,14 +88,6 @@ export default function TimelineItemEditor(props: TimelineItemEditorProps) {
             }
         >
             {props.multiline ? (
-                // <textarea
-                //     ref={(el) => (textareaRef = el)}
-                //     class={props.class}
-                //     value={value()}
-                //     onInput={(e) => handleInput(e.currentTarget.value)}
-                //     onBlur={handleBlur}
-                //     autofocus
-                // />
                 <AutoResizingTextarea
                     class={props.class}
                     value={value()}

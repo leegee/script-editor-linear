@@ -3,15 +3,16 @@ import { characters, locations, timelineItems, updateCharacter, updateLocation, 
 import AutoResizingTextarea from "./AutoResizingTextarea";
 
 interface TimelineItemEditorProps {
-    item?: any;                    // Pass the full object directly (unsaved or existing)
-    id?: string;                    // Only needed if updating a store item
+    item?: any;                    // Unsaved or existing object
+    setItem?: (newItem: any) => void; // Optional setter for local object
+    id?: string;
     path: "details" | "title" | "duration" | "notes";
-    key?: string;                  // nested key if path === "details"
+    key?: string;
     label?: string;
-    defaultValue?: any;            // fallback value
-    multiline?: boolean;           // textarea instead of input
-    class?: string;                // CSS class
-    editMode?: boolean;            // controlled edit mode
+    defaultValue?: any;
+    multiline?: boolean;
+    class?: string;
+    editMode?: boolean;
     store?: "timeline" | "locations" | "characters" | "notes";
     onChange?: (newTextValue: string) => void;
 }
@@ -22,7 +23,6 @@ export default function TimelineItemEditor(props: TimelineItemEditorProps) {
 
     let inputRef: HTMLInputElement | undefined;
 
-    // Return the object to edit: either passed directly, or from the store by id
     const currentItem = () => props.item ?? (
         props.store === "locations"
             ? locations[props.id!]
@@ -31,7 +31,6 @@ export default function TimelineItemEditor(props: TimelineItemEditorProps) {
                 : timelineItems[props.id!]
     );
 
-    // Initialize value
     createEffect(() => {
         const i = currentItem();
         if (!i) return;
@@ -42,7 +41,6 @@ export default function TimelineItemEditor(props: TimelineItemEditorProps) {
         setValue(v ?? props.defaultValue ?? "");
     });
 
-    // Autofocus when editing becomes true
     createEffect(() => {
         if (editing() && !props.multiline && inputRef) {
             inputRef.focus();
@@ -56,7 +54,8 @@ export default function TimelineItemEditor(props: TimelineItemEditorProps) {
     const handleBlur = () => {
         setEditing(false);
 
-        // Only update the store if id + store are provided
+        const v = value();
+
         if (props.id && props.store) {
             const updateFn =
                 props.store === "locations"
@@ -64,18 +63,33 @@ export default function TimelineItemEditor(props: TimelineItemEditorProps) {
                     : props.store === "characters"
                         ? updateCharacter
                         : updateTimelineItem;
-            updateFn(props.id, props.path, props.key ?? "", value());
-        } else if (props.item && props.path) {
-            // Otherwise update the object directly (for unsaved local objects)
-            if (props.path === "details" && props.key) {
-                props.item.details ??= {};
-                props.item.details[props.key] = value();
+            updateFn(props.id, props.path, props.key ?? "", v);
+        }
+
+        else if (props.item) {
+            // Update local object via setter if provided
+            if (props.setItem) {
+                props.setItem((prev: any) => { // ugh
+                    const copy = { ...prev };
+                    if (props.path === "details" && props.key) {
+                        copy.details ??= {};
+                        copy.details[props.key] = v;
+                    } else {
+                        copy[props.path] = v;
+                    }
+                    return copy;
+                });
             } else {
-                props.item[props.path] = value();
+                if (props.path === "details" && props.key) {
+                    props.item.details ??= {};
+                    props.item.details[props.key] = v;
+                } else {
+                    props.item[props.path] = v;
+                }
             }
         }
 
-        if (props.onChange) props.onChange(value());
+        if (props.onChange) props.onChange(v);
     };
 
     return (

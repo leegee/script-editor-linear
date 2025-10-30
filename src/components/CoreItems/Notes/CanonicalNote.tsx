@@ -14,6 +14,16 @@ class BaseCanonicalNote {
         return new CanonicalNote(obj);
     }
 
+    static create(input: { title: string; details: any }) {
+        return new CanonicalNote({
+            title: input.title.trim(),
+            details: {
+                ...input.details,
+                createdAt: new Date().toISOString(),
+            }
+        });
+    }
+
     constructor(obj: Partial<BaseCanonicalNote>) {
         if (!obj.title) throw new TypeError("CanonicalNote must have a title");
 

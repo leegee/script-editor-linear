@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "@solidjs/router";
 import TimelineItemEditor from "../../TimelineItemEditor";
-import { addNote, timelineItems, updateTimelineItemAddNote } from "../../../stores";
+import { addNote, updateTimelineItemAddNote, timelineItems } from "../../../stores";
 import { CanonicalNote } from "./CanonicalNote";
 import { createSignal, createMemo } from "solid-js";
 import { childRoute } from "../../../lib/routeResolver";
@@ -10,7 +10,7 @@ export default function NoteCreator() {
     const params = useParams();
 
     // Local object representing the new note
-    const [noteObj] = createSignal({
+    const [noteObj, setNoteObj] = createSignal({
         title: "",
         details: { text: "" }
     });
@@ -25,13 +25,7 @@ export default function NoteCreator() {
     async function createNote() {
         if (!isValid()) return;
 
-        const note = new CanonicalNote({
-            title: noteObj().title.trim(),
-            details: {
-                text: noteObj().details.text.trim(),
-                createdAt: new Date().toISOString(),
-            }
-        });
+        const note = CanonicalNote.create(noteObj());
 
         await addNote(note);
         await updateTimelineItemAddNote(params.itemId, note.id);
@@ -55,6 +49,7 @@ export default function NoteCreator() {
             <div class="field bottom-padding">
                 <TimelineItemEditor
                     item={noteObj()}
+                    setItem={setNoteObj}
                     path="title"
                     label="Title"
                     defaultValue=""
@@ -64,6 +59,7 @@ export default function NoteCreator() {
             <div class="field bottom-padding">
                 <TimelineItemEditor
                     item={noteObj()}
+                    setItem={setNoteObj}
                     path="details"
                     key="text"
                     multiline

@@ -1,6 +1,7 @@
 import { JSX } from "solid-js";
 import TimelineItemEditor from "../../TimelineItemEditor";
 import { notes } from "../../../stores";
+import { BaseTimelineNoteItem } from "./TimelineNoteItem";
 
 type Constructor<T = {}> = new (...args: any[]) => T;
 

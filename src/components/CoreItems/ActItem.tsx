@@ -33,14 +33,9 @@ export class ActItem extends TimelineItem {
                     />
                 </h3>
 
-                <article class="field">
-                    <p>Duration {
-                        formatHHMMSS(
-                            actDurations()[this.id]
-                        )
-
-                    }</p>
-                </article>
+                <div class="field">
+                    Duration {formatHHMMSS(actDurations()[this.id])}
+                </div>
 
                 <article>
                     <details>

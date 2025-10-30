@@ -8,7 +8,7 @@ import { CanonicalNote } from "./CanonicalNote";
 
 export type TimelineNoteItemType = InstanceType<typeof TimelineNoteItem>;
 
-class BaseTimelineNoteItem extends TimelineItem {
+export class BaseTimelineNoteItem extends TimelineItem {
     /**
      * Safely reconstructs a TimelineNoteItem from serialized data.
      * Preserves coordinate details if they exist.

@@ -2,7 +2,7 @@ import { JSX } from "solid-js";
 import { LocationMap } from "./LocationMap";
 import MapLinks from "./MapLinks";
 import TimelineItemEditor from "../../TimelineItemEditor";
-import { locations } from "../../../stores";
+import { locations, updateLocation } from "../../../stores";
 
 type Constructor<T = {}> = new (...args: any[]) => T;
 
@@ -75,7 +75,13 @@ export function LocationRenderMixin<TBase extends Constructor>(Base: TBase) {
                         lat={canonicalDetails.lat}
                         lng={canonicalDetails.lng}
                         radius={canonicalDetails.radius}
-                        onChange={() => { }}
+                        onChange={(newLat: number, newLng: number, newRadius: number) => {
+                            if (canonicalId) {
+                                updateLocation(canonicalId, {
+                                    details: { lat: newLat, lng: newLng, radius: newRadius }
+                                });
+                            }
+                        }}
                     />
 
                     <div class="top-margin large-margin">

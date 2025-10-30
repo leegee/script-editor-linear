@@ -1,8 +1,7 @@
 import { useNavigate, useParams } from "@solidjs/router";
-import TimelineItemEditor from "../../TimelineItemEditor";
-import { addNote, updateTimelineItemAddNote, timelineItems } from "../../../stores";
 import { CanonicalNote } from "./CanonicalNote";
-import { createSignal, createMemo } from "solid-js";
+import { addNote, updateTimelineItemAddNote, timelineItems } from "../../../stores";
+import { createSignal, createMemo, JSX } from "solid-js";
 import { childRoute } from "../../../lib/routeResolver";
 
 export default function NoteCreator() {
@@ -25,6 +24,7 @@ export default function NoteCreator() {
     async function createNote() {
         if (!isValid()) return;
 
+        // Use canonical note class
         const note = CanonicalNote.create(noteObj());
 
         await addNote(note);
@@ -32,6 +32,12 @@ export default function NoteCreator() {
 
         navigate(childRoute("items/" + params.itemId));
     }
+
+    // Render the note editors directly via the mixin’s renderFull
+    const renderEditors = (): JSX.Element => {
+        const noteInstance = CanonicalNote.create(noteObj());
+        return noteInstance.renderFull();
+    };
 
     return (
         <article>
@@ -46,27 +52,8 @@ export default function NoteCreator() {
                 </p>
             </div>
 
-            <div class="field bottom-padding">
-                <TimelineItemEditor
-                    item={noteObj()}
-                    setItem={setNoteObj}
-                    path="title"
-                    label="Title"
-                    defaultValue=""
-                />
-            </div>
-
-            <div class="field bottom-padding">
-                <TimelineItemEditor
-                    item={noteObj()}
-                    setItem={setNoteObj}
-                    path="details"
-                    key="text"
-                    multiline
-                    label="Text"
-                    defaultValue=""
-                />
-            </div>
+            {/* Reuse mixin renderFull */}
+            {renderEditors()}
 
             <div class="row right-align top-padding">
                 <button class="transparent" onClick={() => navigate(-1)}>

@@ -1,7 +1,7 @@
 import { ParentProps } from "solid-js";
 import AlertConfirm from "../components/modals/AlertConfirm";
 import { A } from "@solidjs/router";
-import { FileMenuItms } from "../components/panels/FileMenuView";
+import { FileMenuItems } from "../components/panels/FileMenuView";
 
 export default function MainLayout(props: ParentProps) {
     let menuRef: HTMLMenuElement | undefined;
@@ -22,7 +22,7 @@ export default function MainLayout(props: ParentProps) {
                             <li>
                                 <A href='/menu/file'> File </A>
                                 <menu class="no-wrap">
-                                    <FileMenuItms />
+                                    <FileMenuItems />
                                 </menu>
                             </li>
                             <li>Item 2</li>

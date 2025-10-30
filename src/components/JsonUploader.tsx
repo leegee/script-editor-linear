@@ -1,4 +1,4 @@
-import { useNavigate } from "@solidjs/router";
+import { A, useNavigate } from "@solidjs/router";
 import { ingest } from "../lib/io";
 import { showAlert, showConfirm } from "../stores/modals";
 
@@ -36,7 +36,7 @@ export default function JSONUploader() {
     };
 
     return (
-        <div class="small-padding left-padding">
+        <>
             <input
                 type="file"
                 accept=".json"
@@ -44,9 +44,15 @@ export default function JSONUploader() {
                 onChange={handleFileChange}
                 style={{ display: "none" }}
             />
-            <button class="transparent no-padding no-margin" onClick={openFilePicker}>
+            <A
+                href="#"
+                onClick={(e) => {
+                    e.preventDefault();
+                    openFilePicker();
+                }}
+            >
                 Load script
-            </button>
-        </div>
+            </A>
+        </>
     );
 }

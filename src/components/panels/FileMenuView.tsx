@@ -1,36 +1,33 @@
-import { useNavigate } from "@solidjs/router";
 import { downloadJSON, initNewScript, loadJSONfromPath } from "../../lib/io";
-import { showConfirm } from "../../stores/modals";
 import JSONUploader from "../JsonUploader";
+import { ConfirmLink } from "../ConfirmLink";
+import { A } from "@solidjs/router";
 
-export default function FieMenuView() {
+export default function FileMenuView() {
     return (
         <article>
             <header>
                 <h2>File</h2>
             </header>
             <ul class="list border no-space">
-                <FileMenuItms />
+                <FileMenuItems />
             </ul>
         </article>
     );
 }
 
-export function FileMenuItms() {
-    const navigate = useNavigate();
+export function FileMenuItems() {
     return (
         <>
             <li>
                 <i>add_notes</i>
-                <button
-                    class="transparent no-padding"
-                    onClick={async () => {
-                        if (await showConfirm("This will over-write your script."))
-                            initNewScript();
-                    }}
+                <ConfirmLink
+                    href="/script/new"
+                    message="This will over-write your script."
+                    onConfirm={initNewScript}
                 >
                     New script
-                </button>
+                </ConfirmLink>
             </li>
 
             <li>
@@ -40,45 +37,44 @@ export function FileMenuItms() {
 
             <li>
                 <i>download</i>
-                <button
-                    class="transparent no-padding"
-                    onClick={downloadJSON}
+                <A
+                    href="#"
+                    onClick={(e) => {
+                        e.preventDefault();
+                        downloadJSON();
+                    }}
                 >
                     Save script
-                </button>
+                </A>
             </li>
 
             <hr class="space surface" />
 
             <li>
                 <i>book</i>
-                <button
-                    class="transparent no-padding"
-                    onClick={async () => {
-                        if (await showConfirm("This will over-write your script.")) {
-                            await loadJSONfromPath('/the-three-bears.json');
-                            navigate('/script/');
-                        }
+                <ConfirmLink
+                    href="/script/"
+                    message="This will over-write your script."
+                    onConfirm={async () => {
+                        await loadJSONfromPath("/the-three-bears.json");
                     }}
                 >
                     Load sample script
-                </button>
+                </ConfirmLink>
             </li>
 
             <li>
                 <i>article</i>
-                <button
-                    class="transparent no-padding"
-                    onClick={async () => {
-                        if (await showConfirm("This will over-write your script.")) {
-                            await loadJSONfromPath('/the-three-bears-small.json');
-                            navigate('/script/');
-                        }
+                <ConfirmLink
+                    href="/script/"
+                    message="This will over-write your script."
+                    onConfirm={async () => {
+                        await loadJSONfromPath("/the-three-bears-small.json");
                     }}
                 >
                     Load small sample script
-                </button>
+                </ConfirmLink>
             </li>
         </>
-    )
+    );
 }

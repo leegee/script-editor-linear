@@ -25,11 +25,11 @@ export default function NewTimelineItemSelector() {
         try {
             const itemInstance = createTimelineItemInstance(type());
             const prepared = itemInstance.prepareFromFields({ ...fields(), duration: duration() });
-            await createTimelineItem({ ...prepared, type: type() }, { insertAtIndex });
+            const newItem = await createTimelineItem({ ...prepared, type: type() }, { insertAtIndex });
 
             setFields({});
             setDuration(undefined);
-            navigate(`/script/items/${insertAtIndex}`);
+            navigate(`/script/items/${newItem.id}`);
         } catch (err) {
             console.error("Failed to create timeline item:", err);
         }

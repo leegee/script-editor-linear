@@ -3,7 +3,7 @@
  * when using a hash router (SolidJS).
  *
  * relative: string like "../item/123"
- * base: current router path like "/script/new/note/abc"
+ * base: current router path like "/script/attach-new/note/abc"
  */
 export function resolveRoute(relative: string): string {
     const base = location.hash;

@@ -31,9 +31,7 @@ export function NoteRenderMixin<TBase extends Constructor>(Base: TBase) {
                 typeof c.id === "string" && typeof c.title === "string";
 
             const canonicalId = hasCanonicalFields(canonical) ? canonical.id : undefined;
-            const canonicalTitle = hasCanonicalFields(canonical)
-                ? canonical.title ?? title
-                : title;
+            const canonicalTitle = hasCanonicalFields(canonical) ? canonical.title ?? title : title;
             const canonicalDetails = canonical.details ?? {};
 
             return (
@@ -47,7 +45,11 @@ export function NoteRenderMixin<TBase extends Constructor>(Base: TBase) {
                                 defaultValue={canonicalTitle}
                             />
                         ) : (
-                            <span>{canonicalTitle}</span>
+                            <TimelineItemEditor
+                                item={obj}
+                                path="title"
+                                defaultValue={canonicalTitle}
+                            />
                         )}
                     </h3>
 

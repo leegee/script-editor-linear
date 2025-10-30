@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from "@solidjs/router";
-import AutoResizingTextarea from "../../AutoResizingTextarea";
+import TimelineItemEditor from "../../TimelineItemEditor";
 import { addNote, timelineItems, updateTimelineItemAddNote } from "../../../stores";
 import { CanonicalNote } from "./CanonicalNote";
 import { createSignal, createMemo } from "solid-js";
@@ -9,23 +9,26 @@ export default function NoteCreator() {
     const navigate = useNavigate();
     const params = useParams();
 
-    const [title, setTitle] = createSignal("");
-    const [text, setText] = createSignal("");
+    // Local object representing the new note
+    const [noteObj] = createSignal({
+        title: "",
+        details: { text: "" }
+    });
 
     const item = timelineItems[params.itemId];
 
     const isValid = createMemo(() => {
-        const t = title().trim();
-        return t.length > 0;
+        const t = noteObj().title?.trim();
+        return t && t.length > 0;
     });
 
     async function createNote() {
         if (!isValid()) return;
 
         const note = new CanonicalNote({
-            title: title().trim(),
+            title: noteObj().title.trim(),
             details: {
-                text: text().trim(),
+                text: noteObj().details.text.trim(),
                 createdAt: new Date().toISOString(),
             }
         });
@@ -44,28 +47,30 @@ export default function NoteCreator() {
 
             <div>
                 <p>
-                    Adding a note to <code>{item.type}</code>{
-                        item.title ? ('"' + item.title + '."') : '."'
-                    }
+                    Adding a note to <code>{item.type}</code>
+                    {item.title ? ` "${item.title}."` : '."'}
                 </p>
             </div>
 
             <div class="field bottom-padding">
-                <input
-                    type="text"
-                    pattern="^\S+.*\S$"
-                    value={title()}
-                    onBlur={(e) => setTitle(e.currentTarget.value)}
-                    placeholder="Enter title"
+                <TimelineItemEditor
+                    item={noteObj()}
+                    path="title"
+                    label="Title"
+                    defaultValue=""
                 />
-                <label>Title</label>
             </div>
 
-            <AutoResizingTextarea
-                label="Text"
-                value={text()}
-                onBlur={(value) => setText(value)}
-            />
+            <div class="field bottom-padding">
+                <TimelineItemEditor
+                    item={noteObj()}
+                    path="details"
+                    key="text"
+                    multiline
+                    label="Text"
+                    defaultValue=""
+                />
+            </div>
 
             <div class="row right-align top-padding">
                 <button class="transparent" onClick={() => navigate(-1)}>

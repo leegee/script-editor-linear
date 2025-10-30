@@ -100,45 +100,6 @@ class BaseTimelineNoteItem extends TimelineItem {
                             />
                             <label>Title</label>
                         </div>
-                        <div class="field border label max">
-                            <input
-                                type="number"
-                                placeholder="Latitude"
-                                onInput={(e) =>
-                                    props.onChange(
-                                        "lat",
-                                        parseFloat(e.currentTarget.value)
-                                    )
-                                }
-                            />
-                            <label>Latitude</label>
-                        </div>
-                        <div class="field border label max">
-                            <input
-                                type="number"
-                                placeholder="Longitude"
-                                onInput={(e) =>
-                                    props.onChange(
-                                        "lng",
-                                        parseFloat(e.currentTarget.value)
-                                    )
-                                }
-                            />
-                            <label>Longitude</label>
-                        </div>
-                        <div class="field border label max">
-                            <input
-                                type="number"
-                                placeholder="Radius (metres)"
-                                onInput={(e) =>
-                                    props.onChange(
-                                        "radius",
-                                        parseFloat(e.currentTarget.value)
-                                    )
-                                }
-                            />
-                            <label>Radius</label>
-                        </div>
                     </>
                 )}
 

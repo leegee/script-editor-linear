@@ -29,7 +29,7 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
 const commonRoutes = (
   <>
     <Route path="/" component={Default} />
-    <Route path="/new/note/:itemId" component={NoteCreator} />
+    <Route path="/attach-new/note/:itemId" component={NoteCreator} />
     <Route path="/new/:pos" component={NewTimelineItemSelector} />
     <Route path="/items/:id" component={TimelineItemView} />
     <Route path="/characters/:id" component={CharacterView} />

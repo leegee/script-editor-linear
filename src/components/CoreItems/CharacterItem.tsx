@@ -4,6 +4,7 @@ import { TimelineItem, TimelineItemProps } from "./TimelineItem";
 import { A } from "@solidjs/router";
 import TimelineItemEditor from "../TimelineItemEditor";
 import { showAlert } from "../../stores/modals";
+import { childRoute } from "../../lib/routeResolver";
 
 function isCharacterUsed(id: string) {
     return Object.values(timelineItems).some(
@@ -22,7 +23,7 @@ export class CharacterItem extends TimelineItem {
         return (
             <header class="no-padding">
                 <nav>
-                    <h2 class="max"> Characters </h2>
+                    <h3 class="max"> Characters </h3>
                     <i>people</i>
                 </nav>
             </header>
@@ -35,7 +36,7 @@ export class CharacterItem extends TimelineItem {
                 <For each={Object.values(characters).sort((a, b) => a.title.toLowerCase().localeCompare(b.title.toLowerCase()))}>
                     {(chr) => (
                         <li>
-                            <A href={"characters/" + chr.id}>{chr.title}</A>
+                            <A href={childRoute("characters/" + chr.id)}>{chr.title}</A>
                         </li>
                     )}
                 </For>
@@ -55,11 +56,10 @@ export class CharacterItem extends TimelineItem {
     renderFull() {
         return (
             <article>
-                <header>
-                    <h3>Character</h3>
-                    <h4>
+                <header class="bottom-padding">
+                    <h3 class="bottom-padding">
                         <TimelineItemEditor id={this.id} path="title" store="characters" />
-                    </h4>
+                    </h3>
                 </header>
 
                 <div class="border padding">

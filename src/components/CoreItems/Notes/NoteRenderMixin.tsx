@@ -34,25 +34,21 @@ export function NoteRenderMixin<TBase extends Constructor>(Base: TBase) {
             return (
                 <article class="border padding">
 
-                    {/* Title Editor */}
                     <h3 class="field">
                         {isTimelineItem && canonicalId ? (
                             <TimelineItemEditor
                                 store="notes"
                                 id={canonicalId}
                                 path="title"
-                                defaultValue={canonicalTitle}
                             />
                         ) : (
                             <TimelineItemEditor
                                 item={canonical}
                                 path="title"
-                                defaultValue={canonicalTitle}
                             />
                         )}
                     </h3>
 
-                    {/* Details.text Editor */}
                     <div class="field bottom-padding">
                         {isTimelineItem && canonicalId ? (
                             <TimelineItemEditor
@@ -62,7 +58,6 @@ export function NoteRenderMixin<TBase extends Constructor>(Base: TBase) {
                                 key="text"
                                 multiline
                                 label="Text"
-                                defaultValue={canonicalDetails.text ?? ""}
                             />
                         ) : (
                             <TimelineItemEditor
@@ -71,7 +66,6 @@ export function NoteRenderMixin<TBase extends Constructor>(Base: TBase) {
                                 key="text"
                                 multiline
                                 label="Text"
-                                defaultValue={canonicalDetails.text ?? ""}
                             />
                         )}
                     </div>

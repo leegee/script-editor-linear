@@ -90,7 +90,6 @@ export class TimelineItem {
                     <TimelineItemEditor
                         id={this.id}
                         path="title"
-                        defaultValue={this.title ?? "Title"}
                     />
                     <label>Title</label>
                 </div>

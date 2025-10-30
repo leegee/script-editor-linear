@@ -38,7 +38,6 @@ export class DialogueItem extends TimelineItem {
                     id={this.id}
                     path="details"
                     key="text"
-                    defaultValue={this.details.text ?? "..."}
                     class="dialogueText"
                     multiline={true}
                 />
@@ -154,7 +153,6 @@ export class DialogueItem extends TimelineItem {
                     id={this.id}
                     path="details"
                     key="text"
-                    defaultValue={this.details.text ?? ""}
                     class="field textarea border label max"
                     multiline={true}
                     editMode={true}

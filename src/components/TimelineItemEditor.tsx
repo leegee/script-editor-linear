@@ -3,13 +3,12 @@ import { characters, locations, timelineItems, updateCharacter, updateLocation, 
 import AutoResizingTextarea from "./AutoResizingTextarea";
 
 interface TimelineItemEditorProps {
-    item?: any;                    // Unsaved or existing object
-    setItem?: (newItem: any) => void; // Optional setter for local object
+    item?: any;
+    setItem?: (newItem: any) => void;
     id?: string;
     path: "details" | "title" | "duration" | "notes";
     key?: string;
     label?: string;
-    defaultValue?: any;
     multiline?: boolean;
     class?: string;
     editMode?: boolean;
@@ -38,8 +37,12 @@ export default function TimelineItemEditor(props: TimelineItemEditorProps) {
             props.path === "details" && props.key
                 ? (i.details as Record<string, any>)?.[props.key]
                 : (i as any)[props.path];
-        setValue(v ?? props.defaultValue ?? "");
+
+        setValue(v ?? "");
+
+        if (!v) setEditing(true);
     });
+
 
     createEffect(() => {
         if (editing() && !props.multiline && inputRef) {
@@ -64,12 +67,9 @@ export default function TimelineItemEditor(props: TimelineItemEditorProps) {
                         ? updateCharacter
                         : updateTimelineItem;
             updateFn(props.id, props.path, props.key ?? "", v);
-        }
-
-        else if (props.item) {
-            // Update local object via setter if provided
+        } else if (props.item) {
             if (props.setItem) {
-                props.setItem((prev: any) => { // ugh
+                props.setItem((prev: any) => {
                     const copy = { ...prev };
                     if (props.path === "details" && props.key) {
                         copy.details ??= {};

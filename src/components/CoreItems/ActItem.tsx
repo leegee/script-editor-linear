@@ -12,11 +12,10 @@ export class ActItem extends TimelineItem {
 
     renderCompact() {
         return (
-            <h2 class="timeline-item">
+            <h2 class="field">
                 <TimelineItemEditor
                     id={this.id}
                     path="title"
-                    defaultValue={this.title ?? "Untitled Act"}
                 />
             </h2>
         );
@@ -29,7 +28,6 @@ export class ActItem extends TimelineItem {
                     <TimelineItemEditor
                         id={this.id}
                         path="title"
-                        defaultValue={this.title ?? "Untitled Act"}
                     />
                 </h3>
 

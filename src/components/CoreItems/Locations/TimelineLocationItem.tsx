@@ -5,6 +5,7 @@ import { locations, addLocation } from "../../../stores";
 import { TimelineItem, TimelineItemProps } from "../TimelineItem";
 import { LocationRenderMixin } from "./LocationRenderMixin";
 import { CanonicalLocation } from "./CanonicalLocation";
+import { childRoute } from "../../../lib/routeResolver";
 
 export type TimelineLocationItemType = InstanceType<typeof TimelineLocationItem>;
 
@@ -29,7 +30,7 @@ class BaseTimelineLocationItem extends TimelineItem {
         return (
             <header class="no-padding">
                 <nav>
-                    <h2 class="max"> Locations </h2>
+                    <h3 class="max"> Locations </h3>
                     <i>location_on</i>
                 </nav>
             </header>
@@ -42,7 +43,7 @@ class BaseTimelineLocationItem extends TimelineItem {
                 <For each={Object.values(locations)}>
                     {(loc) => (
                         <li>
-                            <A href={`locations/${loc.id}`}>{loc.title}</A>
+                            <A href={childRoute(`locations/${loc.id}`)}>{loc.title}</A>
                         </li>
                     )}
                 </For>

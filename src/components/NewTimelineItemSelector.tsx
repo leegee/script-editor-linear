@@ -15,27 +15,25 @@ export default function NewTimelineItemSelector() {
 
     const [type, setType] = createSignal<TimelineItemType>("dialogue");
     const [fields, setFields] = createSignal<Record<string, any>>({});
-    const [duration, setDuration] = createSignal<number | undefined>(undefined);
 
     const types = timelineItemTypes.map(t => ({ value: t, label: t[0].toUpperCase() + t.slice(1) }));
 
-    // const handleChange = (field: string, value: any) => setFields(prev => ({ ...prev, [field]: value }));
+    const handleChange = (field: string, value: any) => setFields(prev => ({ ...prev, [field]: value }));
 
     const handleCreate = async () => {
         try {
             const itemInstance = createTimelineItemInstance(type());
-            const prepared = itemInstance.prepareFromFields({ ...fields(), duration: duration() });
+            const prepared = itemInstance.prepareFromFields({ ...fields() });
             const newItem = await createTimelineItem({ ...prepared, type: type() }, { insertAtIndex });
 
             setFields({});
-            setDuration(undefined);
             navigate(`/script/items/${newItem.id}`);
         } catch (err) {
             console.error("Failed to create timeline item:", err);
         }
     };
 
-    // const itemInstance = createMemo(() => createTimelineItemInstance(type()));
+    const itemInstance = createMemo(() => createTimelineItemInstance(type()));
 
     return (
         <article class="border padding">
@@ -48,7 +46,7 @@ export default function NewTimelineItemSelector() {
                 <label>Type</label>
             </div>
 
-            {/* {itemInstance().renderCreateNew({ onChange: handleChange, duration: duration() })} */}
+            {itemInstance().renderCreateNew({ onChange: handleChange })}
 
             <hr />
 

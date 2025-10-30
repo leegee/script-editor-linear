@@ -3,6 +3,8 @@ import { formatHHMMSS } from "../../lib/formatSecondsToHMS";
 import { characters, locations, sceneCharacters, sceneDurations, sceneLocations } from "../../stores";
 import TimelineItemEditor from "../TimelineItemEditor";
 import { TimelineItem, TimelineItemProps } from "./TimelineItem";
+import { TimelineLocationItem } from "./Locations/TimelineLocationItem";
+import { CharacterItem } from "./CharacterItem";
 
 export class SceneItem extends TimelineItem {
     constructor(props: Omit<TimelineItemProps, "type">) {
@@ -11,11 +13,10 @@ export class SceneItem extends TimelineItem {
 
     renderCompact() {
         return (
-            <h3 class="timeline-item">
+            <h3 class="field">
                 <TimelineItemEditor
                     id={this.id}
                     path="title"
-                    defaultValue={this.title ?? "Untitled Scene"}
                 />
             </h3>
         );
@@ -25,11 +26,10 @@ export class SceneItem extends TimelineItem {
     renderFull() {
         return (
             <fieldset>
-                <h3>
+                <h3 class="field">
                     <TimelineItemEditor
                         id={this.id}
                         path="title"
-                        defaultValue={this.title ?? "Untitled Scene"}
                     />
                 </h3>
 
@@ -38,7 +38,7 @@ export class SceneItem extends TimelineItem {
                 </article>
 
                 <article>
-                    <h4>Characters in this scene:</h4>
+                    <CharacterItem.ListCharactersHeaeder />
                     <ul class="list no-space border scroll">
                         {[...(sceneCharacters()[this.id] ?? [])].map(charId => (
                             <li>{characters[charId].title}</li>
@@ -47,7 +47,7 @@ export class SceneItem extends TimelineItem {
                 </article>
 
                 <article>
-                    <h4>Locations in this scene:</h4>
+                    <TimelineLocationItem.ListLocationsHeader />
                     <ul class="list no-space border scroll">
                         {[...(sceneLocations()[this.id] ?? [])].map(locId => (
                             <li>{locations[locId]?.title ?? "Unknown Location " + locId}</li>

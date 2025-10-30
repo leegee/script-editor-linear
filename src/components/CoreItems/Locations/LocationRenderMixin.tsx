@@ -47,7 +47,6 @@ export function LocationRenderMixin<TBase extends Constructor>(Base: TBase) {
                                 store="locations"
                                 id={canonicalId}
                                 path="title"
-                                defaultValue={canonicalTitle}
                             />
                         ) : (
                             <span>{canonicalTitle}</span>

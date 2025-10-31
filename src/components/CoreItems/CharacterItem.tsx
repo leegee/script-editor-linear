@@ -20,11 +20,7 @@ export class CharacterItem extends TimelineItem {
         return new CharacterItem(obj);
     }
 
-    static ListCharactersHeaeder() {
-        return <PanelSectionHeader title='Characters' icon='people' />
-    }
-
-    static ListCharacters() {
+    static ListAllCharacters() {
         return (
             <ul class="responsive scroll surface">
                 <For each={Object.values(characters).sort((a, b) => a.title.toLowerCase().localeCompare(b.title.toLowerCase()))}>

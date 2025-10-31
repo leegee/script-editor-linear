@@ -2,6 +2,7 @@ import { createMemo } from "solid-js";
 import { useParams } from "@solidjs/router";
 import { locations } from "../../stores";
 import { TimelineLocationItem } from "../CoreItems";
+import PanelSectionHeader from "../PanelSectionHeader";
 
 export default function CharacterView() {
     const params = useParams();
@@ -11,8 +12,8 @@ export default function CharacterView() {
     return <div>
         {item()?.renderFull() ?? (
             <article class="border">
-                <TimelineLocationItem.ListLocationsHeader />
-                <TimelineLocationItem.ListLocations />
+                <PanelSectionHeader title='Locations' icon='location_on' />
+                <TimelineLocationItem.ListAllLocations />
             </article>
         )}
     </div>

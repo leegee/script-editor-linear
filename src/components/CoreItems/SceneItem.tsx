@@ -8,6 +8,7 @@ import { CharacterItem } from "./CharacterItem";
 import { A } from "@solidjs/router";
 import { childRoute } from "../../lib/routeResolver";
 import { TimelineNoteItem } from "./Notes/TimelineNoteItem";
+import PanelSectionHeader from "../PanelSectionHeader";
 
 export class SceneItem extends TimelineItem {
     constructor(props: Omit<TimelineItemProps, "type">) {
@@ -46,7 +47,7 @@ export class SceneItem extends TimelineItem {
                 <article>
                     <details>
                         <summary>
-                            <TimelineNoteItem.ListNotesHeader />
+                            <PanelSectionHeader title='Notes' icon='note_stack' badge={this.notes.length} />
                         </summary>
                         <ul class="list no-space border scroll">
                             {[...(this.notes ?? [])].map(noteId => (
@@ -61,7 +62,7 @@ export class SceneItem extends TimelineItem {
                 </article>
 
                 <article>
-                    <CharacterItem.ListCharactersHeaeder />
+                    <PanelSectionHeader title='Characters' icon='people' badge={Object.keys(sceneCharacters()).length} />
                     <ul class="list no-space border scroll">
                         {[...(sceneCharacters()[this.id] ?? [])].map(charId => (
                             <li>{characters[charId].title}</li>
@@ -70,7 +71,7 @@ export class SceneItem extends TimelineItem {
                 </article>
 
                 <article>
-                    <TimelineLocationItem.ListLocationsHeader />
+                    <PanelSectionHeader title='Locations' icon='location_on' badge={Object.keys(sceneLocations()).length} />
                     <ul class="list no-space border scroll">
                         {[...(sceneLocations()[this.id] ?? [])].map(locId => (
                             <li>{locations[locId]?.title ?? "Unknown Location " + locId}</li>

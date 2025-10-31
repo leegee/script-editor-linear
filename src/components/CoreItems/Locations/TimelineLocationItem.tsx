@@ -27,11 +27,7 @@ class BaseTimelineLocationItem extends TimelineItem {
         });
     }
 
-    static ListLocationsHeader() {
-        return <PanelSectionHeader title='Locations' icon='location_on' />
-    }
-
-    static ListLocations() {
+    static ListAllLocations() {
         return (
             <ul class="responsive scroll surface">
                 <For each={Object.values(locations)}>

@@ -9,11 +9,11 @@ export default function Navbar(props: NavBarProps) {
         <nav class="toolbar center small-margin bottom-margin">
             <button class="transparent no-border tiny-padding">
                 <A class="transparent " href={`${props.root}/locations`}><i class="large small-opacity">location_on</i></A>
-                <div class="tooltip left">Locations</div>
+                <div class="tooltip left">All Locations</div>
             </button>
             <button class="transparent no-border tiny-padding">
                 <A class="transparent " href={`${props.root}/characters`}><i class="large small-opacity">people</i></A>
-                <div class="tooltip left">Characters</div>
+                <div class="tooltip left">All Characters</div>
             </button>
             <button class="transparent no-border tiny-padding">
                 <A class="transparent " href={`${props.root}/filters`}><i class="large small-opacity">filter_alt</i></A>

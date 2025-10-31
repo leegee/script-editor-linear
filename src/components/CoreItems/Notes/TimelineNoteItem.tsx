@@ -26,11 +26,7 @@ export class BaseTimelineNoteItem extends TimelineItem {
         });
     }
 
-    static ListNotesHeader() {
-        return <PanelSectionHeader title='Notes' icon='note_stack' />
-    }
-
-    static ListNotes() {
+    static ListAllNotes() {
         return (
             <ul class="responsive scroll surface">
                 <For each={Object.values(notes)}>

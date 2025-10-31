@@ -7,6 +7,7 @@ import { childRoute } from "../../lib/routeResolver";
 import { CharacterItem } from "./CharacterItem";
 import { TimelineLocationItem } from "./Locations/TimelineLocationItem";
 import { TimelineNoteItem } from "./Notes/TimelineNoteItem";
+import PanelSectionHeader from "../PanelSectionHeader";
 
 export class ActItem extends TimelineItem {
     constructor(props: Omit<TimelineItemProps, "type">) {
@@ -44,7 +45,7 @@ export class ActItem extends TimelineItem {
                 <article>
                     <details>
                         <summary>
-                            <TimelineNoteItem.ListNotesHeader />
+                            <PanelSectionHeader title='Notes' icon='note_stack' badge={this.notes.length} />
                         </summary>
                         <ul class="list no-space border scroll">
                             <li class="row middle-align">
@@ -67,7 +68,7 @@ export class ActItem extends TimelineItem {
                 <article>
                     <details>
                         <summary>
-                            <CharacterItem.ListCharactersHeaeder />
+                            <PanelSectionHeader title='Characters' icon='people' badge={Object.keys(actCharacters()).length} />
                         </summary>
                         <ul class="list no-space border scroll">
                             {[...(actCharacters()[this.id] ?? [])].map(charId => (
@@ -84,7 +85,7 @@ export class ActItem extends TimelineItem {
                 <article>
                     <details>
                         <summary>
-                            <TimelineLocationItem.ListLocationsHeader />
+                            <PanelSectionHeader title='Locations' icon='location_on' badge={Object.keys(actLocations()).length} />
                         </summary>
                         <ul class="list no-space border scroll">
                             {[...(actLocations()[this.id] ?? [])].map(locId => (

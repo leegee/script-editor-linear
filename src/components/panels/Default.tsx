@@ -1,16 +1,21 @@
 import { CharacterItem, TimelineLocationItem, TimelineItem } from "../CoreItems";
 import { FilterList } from "../FilterList";
+import PanelSectionHeader from "../PanelSectionHeader";
 
 export default function Default() {
     return <>
         <details>
-            <summary><TimelineLocationItem.ListLocationsHeader /></summary>
-            <TimelineLocationItem.ListLocations />
+            <summary>
+                <PanelSectionHeader title='Locations' icon='location_on' />
+            </summary>
+            <TimelineLocationItem.ListAllLocations />
         </details>
 
         <details>
-            <summary><CharacterItem.ListCharactersHeaeder /></summary>
-            <CharacterItem.ListCharacters />
+            <summary>
+                <PanelSectionHeader title='Characters' icon='people' />
+            </summary>
+            <CharacterItem.ListAllCharacters />
         </details>
 
         <details>

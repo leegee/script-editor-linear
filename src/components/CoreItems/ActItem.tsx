@@ -47,6 +47,12 @@ export class ActItem extends TimelineItem {
                             <TimelineNoteItem.ListNotesHeader />
                         </summary>
                         <ul class="list no-space border scroll">
+                            <li class="row middle-align">
+                                <A href={childRoute('/attach-new/note/' + this.id)} class="chip small transparent">
+                                    <i>add</i>
+                                    <span>Add note</span>
+                                </A>
+                            </li>
                             {[...(this.notes ?? [])].map(noteId => (
                                 <li>
                                     <A href={childRoute("/notes/" + noteId)}>

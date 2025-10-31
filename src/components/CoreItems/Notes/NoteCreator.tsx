@@ -10,7 +10,7 @@ export default function NoteCreator() {
 
     // Local object representing the new note
     const [noteObj, setNoteObj] = createSignal({
-        title: "",
+        title: "New note",
         details: { text: "" }
     });
 
@@ -24,8 +24,7 @@ export default function NoteCreator() {
     async function createNote() {
         if (!isValid()) return;
 
-        // Use canonical note class
-        const note = CanonicalNote.create(noteObj());
+        const note = new CanonicalNote(noteObj());
 
         await addNote(note);
         await updateTimelineItemAddNote(params.itemId, note.id);
@@ -33,9 +32,8 @@ export default function NoteCreator() {
         navigate(childRoute("items/" + params.itemId));
     }
 
-    // Render the note editors directly via the mixin’s renderFull
     const renderEditors = (): JSX.Element => {
-        const noteInstance = CanonicalNote.create(noteObj());
+        const noteInstance = new CanonicalNote(noteObj());
         return noteInstance.renderFull();
     };
 

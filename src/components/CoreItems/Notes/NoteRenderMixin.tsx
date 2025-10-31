@@ -43,11 +43,13 @@ export function NoteRenderMixin<TBase extends Constructor>(Base: TBase) {
                                         store="notes"
                                         id={canonicalId}
                                         path="title"
+                                        label="title"
                                     />
                                 ) : (
                                     <TimelineItemEditor
                                         item={canonical}
                                         path="title"
+                                        label="title"
                                     />
                                 )}
                             </h3>

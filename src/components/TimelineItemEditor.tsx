@@ -114,15 +114,18 @@ export default function TimelineItemEditor(props: TimelineItemEditorProps) {
                     label={props.label}
                 />
             ) : (
-                <input
-                    ref={(el) => (inputRef = el)}
-                    type="text"
-                    class={props.class}
-                    value={value()}
-                    onInput={(e) => handleInput(e.currentTarget.value)}
-                    onBlur={handleBlur}
-                    autofocus
-                />
+                <div class="field">
+                    <input
+                        ref={(el) => (inputRef = el)}
+                        type="text"
+                        class={props.class}
+                        value={value()}
+                        onInput={(e) => handleInput(e.currentTarget.value)}
+                        onBlur={handleBlur}
+                        autofocus
+                    />
+                    {props.label && <label>{props.label}</label>}
+                </div>
             )}
         </Show>
     );

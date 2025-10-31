@@ -32,18 +32,22 @@ export async function updateNote(id: string, updatedFields: Partial<CanonicalNot
     if (Object.hasOwn(updatedFields, 'ref')) {
         throw new TypeError('updateNote fields should not contain ref, this is a Canonical Note');
     }
-    setNotes(id, prev => ({
-        ...(prev ?? {}),
+
+    // Merge fields and revive to ensure methods from NoteRenderMixin are preserved
+    const prev = unwrap(notes[id]) as CanonicalNoteType | undefined;
+    const merged = {
+        ...(prev as any),
         ...updatedFields,
         details: {
-            ...(prev?.details ?? {}),
-            ...(updatedFields.details ?? {})
+            ...((prev as any)?.details ?? {}),
+            ...((updatedFields as any).details ?? {})
         }
-    }));
+    } as any;
 
-    const loc = unwrap(notes[id]);
-    const updated = { ...loc };
-    await storage.put("notes", updated);
+    const revived = CanonicalNote.revive(merged);
+    setNotes(id, revived);
+
+    await storage.put("notes", unwrap(revived));
 }
 
 export async function removeNote(id: string) {

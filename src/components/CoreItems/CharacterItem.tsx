@@ -5,6 +5,7 @@ import { A } from "@solidjs/router";
 import TimelineItemEditor from "../TimelineItemEditor";
 import { showAlert } from "../../stores/modals";
 import { childRoute } from "../../lib/routeResolver";
+import PanelSectionHeader from "../PanelSectionHeader";
 
 function isCharacterUsed(id: string) {
     return Object.values(timelineItems).some(
@@ -20,14 +21,7 @@ export class CharacterItem extends TimelineItem {
     }
 
     static ListCharactersHeaeder() {
-        return (
-            <header class="no-padding">
-                <nav>
-                    <h3 class="max"> Characters </h3>
-                    <i>people</i>
-                </nav>
-            </header>
-        );
+        return <PanelSectionHeader title='Characters' icon='people' />
     }
 
     static ListCharacters() {

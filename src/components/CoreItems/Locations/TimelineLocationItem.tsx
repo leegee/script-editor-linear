@@ -6,6 +6,7 @@ import { TimelineItem, TimelineItemProps } from "../TimelineItem";
 import { LocationRenderMixin } from "./LocationRenderMixin";
 import { CanonicalLocation } from "./CanonicalLocation";
 import { childRoute } from "../../../lib/routeResolver";
+import PanelSectionHeader from "../../PanelSectionHeader";
 
 export type TimelineLocationItemType = InstanceType<typeof TimelineLocationItem>;
 
@@ -27,14 +28,7 @@ class BaseTimelineLocationItem extends TimelineItem {
     }
 
     static ListLocationsHeader() {
-        return (
-            <header class="no-padding">
-                <nav>
-                    <h3 class="max"> Locations </h3>
-                    <i>location_on</i>
-                </nav>
-            </header>
-        );
+        return <PanelSectionHeader title='Locations' icon='location_on' />
     }
 
     static ListLocations() {

@@ -31,24 +31,29 @@ export function NoteRenderMixin<TBase extends Constructor>(Base: TBase) {
             const canonicalDetails = canonical.details ?? {};
             const urls: string[] = Array.isArray((canonicalDetails as any).urls) ? (canonicalDetails as any).urls : [];
             const [newUrl, setNewUrl] = createSignal("");
+            const [showAdd, setShowAdd] = createSignal(false);
 
             return (
                 <article class="border padding">
-
-                    <h3 class="field">
-                        {isTimelineItem && canonicalId ? (
-                            <TimelineItemEditor
-                                store="notes"
-                                id={canonicalId}
-                                path="title"
-                            />
-                        ) : (
-                            <TimelineItemEditor
-                                item={canonical}
-                                path="title"
-                            />
-                        )}
-                    </h3>
+                    <header class="no-padding">
+                        <nav>
+                            <h3 class="max">
+                                {isTimelineItem && canonicalId ? (
+                                    <TimelineItemEditor
+                                        store="notes"
+                                        id={canonicalId}
+                                        path="title"
+                                    />
+                                ) : (
+                                    <TimelineItemEditor
+                                        item={canonical}
+                                        path="title"
+                                    />
+                                )}
+                            </h3>
+                            <i>note_alt</i>
+                        </nav>
+                    </header>
 
                     <div class="field bottom-padding">
                         {isTimelineItem && canonicalId ? (
@@ -72,40 +77,56 @@ export function NoteRenderMixin<TBase extends Constructor>(Base: TBase) {
                     </div>
 
                     <section class="top-padding">
-                        <h6>Links</h6>
-                        <div class="field border label max">
-                            <input
-                                type="url"
-                                value={newUrl()}
-                                onInput={(e) => setNewUrl(e.currentTarget.value)}
-                                onKeyDown={async (e) => {
-                                    if (e.key === "Enter" && canonicalId) {
+                        <header class="no-padding">
+                            <nav>
+                                <h6 class="max">Links</h6>
+                                <button
+                                    class="chip small transparent no-border"
+                                    title={showAdd() ? "Close" : "Add link"}
+                                    onClick={() => setShowAdd(v => !v)}
+                                >
+                                    <i>{showAdd() ? "close" : "add"}</i>
+                                </button>
+                            </nav>
+                        </header>
+
+                        {showAdd() && (
+                            <div class="field border label max">
+                                <input
+                                    type="url"
+                                    value={newUrl()}
+                                    onInput={(e) => setNewUrl(e.currentTarget.value)}
+                                    onKeyDown={async (e) => {
+                                        if (e.key === "Enter" && canonicalId) {
+                                            const v = newUrl().trim();
+                                            if (!v) return;
+                                            const next = Array.from(new Set([...(urls ?? []), v]));
+                                            await updateNote(canonicalId, { details: { urls: next } } as any);
+                                            setNewUrl("");
+                                            setShowAdd(false);
+                                        }
+                                    }}
+                                    onBlur={async (e) => {
+                                        if (!canonicalId) return;
                                         const v = newUrl().trim();
                                         if (!v) return;
                                         const next = Array.from(new Set([...(urls ?? []), v]));
                                         await updateNote(canonicalId, { details: { urls: next } } as any);
                                         setNewUrl("");
-                                    }
-                                }}
-                                onBlur={async (e) => {
-                                    if (!canonicalId) return;
-                                    const v = newUrl().trim();
-                                    if (!v) return;
-                                    const next = Array.from(new Set([...(urls ?? []), v]));
-                                    await updateNote(canonicalId, { details: { urls: next } } as any);
-                                    setNewUrl("");
-                                }}
-                            />
-                            <label>Add URL</label>
-                        </div>
+                                        setShowAdd(false);
+                                    }}
+                                />
+                                <label>Add URL</label>
+                            </div>
+                        )}
 
                         {urls?.length ? (
-                            <ul class="responsive">
+                            <ul class="responsive list border no-space scroll surface">
                                 {urls.map((u) => (
                                     <li class="row max middle-align">
                                         <a href={u} target="_blank" rel="noopener noreferrer">{u}</a>
                                         <span class="max"></span>
-                                        <button class="chip small transparent right" title="Remove" onClick={async () => {
+                                        <button class="chip small no-border transparent right" title="Remove" onClick={async () => {
                                             if (!canonicalId) return;
                                             const next = urls.filter(x => x !== u);
                                             await updateNote(canonicalId, { details: { urls: next } } as any);

@@ -1,10 +1,13 @@
 import { type JSX } from "solid-js";
 import { formatHHMMSS } from "../../lib/formatSecondsToHMS";
-import { characters, locations, sceneCharacters, sceneDurations, sceneLocations } from "../../stores";
+import { actDurations, characters, locations, notes, sceneCharacters, sceneDurations, sceneLocations } from "../../stores";
 import TimelineItemEditor from "../TimelineItemEditor";
 import { TimelineItem, TimelineItemProps } from "./TimelineItem";
 import { TimelineLocationItem } from "./Locations/TimelineLocationItem";
 import { CharacterItem } from "./CharacterItem";
+import { A } from "@solidjs/router";
+import { childRoute } from "../../lib/routeResolver";
+import { TimelineNoteItem } from "./Notes/TimelineNoteItem";
 
 export class SceneItem extends TimelineItem {
     constructor(props: Omit<TimelineItemProps, "type">) {
@@ -26,15 +29,35 @@ export class SceneItem extends TimelineItem {
     renderFull() {
         return (
             <fieldset>
-                <h3 class="field">
-                    <TimelineItemEditor
-                        id={this.id}
-                        path="title"
-                    />
-                </h3>
+                <header>
+                    <h3>
+                        <TimelineItemEditor
+                            id={this.id}
+                            path="title"
+                        />
+                    </h3>
+                    <div class="row">
+                        Duration
+                        <span class="max" />
+                        <code>{formatHHMMSS(actDurations()[this.id])}</code>
+                    </div>
+                </header>
 
                 <article>
-                    <h4>Duration: {formatHHMMSS(sceneDurations()[this.id])} </h4>
+                    <details>
+                        <summary>
+                            <TimelineNoteItem.ListNotesHeader />
+                        </summary>
+                        <ul class="list no-space border scroll">
+                            {[...(this.notes ?? [])].map(noteId => (
+                                <li>
+                                    <A href={childRoute("/notes/" + noteId)}>
+                                        {notes[noteId].title}
+                                    </A>
+                                </li>
+                            ))}
+                        </ul>
+                    </details>
                 </article>
 
                 <article>

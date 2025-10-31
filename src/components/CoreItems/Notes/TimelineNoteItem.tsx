@@ -5,6 +5,7 @@ import { notes, addNote } from "../../../stores";
 import { TimelineItem, TimelineItemProps } from "../TimelineItem";
 import { NoteRenderMixin } from "./NoteRenderMixin";
 import { CanonicalNote } from "./CanonicalNote";
+import PanelSectionHeader from "../../PanelSectionHeader";
 
 export type TimelineNoteItemType = InstanceType<typeof TimelineNoteItem>;
 
@@ -26,14 +27,7 @@ export class BaseTimelineNoteItem extends TimelineItem {
     }
 
     static ListNotesHeader() {
-        return (
-            <header class="no-padding">
-                <nav>
-                    <h2 class="max"> Notes </h2>
-                    <i>note_on</i>
-                </nav>
-            </header>
-        );
+        return <PanelSectionHeader title='Notes' icon='note_stack' />
     }
 
     static ListNotes() {
@@ -147,6 +141,7 @@ export class BaseTimelineNoteItem extends TimelineItem {
     timelineContent(zoom: number): JSX.Element | string | undefined {
         return this.title;
     }
+
 }
 
 export const TimelineNoteItem = NoteRenderMixin(BaseTimelineNoteItem);

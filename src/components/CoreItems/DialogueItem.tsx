@@ -15,6 +15,139 @@ type DialogueUiState = {
 
 const [uiState, setUiState] = createStore<Record<string, DialogueUiState>>({});
 
+type DialogueFormProps = {
+    mode: "select" | "new";
+    setMode: (m: "select" | "new") => void;
+    values: { characterName?: string; ref?: string; text?: string; duration?: number };
+    onChange: (field: "characterName" | "ref" | "text" | "duration", value: any) => void;
+    // Optional advanced controls
+    showAdvanced?: boolean;
+    autoDuration?: boolean;
+    phonemesPerSecond?: number;
+    onToggleAutoDuration?: (checked: boolean) => void;
+    onChangePhonemesPerSecond?: (pps: number) => void;
+    helperText?: string;
+};
+
+function DialogueForm(props: DialogueFormProps) {
+    return (
+        <>
+            <div class="field border middle-align max" title="Select or create a character">
+                <label class="switch icon">
+                    <input
+                        type="checkbox"
+                        checked={props.mode === "new"}
+                        onChange={(e) => props.setMode(e.currentTarget.checked ? "new" : "select")}
+                    />
+                    <span><i>person_add</i></span>
+                </label>
+                <span class='left-padding'>
+                    {props.mode === "new" ? "Create a new character" : "Select a character"}
+                </span>
+            </div>
+
+            <Switch>
+                <Match when={props.mode === "new"}>
+                    <div class="bottom-padding max">
+                        <nav class="no-space">
+                            <div class="field border label max small-round left-round">
+                                <input
+                                    type="text"
+                                    value={props.values.characterName ?? ""}
+                                    onInput={(e) => props.onChange("characterName", e.currentTarget.value)}
+                                />
+                                <label>New character name</label>
+                            </div>
+                        </nav>
+                    </div>
+                </Match>
+                <Match when={props.mode === "select"}>
+                    <div class="field border label max">
+                        <select
+                            value={props.values.ref ?? ""}
+                            onChange={(e) => props.onChange("ref", e.currentTarget.value)}
+                        >
+                            <option value="" disabled>Select a character</option>
+                            {Object.values(characters).map((char) => (
+                                <option value={char.id}>{char.title}</option>
+                            ))}
+                        </select>
+                        <label>Existing Character</label>
+                        <i>arrow_drop_down</i>
+                    </div>
+                </Match>
+            </Switch>
+
+            <div class="field border label max">
+                <textarea
+                    class="dialogueText"
+                    value={props.values.text ?? ""}
+                    onInput={(e) => props.onChange("text", e.currentTarget.value)}
+                    rows={3}
+                />
+                <label>Dialogue</label>
+            </div>
+
+            <div class="field border label max">
+                <input
+                    type="number"
+                    min={0}
+                    value={props.values.duration ?? ""}
+                    onInput={(e) => {
+                        const v = Number(e.currentTarget.value);
+                        if (Number.isFinite(v)) props.onChange("duration", v);
+                    }}
+                />
+                <label>Duration (seconds)</label>
+            </div>
+
+            {props.showAdvanced && (
+                <fieldset>
+                    <div class="field border label max no-padding">
+                        {props.helperText && (
+                            <span class="helper tertiary-text">{props.helperText}</span>
+                        )}
+                    </div>
+
+                    <hr class='space transparent' />
+
+                    <h6>Compute duration</h6>
+                    <div class="field max no-border">
+                        <label class="slider">
+                            <input
+                                type="range"
+                                value={props.phonemesPerSecond ?? 12}
+                                min={8}
+                                max={25}
+                                disabled={!props.autoDuration}
+                                onChange={(e) => props.onChangePhonemesPerSecond?.(Number(e.currentTarget.value))}
+                            />
+                            <span></span>
+                            <div class="tooltip bottom">phonemes per second</div>
+                        </label>
+                    </div>
+
+                    <div class="field max">
+                        <label class="slider tiny">
+                            <label class="switch icon">
+                                <input
+                                    type="checkbox"
+                                    checked={!!props.autoDuration}
+                                    onChange={(e) => props.onToggleAutoDuration?.(e.currentTarget.checked)}
+                                />
+                                <span><i>timer</i></span>
+                            </label>
+                            <div class="helper small small-margin left-margin">
+                                Set the speed of the dialogue using the slider
+                            </div>
+                        </label>
+                    </div>
+                </fieldset>
+            )}
+        </>
+    );
+}
+
 export class DialogueItem extends TimelineItem {
 
     constructor(props: Omit<TimelineItemProps, "type">) {
@@ -45,11 +178,31 @@ export class DialogueItem extends TimelineItem {
         );
     }
 
-    // renderCreateNew(props: { duration?: number; onChange: (field: string, value: any) => void }) {
-    //     return super.renderCreateNew({
-    //         ...props,
-    //     })
-    // }
+    renderCreateNew(props: { duration?: number; onChange: (field: string, value: any) => void }) {
+        const [mode, setMode] = createSignal<"select" | "new">("select");
+        const [newCharName, setNewCharName] = createSignal("");
+        const [text, setText] = createSignal("");
+        const [dur, setDur] = createSignal<number | undefined>(props.duration);
+
+        return (
+            <article>
+                <DialogueForm
+                    mode={mode()}
+                    setMode={setMode}
+                    values={{ characterName: newCharName(), ref: "", text: text(), duration: dur() }}
+                    onChange={(field, value) => {
+                        if (field === "characterName") setNewCharName(String(value ?? ""));
+                        if (field === "text") setText(String(value ?? ""));
+                        if (field === "duration") {
+                            const v = Number(value);
+                            setDur(Number.isFinite(v) ? v : undefined);
+                        }
+                        props.onChange(field, value);
+                    }}
+                />
+            </article>
+        );
+    }
 
     renderFull() {
         // Local signal for the new character name input
@@ -84,145 +237,43 @@ export class DialogueItem extends TimelineItem {
 
         return (
             <article>
-                {/* Mode toggle */}
-                <div class="field border middle-align max" title="Select or create a character">
-                    <label class="switch icon">
-                        <input
-                            type="checkbox"
-                            checked={mode() === "new"}
-                            onChange={(e) =>
-                                setUiState(this.id, "mode", e.currentTarget.checked ? "new" : "select")
-                            }
-                        />
-                        <span><i>person_add</i></span>
-                    </label>
-                    <span class='left-padding'>
-                        {mode() === "new" ? "Create a new character" : "Select a character"}
-                    </span>
-                </div>
-
-                {/* Character creation / selection */}
-                <Switch>
-                    <Match when={mode() === "new"}>
-                        <div class="bottom-padding max">
-                            <nav class="no-space">
-                                <div class="field border label max small-round left-round">
-                                    <input
-                                        type="text"
-                                        value={newCharName()}
-                                        onInput={(e) => setNewCharName(e.currentTarget.value)}
-                                    />
-                                    <label>New character name</label>
-                                </div>
-                                <button
-                                    class="large small-round right-round"
-                                    disabled={!newCharName().trim()}
-                                    onclick={() => {
-                                        const newCharId = newCharName().replace(/[^\p{L}\p{N}_]/gu, "");
-                                        const newChar = new CharacterItem({ id: newCharId, title: newCharName() });
-                                        addCharacter(newChar);
-                                        updateTimelineItem(this.id, "details", "ref", newCharId);
-                                        setUiState(this.id, "mode", "select");
-                                    }}
-                                >
-                                    <span>Create</span>
-                                    <i>person</i>
-                                </button>
-                            </nav>
-                        </div>
-                    </Match>
-                    <Match when={mode() === "select"}>
-                        <div class="field border label max">
-                            <select
-                                value={this.details.ref ?? ""}
-                                onChange={(e) => updateTimelineItem(this.id, "details", "ref", e.currentTarget.value)}
-                            >
-                                <option value="" disabled>Select a character</option>
-                                {Object.values(characters).map((char) => (
-                                    <option value={char.id}>{char.title}</option>
-                                ))}
-                            </select>
-                            <label>Existing Character</label>
-                            <i>arrow_drop_down</i>
-                        </div>
-                    </Match>
-                </Switch>
-
-                {/* Dialogue Text Editor */}
-                <TimelineItemEditor
-                    id={this.id}
-                    path="details"
-                    key="text"
-                    class="field textarea border label max"
-                    multiline={true}
-                    editMode={true}
-                    label="Dialogue"
-                    onChange={setDurationByPhonemes}
+                <DialogueForm
+                    mode={mode()}
+                    setMode={(m) => setUiState(this.id, "mode", m)}
+                    values={{
+                        characterName: newCharName(),
+                        ref: this.details.ref,
+                        text: this.details.text,
+                        duration: duration(),
+                    }}
+                    onChange={(field, value) => {
+                        if (field === "characterName") {
+                            const v = String(value ?? "");
+                            setNewCharName(v);
+                        } else if (field === "ref") {
+                            updateTimelineItem(this.id, "details", "ref", value);
+                        } else if (field === "text") {
+                            updateTimelineItem(this.id, "details", "text", value);
+                            setDurationByPhonemes(String(value ?? ""));
+                        } else if (field === "duration") {
+                            const val = Number(value);
+                            setUiState(this.id, "duration", val);
+                            updateTimelineItem(this.id, "duration", "", val);
+                        }
+                    }}
+                    showAdvanced={true}
+                    autoDuration={autoDuration()}
+                    phonemesPerSecond={phonemesPerSecond()}
+                    onToggleAutoDuration={(checked) => {
+                        setUiState(this.id, "autoDuration", checked);
+                        setDurationByPhonemes(this.details.text);
+                    }}
+                    onChangePhonemesPerSecond={(newPPS) => {
+                        setUiState(this.id, "phonemesPerSecond", newPPS);
+                        if (autoDuration()) setDurationByPhonemes(this.details.text);
+                    }}
+                    helperText={(phonemesPerSecond() / 60).toFixed(2) + " minutes"}
                 />
-
-                {/* Duration input */}
-                <fieldset>
-                    <div class="field border label max no-padding">
-                        <input
-                            type="number"
-                            min={0}
-                            value={duration()} // reactive value
-                            onBlur={(e) => {
-                                const val = Number(e.currentTarget.value);
-                                setUiState(this.id, "duration", val);
-                                updateTimelineItem(this.id, "duration", "", val);
-                            }}
-                        />
-                        <label>Duration (seconds)</label>
-                        <span class="helper tertiary-text">
-                            {(phonemesPerSecond() / 60).toFixed(2)} minutes
-                        </span>
-                    </div>
-
-                    <hr class='space transparent' />
-
-                    <h6>Compute duration</h6>
-                    <div class="field max no-border">
-                        <label class="slider">
-                            <input
-                                type="range"
-                                value={phonemesPerSecond()}
-                                min={8}
-                                max={25}
-                                disabled={!autoDuration()}
-                                onChange={(e) => {
-                                    const newPPS = Number(e.currentTarget.value);
-                                    setUiState(this.id, "phonemesPerSecond", newPPS);
-                                    // Recompute duration immediately if autoDuration is on
-                                    if (autoDuration()) {
-                                        setDurationByPhonemes(this.details.text);
-                                    }
-                                }}
-                            />
-                            <span></span>
-                            <div class="tooltip bottom">phonemes per second</div>
-                        </label>
-                    </div>
-
-                    <div class="field max">
-                        <label class="slider tiny">
-                            <label class="switch icon">
-                                <input
-                                    type="checkbox"
-                                    checked={autoDuration()}
-                                    onChange={(e) => {
-                                        setUiState(this.id, "autoDuration", e.currentTarget.checked);
-                                        setDurationByPhonemes(this.details.text);
-                                    }}
-                                />
-                                <span><i>timer</i></span>
-                            </label>
-                            <div class="helper small small-margin left-margin">
-                                Set the speed of the dialogue using the slider
-                            </div>
-                        </label>
-                    </div>
-                </fieldset>
             </article>
         );
     }

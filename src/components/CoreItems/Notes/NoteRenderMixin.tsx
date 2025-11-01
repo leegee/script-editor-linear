@@ -124,18 +124,41 @@ export function NoteRenderMixin<TBase extends Constructor>(Base: TBase) {
 
                         {urls?.length ? (
                             <ul class="responsive list border no-space scroll surface">
-                                {urls.map((u) => (
-                                    <li class="row max middle-align">
-                                        <a href={u} target="_blank" rel="noopener noreferrer">{u}</a>
-                                        <span class="max"></span>
-                                        <button class="chip small no-border transparent right" title="Remove" onClick={async () => {
-                                            if (!canonicalId) return;
-                                            const next = urls.filter(x => x !== u);
-                                            await updateNote(canonicalId, { details: { urls: next } } as any);
-                                        }}><i>delete</i></button>
-                                    </li>
-                                ))}
+                                {urls.map((u) => {
+                                    // Simple check for file type
+                                    const isImage = /\.(jpe?g|png|gif|webp|avif|bmp|svg)$/i.test(u);
+                                    const isVideo = /\.(mp4|webm|ogg)$/i.test(u);
+
+                                    return (
+                                        <li class="row max middle-align">
+                                            {isImage || isVideo ? (
+                                                <a href={u} target="_blank" rel="noopener noreferrer" class="row middle-align right-margin">
+                                                    {isImage && <img src={u} alt="preview" style={{ width: "1em", height: "1em", "object-fit": "cover" }} />}
+                                                    {isVideo && <video src={u} style={{ width: "1em", height: "1em", "object-fit": "cover" }} muted />}
+                                                    {u}
+                                                </a>
+                                            ) : (
+                                                <a href={u} target="_blank" rel="noopener noreferrer">{u}</a>
+                                            )}
+
+                                            <span class="max"></span>
+
+                                            <button
+                                                class="chip small no-border transparent right"
+                                                title="Remove"
+                                                onClick={async () => {
+                                                    if (!canonicalId) return;
+                                                    const next = urls.filter(x => x !== u);
+                                                    await updateNote(canonicalId, { details: { urls: next } } as any);
+                                                }}
+                                            >
+                                                <i>delete</i>
+                                            </button>
+                                        </li>
+                                    );
+                                })}
                             </ul>
+
                         ) : (
                             <p class="secondary-text">No links yet</p>
                         )}

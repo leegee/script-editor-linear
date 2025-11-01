@@ -40,43 +40,36 @@ export class SceneItem extends TimelineItem {
                     <div class="row">
                         Duration
                         <span class="max" />
-                        <code>{formatHHMMSS(actDurations()[this.id])}</code>
+                        <code>{formatHHMMSS(sceneDurations()[this.id])}</code>
                     </div>
                 </header>
+
+                {this.panelNotesSection()}
 
                 <article>
                     <details>
                         <summary>
-                            <PanelSectionHeader title='Notes' icon='note_stack' badge={this.notes.length} />
+                            <PanelSectionHeader title='Locations' icon='location_on' badge={(sceneLocations()[this.id]).size} />
                         </summary>
                         <ul class="list no-space border scroll">
-                            {[...(this.notes ?? [])].map(noteId => (
-                                <li>
-                                    <A href={childRoute("/notes/" + noteId)}>
-                                        {notes[noteId].title}
-                                    </A>
-                                </li>
+                            {[...(sceneLocations()[this.id] ?? [])].map(locId => (
+                                <li>{locations[locId]?.title ?? "Unknown Location " + locId}</li>
                             ))}
                         </ul>
                     </details>
                 </article>
 
                 <article>
-                    <PanelSectionHeader title='Characters' icon='people' badge={Object.keys(sceneCharacters()).length} />
-                    <ul class="list no-space border scroll">
-                        {[...(sceneCharacters()[this.id] ?? [])].map(charId => (
-                            <li>{characters[charId].title}</li>
-                        ))}
-                    </ul>
-                </article>
-
-                <article>
-                    <PanelSectionHeader title='Locations' icon='location_on' badge={Object.keys(sceneLocations()).length} />
-                    <ul class="list no-space border scroll">
-                        {[...(sceneLocations()[this.id] ?? [])].map(locId => (
-                            <li>{locations[locId]?.title ?? "Unknown Location " + locId}</li>
-                        ))}
-                    </ul>
+                    <details>
+                        <summary>
+                            <PanelSectionHeader title='Characters' icon='people' badge={(sceneCharacters()[this.id]).size} />
+                        </summary>
+                        <ul class="list no-space border scroll">
+                            {[...(sceneCharacters()[this.id] ?? [])].map(charId => (
+                                <li>{characters[charId].title}</li>
+                            ))}
+                        </ul>
+                    </details>
                 </article>
             </fieldset >
         );

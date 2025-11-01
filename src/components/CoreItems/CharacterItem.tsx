@@ -22,7 +22,7 @@ export class CharacterItem extends TimelineItem {
 
     static ListAllCharacters() {
         return (
-            <ul class="responsive scroll surface">
+            <ul class="responsive no-space list scroll surface border">
                 <For each={Object.values(characters).sort((a, b) => a.title.toLowerCase().localeCompare(b.title.toLowerCase()))}>
                     {(chr) => (
                         <li>
@@ -51,6 +51,8 @@ export class CharacterItem extends TimelineItem {
                         <TimelineItemEditor id={this.id} path="title" store="characters" />
                     </h3>
                 </header>
+
+                {this.panelNotesSection()}
 
                 <div class="border padding">
                     <p>

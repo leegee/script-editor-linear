@@ -1,6 +1,11 @@
 import "./CoreItems.scss";
 import TimelineItemEditor from "../TimelineItemEditor";
 import { JSX } from "solid-js/jsx-runtime";
+import { A } from "@solidjs/router";
+import { childRoute } from "../../lib/routeResolver";
+import { notes } from "../../stores";
+import PanelSectionHeader from "../PanelSectionHeader";
+import { For } from "solid-js";
 
 export interface TimelineItemProps {
     id: string;
@@ -23,6 +28,28 @@ export class TimelineItem {
     details: Record<string, any>;
     tags: string[];
     notes: string[];
+
+    static ListTheseNotes(noteIds: string[], parentId: string) {
+        return (
+            <ul class="list no-space border scroll">
+                <li class="row middle-align">
+                    <A href={childRoute('/attach-new/note/' + parentId)} class="chip small transparent">
+                        <i>add</i><span>Add note</span>
+                    </A>
+                </li>
+
+                <For each={noteIds}>
+                    {(noteId) => (
+                        <li>
+                            <A href={childRoute("/notes/" + noteId)}>
+                                {notes[noteId]?.title}
+                            </A>
+                        </li>
+                    )}
+                </For>
+            </ul>
+        );
+    }
 
     constructor(props: TimelineItemProps) {
         this.id = props.id;
@@ -125,4 +152,20 @@ export class TimelineItem {
     timelineContent(zoom: number): JSX.Element | string | undefined {
         return undefined;
     }
+
+    panelNotesSection() {
+        return (
+            <article>
+                <details>
+                    <summary>
+                        <PanelSectionHeader title='Notes' icon='note_stack' badge={this.notes.length} />
+                    </summary>
+                    {
+                        (this.constructor as typeof TimelineItem).ListTheseNotes(this.notes, this.id)
+                    }
+                </details>
+            </article>
+        )
+    }
+
 }

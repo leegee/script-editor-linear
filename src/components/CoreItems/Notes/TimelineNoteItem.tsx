@@ -5,7 +5,7 @@ import { notes, addNote } from "../../../stores";
 import { TimelineItem, TimelineItemProps } from "../TimelineItem";
 import { NoteRenderMixin } from "./NoteRenderMixin";
 import { CanonicalNote } from "./CanonicalNote";
-import PanelSectionHeader from "../../PanelSectionHeader";
+import { childRoute } from "../../../lib/routeResolver";
 
 export type TimelineNoteItemType = InstanceType<typeof TimelineNoteItem>;
 

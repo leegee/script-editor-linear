@@ -5,9 +5,17 @@ import { sectionMap } from "../stores/timelineViewModel";
 import PanelSectionHeader from "./PanelSectionHeader";
 
 const allTypes = Object.keys(timelineItemClasses);
-const [filters, setFilters] = createStore(
+
+export const [filters, setFilters] = createStore(
     Object.fromEntries(allTypes.map((key) => [key, true]))
 );
+
+export const filtersActiveCount = () => {
+    const values = Object.values(filters);
+    const active = values.filter(Boolean).length;
+    const inactive = values.length - active;
+    return inactive;
+};
 
 const styleElement = document.createElement("style");
 styleElement.id = "filter-visibility-rules";
@@ -32,7 +40,7 @@ const toggleAll = () => {
 
 
 export class FilterList {
-    static ListFiltersHeader() {
+    static ListFilters() {
         createEffect(() => {
             const dimmed = Object.entries(filters)
                 .filter(([, visible]) => !visible)
@@ -42,12 +50,6 @@ export class FilterList {
             styleElement.textContent = dimmed;
         });
 
-        return (
-            <PanelSectionHeader title="Filters" icon="filter_alt" />
-        );
-    }
-
-    static ListFilters() {
         const allOn = () => Object.values(filters).every(Boolean);
         const someOn = () =>
             Object.values(filters).some(Boolean) && !allOn();

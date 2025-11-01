@@ -11,8 +11,8 @@ export default function ScriptLayout(props: ParentProps) {
                         <ScriptView />
                     </div>
 
-                    <div class="s12 m4 l4" >
-                        <Navbar root="/script" />
+                    <div class="s12 m4 l4 small-padding right-padding left-padding" >
+                        <Navbar />
 
                         {props.children}
                     </div>

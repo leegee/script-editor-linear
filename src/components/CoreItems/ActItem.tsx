@@ -42,56 +42,35 @@ export class ActItem extends TimelineItem {
                     </div>
                 </header>
 
-                <article>
-                    <details>
-                        <summary>
-                            <PanelSectionHeader title='Notes' icon='note_stack' badge={this.notes.length} />
-                        </summary>
-                        <ul class="list no-space border scroll">
-                            <li class="row middle-align">
-                                <A href={childRoute('/attach-new/note/' + this.id)} class="chip small transparent">
-                                    <i>add</i>
-                                    <span>Add note</span>
-                                </A>
-                            </li>
-                            {[...(this.notes ?? [])].map(noteId => (
-                                <li>
-                                    <A href={childRoute("/notes/" + noteId)}>
-                                        {notes[noteId].title}
-                                    </A>
-                                </li>
-                            ))}
-                        </ul>
-                    </details>
-                </article>
+                {this.panelNotesSection()}
 
                 <article>
                     <details>
                         <summary>
-                            <PanelSectionHeader title='Characters' icon='people' badge={Object.keys(actCharacters()).length} />
-                        </summary>
-                        <ul class="list no-space border scroll">
-                            {[...(actCharacters()[this.id] ?? [])].map(charId => (
-                                <li>
-                                    <A href={childRoute("/characters/" + charId)}>
-                                        {characters[charId].title}
-                                    </A>
-                                </li>
-                            ))}
-                        </ul>
-                    </details>
-                </article>
-
-                <article>
-                    <details>
-                        <summary>
-                            <PanelSectionHeader title='Locations' icon='location_on' badge={Object.keys(actLocations()).length} />
+                            <PanelSectionHeader title='Locations' icon='location_on' badge={(actLocations()[this.id]).size} />
                         </summary>
                         <ul class="list no-space border scroll">
                             {[...(actLocations()[this.id] ?? [])].map(locId => (
                                 <li>
                                     <A href={childRoute("/locations/" + locId)}>
                                         {locations[locId]?.title ?? "Unknown Location " + locId}
+                                    </A>
+                                </li>
+                            ))}
+                        </ul>
+                    </details>
+                </article>
+
+                <article>
+                    <details>
+                        <summary>
+                            <PanelSectionHeader title='Characters' icon='people' badge={(actCharacters()[this.id]).size} />
+                        </summary>
+                        <ul class="list no-space border scroll">
+                            {[...(actCharacters()[this.id] ?? [])].map(charId => (
+                                <li>
+                                    <A href={childRoute("/characters/" + charId)}>
+                                        {characters[charId].title}
                                     </A>
                                 </li>
                             ))}

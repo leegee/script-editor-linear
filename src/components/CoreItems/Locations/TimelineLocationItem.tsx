@@ -29,7 +29,7 @@ class BaseTimelineLocationItem extends TimelineItem {
 
     static ListAllLocations() {
         return (
-            <ul class="responsive scroll surface">
+            <ul class="responsive no-space list scroll surface border">
                 <For each={Object.values(locations)}>
                     {(loc) => (
                         <li>
@@ -180,6 +180,7 @@ class BaseTimelineLocationItem extends TimelineItem {
     timelineContent(zoom: number): JSX.Element | string | undefined {
         return this.title;
     }
+
 }
 
 export const TimelineLocationItem = LocationRenderMixin(BaseTimelineLocationItem);

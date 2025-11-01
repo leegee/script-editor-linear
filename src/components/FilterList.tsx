@@ -2,6 +2,7 @@ import { For, createEffect } from "solid-js";
 import { createStore } from "solid-js/store";
 import { timelineItemClasses } from "../lib/timelineItemRegistry";
 import { sectionMap } from "../stores/timelineViewModel";
+import PanelSectionHeader from "./PanelSectionHeader";
 
 const allTypes = Object.keys(timelineItemClasses);
 const [filters, setFilters] = createStore(
@@ -42,12 +43,7 @@ export class FilterList {
         });
 
         return (
-            <header class="no-padding">
-                <nav>
-                    <h2 class="max">Filters</h2>
-                    <i>filter_alt</i>
-                </nav>
-            </header>
+            <PanelSectionHeader title="Filters" icon="filter_alt" />
         );
     }
 

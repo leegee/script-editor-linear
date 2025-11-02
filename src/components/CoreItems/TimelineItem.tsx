@@ -3,9 +3,10 @@ import TimelineItemEditor from "../TimelineItemEditor";
 import { JSX } from "solid-js/jsx-runtime";
 import { A } from "@solidjs/router";
 import { childRoute } from "../../lib/routeResolver";
-import { notes } from "../../stores";
+import { notes, NoteType, removeNote } from "../../stores";
 import PanelSectionHeader from "../PanelSectionHeader";
 import { For } from "solid-js";
+import NoteEditor from "./NoteEditor";
 
 export interface TimelineItemProps {
     id: string;
@@ -153,19 +154,71 @@ export class TimelineItem {
         return undefined;
     }
 
+    renderNotesList() {
+        return (
+            <ul class="notes-list">
+                {this.notes.map((noteId) => (
+                    <li>
+                        <a href={`/notes/${noteId}`}>{notes[noteId]?.title || "(empty)"}</a>
+                    </li>
+                ))}
+            </ul>
+        );
+    }
+
     panelNotesSection() {
         return (
             <article>
                 <details>
                     <summary>
-                        <PanelSectionHeader title='Notes' icon='note_stack' badge={this.notes.length} />
+                        <PanelSectionHeader title="Notes" icon="note_stack" badge={this.notes.length} />
                     </summary>
-                    {
-                        (this.constructor as typeof TimelineItem).ListTheseNotes(this.notes, this.id)
-                    }
+
+                    <div class="top-padding center-align">
+                        <button class="transparent small border">
+                            <A href={childRoute(`/attach-new/note/${this.id}`)}>
+                                <i>add</i>
+                                <span>Add Note</span>
+                            </A>
+                        </button>
+                    </div>
+
+                    <ul class="notes-list">
+                        <For each={this.notes}>
+                            {(noteId) => {
+                                const n = notes[noteId];
+                                return (
+                                    <li>
+                                        <A href={childRoute(`/notes/${n.id}`)}>{n.title}</A>
+                                        {/* <details>
+                                            <summary>{n.title || "(empty)"}</summary>
+                                            <NoteEditor
+                                                noteId={noteId}
+                                                onSave={(updated) => {
+                                                    console.log(this.notes, updated);
+                                                    alert('saved')
+                                                    if (updated && !this.notes.includes(updated.id)) {
+                                                        alert('ok')
+                                                        this.notes.push(updated.id);
+                                                    }
+                                                    console.log(this.notes);
+                                                }}
+                                                onDelete={(deletedId) => {
+                                                    // Remove from parent notes array
+                                                    const idx = this.notes.indexOf(deletedId);
+                                                    if (idx >= 0) this.notes.splice(idx, 1);
+                                                }}
+                                            />
+                                        </details> */}
+                                    </li>
+                                );
+                            }}
+                        </For>
+                    </ul>
                 </details>
             </article>
-        )
+        );
     }
+
 
 }

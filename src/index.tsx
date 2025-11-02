@@ -17,8 +17,8 @@ import SettingsLayout from "./layouts/SettingsLayout";
 import FiltersView from "./components/panels/FiltersView";
 import FileMenuView from "./components/panels/FileMenuView";
 import MenuView from "./components/panels/MenuView";
-import NoteCreator from "./components/CoreItems/Notes/NoteCreator";
-import NoteView from "./components/panels/NoteView";
+import NoteCreator from "./components/panels/NoteCreator";
+import ViewEditNote from "./components/ViewEditNote";
 
 const root = document.getElementById("root");
 
@@ -36,7 +36,7 @@ const commonRoutes = (
     <Route path="/characters" component={CharacterView} />
     <Route path="/locations/:id" component={LocationView} />
     <Route path="/locations" component={LocationView} />
-    <Route path="/notes/:id" component={NoteView} />
+    <Route path="/notes/:id" component={ViewEditNote} />
     <Route path="/filters" component={FiltersView} />
   </>
 );

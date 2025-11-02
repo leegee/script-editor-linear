@@ -1,8 +1,8 @@
 import { createMemo } from "solid-js";
 import { useParams } from "@solidjs/router";
 import { notes } from "../../stores";
-import { TimelineNoteItem } from "../CoreItems";
 import PanelSectionHeader from "../PanelSectionHeader";
+import { TimelineNoteItem } from "../CoreItems/__Notes/TimelineNoteItem";
 
 export default function NoteView() {
     const params = useParams();

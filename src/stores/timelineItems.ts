@@ -3,7 +3,6 @@ import { createSignal, createMemo } from "solid-js";
 import { TimelineItem, TimelineItemProps, reviveItem } from "../components/CoreItems/";
 import { storage } from "../db";
 import { locations } from "./locations";
-import { CanonicalNoteType } from "../components/CoreItems/Notes/CanonicalNote";
 
 const [timelineItems, _setTimelineItems] = createStore<Record<string, TimelineItem>>({});
 
@@ -53,6 +52,10 @@ export async function createTimelineItem(item: TimelineItem, insertAtIndex?: num
     // Persist to storage
     await storage.put("timelineItems", item);
     await storage.putMeta("timelineSequence", seq);
+}
+
+export function getTimelineItem(itemId: string) {
+    return timelineItems[itemId];
 }
 
 export async function replaceTimelineItem(id: string, newItem: TimelineItem) {

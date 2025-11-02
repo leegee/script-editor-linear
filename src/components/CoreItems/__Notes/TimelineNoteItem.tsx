@@ -1,19 +1,14 @@
 import "ol/ol.css";
 import { createSignal, For, type JSX } from "solid-js";
 import { A } from "@solidjs/router";
-import { notes, addNote } from "../../../stores";
+import { createNote, notes, } from "../../../stores";
 import { TimelineItem, TimelineItemProps } from "../TimelineItem";
 import { NoteRenderMixin } from "./NoteRenderMixin";
 import { CanonicalNote } from "./CanonicalNote";
-import { childRoute } from "../../../lib/routeResolver";
 
 export type TimelineNoteItemType = InstanceType<typeof TimelineNoteItem>;
 
 export class BaseTimelineNoteItem extends TimelineItem {
-    /**
-     * Safely reconstructs a TimelineNoteItem from serialized data.
-     * Preserves coordinate details if they exist.
-     */
     static revive(obj: any): TimelineNoteItemType {
         const details =
             obj.details && typeof obj.details === "object"
@@ -122,7 +117,7 @@ export class BaseTimelineNoteItem extends TimelineItem {
                 details: {
                 },
             });
-            addNote(newCanonical);
+            createNote(newCanonical);
             ref = newCanonical.id;
         }
 
@@ -141,3 +136,4 @@ export class BaseTimelineNoteItem extends TimelineItem {
 }
 
 export const TimelineNoteItem = NoteRenderMixin(BaseTimelineNoteItem);
+

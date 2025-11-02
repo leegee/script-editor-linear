@@ -1,7 +1,7 @@
 import { downloadJSON, initNewScript, loadJSONfromPath } from "../../lib/io";
 import JSONUploader from "../JsonUploader";
 import { ConfirmLink } from "../ConfirmLink";
-import { A } from "@solidjs/router";
+import { A, useNavigate } from "@solidjs/router";
 
 export default function FileMenuView() {
     return (
@@ -17,6 +17,7 @@ export default function FileMenuView() {
 }
 
 export function FileMenuItems() {
+    const navigate = useNavigate();
     return (
         <>
             <li>
@@ -39,9 +40,10 @@ export function FileMenuItems() {
                 <i>download</i>
                 <A
                     href="#"
-                    onClick={(e) => {
+                    onClick={async (e) => {
                         e.preventDefault();
-                        downloadJSON();
+                        await downloadJSON();
+                        navigate('/script');
                     }}
                 >
                     Save script
@@ -57,6 +59,7 @@ export function FileMenuItems() {
                     message="This will over-write your script."
                     onConfirm={async () => {
                         await loadJSONfromPath("/the-three-bears.json");
+                        navigate('/script');
                     }}
                 >
                     Load sample script
@@ -70,6 +73,7 @@ export function FileMenuItems() {
                     message="This will over-write your script."
                     onConfirm={async () => {
                         await loadJSONfromPath("/the-three-bears-small.json");
+                        navigate('/script');
                     }}
                 >
                     Load small sample script

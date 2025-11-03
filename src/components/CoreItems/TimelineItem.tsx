@@ -183,33 +183,13 @@ export class TimelineItem {
                         </button>
                     </div>
 
-                    <ul class="notes-list">
+                    <ul class="list no-space border scroll ">
                         <For each={this.notes}>
                             {(noteId) => {
                                 const n = notes[noteId];
                                 return (
                                     <li>
                                         <A href={childRoute(`/notes/${n.id}`)}>{n.title}</A>
-                                        {/* <details>
-                                            <summary>{n.title || "(empty)"}</summary>
-                                            <NoteEditor
-                                                noteId={noteId}
-                                                onSave={(updated) => {
-                                                    console.log(this.notes, updated);
-                                                    alert('saved')
-                                                    if (updated && !this.notes.includes(updated.id)) {
-                                                        alert('ok')
-                                                        this.notes.push(updated.id);
-                                                    }
-                                                    console.log(this.notes);
-                                                }}
-                                                onDelete={(deletedId) => {
-                                                    // Remove from parent notes array
-                                                    const idx = this.notes.indexOf(deletedId);
-                                                    if (idx >= 0) this.notes.splice(idx, 1);
-                                                }}
-                                            />
-                                        </details> */}
                                     </li>
                                 );
                             }}

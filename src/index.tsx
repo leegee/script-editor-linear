@@ -2,7 +2,7 @@
 import "./index.css";
 import "beercss";
 import { render } from "solid-js/web";
-import { HashRouter, Navigate, Route } from "@solidjs/router";
+import { HashRouter, Route } from "@solidjs/router";
 
 import ScriptLayout from "./layouts/ScriptLayout";
 import TimelineLayout from "./layouts/TimelineLayout";

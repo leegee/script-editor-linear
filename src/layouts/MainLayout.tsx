@@ -13,7 +13,7 @@ export default function MainLayout(props: ParentProps) {
                     <Menu />
                     <A title="Script view" class="transparent" href="/script"><i class="small">list_alt</i></A>
                     <A title="Timeline view" class="transparent" href="/timeline"><i class="small">view_timeline</i></A>
-                    <A title="View settings" class="transparent" href="/settings"><i class="small">settings</i></A>
+                    <A title="Typing view" class="transparent" href="/typing"><i class="small">keyboard</i></A>
                 </div>
 
                 <div>

@@ -18,6 +18,7 @@ import FiltersView from "./components/panels/FiltersView";
 import MenuView from "./components/panels/MenuView";
 import NoteCreator from "./components/panels/NoteCreator";
 import ViewEditNote from "./components/ViewEditNote";
+import TypingLayout from "./layouts/TypingLayout";
 
 const root = document.getElementById("root");
 
@@ -55,7 +56,7 @@ render(
 
       <Route path="/settings" component={SettingsLayout} />
 
-      <Route path="/menu" component={MenuView} />
+      <Route path="/typing" component={TypingLayout} />
 
     </HashRouter>
   ),

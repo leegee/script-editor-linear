@@ -12,6 +12,12 @@ export function showAlert(message: string) {
     });
 }
 
+export function closeAlert() {
+    const state = alertState();
+    state?.resolve?.();
+    setAlertState(null);
+}
+
 export function showConfirm(message: string) {
     return new Promise<boolean>((resolve) => {
         setConfirmState({ message, resolve });

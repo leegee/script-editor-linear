@@ -1,5 +1,5 @@
 import { Show } from "solid-js";
-import { alertState, confirmState, closeConfirm } from "../../stores/modals";
+import { alertState, confirmState, closeConfirm, closeAlert } from "../../stores/modals";
 
 export default function AlertConfirm() {
     return (
@@ -11,7 +11,7 @@ export default function AlertConfirm() {
                         <h5>{alertState()!.message}</h5>
                     </header>
                     <nav class="right-align">
-                        <button class="primary" onClick={() => closeConfirm(true)}>OK</button>
+                        <button class="primary" onClick={() => closeAlert()}>OK</button>
                     </nav>
                 </dialog>
             </Show>

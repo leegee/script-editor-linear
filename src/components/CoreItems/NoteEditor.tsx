@@ -2,6 +2,7 @@ import styles from "./NoteEditor.module.scss";
 import { createSignal, createEffect, Show, For, Match, Switch } from "solid-js";
 import AutoResizingTextarea from "../AutoResizingTextarea";
 import { createNote, getNote, NoteType, patchNote, removeNote, timelineItems, updateTimelineItem } from "../../stores";
+import { showAlert } from "../../stores/modals";
 
 interface NoteEditorProps {
     noteId?: string;
@@ -51,6 +52,11 @@ export default function NoteEditor(props: NoteEditorProps) {
     }
 
     const handleSave = () => {
+        if (!title()) {
+            showAlert('Notes must have at least a title.')
+            return;
+        }
+
         let savedNote: NoteType;
         if (!note()) {
             // Create new note

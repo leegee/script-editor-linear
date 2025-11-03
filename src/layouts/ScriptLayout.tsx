@@ -1,6 +1,5 @@
 import { type ParentProps } from "solid-js";
 import ScriptView from "../components/views/ScriptView";
-import Navbar from "../components/NavBar";
 
 export default function ScriptLayout(props: ParentProps) {
     return (
@@ -12,8 +11,6 @@ export default function ScriptLayout(props: ParentProps) {
                     </div>
 
                     <div class="s12 m4 l4 small-padding right-padding left-padding" style="height:100%; overflow:hidden;   display: flex; flex-direction: column;">
-                        <Navbar />
-
                         {props.children}
                     </div>
                 </div>

@@ -32,7 +32,7 @@ export function resolveRoute(relative: string): string {
 
 
 /**
- * Create a child route under the *first* directory of the current hash route.
+ * Create a child route under the *first* directory of the current hash route or under /script.
  *
  * @example
  *   Current URL:  `#/script/foo/bar`
@@ -41,7 +41,7 @@ export function resolveRoute(relative: string): string {
 export function childRoute(path: string): string {
     const clean = location.hash.replace(/^#/, "");
     const parts = clean.split("/").filter(Boolean);
-    const section = parts[0] ?? "";
+    const section = parts[0] ?? "/script";
     const child = path.replace(/^\/+/, "");
     return `/${section}/${child}`;
 }

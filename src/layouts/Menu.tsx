@@ -7,20 +7,17 @@ import { initNewScript, downloadJSON, loadJSONfromPath } from "../lib/io";
 
 export function Menu() {
     const navigate = useNavigate();
+    let buttonRef: HTMLButtonElement | undefined;
     let menuRef: HTMLMenuElement | undefined;
 
-    // Close the menu when it is clicked
     function closeMenu(e: MouseEvent) {
-        if (menuRef && menuRef.contains(e.target as HTMLElement)) {
-            menuRef.classList.remove("active");
-            alert(1)
-        }
+        window.ui('menu')
     };
 
     return (
-        <button class="transparent">
+        <button ref={(el) => buttonRef = el} class="transparent">
             <i>more_vert</i>
-            <menu ref={(el) => menuRef = el} style="z-index:999" onClick={closeMenu}>
+            <menu style="z-index:999" onClick={closeMenu} ref={(el) => menuRef = el}>
                 <li>
                     File
                     <menu class="no-wrap">

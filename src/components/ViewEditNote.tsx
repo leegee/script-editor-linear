@@ -8,7 +8,7 @@ export default function ViewEditNote() {
     const navigate = useNavigate();
 
     return (
-        <div>
+        <>
             <PanelSectionHeader title="Note" icon="note" />
 
             <NoteEditor
@@ -16,6 +16,6 @@ export default function ViewEditNote() {
                 onSave={() => navigate(-1)}
                 onDelete={() => navigate(-1)}
             />
-        </div>
+        </>
     );
 }

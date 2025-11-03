@@ -1,0 +1,27 @@
+.noteEditor {
+    flex: 1;
+    overflow-y: auto;
+
+    .linkEditorRoot,
+    .linkEditorRoot a {
+        position: relative;
+        overflow-wrap: anywhere;
+        width: 100%;
+        text-overflow: none;
+        word-break: break-all;
+    }
+
+    .linkEditorRoot .linkEditor {
+        display: none;
+        position: absolute;
+        top: 0;
+    }
+
+    .linkEditorRoot:hover .linkEditor {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 2pt;
+    }
+}

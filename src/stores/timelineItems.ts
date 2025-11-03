@@ -10,7 +10,6 @@ const [timelineSequence, _setTimelineSequence] = createSignal<string[]>([]);
 
 export { timelineItems, timelineSequence };
 
-// CRUD API
 
 export async function loadAllTimelineItems() {
     const items = await storage.getAll<TimelineItemProps>("timelineItems");

@@ -1,3 +1,4 @@
+import styles from "./NoteEditor.module.scss";
 import { createSignal, createEffect, Show, For } from "solid-js";
 import AutoResizingTextarea from "../AutoResizingTextarea";
 import { createNote, getNote, NoteType, patchNote, removeNote, timelineItems, updateTimelineItem } from "../../stores";
@@ -17,6 +18,7 @@ export default function NoteEditor(props: NoteEditorProps) {
     const [title, setTitle] = createSignal(existingNote?.title ?? "");
     const [text, setText] = createSignal(existingNote?.details?.text ?? "");
     const [urls, setUrls] = createSignal<string[]>(existingNote?.details?.urls ?? []);
+    const [editingUrl, setEditingUrl] = createSignal(-1);
 
     // Sync signals when note changes
     createEffect(() => {
@@ -61,16 +63,7 @@ export default function NoteEditor(props: NoteEditorProps) {
         const id = note()?.id;
         if (!id) return;
 
-        // Remove from parent TimelineItem if parentId supplied
-        // if (props.parentId) {
-        //     const parent = timelineItems[props.parentId];
-        //     if (parent) {
-        //         parent.notes = parent.notes.filter(nid => nid !== id);
-        //         updateTimelineItem(parent.id, "notes", "", parent.notes);
-        //     }
-        // }
-
-        // Remove from any TimelineItem containing this note
+        // Remove from every TimelineItem containing this note
         Object.values(timelineItems).forEach(item => {
             if (item.notes.includes(id)) {
                 item.notes = item.notes.filter(nid => nid !== id);
@@ -85,20 +78,26 @@ export default function NoteEditor(props: NoteEditorProps) {
         if (props.onSave) props.onSave(undefined);
     };
 
-    const addUrl = () => setUrls([...urls(), ""]);
+    const addUrl = () => {
+        setUrls([...urls(), ""]);
+        setEditingUrl(urls().length - 1);
+    }
+
     const updateUrl = (idx: number, value: string) => {
         const copy = [...urls()];
         copy[idx] = value;
         setUrls(copy);
     };
+
     const removeUrl = (idx: number) => {
         const copy = [...urls()];
         copy.splice(idx, 1);
         setUrls(copy);
+        setEditingUrl(-1);
     };
 
     return (
-        <article class="note-editor">
+        <article class={styles.noteEditor}>
             <div class="field label max border">
                 <input
                     type="text"
@@ -118,28 +117,68 @@ export default function NoteEditor(props: NoteEditorProps) {
                 />
             </div>
 
-
             <fieldset>
                 <legend>URLs</legend>
                 <For each={urls()}>
-                    {(url, idx) => (
-                        <nav class="no-space">
-                            <div class="max field">
-                                <input
-                                    type="text"
-                                    value={url}
-                                    onBlur={(e) => updateUrl(idx(), e.currentTarget.value)}
-                                />
-                            </div>
-                            <button class="circle transparent small" onClick={() => removeUrl(idx())}><i>delete</i></button>
-                        </nav>
-                    )}
+                    {(url, i) => {
+                        const idx = i();
+
+                        return (
+                            <>
+                                <Show when={editingUrl() === idx}>
+                                    <div class="max field">
+                                        <input
+                                            type="text"
+                                            value={url}
+                                            onBlur={(e) => updateUrl(idx, e.currentTarget.value)}
+                                        />
+                                    </div>
+                                    <div class="right-align">
+                                        <button
+                                            class="chip transparent tiny"
+                                            onClick={() => setEditingUrl(-1)}
+                                        >
+                                            <i class="tiny">check_small</i>
+                                        </button>
+                                        <button
+                                            class="chip transparent tiny"
+                                            onClick={() => removeUrl(idx)}
+                                        >
+                                            <i class="tiny">close_small</i>
+                                        </button>
+                                    </div>
+                                </Show>
+
+                                <Show when={editingUrl() !== idx}>
+                                    <div class={"row " + styles.linkEditorRoot}>
+                                        <a href={url} target="_blank">{url}</a>
+                                        <div class={"fill small-opacity " + styles.linkEditor}>
+                                            <button
+                                                class="chip transparent small"
+                                                onClick={() => setEditingUrl(idx)}
+                                            >
+                                                <i>edit</i>
+                                            </button>
+                                            <button
+                                                class="chip transparent small"
+                                                onClick={() => removeUrl(idx)}
+                                            >
+                                                <i>delete</i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </Show>
+                            </>
+                        );
+                    }}
                 </For>
 
                 <div class="space"></div>
 
                 <div class="right-align">
-                    <button class="chip small" onClick={addUrl}><i>add</i>Add URL</button>
+                    <button class="chip small" onClick={addUrl} disabled={editingUrl() > -1}>
+                        <i>add</i>Add URL
+                    </button>
                 </div>
             </fieldset>
 
@@ -157,6 +196,6 @@ export default function NoteEditor(props: NoteEditorProps) {
                     </button>
                 </Show>
             </footer>
-        </article>
+        </article >
     );
 }

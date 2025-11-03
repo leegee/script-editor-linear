@@ -1,6 +1,7 @@
 // src/pages/ViewEditNote.tsx
 import { useParams, useNavigate } from "@solidjs/router";
 import NoteEditor from "./CoreItems/NoteEditor";
+import PanelSectionHeader from "./PanelSectionHeader";
 
 export default function ViewEditNote() {
     const params = useParams<{ id: string }>();
@@ -8,7 +9,8 @@ export default function ViewEditNote() {
 
     return (
         <div>
-            <h2>Edit Note</h2>
+            <PanelSectionHeader title="Note" icon="note" />
+
             <NoteEditor
                 noteId={params.id}
                 onSave={() => navigate(-1)}

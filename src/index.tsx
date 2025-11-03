@@ -54,10 +54,11 @@ render(
         {commonRoutes}
       </Route>
 
+      <Route path="/typing" component={TypingLayout} >
+        {commonRoutes}
+      </Route>
+
       <Route path="/settings" component={SettingsLayout} />
-
-      <Route path="/typing" component={TypingLayout} />
-
     </HashRouter>
   ),
   root!

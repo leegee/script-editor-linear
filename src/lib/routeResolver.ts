@@ -37,7 +37,7 @@ export function childRoute(path: string): string {
 
     let section = parts[0] ?? "script";
 
-    if (!/^script|timeline$/.test(section)) {
+    if (!/^script|typing|timeline$/.test(section)) {
         section = "script";
     }
 

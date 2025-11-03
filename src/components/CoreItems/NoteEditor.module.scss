@@ -2,6 +2,11 @@
     flex: 1;
     overflow-y: auto;
 
+    .tinyThumb {
+        width: 6em;
+        max-height: 6em;
+    }
+
     .linkEditorRoot,
     .linkEditorRoot a {
         position: relative;

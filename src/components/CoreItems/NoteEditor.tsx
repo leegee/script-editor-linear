@@ -1,5 +1,5 @@
 import styles from "./NoteEditor.module.scss";
-import { createSignal, createEffect, Show, For } from "solid-js";
+import { createSignal, createEffect, Show, For, Match, Switch } from "solid-js";
 import AutoResizingTextarea from "../AutoResizingTextarea";
 import { createNote, getNote, NoteType, patchNote, removeNote, timelineItems, updateTimelineItem } from "../../stores";
 
@@ -126,43 +126,44 @@ export default function NoteEditor(props: NoteEditorProps) {
                         return (
                             <>
                                 <Show when={editingUrl() === idx}>
-                                    <div class="max field">
-                                        <input
-                                            type="text"
-                                            value={url}
-                                            onBlur={(e) => updateUrl(idx, e.currentTarget.value)}
-                                        />
-                                    </div>
-                                    <div class="right-align">
-                                        <button
-                                            class="chip transparent tiny"
-                                            onClick={() => setEditingUrl(-1)}
-                                        >
-                                            <i class="tiny">check_small</i>
-                                        </button>
-                                        <button
-                                            class="chip transparent tiny"
-                                            onClick={() => removeUrl(idx)}
-                                        >
-                                            <i class="tiny">close_small</i>
-                                        </button>
-                                    </div>
+                                    <nav class="no-space">
+                                        <div class="max field">
+                                            <input
+                                                type="text"
+                                                value={url}
+                                                onBlur={(e) => updateUrl(idx, e.currentTarget.value)}
+                                            />
+                                        </div>
+                                        <div class="right-align">
+                                            <button
+                                                class="chip transparent tiny no-padding"
+                                                onClick={() => setEditingUrl(-1)}
+                                            >
+                                                <i class="tiny">check_small</i>
+                                            </button>
+                                        </div>
+                                    </nav>
                                 </Show>
 
                                 <Show when={editingUrl() !== idx}>
                                     <div class={"row " + styles.linkEditorRoot}>
-                                        <a href={url} target="_blank">{url}</a>
+                                        <a href={url} target="_blank">
+                                            <Switch fallback={url}>
+                                                <Match when={url.match(/(jpg|png|webp|avif)$/)}>
+                                                    <img class={styles.tinyThumb} src={url} alt={url} />
+                                                </Match>
+                                            </Switch>
+                                        </a>
                                         <div class={"fill small-opacity " + styles.linkEditor}>
-                                            <button
-                                                class="chip transparent small"
-                                                onClick={() => setEditingUrl(idx)}
-                                            >
+                                            <button class="transparent chip small">
+                                                <a href={url} target="_blank">
+                                                    <i>zoom_in</i>
+                                                </a>
+                                            </button>
+                                            <button class="chip transparent small" onClick={() => setEditingUrl(idx)} >
                                                 <i>edit</i>
                                             </button>
-                                            <button
-                                                class="chip transparent small"
-                                                onClick={() => removeUrl(idx)}
-                                            >
+                                            <button class="chip transparent small" onClick={() => removeUrl(idx)} >
                                                 <i>delete</i>
                                             </button>
                                         </div>

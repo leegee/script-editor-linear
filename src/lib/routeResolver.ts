@@ -32,8 +32,6 @@ export function resolveRoute(relative: string): string {
 
 
 export function childRoute(path: string): string {
-    console.log("childRoute", path);
-
     const clean = location.hash.replace(/^#/, "");
     const parts = clean.split("/").filter(Boolean);
 

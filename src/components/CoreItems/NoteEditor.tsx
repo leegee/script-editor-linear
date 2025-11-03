@@ -29,6 +29,27 @@ export default function NoteEditor(props: NoteEditorProps) {
         setUrls(n.details?.urls ?? []);
     });
 
+    function isYouTube(url: string) {
+        return /(youtube\.com\/watch\?v=|youtu\.be\/)/.test(url);
+    }
+
+    function youtubeThumb(url: string) {
+        const id = extractYouTubeID(url);
+        return `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
+    }
+
+    function extractYouTubeID(url: string): string {
+        // youtu.be/JxSfrQbZp9k
+        const short = url.match(/youtu\.be\/([^?&#]+)/);
+        if (short) return short[1];
+
+        // youtube.com/watch?v=JxSfrQbZp9k
+        const long = url.match(/[?&]v=([^&#]+)/);
+        if (long) return long[1];
+
+        return "";
+    }
+
     const handleSave = () => {
         let savedNote: NoteType;
         if (!note()) {
@@ -151,6 +172,9 @@ export default function NoteEditor(props: NoteEditorProps) {
                                             <Switch fallback={url}>
                                                 <Match when={url.match(/(jpg|png|webp|avif)$/)}>
                                                     <img class={styles.tinyThumb} src={url} alt={url} />
+                                                </Match>
+                                                <Match when={isYouTube(url)}>
+                                                    <img class={styles.tinyThumb} src={youtubeThumb(url)} alt="YouTube" />
                                                 </Match>
                                             </Switch>
                                         </a>

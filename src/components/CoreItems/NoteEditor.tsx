@@ -130,7 +130,7 @@ export default function NoteEditor(props: NoteEditorProps) {
 
             <div class="field label textarea">
                 <AutoResizingTextarea
-                    label="Note"
+                    // label="Note"
                     value={text()}
                     onInput={(v) => setText(v)}
                     minHeight={50}

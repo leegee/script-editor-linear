@@ -15,7 +15,6 @@ import TimelineItemView from "./components/views/TimelineItemView";
 import { loadAll } from "./stores";
 import SettingsLayout from "./layouts/SettingsLayout";
 import FiltersView from "./components/panels/FiltersView";
-import FileMenuView from "./components/panels/FileMenuView";
 import MenuView from "./components/panels/MenuView";
 import NoteCreator from "./components/panels/NoteCreator";
 import ViewEditNote from "./components/ViewEditNote";
@@ -56,9 +55,7 @@ render(
 
       <Route path="/settings" component={SettingsLayout} />
 
-      <Route path="/menu" component={MenuView} >
-        <Route path="/file" component={FileMenuView} />
-      </Route>
+      <Route path="/menu" component={MenuView} />
 
     </HashRouter>
   ),

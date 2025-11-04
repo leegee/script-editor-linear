@@ -215,4 +215,9 @@ export class TimelineItem {
         );
     }
 
+    async updateFromTyping(newRawText: string) {
+        this.title = newRawText.trim();
+        await updateTimelineItem(this.id, "title", "", this.title);
+    }
+
 }

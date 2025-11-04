@@ -316,9 +316,35 @@ export class DialogueItem extends TimelineItem {
         return <i>3p</i>;
     }
 
-    appendText(line: string) {
-        this.details = { ...this.details, text: (this.details.text ?? '') + '\n' + line };
+
+    async updateFromTyping(newRawText: string) {
+        const [potentialCharacterNameLine, ...rest] = newRawText.split("\n");
+
+        const matchedCharacter = Object.values(characters).find(
+            c => c.title.trim().toUpperCase() === potentialCharacterNameLine.trim().toUpperCase()
+        );
+
+        if (matchedCharacter) {
+            const updatedText = rest.join("\n").trim();
+
+            if (updatedText !== this.details.text) {
+                await updateTimelineItem(this.id, "details", "text", updatedText);
+            }
+
+            if (matchedCharacter.id !== this.details.ref) {
+                await updateTimelineItem(this.id, "details", "ref", matchedCharacter.id);
+            }
+
+            return;
+        }
+
+        const fullText = newRawText.trim();
+
+        if (fullText !== this.details.text) {
+            await updateTimelineItem(this.id, "details", "text", fullText);
+        }
     }
+
 
 }
 

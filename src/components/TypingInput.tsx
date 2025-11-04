@@ -49,35 +49,37 @@ export default function TimelineEditor() {
         const id = div.dataset.id;
         if (!id) return;
 
-        const original = timelineItems[id];
-        if (!original) return;
+        const timelineItem = timelineItems[id];
+        if (!timelineItem) return;
 
         const newRawText = div.innerText;
 
-        console.log(id, "\n", original, "\nnewRawText:", newRawText)
+        console.log(id, "\n", timelineItem, "\nnewRawText:", newRawText)
 
-        if (original.type === "dialogue") {
-            const [maybeSpeaker, ...lines] = newRawText.split("\n");
-            const updatedText = lines.join("\n").trim();
+        timelineItem.updateFromTyping(newRawText);
 
-            const character = Object.values(characters).find(
-                c => c.title.toUpperCase() === maybeSpeaker.trim().toUpperCase()
-            );
+        // if (timelineItem.type === "dialogue") {
+        //     const [maybeSpeaker, ...lines] = newRawText.split("\n");
+        //     const updatedText = lines.join("\n").trim();
 
-            if (updatedText !== original.details.text) {
-                await updateTimelineItem(id, "details", "text", updatedText);
-            }
+        //     const character = Object.values(characters).find(
+        //         c => c.title.toUpperCase() === maybeSpeaker.trim().toUpperCase()
+        //     );
 
-            if (character && character.id !== original.details.ref) {
-                await updateTimelineItem(id, "details", "ref", character.id);
-            }
+        //     if (updatedText !== timelineItem.details.text) {
+        //         await updateTimelineItem(id, "details", "text", updatedText);
+        //     }
 
-        } else {
-            const trimmed = newRawText.trim();
-            if (trimmed !== original.details.text) {
-                // await updateTimelineItem(id, "details", "text", trimmed);
-            }
-        }
+        //     if (character && character.id !== timelineItem.details.ref) {
+        //         await updateTimelineItem(id, "details", "ref", character.id);
+        //     }
+
+        // } else {
+        //     const trimmed = newRawText.trim();
+        //     if (trimmed !== timelineItem.title) {
+        //         await updateTimelineItem(id, "title", "", trimmed);
+        //     }
+        // }
     }
 
     function handleKeyDown(e: KeyboardEvent) {

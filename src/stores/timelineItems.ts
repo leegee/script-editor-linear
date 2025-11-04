@@ -133,33 +133,6 @@ export async function deleteAllTimelineItems() {
     _setTimelineSequence([]);
 }
 
-
-export async function addOrAppendDialogue(line: string, prevItemId?: string) {
-    const prevItem = prevItemId ? timelineItems[prevItemId] : undefined;
-
-    // Determine if line is a character name
-    const char = findCharacterByName(line);
-    if (char) {
-        const newItem = DialogueItem.createForCharacter('', char.id);
-        await createTimelineItem(newItem);
-        return newItem.id;
-    }
-
-    // Otherwise append to previous dialogue
-    // if (prevItem?.type === 'dialogue') {
-    if (prevItem instanceof DialogueItem) {
-        prevItem.appendText(line);
-        await replaceTimelineItem(prevItem.id, prevItem);
-        return prevItem.id;
-    }
-
-    // fallback → create beat
-    const beatItem = new TimelineItem({ id: Math.random().toString(36).slice(2, 9), type: 'beat', title: '', details: { text: line }, notes: [], duration: 0 });
-    await createTimelineItem(beatItem);
-    return beatItem.id;
-}
-
-
 // Derived memos
 
 export const orderedItems = createMemo(() => {

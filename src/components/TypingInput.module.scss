@@ -1,0 +1,13 @@
+// TypingInput.module.scss
+
+.editor {
+    height: calc(100% - 60pt);
+    overflow-y: auto;
+    white-space: pre-wrap;
+    font-family: 'Courier New', Courier, monospace;
+
+    .dialogueItem,
+    .timelineItem {
+        margin-bottom: 1em;
+    }
+}

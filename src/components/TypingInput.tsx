@@ -1,113 +1,150 @@
-// packages/client/src/components/TimelineEditor.tsx
-import { createSignal, For } from "solid-js";
-import { timelineItems, timelineSequence, createTimelineItem, replaceTimelineItem } from "../stores/timelineItems";
+import { onMount } from "solid-js";
+import styles from "./TypingInput.module.scss";
+
+import {
+    timelineItems,
+    timelineSequence,
+    updateTimelineItem
+} from "../stores/timelineItems";
+
 import { characters } from "../stores/characters";
-import { TimelineItem, DialogueItem } from "../components/CoreItems";
 
 export default function TimelineEditor() {
-    let editorDiv: HTMLDivElement | undefined;
-    let lastDialogueId: string | null = null;
-    const [editorKey, setEditorKey] = createSignal(0);
+    let editorDiv!: HTMLElement;
 
-    // Detect type for a line
-    const detectType = (line: string, prevItem?: TimelineItem) => {
-        const trimmed = line.trim();
-        if (!trimmed) return { type: "beat" };
+    onMount(() => {
+        renderInitial();
+    });
 
-        if (/^ACT\s+\w+/i.test(trimmed)) return { type: "act" };
-        if (/^(INT|EXT|INT\.\/EXT|EST)\./i.test(trimmed)) return { type: "scene" };
+    function renderInitial() {
+        editorDiv.innerHTML = "";
 
-        const char = Object.values(characters).find(c => c.title.toUpperCase() === trimmed);
-        if (char) return { type: "dialogue", char };
+        const frag = document.createDocumentFragment();
 
-        if (prevItem?.type === "dialogue") return { type: "dialogue", appendToPrev: true, char: prevItem.details.ref };
+        for (const id of timelineSequence()) {
+            const item = timelineItems[id];
+            if (!item) continue;
 
-        return { type: "beat" };
-    };
+            const div = document.createElement("div");
+            div.dataset.id = id;
+            div.className = styles.timelineItem;
+            div.contentEditable = "true";
 
-    const handleInput = async (e: InputEvent) => {
-        const selection = window.getSelection();
-        if (!selection || selection.rangeCount === 0) return;
-
-        const range = selection.getRangeAt(0);
-        let node: Node | null = range.startContainer;
-
-        while (node && node.nodeType !== Node.ELEMENT_NODE) node = node.parentNode;
-        if (!node) return;
-
-        const lineDiv = node as HTMLElement;
-        const lineText = lineDiv.innerText;
-        const id = lineDiv.dataset.id;
-        const prevItem = id ? timelineItems[id] : lastDialogueId ? timelineItems[lastDialogueId] : undefined;
-
-        const { type, char, appendToPrev } = detectType(lineText, prevItem);
-
-        if (type === "dialogue") {
-            if (appendToPrev && lastDialogueId) {
-                const prev = timelineItems[lastDialogueId];
-                const newDetails = { ...prev.details, text: (prev.details.text ?? "") + "\n" + lineText };
-                const newItem = prev.cloneWith({ details: newDetails });
-                await replaceTimelineItem(prev.id, newItem);
-            } else if (char) {
-                const newItem = DialogueItem.createForCharacter(lineText, char.id);
-                await createTimelineItem(newItem);
-                lineDiv.dataset.id = newItem.id;
-                lastDialogueId = newItem.id;
+            if (item.type === "dialogue") {
+                const speaker =
+                    characters[item.details.ref]?.title.toUpperCase() ?? "UNKNOWN";
+                const text = item.details.text ?? "";
+                div.innerText = speaker + "\n" + text;
+            } else {
+                div.innerText = item.details.text ?? "";
             }
-        } else {
-            const newItem: TimelineItem = new TimelineItem({
-                id: id ?? Math.random().toString(36).slice(2, 9),
-                type,
-                title: "",
-                details: { text: lineText },
-                notes: [],
-                duration: 0,
-            });
-            await createTimelineItem(newItem);
-            lineDiv.dataset.id = newItem.id;
-            lastDialogueId = null;
-        }
-    };
 
-    const handleKeyDown = (e: KeyboardEvent) => {
-        if (e.key === "Enter") setTimeout(() => setEditorKey(k => k + 1), 0);
-    };
+            frag.appendChild(div);
+        }
+
+        editorDiv.appendChild(frag);
+    }
+
+    async function saveLine(div: HTMLElement) {
+        const id = div.dataset.id;
+        if (!id) return;
+
+        const original = timelineItems[id];
+        if (!original) return;
+
+        const newRawText = div.innerText;
+
+        console.log(id, "\n", original, "\nnewRawText:", newRawText)
+
+        if (original.type === "dialogue") {
+            const [maybeSpeaker, ...lines] = newRawText.split("\n");
+            const updatedText = lines.join("\n").trim();
+
+            const character = Object.values(characters).find(
+                c => c.title.toUpperCase() === maybeSpeaker.trim().toUpperCase()
+            );
+
+            if (updatedText !== original.details.text) {
+                await updateTimelineItem(id, "details", "text", updatedText);
+            }
+
+            if (character && character.id !== original.details.ref) {
+                await updateTimelineItem(id, "details", "ref", character.id);
+            }
+
+        } else {
+            const trimmed = newRawText.trim();
+            if (trimmed !== original.details.text) {
+                // await updateTimelineItem(id, "details", "text", trimmed);
+            }
+        }
+    }
+
+    function handleKeyDown(e: KeyboardEvent) {
+        console.log(e.key)
+        if (e.key === "Enter") {
+            e.preventDefault(); // prevent browser from inserting <div><br></div>
+
+            //         // Save the currently focused line
+            const sel = window.getSelection();
+            if (!sel || sel.rangeCount === 0) {
+                console.debug('no selection');
+                return;
+            }
+
+            let node: HTMLElement | null = sel.anchorNode as HTMLElement;
+
+            console.debug(node)
+            while (node && node !== editorDiv && node.dataset?.id === undefined) {
+                node = node.parentElement;
+            }
+
+            console.debug('parent node', node)
+
+            if (node?.dataset?.id) {
+                saveLine(node);
+            }
+
+            // Insert a new editable div after it
+            insertNewLine(node!);
+        }
+    }
+
+    function insertNewLine(after: HTMLElement) {
+        const div = document.createElement("div");
+        div.className = styles.timelineItem;
+        div.contentEditable = "true";
+        div.innerText = " ";
+        editorDiv.insertBefore(div, after.nextSibling);
+
+        // Move caret to new line
+        const range = document.createRange();
+        range.selectNodeContents(div);
+        range.collapse(true);
+        const sel = window.getSelection()!;
+        sel.removeAllRanges();
+        sel.addRange(range);
+    }
+
+    async function handleBlur(e: FocusEvent) {
+        // If still inside the editor, do nothing
+        //     const related = e.relatedTarget as Node | null;
+        //     if (related && editorDiv.contains(related)) return;
+
+        //     const tasks: Promise<any>[] = [];
+        //     for (const child of Array.from(editorDiv.children)) {
+        //         tasks.push(saveLine(child as HTMLElement));
+        //     }
+        //     await Promise.all(tasks);
+    }
 
     return (
         <article
-            ref={editorDiv}
-            contentEditable
-            onInput={handleInput}
+            ref={el => (editorDiv = el)}
+            class={styles.typingEditor + ' border'}
+            contentEditable={true}
             onKeyDown={handleKeyDown}
-            style={{
-                "min-width": "400px",
-                border: "1px solid #ccc",
-                padding: "0.5rem",
-                height: "calc(100% - 60pt)",
-                "overflow-y": "auto",
-                "white-space": "pre-wrap",
-            }}
-        >
-            <For each={timelineSequence()}>
-                {(id) => {
-                    const item = timelineItems[id];
-                    if (!item) return null;
-
-                    if (item.type === "dialogue") {
-                        const speaker = characters[item.details.ref]?.title.toUpperCase() ?? "UNKNOWN";
-                        const text = item.details.text ?? "";
-                        return (
-                            <div data-id={item.id}>
-                                {speaker}
-                                {"\n"}
-                                {text}
-                            </div>
-                        );
-                    } else {
-                        return <div data-id={item.id}>{item.details.text ?? item.title ?? ""}</div>;
-                    }
-                }}
-            </For>
-        </article>
+        // onFocusOut={handleBlur}
+        />
     );
 }

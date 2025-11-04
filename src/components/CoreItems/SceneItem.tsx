@@ -36,6 +36,10 @@ export class SceneItem extends TimelineItem {
                         <span class="max" />
                         <code>{formatHHMMSS(sceneDurations()[this.id])}</code>
                     </div>
+                    <div class="row">
+                        {this.panelNotesSection()}
+                    </div>
+
                 </header>
 
                 {this.panelNotesSection()}

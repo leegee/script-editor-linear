@@ -1,5 +1,5 @@
 import "./DragDropList.scss";
-import { JSX, createSignal, createEffect, Accessor, onMount } from "solid-js";
+import { createSignal, onMount } from "solid-js";
 import { useNavigate } from "@solidjs/router";
 import { List } from '@solid-primitives/list';
 

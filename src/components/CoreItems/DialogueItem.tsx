@@ -149,6 +149,15 @@ function DialogueForm(props: DialogueFormProps) {
 }
 
 export class DialogueItem extends TimelineItem {
+    static createForCharacter(text: string, charId: string) {
+        return new DialogueItem({
+            id: crypto.randomUUID(),
+            title: '',
+            details: { text, ref: charId },
+            notes: [],
+            duration: 0,
+        });
+    }
 
     constructor(props: Omit<TimelineItemProps, "type">) {
         super({ ...props, type: 'dialogue' });
@@ -305,6 +314,10 @@ export class DialogueItem extends TimelineItem {
 
     timelineContent(zoom: number): JSX.Element | string | undefined {
         return <i>3p</i>;
+    }
+
+    appendText(line: string) {
+        this.details = { ...this.details, text: (this.details.text ?? '') + '\n' + line };
     }
 
 }

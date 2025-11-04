@@ -3,17 +3,16 @@ import TimelineItemEditor from "../TimelineItemEditor";
 import { JSX } from "solid-js/jsx-runtime";
 import { A } from "@solidjs/router";
 import { childRoute } from "../../lib/routeResolver";
-import { notes, NoteType, removeNote } from "../../stores";
+import { notes, updateTimelineItem } from "../../stores";
 import PanelSectionHeader from "../PanelSectionHeader";
 import { For } from "solid-js";
-import NoteEditor from "./NoteEditor";
 
 export interface TimelineItemProps {
     id: string;
     type: string;                       // "dialogue" | "location" | "transition" | "beat-marker" | "scene" | "act"
     title?: string;
     duration?: number;                 // in seconds
-    details?: Record<string, any>;     // e.g., ref, lat/lng, cues
+    details?: Record<string, any>;     // e.g., ref, lat/lng, cues, date
     tags?: string[];
     notes?: string[];
 }
@@ -113,15 +112,15 @@ export class TimelineItem {
         onChange: (field: string, value: any) => void;
     }): JSX.Element {
         return (
-            <>
+            <article>
                 <div class="field border label max">
                     <TimelineItemEditor
                         id={this.id}
                         path="title"
+                        label="title"
                     />
-                    <label>Title</label>
                 </div>
-            </>
+            </article>
         );
     }
 
@@ -159,7 +158,7 @@ export class TimelineItem {
             <ul class="notes-list">
                 {this.notes.map((noteId) => (
                     <li>
-                        <a href={`/notes/${noteId}`}>{notes[noteId]?.title || "(empty)"}</a>
+                        <a href={`/notes/${noteId}`}>{notes[noteId]?.title || "(empty note)"}</a>
                     </li>
                 ))}
             </ul>
@@ -200,5 +199,20 @@ export class TimelineItem {
         );
     }
 
+    detailsDate() {
+        return (
+            <div class="field prefix max small">
+                <i>today</i>
+                <input type="date" class="small"
+                    value={this.details.date}
+                    onInput={(e) => {
+                        updateTimelineItem(this.id, "details", "date", e.currentTarget.value);
+                        this.details.date = e.currentTarget.value;
+                    }}
+                />
+            </div>
+
+        );
+    }
 
 }

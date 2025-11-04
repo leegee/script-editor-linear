@@ -1,8 +1,9 @@
 import { createStore } from "solid-js/store";
 import { createSignal, createMemo } from "solid-js";
-import { TimelineItem, TimelineItemProps, reviveItem } from "../components/CoreItems/";
+import { DialogueItem, TimelineItem, TimelineItemProps, reviveItem } from "../components/CoreItems/";
 import { storage } from "../db";
 import { locations } from "./locations";
+import { findCharacterByName } from "./characters";
 
 const [timelineItems, _setTimelineItems] = createStore<Record<string, TimelineItem>>({});
 
@@ -79,7 +80,7 @@ export async function duplicateTimelineItem(originalId: string, newItem: Timelin
  */
 export async function updateTimelineItem(
     id: string,
-    path: "details" | "title" | "duration" | "notes",
+    path: "details" | "title" | "duration" | "date" | "notes",
     key: string,
     value: any
 ) {
@@ -131,6 +132,33 @@ export async function deleteAllTimelineItems() {
     _setTimelineItems({});
     _setTimelineSequence([]);
 }
+
+
+export async function addOrAppendDialogue(line: string, prevItemId?: string) {
+    const prevItem = prevItemId ? timelineItems[prevItemId] : undefined;
+
+    // Determine if line is a character name
+    const char = findCharacterByName(line);
+    if (char) {
+        const newItem = DialogueItem.createForCharacter('', char.id);
+        await createTimelineItem(newItem);
+        return newItem.id;
+    }
+
+    // Otherwise append to previous dialogue
+    // if (prevItem?.type === 'dialogue') {
+    if (prevItem instanceof DialogueItem) {
+        prevItem.appendText(line);
+        await replaceTimelineItem(prevItem.id, prevItem);
+        return prevItem.id;
+    }
+
+    // fallback → create beat
+    const beatItem = new TimelineItem({ id: Math.random().toString(36).slice(2, 9), type: 'beat', title: '', details: { text: line }, notes: [], duration: 0 });
+    await createTimelineItem(beatItem);
+    return beatItem.id;
+}
+
 
 // Derived memos
 

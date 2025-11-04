@@ -11,7 +11,7 @@ export const storage = {
             characters: "id,title",
             locations: "id,title",
             tags: "id,title",
-            notes: "id,parentId,parentType",
+            notes: "id,title",
             meta: "key",
         });
         await db.open();

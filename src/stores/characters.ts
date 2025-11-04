@@ -40,3 +40,7 @@ export async function updateCharacter(id: string, updatedFields: Partial<Charact
     await storage.put("characters", unwrap(characters[id]));
 }
 
+export function findCharacterByName(name: string) {
+    const trimmed = name.trim().toUpperCase();
+    return Object.values(characters).find(c => c.title.toUpperCase() === trimmed);
+}

@@ -54,32 +54,7 @@ export default function TimelineEditor() {
 
         const newRawText = div.innerText;
 
-        console.log(id, "\n", timelineItem, "\nnewRawText:", newRawText)
-
         timelineItem.updateFromTyping(newRawText);
-
-        // if (timelineItem.type === "dialogue") {
-        //     const [maybeSpeaker, ...lines] = newRawText.split("\n");
-        //     const updatedText = lines.join("\n").trim();
-
-        //     const character = Object.values(characters).find(
-        //         c => c.title.toUpperCase() === maybeSpeaker.trim().toUpperCase()
-        //     );
-
-        //     if (updatedText !== timelineItem.details.text) {
-        //         await updateTimelineItem(id, "details", "text", updatedText);
-        //     }
-
-        //     if (character && character.id !== timelineItem.details.ref) {
-        //         await updateTimelineItem(id, "details", "ref", character.id);
-        //     }
-
-        // } else {
-        //     const trimmed = newRawText.trim();
-        //     if (trimmed !== timelineItem.title) {
-        //         await updateTimelineItem(id, "title", "", trimmed);
-        //     }
-        // }
     }
 
     function handleKeyDown(e: KeyboardEvent) {
@@ -87,7 +62,7 @@ export default function TimelineEditor() {
         if (e.key === "Enter") {
             e.preventDefault(); // prevent browser from inserting <div><br></div>
 
-            //         // Save the currently focused line
+            // Get the currently focused line
             const sel = window.getSelection();
             if (!sel || sel.rangeCount === 0) {
                 console.debug('no selection');
@@ -96,12 +71,9 @@ export default function TimelineEditor() {
 
             let node: HTMLElement | null = sel.anchorNode as HTMLElement;
 
-            console.debug(node)
             while (node && node !== editorDiv && node.dataset?.id === undefined) {
                 node = node.parentElement;
             }
-
-            console.debug('parent node', node)
 
             if (node?.dataset?.id) {
                 saveLine(node);

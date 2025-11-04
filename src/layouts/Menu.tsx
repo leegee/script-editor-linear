@@ -19,12 +19,15 @@ export function Menu() {
             <i>more_vert</i>
             <menu style="z-index:999" onClick={closeMenu} ref={(el) => menuRef = el}>
                 <li>
+                    <i>files</i>
                     File
                     <menu class="no-wrap">
                         <FileMenuItems />
                     </menu>
                 </li>
-                <li>View
+                <li>
+                    <i>view_quilt</i>
+                    View
                     <menu class="no-wrap">
                         <ViewMenuItems />
                     </menu>
@@ -86,7 +89,7 @@ function FileMenuItems() {
     return (
         <>
             <li>
-                <i>add_notes</i>
+                <i>news</i>
                 <ConfirmLink
                     href="/script/new"
                     message="This will over-write your script."
@@ -97,12 +100,12 @@ function FileMenuItems() {
             </li>
 
             <li>
-                <i>upload</i>
+                <i>upload_file</i>
                 <JSONUploader />
             </li>
 
             <li>
-                <i>download</i>
+                <i>file_save</i>
                 <A href="#"
                     onClick={async (e) => {
                         e.preventDefault();

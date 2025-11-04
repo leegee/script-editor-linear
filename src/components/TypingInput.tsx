@@ -58,30 +58,41 @@ export default function TimelineEditor() {
     }
 
     function handleKeyDown(e: KeyboardEvent) {
-        console.log(e.key)
         if (e.key === "Enter") {
             e.preventDefault(); // prevent browser from inserting <div><br></div>
 
-            // Get the currently focused line
-            const sel = window.getSelection();
-            if (!sel || sel.rangeCount === 0) {
-                console.debug('no selection');
-                return;
-            }
-
-            let node: HTMLElement | null = sel.anchorNode as HTMLElement;
-
-            while (node && node !== editorDiv && node.dataset?.id === undefined) {
-                node = node.parentElement;
-            }
-
-            if (node?.dataset?.id) {
-                saveLine(node);
-            }
+            const node = saveCurrentLine();
 
             // Insert a new editable div after it
-            insertNewLine(node!);
+            if (node) insertNewLine(node);
         }
+        else if (e.key === "s" && e.ctrlKey) {
+            e.preventDefault();
+            e.stopPropagation();
+            saveCurrentLine();
+        }
+    }
+
+    function saveCurrentLine() {
+        // Get the currently focused line
+        const sel = window.getSelection();
+        if (!sel || sel.rangeCount === 0) {
+            console.debug('no selection');
+            return;
+        }
+
+        let node: HTMLElement | null = sel.anchorNode as HTMLElement;
+
+        while (node && node !== editorDiv && node.dataset?.id === undefined) {
+            node = node.parentElement;
+        }
+
+        if (node?.dataset?.id) {
+            console.log('Save', node)
+            saveLine(node);
+        }
+
+        return node;
     }
 
     function insertNewLine(after: HTMLElement) {
@@ -115,7 +126,7 @@ export default function TimelineEditor() {
     return (
         <article
             ref={el => (editorDiv = el)}
-            class={styles.typingEditor + ' border'}
+            class={styles.typingEditor + ' surface-container'}
             contentEditable={true}
             onKeyDown={handleKeyDown}
         // onFocusOut={handleBlur}

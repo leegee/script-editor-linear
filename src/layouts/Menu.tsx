@@ -15,7 +15,7 @@ export function Menu() {
     };
 
     return (
-        <button ref={(el) => buttonRef = el} class="transparent">
+        <button ref={(el) => buttonRef = el} class="transparent margin round">
             <i>more_vert</i>
             <menu style="z-index:999" onClick={closeMenu} ref={(el) => menuRef = el}>
                 <li>

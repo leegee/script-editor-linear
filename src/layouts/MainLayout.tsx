@@ -8,8 +8,8 @@ export default function MainLayout(props: ParentProps) {
         <>
             <AlertConfirm />
 
-            <main style="height: 100vh">
-                <div class="tabs max">
+            <main style="height: 100vh" class="surface-container-lowest no-padding no-margin">
+                <div class="tabs max surface-container-low">
                     <Menu />
                     <A title="Script view" class="transparent" href="/script"><i class="small">list_alt</i></A>
                     <A title="Timeline view" class="transparent" href="/timeline"><i class="small">view_timeline</i></A>
@@ -17,7 +17,7 @@ export default function MainLayout(props: ParentProps) {
                 </div>
 
                 <div>
-                    <div class="page active">
+                    <div class="page active surface-low">
                         {props.children}
                     </div>
                 </div>

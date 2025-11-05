@@ -36,3 +36,8 @@ h6 input {
     font-weight: 100;
     opacity: 50%;
 }
+
+menu li li a {
+    width: 100%;
+    justify-content: flex-start;
+}

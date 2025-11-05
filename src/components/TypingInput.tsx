@@ -1,5 +1,5 @@
 // packages/client/src/components/TimelineEditor.tsx
-import { onMount } from "solid-js";
+import { onCleanup, onMount } from "solid-js";
 import styles from "./TypingInput.module.scss";
 
 import {
@@ -12,8 +12,30 @@ import { characters } from "../stores/characters";
 
 export default function TimelineEditor() {
     let editorDiv!: HTMLElement;
+    let lastCaretLineIndex = 0;
+    let autoSaveId: number | undefined;
+    const AUTO_SAVE_INTERVAL_MS = 1_000;
 
-    onMount(() => renderInitial());
+    onMount(() => {
+        renderInitial();
+
+        // Start auto-save every second
+        let saving = false;
+        autoSaveId = window.setInterval(async () => {
+            if (saving) return;
+            saving = true;
+            const cur = getCurrentLineDiv();
+            if (cur) await saveLine(cur);
+            saving = false;
+        }, AUTO_SAVE_INTERVAL_MS);
+
+        onCleanup(() => {
+            if (autoSaveId !== undefined) {
+                clearInterval(autoSaveId);
+            }
+        });
+    });
+
 
     function renderInitial() {
         editorDiv.innerHTML = "";
@@ -217,12 +239,16 @@ export default function TimelineEditor() {
         }
     }
 
+    function handleKeyUp(e: KeyboardEvent) {
+        const div = getCurrentLineDiv();
+        if (!div) return;
+        lastCaretLineIndex = getCaretLineIndex(div);
+    }
+
     function handleBlur(e: FocusEvent) {
         const div = e.target as HTMLElement;
         if (!div || !div.dataset.id) return;
-
-        const { index } = getCaretLineText(div);
-        processCompletedLine(div, index);
+        processCompletedLine(div, lastCaretLineIndex);
     }
 
     return (
@@ -232,6 +258,7 @@ export default function TimelineEditor() {
             contentEditable={true}
             onKeyDown={handleKeyDown}
             onBlur={handleBlur}
+            onKeyUp={handleKeyUp}
         />
     );
 }

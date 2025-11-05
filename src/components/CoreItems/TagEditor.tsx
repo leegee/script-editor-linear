@@ -18,7 +18,7 @@ export default function TagEditor(props: TagEditorProps) {
     // Local signals for editing
     const [title, setTitle] = createSignal(existingTag?.title ?? "");
     const [text, setText] = createSignal(existingTag?.details?.text ?? "");
-    const [clr, setClr] = createSignal(existingTag?.details?.clr ?? "#0000ff");
+    const [clr, setClr] = createSignal(existingTag?.details?.clr ?? "transparent");
 
     // Sync signals when tag changes
     createEffect(() => {
@@ -107,17 +107,20 @@ export default function TagEditor(props: TagEditorProps) {
                 />
             </div>
 
-            <div class="field border small" style={{ background: clr() }}>
-                <input
-                    type="color"
-                    value={clr()}
-                    onBlur={(e) => setClr(e.currentTarget.value)}
-                />
-            </div>
+            <fieldset class="border label no-margin tiny-padding">
+                <legend>Colour</legend>
+                <div class="field tiny-margin" style={{ background: clr(), 'border-radius': '4pt' }}>
+                    <input
+                        type="color"
+                        value={clr()}
+                        onBlur={(e) => setClr(e.currentTarget.value)}
+                    />
+                </div>
+            </fieldset>
 
 
             <footer class="top-padding extra-padding">
-                <button class="button" onClick={handleSave} disabled={!tag()?.title}>
+                <button class="button" onClick={handleSave} disabled={!title()}>
                     <i>save</i>
                     <span>Save</span>
                 </button>

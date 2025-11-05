@@ -9,7 +9,7 @@ export default function TimelineSidePanel(props: ParentProps) {
     let containerRef: HTMLDivElement | undefined;
 
     createEffect(() =>
-        setOpen(/(^\/\w+)?\/+[^/]+\/+[^/]+$/.test(
+        setOpen(/(^\/\w+)?\/+[^/]+[^/]+$/.test(
             location.pathname.slice(1)
         ))
     );

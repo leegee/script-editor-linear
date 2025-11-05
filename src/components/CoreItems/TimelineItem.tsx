@@ -202,14 +202,14 @@ export class TimelineItem {
     detailsDate() {
         return (
             <div class="field prefix max small">
-                <i>today</i>
-                <input type="date" class="small"
+                <input type="date" class="small no-padding"
                     value={this.details.date}
                     onInput={(e) => {
                         updateTimelineItem(this.id, "details", "date", e.currentTarget.value);
                         this.details.date = e.currentTarget.value;
                     }}
                 />
+                <i>today</i>
             </div>
 
         );

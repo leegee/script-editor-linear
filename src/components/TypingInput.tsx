@@ -41,7 +41,6 @@ export default function TimelineEditor() {
         editorDiv.appendChild(frag);
     }
 
-    // ---------- helpers ----------
     function getCurrentLineDiv(): HTMLElement | null {
         const sel = window.getSelection();
         if (!sel || sel.rangeCount === 0) return null;
@@ -146,12 +145,11 @@ export default function TimelineEditor() {
         div.focus();
     }
 
-    // ---------- classification ----------
     function classifyLine(line: string) {
         const clean = line.trim();
         if (!clean) return null;
 
-        // Structural markers (must be uppercase)
+        // Structural markers must be uppercase
         if (/^(ACT|SCENE|BEAT)\b/.test(clean)) return { type: clean.split(/\s/)[0] };
 
         // Character check: locale-aware uppercase, match characters
@@ -162,7 +160,6 @@ export default function TimelineEditor() {
         return null;
     }
 
-    // ---------- process a completed line ----------
     async function processCompletedLine(div: HTMLElement, lineIndex: number) {
         const lines = div.innerText.split("\n");
         const lineText = lines[lineIndex].trim();
@@ -177,14 +174,15 @@ export default function TimelineEditor() {
 
         // Split div at the completed line
         const before = lines.slice(0, lineIndex).join("\n");
-        const after = lines.slice(lineIndex).join("\n");
+        // Exclude line indexed
+        const after = lines.slice(lineIndex + 1).join("\n");
 
         // Update current div with text before
         div.innerText = before;
 
         // Create new item starting from completed line
         const newId = await createTimelineItemAfter(id, classification.type, classification.type === "dialogue"
-            ? { ref: classification.character!, text: after }
+            ? { ref: classification.character!, text: after ? after : ' ' }
             : { text: after }
         );
 
@@ -192,7 +190,6 @@ export default function TimelineEditor() {
         focusDiv(newDiv);
     }
 
-    // ---------- main key handler ----------
     async function handleKeyDown(e: KeyboardEvent) {
         const cur = getCurrentLineDiv();
         if (!cur) return;
@@ -215,7 +212,6 @@ export default function TimelineEditor() {
         }
     }
 
-    // ---------- blur handler ----------
     function handleBlur(e: FocusEvent) {
         const div = e.target as HTMLElement;
         if (!div || !div.dataset.id) return;
@@ -224,7 +220,6 @@ export default function TimelineEditor() {
         processCompletedLine(div, index);
     }
 
-    // ---------- render ----------
     return (
         <article
             ref={el => (editorDiv = el!)}

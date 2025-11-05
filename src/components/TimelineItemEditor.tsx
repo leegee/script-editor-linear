@@ -5,15 +5,15 @@ import AutoResizingTextarea from "./AutoResizingTextarea";
 interface TimelineItemEditorProps {
     item?: any;
     setItem?: (newItem: any) => void;
+    onChange?: (newTextValue: string) => void;
     id?: string;
-    path: "details" | "title" | "duration" | "notes";
+    store?: "timeline" | "locations" | "characters" | "notes" | "tags";
+    path: "details" | "title" | "duration" | "notes" | "tags";
     key?: string;
     label?: string;
     multiline?: boolean;
     class?: string;
     editMode?: boolean;
-    store?: "timeline" | "locations" | "characters" | "notes";
-    onChange?: (newTextValue: string) => void;
 }
 
 export default function TimelineItemEditor(props: TimelineItemEditorProps) {

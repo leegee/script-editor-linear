@@ -161,6 +161,10 @@ export default function TimelineEditor() {
     }
 
     async function processCompletedLine(div: HTMLElement, lineIndex: number) {
+        if (!div.dataset.id) {
+            throw new TypeError('DIV lacks dataset.id');
+        }
+
         const lines = div.innerText.split("\n");
         const lineText = lines[lineIndex].trim();
         if (!lineText) return;
@@ -169,8 +173,6 @@ export default function TimelineEditor() {
         const classification = classifyLine(lineText);
         if (!classification) return;
 
-        const id = div.dataset.id ?? "";
-        await saveLine(div);
 
         // Split div at the completed line
         const before = lines.slice(0, lineIndex).join("\n");
@@ -179,15 +181,18 @@ export default function TimelineEditor() {
 
         // Update current div with text before
         div.innerText = before;
+        await saveLine(div);
 
         // Create new item starting from completed line
-        const newId = await createTimelineItemAfter(id, classification.type, classification.type === "dialogue"
+        const newId = await createTimelineItemAfter(div.dataset.id, classification.type, classification.type === "dialogue"
             ? { ref: classification.character!, text: after ? after : ' ' }
             : { text: after }
         );
 
         const newDiv = insertRenderedItemAfter(div, newId);
         focusDiv(newDiv);
+
+        // XXX Are both lines saved?
     }
 
     async function handleKeyDown(e: KeyboardEvent) {

@@ -216,7 +216,7 @@ export default function NoteEditor(props: NoteEditorProps) {
             <div class="space"></div>
 
             <footer class="top-padding extra-padding">
-                <button class="button" onClick={handleSave} disabled={!note()?.title}>
+                <button class="button" onClick={handleSave} disabled={!title()}>
                     <i>save</i>
                     <span>Save</span>
                 </button>

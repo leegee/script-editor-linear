@@ -5,6 +5,7 @@ interface DragHandleWithMenuProps {
     class: string;
     onPointerDown: (e: PointerEvent) => void;
     onAddNote?: () => void;
+    onAddTag?: () => void;
     onDuplicate?: () => void;
     onInsertBefore?: () => void;
     onInsertAfter?: () => void;
@@ -31,6 +32,9 @@ export default function DragHandleWithMenu(props: DragHandleWithMenuProps) {
                     <menu class={"border surface-bright secondary elevate " + styles.menu}>
                         {props.onAddNote && <li onClick={props.onAddNote}>
                             <i>note_add</i> Add Note
+                        </li>}
+                        {props.onAddTag && <li onClick={props.onAddTag}>
+                            <i>new_label</i> Add tag
                         </li>}
                         {props.onDuplicate && <li onClick={props.onDuplicate}>
                             <i>control_point_duplicate</i> Duplicate

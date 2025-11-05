@@ -215,6 +215,7 @@ export default function DragDropList() {
                 class="show-on-hover"
                 onPointerDown={(e) => startDrag(pos, e)}
                 onAddNote={() => navigate('/script/attach-new/note/' + item().id)}
+                onAddTag={() => navigate('/script/attach-new/tag/' + item().id)}
                 onDuplicate={() => duplicateTimelineItem(item().id, { insertAtIndex: insertAfter })}
                 onInsertBefore={() => navigate(`/script/new/${insertBefore}`)}
                 onInsertAfter={() => navigate(`/script/new/${insertAfter}`)}

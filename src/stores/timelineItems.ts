@@ -3,7 +3,6 @@ import { createSignal, createMemo } from "solid-js";
 import { DialogueItem, TimelineItem, TimelineItemProps, reviveItem } from "../components/CoreItems/";
 import { storage } from "../db";
 import { locations } from "./locations";
-import { findCharacterByName } from "./characters";
 
 const [timelineItems, _setTimelineItems] = createStore<Record<string, TimelineItem>>({});
 
@@ -121,7 +120,7 @@ export async function duplicateTimelineItem(originalId: string, newItem: Timelin
  */
 export async function updateTimelineItem(
     id: string,
-    path: "details" | "title" | "duration" | "date" | "notes",
+    path: "details" | "title" | "duration" | "date" | "notes" | "tags",
     key: string,
     value: any
 ) {
@@ -133,16 +132,6 @@ export async function updateTimelineItem(
     );
 
     console.log('Store', newItem);
-    _setTimelineItems(item.id, newItem);
-    await storage.put("timelineItems", newItem);
-}
-
-export async function updateTimelineItemAddNote(id: string, noteId: string) {
-    const item = timelineItems[id];
-    const newItem = item.cloneWith(
-        { notes: [...item.notes as string[], noteId] }
-    );
-    console.log('Store with new note', newItem);
     _setTimelineItems(item.id, newItem);
     await storage.put("timelineItems", newItem);
 }
@@ -173,6 +162,28 @@ export async function deleteAllTimelineItems() {
     _setTimelineItems({});
     _setTimelineSequence([]);
 }
+
+
+export async function updateTimelineItemAddNote(id: string, noteId: string) {
+    const item = timelineItems[id];
+    const newItem = item.cloneWith(
+        { notes: [...item.notes as string[], noteId] }
+    );
+    console.log('Store with new note', newItem);
+    _setTimelineItems(item.id, newItem);
+    await storage.put("timelineItems", newItem);
+}
+
+export async function updateTimelineItemAddTag(id: string, noteId: string) {
+    const item = timelineItems[id];
+    const newItem = item.cloneWith(
+        { tags: [...item.notes as string[], noteId] }
+    );
+    console.log('Store with new note', newItem);
+    _setTimelineItems(item.id, newItem);
+    await storage.put("timelineItems", newItem);
+}
+
 
 // Derived memos
 

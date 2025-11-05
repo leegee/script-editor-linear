@@ -19,7 +19,7 @@ export function Menu() {
             <i>more_vert</i>
             <menu style="z-index:999" onClick={closeMenu} ref={(el) => menuRef = el}>
                 <li>
-                    <i>files</i>
+                    <i>folder_open</i>
                     File
                     <menu class="no-wrap">
                         <FileMenuItems />

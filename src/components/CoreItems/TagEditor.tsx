@@ -18,8 +18,7 @@ export default function TagEditor(props: TagEditorProps) {
     // Local signals for editing
     const [title, setTitle] = createSignal(existingTag?.title ?? "");
     const [text, setText] = createSignal(existingTag?.details?.text ?? "");
-    const [clrs, setClrs] = createSignal<string[]>(existingTag?.details?.clrs ?? []);
-    const [editingClr, setEditingClr] = createSignal(-1);
+    const [clr, setClr] = createSignal(existingTag?.details?.clr ?? "#0000ff");
 
     // Sync signals when tag changes
     createEffect(() => {
@@ -27,7 +26,6 @@ export default function TagEditor(props: TagEditorProps) {
         if (!n) return;
         setTitle(n.title);
         setText(n.details?.text ?? "");
-        setClrs(n.details?.clrs ?? []);
     });
 
     const handleSave = () => {
@@ -40,7 +38,7 @@ export default function TagEditor(props: TagEditorProps) {
         if (!tag()) {
             savedTag = createTag({
                 title: title(),
-                details: { text: text(), clrs: clrs() },
+                details: { text: text(), clr: clr() },
             });
             setTag(savedTag);
 
@@ -57,7 +55,7 @@ export default function TagEditor(props: TagEditorProps) {
             savedTag = tag()!;
             patchTag(savedTag.id, {
                 title: title(),
-                details: { text: text(), clrs: clrs() },
+                details: { text: text(), clr: clr() },
             });
         }
 
@@ -83,22 +81,10 @@ export default function TagEditor(props: TagEditorProps) {
         if (props.onSave) props.onSave(undefined);
     };
 
-    const addClr = () => {
-        setClrs([...clrs(), "blue"]);
-        setEditingClr(clrs().length - 1);
-    }
-
-    const updateUrl = (idx: number, value: string) => {
-        const copy = [...clrs()];
-        copy[idx] = value;
-        setClrs(copy);
-    };
-
     const removeUrl = (idx: number) => {
-        const copy = [...clrs()];
+        const copy = [...clr()];
         copy.splice(idx, 1);
-        setClrs(copy);
-        setEditingClr(-1);
+        setClr(copy);
     };
 
     return (
@@ -121,71 +107,24 @@ export default function TagEditor(props: TagEditorProps) {
                 />
             </div>
 
-            <fieldset>
-                <legend>Colours</legend>
-                <For each={clrs()}>
-                    {(clr, i) => {
-                        const idx = i();
+            <div class="field border small" style={{ background: clr() }}>
+                <input
+                    type="color"
+                    value={clr()}
+                    onBlur={(e) => setClr(e.currentTarget.value)}
+                />
+            </div>
 
-                        return (
-                            <>
-                                <Show when={editingClr() === idx}>
-                                    <nav class="no-space">
-                                        <div class="max field border" style={{ background: clr }}>
-                                            <input
-                                                type="color"
-                                                value={clr}
-                                                onBlur={(e) => updateUrl(idx, e.currentTarget.value)}
-                                            />
-                                        </div>
-                                        <div class="right-align">
-                                            <button
-                                                class="chip transparent tiny no-padding"
-                                                onClick={() => setEditingClr(-1)}
-                                            >
-                                                <i class="tiny">check_small</i>
-                                            </button>
-                                        </div>
-                                    </nav>
-                                </Show>
-
-                                <Show when={editingClr() !== idx}>
-                                    <div class={"row " + styles.linkEditorRoot}>
-                                        <div class={"fill small-opacity " + styles.linkEditor}>
-                                            <button class="chip transparent small" onClick={() => setEditingClr(idx)} >
-                                                <i>edit</i>
-                                            </button>
-                                            <button class="chip transparent small" onClick={() => removeUrl(idx)} >
-                                                <i>delete</i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </Show>
-                            </>
-                        );
-                    }}
-                </For>
-
-                <div class="space"></div>
-
-                <div class="right-align">
-                    <button class="chip small" onClick={addClr} disabled={editingClr() > -1}>
-                        <i>add</i>Add Colour
-                    </button>
-                </div>
-            </fieldset>
-
-            <div class="space"></div>
 
             <footer class="top-padding extra-padding">
-                <button class="button" onClick={handleSave}>
+                <button class="button" onClick={handleSave} disabled={!tag()?.title}>
                     <i>save</i>
                     <span>Save</span>
                 </button>
                 <Show when={tag()?.id}>
                     <button class="transparent" onClick={handleDelete}>
                         <i>delete</i>
-                        <span>Delete</span>
+                        <span>Delete all occurances</span>
                     </button>
                 </Show>
             </footer>

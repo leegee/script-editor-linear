@@ -11,7 +11,7 @@ export default function CharacterView() {
 
     return <div>
         {item()?.renderFull() ?? (
-            <article class="border">
+            <article class="no-margin">
                 <PanelSectionHeader title='Characters' icon='people' />
                 <CharacterItem.ListAllCharacters />
             </article>

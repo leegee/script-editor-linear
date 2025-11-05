@@ -94,19 +94,6 @@ export class TimelineItem {
         </fieldset>;
     }
 
-    // renderCompact() { return <span>{this.title}</span> }
-
-    // renderFull() {
-    //     return <article>
-    //         <h2>
-    //             <TimelineItemEditor id={this.id} path="title" store="characters" />
-    //         </h2>
-    //     </article>;
-    // }
-
-    /**
-     * Form for creating / editing timeline items.
-     */
     renderCreateNew(props: {
         duration?: number;
         onChange: (field: string, value: any) => void;
@@ -167,7 +154,7 @@ export class TimelineItem {
 
     panelNotesSection() {
         return (
-            <article>
+            <article class="no-margin">
                 <details>
                     <summary>
                         <PanelSectionHeader title="Notes" icon="note_stack" badge={this.notes.length} />
@@ -209,9 +196,8 @@ export class TimelineItem {
                         this.details.date = e.currentTarget.value;
                     }}
                 />
-                <i>today</i>
+                <i style="inset:50% 0 auto auto">today</i>
             </div>
-
         );
     }
 

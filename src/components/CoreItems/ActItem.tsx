@@ -27,14 +27,9 @@ export class ActItem extends TimelineItem {
             <fieldset>
                 <header>
                     <h3>
-                        <TimelineItemEditor
-                            id={this.id}
-                            path="title"
-                        />
+                        <TimelineItemEditor id={this.id} path="title" />
                     </h3>
-                </header>
 
-                <article>
                     <div class="row">
                         Duration
                         <span class="max" />
@@ -44,11 +39,11 @@ export class ActItem extends TimelineItem {
                     <div class="row">
                         {this.detailsDate()}
                     </div>
-                </article>
+                </header>
 
                 {this.panelNotesSection()}
 
-                <article>
+                <article class="no-margin">
                     <details>
                         <summary>
                             <PanelSectionHeader title='Locations' icon='location_on' badge={(actLocations()[this.id]).size} />
@@ -65,7 +60,7 @@ export class ActItem extends TimelineItem {
                     </details>
                 </article>
 
-                <article>
+                <article class="no-margin">
                     <details>
                         <summary>
                             <PanelSectionHeader title='Characters' icon='people' badge={(actCharacters()[this.id]).size} />

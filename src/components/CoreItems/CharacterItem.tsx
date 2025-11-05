@@ -62,7 +62,7 @@ export class CharacterItem extends TimelineItem {
 
     renderFull() {
         return (
-            <article>
+            <article class="no-margin">
                 <header class="bottom-padding">
                     <h3 class="bottom-padding">
                         <TimelineItemEditor id={this.id} path="title" store="characters" />

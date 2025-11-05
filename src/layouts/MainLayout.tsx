@@ -9,7 +9,7 @@ export default function MainLayout(props: ParentProps) {
             <AlertConfirm />
 
             <main style="height: 100vh" class="surface-container-lowest no-padding no-margin">
-                <div class="tabs max surface-container-low">
+                <div class="tabs max surface-container-low bottom-margin small-margin">
                     <Menu />
                     <A title="Script view" class="transparent" href="/script"><i class="small">list_alt</i></A>
                     <A title="Timeline view" class="transparent" href="/timeline"><i class="small">view_timeline</i></A>

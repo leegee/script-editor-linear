@@ -26,11 +26,9 @@ export class SceneItem extends TimelineItem {
             <fieldset>
                 <header>
                     <h3>
-                        <TimelineItemEditor
-                            id={this.id}
-                            path="title"
-                        />
+                        <TimelineItemEditor id={this.id} path="title" />
                     </h3>
+
                     <div class="row">
                         Duration
                         <span class="max" />
@@ -45,7 +43,7 @@ export class SceneItem extends TimelineItem {
 
                 {this.panelNotesSection()}
 
-                <article>
+                <article class="no-margin">
                     <details>
                         <summary>
                             <PanelSectionHeader title='Locations' icon='location_on' badge={(sceneLocations()[this.id]).size} />
@@ -58,7 +56,7 @@ export class SceneItem extends TimelineItem {
                     </details>
                 </article>
 
-                <article>
+                <article class="no-margin">
                     <details>
                         <summary>
                             <PanelSectionHeader title='Characters' icon='people' badge={(sceneCharacters()[this.id]).size} />

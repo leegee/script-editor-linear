@@ -41,3 +41,8 @@ menu li li a {
     width: 100%;
     justify-content: flex-start;
 }
+
+/* Date input icon */
+.field>:is(i, img, svg, progress, a:not(.helper, .error)) {
+    inset: 50% 0 auto auto;
+}

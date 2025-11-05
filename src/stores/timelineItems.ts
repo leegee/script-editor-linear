@@ -23,6 +23,7 @@ export async function loadAllTimelineItems() {
     if (savedSeq?.length) _setTimelineSequence(savedSeq);
 }
 
+
 export async function createTimelineItem(item: TimelineItem, insertAtIndex?: number) {
     // Validate location refs
     if (item.type === "location") {
@@ -53,6 +54,46 @@ export async function createTimelineItem(item: TimelineItem, insertAtIndex?: num
     await storage.put("timelineItems", item);
     await storage.putMeta("timelineSequence", seq);
 }
+
+
+export async function createTimelineItemAfter(
+    previousId: string,
+    type: string,
+    details: any
+): Promise<string> {
+    const seq = timelineSequence();
+    const index = seq.indexOf(previousId);
+    const insertAt = index >= 0 ? index + 1 : seq.length;
+
+    const id = crypto.randomUUID();
+
+    // Construct item instance by type
+    let item: TimelineItem;
+
+    switch (type) {
+        case "dialogue":
+            item = new DialogueItem({
+                id,
+                title: "",
+                details: {
+                    ref: details.ref,
+                    text: details.text ?? ""
+                },
+            });
+            break;
+
+        default:
+            item = new TimelineItem({
+                id,
+                type,
+                title: details.title ?? "",
+            });
+    }
+
+    await createTimelineItem(item, insertAt);
+    return id;
+}
+
 
 export function getTimelineItem(itemId: string) {
     return timelineItems[itemId];

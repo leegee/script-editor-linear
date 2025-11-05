@@ -34,6 +34,23 @@ export class CharacterItem extends TimelineItem {
         );
     }
 
+    static findCharacterByName(rawName: string) {
+        if (!rawName) return undefined;
+
+        const name = rawName.trim().toLocaleUpperCase();
+        if (!name) return undefined;
+
+        // Prevent accidental matches for structure keywords
+        if (name === "ACT" || name === "SCENE" || name === "BEAT") {
+            return undefined;
+        }
+
+        // Characters is a dictionary: { id: Character }
+        return Object.values(characters).find(c =>
+            c.title.trim().toLocaleUpperCase() === name
+        );
+    }
+
     constructor(props: Omit<TimelineItemProps, "type">) {
         super({
             ...props,

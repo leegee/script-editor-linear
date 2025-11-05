@@ -16,6 +16,7 @@ type DialogueUiState = {
 const [uiState, setUiState] = createStore<Record<string, DialogueUiState>>({});
 
 type DialogueFormProps = {
+    id?: string;
     mode: "select" | "new";
     setMode: (m: "select" | "new") => void;
     values: { characterName?: string; ref?: string; text?: string; duration?: number };
@@ -78,15 +79,23 @@ function DialogueForm(props: DialogueFormProps) {
                 </Match>
             </Switch>
 
-            <div class="field border label max">
-                <textarea
-                    class="dialogueText"
-                    value={props.values.text ?? ""}
-                    onInput={(e) => props.onChange("text", e.currentTarget.value)}
-                    rows={3}
+            <div class="field border max textarea">
+                <TimelineItemEditor
+                    store="timeline" path="details" key="text"
+                    class="border padding"
+                    label="dialogue"
+                    id={props.id}
+                    setItem={(newItem) => props.onChange("text", newItem.details?.text)}
                 />
-                <label>Dialogue</label>
             </div>
+
+            {/* <textarea
+                class="dialogueText"
+                value={props.values.text ?? ""}
+                onInput={(e) => props.onChange("text", e.currentTarget.value)}
+                rows={3}
+            />
+            <label>Dialogue</label> */}
 
             <div class="field border label max">
                 <input
@@ -99,18 +108,13 @@ function DialogueForm(props: DialogueFormProps) {
                     }}
                 />
                 <label>Duration (seconds)</label>
+                {props.helperText && (
+                    <div class="helper tertiary-text">{props.helperText}</div>
+                )}
             </div>
 
             {props.showAdvanced && (
                 <fieldset>
-                    <div class="field border label max no-padding">
-                        {props.helperText && (
-                            <span class="helper tertiary-text">{props.helperText}</span>
-                        )}
-                    </div>
-
-                    <hr class='space transparent' />
-
                     <h6>Compute duration</h6>
                     <div class="field max no-border">
                         <label class="slider">
@@ -248,6 +252,7 @@ export class DialogueItem extends TimelineItem {
             <article>
                 <DialogueForm
                     mode={mode()}
+                    id={this.id}
                     setMode={(m) => setUiState(this.id, "mode", m)}
                     values={{
                         characterName: newCharName(),

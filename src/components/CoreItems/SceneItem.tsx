@@ -23,7 +23,7 @@ export class SceneItem extends TimelineItem {
 
     renderFull() {
         return (
-            <fieldset>
+            <>
                 <header>
                     <h3>
                         <TimelineItemEditor id={this.id} path="title" />
@@ -68,7 +68,7 @@ export class SceneItem extends TimelineItem {
                         </ul>
                     </details>
                 </article>
-            </fieldset >
+            </>
         );
     }
 }

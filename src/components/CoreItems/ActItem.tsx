@@ -24,7 +24,7 @@ export class ActItem extends TimelineItem {
 
     renderFull() {
         return (
-            <fieldset>
+            <>
                 <header>
                     <h3>
                         <TimelineItemEditor id={this.id} path="title" />
@@ -77,7 +77,7 @@ export class ActItem extends TimelineItem {
                     </details>
                 </article>
 
-            </fieldset>
+            </ >
         );
     }
 

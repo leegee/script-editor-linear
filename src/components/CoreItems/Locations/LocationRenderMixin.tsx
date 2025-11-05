@@ -40,20 +40,22 @@ export function LocationRenderMixin<TBase extends Constructor>(Base: TBase) {
             const canonicalDetails = canonical.details ?? { lat, lng, radius };
 
             return (
-                <article class="border padding">
-                    <h3 class="field">
-                        {isTimelineItem && canonicalId ? (
-                            <TimelineItemEditor
-                                store="locations"
-                                id={canonicalId}
-                                path="title"
-                            />
-                        ) : (
-                            <span>{canonicalTitle}</span>
-                        )}
-                    </h3>
+                <>
+                    <header>
+                        <h3 class="field">
+                            {isTimelineItem && canonicalId ? (
+                                <TimelineItemEditor
+                                    store="locations"
+                                    id={canonicalId}
+                                    path="title"
+                                />
+                            ) : (
+                                <span>{canonicalTitle}</span>
+                            )}
+                        </h3>
+                    </header>
 
-                    <table class="bottom-margin">
+                    <table class="bottom-margin padding">
                         <tbody>
                             <tr>
                                 <th>Latitude</th>
@@ -89,7 +91,7 @@ export function LocationRenderMixin<TBase extends Constructor>(Base: TBase) {
                             lng={canonicalDetails.lng}
                         />
                     </div>
-                </article>
+                </>
             );
         }
     };

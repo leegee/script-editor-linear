@@ -11,7 +11,9 @@ export default function ScriptLayout(props: ParentProps) {
                     </div>
 
                     <div class="s12 m4 l4 small-padding right-padding left-padding" style="height:100%; overflow:hidden;   display: flex; flex-direction: column;">
-                        {props.children}
+                        <fieldset class="top-padding">
+                            {props.children}
+                        </fieldset>
                     </div>
                 </div>
             </main>

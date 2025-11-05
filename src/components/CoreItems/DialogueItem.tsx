@@ -5,6 +5,7 @@ import { CharacterItem } from "./CharacterItem";
 import TimelineItemEditor from "../TimelineItemEditor";
 import { countPhonemes } from "../../lib/countPhonems";
 import { createStore } from "solid-js/store";
+import PanelSectionHeader from "../PanelSectionHeader";
 
 type DialogueUiState = {
     autoDuration: boolean;
@@ -198,7 +199,8 @@ export class DialogueItem extends TimelineItem {
         const [dur, setDur] = createSignal<number | undefined>(props.duration);
 
         return (
-            <article>
+            <>
+                <PanelSectionHeader title="Dialogue" icon="chat" />
                 <DialogueForm
                     mode={mode()}
                     setMode={setMode}
@@ -213,7 +215,7 @@ export class DialogueItem extends TimelineItem {
                         props.onChange(field, value);
                     }}
                 />
-            </article>
+            </>
         );
     }
 
@@ -249,7 +251,9 @@ export class DialogueItem extends TimelineItem {
         };
 
         return (
-            <article>
+            <>
+                <PanelSectionHeader title="Dialogue" icon="chat" />
+
                 <DialogueForm
                     mode={mode()}
                     id={this.id}
@@ -288,7 +292,7 @@ export class DialogueItem extends TimelineItem {
                     }}
                     helperText={(phonemesPerSecond() / 60).toFixed(2) + " minutes"}
                 />
-            </article>
+            </>
         );
     }
 

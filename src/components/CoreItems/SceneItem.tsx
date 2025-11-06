@@ -11,11 +11,12 @@ export class SceneItem extends TimelineItem {
 
     renderCompact() {
         return (
-            <h3 class="field">
+            <h3 class="with-tag">
                 <TimelineItemEditor
                     id={this.id}
                     path="title"
                 />
+                {this.compactTagList()}
             </h3>
         );
     }

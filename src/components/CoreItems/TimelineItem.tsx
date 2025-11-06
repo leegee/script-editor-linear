@@ -3,7 +3,7 @@ import TimelineItemEditor from "../TimelineItemEditor";
 import { JSX } from "solid-js/jsx-runtime";
 import { A } from "@solidjs/router";
 import { childRoute } from "../../lib/routeResolver";
-import { notes, updateTimelineItem } from "../../stores";
+import { notes, tags, updateTimelineItem } from "../../stores";
 import PanelSectionHeader from "../PanelSectionHeader";
 import { For } from "solid-js";
 
@@ -78,11 +78,26 @@ export class TimelineItem {
     }
 
     renderCompact(): JSX.Element {
+        if (this.type === 'act' || this.type === 'scene' || this.type === "location") {
+            return (
+                <h2 class="with-tag">
+                    <TimelineItemEditor
+                        id={this.id}
+                        path="title"
+                    />
+                    {this.compactTagList()}
+                </h2>
+            );
+        }
+
         return (
-            <div style="opacity:80%">
-                <code>{this.type.toLocaleUpperCase()}</code>
-                {" "} &mdash; {" "}
-                {this.title ?? this.details.text ?? ""}
+            <div style="opacity:80%" class="with-tag">
+                <div>
+                    <code>{this.type.toLocaleUpperCase()}</code>
+                    {" "} &mdash; {" "}
+                    {this.title ?? this.details.text ?? ""}
+                </div>
+                {this.compactTagList()}
             </div>
         );
     }
@@ -206,4 +221,24 @@ export class TimelineItem {
         await updateTimelineItem(this.id, "title", "", this.title);
     }
 
+    compactTagList() {
+        return (
+            <For each={this.tags}>
+                {(tag) => (
+                    <>
+                        <span class="right tag circle" style={{
+                            "background-color": tags[tag].details.clr,
+                            zoom: "100%",
+                            "font-size": "unset",
+                            width: "auto",
+                            color: tags[tag].details.clr,
+                        }}>
+                            <i style="filter: invert(100%) brightness(200%); font-size: 12pt; zoom: 100%">tag</i>
+                            <div class="tooltip left">{tags[tag].title}</div>
+                        </span>
+                    </>
+                )}
+            </For>
+        );
+    }
 }

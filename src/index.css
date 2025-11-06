@@ -25,6 +25,13 @@ h6 input {
     font-size: unset !important;
 }
 
+.with-tag {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
 .character-name {
     margin-right: 0.6em;
     font-weight: bold;

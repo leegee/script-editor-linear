@@ -206,7 +206,7 @@ export default function DragDropList() {
                 "drag-over": overIndex() === pos
               }}
             >
-              <div class="item-content" onClick={() => navigate(`/script/items/${item().id}`)}>
+              <div class="max item-content" onClick={() => navigate(`/script/items/${item().id}`)}>
                 <small class="time-label">{displayTime}</small>
                 {item().renderCompact() ?? null}
               </div>

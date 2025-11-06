@@ -1,8 +1,9 @@
 import { JSX } from "solid-js";
+import { locations, updateLocation } from "../../../stores";
 import { LocationMap } from "./LocationMap";
 import MapLinks from "./MapLinks";
 import TimelineItemEditor from "../../TimelineItemEditor";
-import { locations, updateLocation } from "../../../stores";
+import { type TimelineItem } from "../TimelineItem";
 
 type Constructor<T = {}> = new (...args: any[]) => T;
 
@@ -10,7 +11,10 @@ export function LocationRenderMixin<TBase extends Constructor>(Base: TBase) {
     return class extends Base {
         renderCompact(): JSX.Element {
             const title = (this as any).title ?? "Unknown Location";
-            return <h4 class="timeline-item location">{title}</h4>;
+            return <h4 class="with-tag">
+                {title}
+                {(this as unknown as TimelineItem).compactTagList()}
+            </h4>;
         }
 
         renderFull(): JSX.Element {

@@ -1,25 +1,15 @@
 import { formatHHMMSS } from "../../lib/formatSecondsToHMS";
-import { actCharacters, actDurations, actLocations, characters, locations, notes, updateTimelineItem } from "../../stores";
+import { actCharacters, actDurations, actLocations, characters, locations, notes, tags, updateTimelineItem } from "../../stores";
 import { TimelineItem, TimelineItemProps } from "./TimelineItem";
 import TimelineItemEditor from "../TimelineItemEditor";
 import { A } from "@solidjs/router";
 import { childRoute } from "../../lib/routeResolver";
 import PanelSectionHeader from "../PanelSectionHeader";
+import { For } from "solid-js";
 
 export class ActItem extends TimelineItem {
     constructor(props: Omit<TimelineItemProps, "type">) {
         super({ ...props, type: 'act' });
-    }
-
-    renderCompact() {
-        return (
-            <h2 class="field">
-                <TimelineItemEditor
-                    id={this.id}
-                    path="title"
-                />
-            </h2>
-        );
     }
 
     renderFull() {
@@ -38,6 +28,10 @@ export class ActItem extends TimelineItem {
 
                     <div class="row">
                         {this.detailsDate()}
+                    </div>
+
+                    <div class="row">
+                        {this.renderTags()}
                     </div>
                 </header>
 
@@ -78,6 +72,18 @@ export class ActItem extends TimelineItem {
                 </article>
 
             </ >
+        );
+    }
+
+    renderTags() {
+        return (
+            <For each={this.tags}>
+                {(tag) => (
+                    <>
+                        <div class="chip" style={`border-width: 2pt; border-color:${tags[tag].details.clr}`}>{tags[tag].title}</div>
+                    </>
+                )}
+            </For>
         );
     }
 

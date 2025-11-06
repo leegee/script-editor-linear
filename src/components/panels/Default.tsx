@@ -1,4 +1,4 @@
-import { characters, locations } from "../../stores";
+import { characters, locations, tags } from "../../stores";
 import { CharacterItem, TimelineLocationItem, TimelineItem } from "../CoreItems";
 import { FilterList, filtersActiveCount } from "../FilterList";
 import PanelSectionHeader from "../PanelSectionHeader";
@@ -26,6 +26,12 @@ export default function Default() {
             <FilterList.ListFilters />
         </details>
 
+        <details>
+            <summary>
+                <PanelSectionHeader title='Tags' icon='label' badge={Object.keys(tags).length} />
+            </summary>
+            {/* <FilterList.ListFilters /> */}
+        </details>
 
     </>
 

@@ -325,6 +325,15 @@ export class DialogueItem extends TimelineItem {
         return <i>3p</i>;
     }
 
+    get character() {
+        return characters[this.details.ref];
+    }
+
+    set character(value) {
+        const ref = Object.keys(characters).find(k => characters[k] === value);
+        if (!ref) throw new Error("Character not found");
+        this.details.ref = ref;
+    }
 
     async updateFromTyping(newRawText: string) {
         const lines = newRawText.split("\n");
@@ -361,7 +370,6 @@ export class DialogueItem extends TimelineItem {
             return;
         }
 
-        // --- EXISTING DIALOGUE ITEM LOGIC ---
         const [maybeSpeaker, ...rest] = lines;
         const updatedText = rest.join("\n").trim();
 

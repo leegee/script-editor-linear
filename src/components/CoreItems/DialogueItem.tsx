@@ -1,5 +1,5 @@
 import { type JSX, createSignal, Match, type Signal, Switch } from "solid-js";
-import { addCharacter, characters, updateTimelineItem } from "../../stores";
+import { addCharacter, characters, findCharacterByName, getCharacterName, updateTimelineItem } from "../../stores";
 import { TimelineItem, TimelineItemProps } from "./TimelineItem";
 import { CharacterItem } from "./CharacterItem";
 import TimelineItemEditor from "../TimelineItemEditor";
@@ -325,14 +325,14 @@ export class DialogueItem extends TimelineItem {
         return <i>3p</i>;
     }
 
-    get character() {
-        return characters[this.details.ref];
+    get characterName() {
+        return getCharacterName(this.details.ref);
     }
 
-    set character(value) {
-        const ref = Object.keys(characters).find(k => characters[k] === value);
-        if (!ref) throw new Error("Character not found");
-        this.details.ref = ref;
+    set characterName(name: string) {
+        const char = findCharacterByName(name);
+        if (!char) throw new Error(`Character "${name}" not found.`);
+        this.details.ref = char.title;
     }
 
     async updateFromTyping(newRawText: string) {

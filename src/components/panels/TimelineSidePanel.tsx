@@ -33,6 +33,7 @@ export default function TimelineSidePanel(props: ParentProps) {
     return (
         <article ref={containerRef}
             classList={{
+                "surface-container-low": true,
                 [styles.open]: open(),
                 [styles.container]: true,
             }}

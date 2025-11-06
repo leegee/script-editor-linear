@@ -1,14 +1,14 @@
-// packages/client/src/components/TimelineEditor.tsx
 import { onCleanup, onMount } from "solid-js";
 import styles from "./TypingInput.module.scss";
-
+import { characters } from "../stores/characters";
+import { timelineItemTypesForTyping, TimelineItemTypeType } from "../lib/timelineItemRegistry";
 import {
     timelineItems,
     timelineSequence,
     createTimelineItemAfter
 } from "../stores/timelineItems";
 
-import { characters } from "../stores/characters";
+const typeRegex = new RegExp(`^(${timelineItemTypesForTyping.join("|")})\\b`);
 
 export default function TimelineEditor() {
     let editorDiv!: HTMLElement;
@@ -47,6 +47,7 @@ export default function TimelineEditor() {
 
             const div = document.createElement("div");
             div.dataset.id = id;
+            div.dataset.type = item.type.toLowerCase();
             div.className = styles.timelineItem;
             div.contentEditable = "true";
 
@@ -54,7 +55,7 @@ export default function TimelineEditor() {
                 const speaker = characters[item.details.ref]?.title.toLocaleUpperCase() ?? "UNKNOWN";
                 div.innerText = speaker + "\n" + (item.details.text ?? "");
             } else {
-                div.innerText = item.details.text ?? "";
+                div.innerText = item.type.toUpperCase() + ' ' + (item.title ? item.title : "\n" + item.details.text);
             }
 
             frag.appendChild(div);
@@ -143,6 +144,7 @@ export default function TimelineEditor() {
         const item = timelineItems[id];
         const div = document.createElement("div");
         div.dataset.id = id;
+        div.dataset.type = item.type.toLowerCase();
         div.className = styles.timelineItem;
         div.contentEditable = "true";
 
@@ -150,7 +152,7 @@ export default function TimelineEditor() {
             const speaker = characters[item.details.ref]?.title.toLocaleUpperCase() ?? "";
             div.innerText = speaker + "\n" + (item.details.text ?? "");
         } else {
-            div.innerText = item.details.text ?? "";
+            div.innerText = item.type.toUpperCase() + ' ' + (item.title || item.details.text || 'untitled') + "\n";
         }
 
         editorDiv.insertBefore(div, after.nextSibling);
@@ -172,7 +174,9 @@ export default function TimelineEditor() {
         if (!clean) return null;
 
         // Structural markers must be uppercase
-        if (/^(ACT|SCENE|BEAT)\b/.test(clean)) return { type: clean.split(/\s/)[0] };
+        if (typeRegex.test(clean)) {
+            return { type: (clean.split(/\s/)[0]).toLowerCase() as TimelineItemTypeType };
+        }
 
         // Character check: locale-aware uppercase, match characters
         const upper = clean.toLocaleUpperCase();
@@ -194,7 +198,6 @@ export default function TimelineEditor() {
 
         const classification = classifyLine(lineText);
         if (!classification) return;
-
 
         // Split div at the completed line
         const before = lines.slice(0, lineIndex).join("\n");

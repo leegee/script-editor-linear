@@ -29,10 +29,17 @@ export const timelineItemClasses: Record<string, typeof TimelineItem> = {
 };
 
 // Get all type keys
-export const timelineItemTypes = Object.keys(timelineItemClasses) as (keyof typeof timelineItemClasses)[];
+export type TimelineItemTypeType = keyof typeof timelineItemClasses;
+export const timelineItemTypes = Object.keys(timelineItemClasses) as TimelineItemTypeType[];
+
+// Types the user can enter in typing view
+export type TimelineItemUpper = Uppercase<TimelineItemTypeType>;
+
+export const timelineItemTypesForTyping = Object.keys(timelineItemClasses)
+    .map(k => k.toUpperCase()) as TimelineItemUpper[];
 
 // Factory to create instance of any type
-export function createTimelineItemInstance<T extends keyof typeof timelineItemClasses>(
+export function createTimelineItemInstance<T extends TimelineItemTypeType>(
     type: T,
     id = crypto.randomUUID()
 ): InstanceType<typeof timelineItemClasses[T]> {

@@ -9,3 +9,18 @@
         margin-bottom: 1em;
     }
 }
+
+
+:global {
+
+    .ͼ2 .cm-gutters {
+        background-color: #333 !important;
+        color: #777;
+        border: none !important;
+    }
+
+    .cm-gutterElement.cm-activeLineGutter {
+        background-color: #777;
+        color: #ddd
+    }
+}

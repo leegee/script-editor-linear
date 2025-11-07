@@ -1,4 +1,4 @@
-import { For, createEffect } from "solid-js";
+import { For, createEffect, createSignal } from "solid-js";
 import { createStore } from "solid-js/store";
 import { timelineItemClasses } from "../lib/timelineItemRegistry";
 import { sectionMap } from "../stores/timelineViewModel";
@@ -41,10 +41,13 @@ const toggleAll = () => {
 
 export class FilterList {
     static ListFilters() {
+        const [hide, setHide] = createSignal(false);
+
         createEffect(() => {
+            const effect = hide() ? 'display: none !important' : 'opacity: 50% !important';
             const dimmed = Object.entries(filters)
                 .filter(([, visible]) => !visible)
-                .map(([type]) => `.${type} { opacity: 50% !important; }`)
+                .map(([type]) => `.${type} { ${effect} }`)
                 .join("\n");
 
             styleElement.textContent = dimmed;
@@ -57,17 +60,52 @@ export class FilterList {
         return (
             <nav class="wrap vertical responsive scroll surface">
                 <div class="no-padding no-margin bottom-margin large-margin">
-                    <label class="field checkbox large small-opacity no-padding small-margin bottom-margin">
-                        <input
-                            type="checkbox"
-                            checked={allOn()}
-                            ref={(el) => (el.indeterminate = someOn())}
-                            onInput={() => toggleAll()}
-                            title="Toggle all filters"
-                            class="tiny-margin"
-                        />
-                        <span>All Filters</span>
-                    </label>
+                    <div class="row">
+                        <label class="checkbox large small-opacity no-padding small-margin ">
+                            <input
+                                type="checkbox"
+                                checked={allOn()}
+                                ref={(el) => (el.indeterminate = someOn())}
+                                onInput={() => toggleAll()}
+                                title="Toggle all filters"
+                                class="tiny-margin"
+                            />
+                            <span>All Filters</span>
+                        </label>
+
+                        <span class="max" />
+
+                        <div class="field middle-align right">
+                            <nav>
+                                <div class="max">
+                                    <div>Hide filtered</div>
+                                </div>
+                                <label class="switch icon">
+                                    <input
+                                        type="checkbox"
+                                        checked={hide()}
+                                        onInput={(e) => setHide(e.currentTarget.checked)}
+                                        title="Hide not dim"
+                                    />
+                                    <span>
+                                        <i>visibility_off</i>
+                                    </span>
+                                </label>
+                            </nav>
+                        </div>
+
+                        {/* <label class="right switch icon large no-padding small-margin bottom-margin">
+                            <input
+                                type="checkbox"
+                                checked={hide()}
+                                onInput={(e) => setHide(e.currentTarget.checked)}
+                                title="Hide not dim"
+                            />
+                            <span><i>timer</i></span>
+
+                            <span class="left-padding small-padding">Hide filtered</span>
+                        </label> */}
+                    </div>
 
                     <For each={sectionsWithMisc}>
                         {(section) => {

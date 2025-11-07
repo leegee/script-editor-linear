@@ -9,6 +9,7 @@ import {
     createTimelineItemAfter,
     deleteTimelineItem
 } from "../stores/timelineItems";
+import { DialogueItem } from "./CoreItems";
 
 // === Hidden marker widget ===
 class HiddenMarkerWidget extends WidgetType {
@@ -102,7 +103,18 @@ export default function TypingInput() {
     onMount(() => {
         // Build doc string from current sequence
         const doc = timelineSequence()
-            .map(id => `<!--ID:${id}-->\n${timelineItems[id]?.details?.text ?? ""}`)
+            .map((id) => {
+                const item = timelineItems[id];
+                if (item.type === 'dialogue') {
+                    const charName = (item as DialogueItem).characterName;
+                    return `<!--ID:${id}-->\n${charName} ${charName}\n${item.details.text}`;
+                } else {
+                    const typeLabel = item?.type?.toUpperCase() ?? "";
+                    const body = item?.details?.text ?? "";
+                    return `<!--ID:${id}-->\n${typeLabel} ${item.title ?? ''}\n${body}`;
+
+                }
+            })
             .join("\n\n");
 
         const state = EditorState.create({

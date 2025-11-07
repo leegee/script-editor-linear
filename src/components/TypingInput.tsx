@@ -1,155 +1,124 @@
-import styles from './TypingInput.module.scss';
-import { onMount, onCleanup, createSignal } from "solid-js";
-import { EditorState } from "@codemirror/state";
-import { EditorView, keymap } from "@codemirror/view";
-import { defaultKeymap, history, historyKeymap } from "@codemirror/commands";
+import { onMount, onCleanup } from "solid-js";
+import { EditorView, Decoration, DecorationSet, ViewPlugin, ViewUpdate, WidgetType } from "@codemirror/view";
+import { EditorState, RangeSetBuilder } from "@codemirror/state";
 import { basicSetup } from "codemirror";
-import { timelineItems, timelineSequence } from "../stores";
-import { DialogueItem } from "./CoreItems";
+import {
+    timelineItems,
+    timelineSequence,
+    updateTimelineItem,
+    createTimelineItemAfter,
+    deleteTimelineItem
+} from "../stores/timelineItems";
 
-export default function TypingEditor() {
-    let editorParent!: HTMLDivElement;
-    let view: EditorView | null = null;
-    const [currentBlock, setCurrentBlock] = createSignal<number>(0);
-
-    function timelineToText() {
-        return timelineSequence()
-            .map(id => {
-                const item = timelineItems[id];
-                if (!item) return "";
-
-                const title = item.title || "";
-                const body = item.details?.text || "";
-                const type = item.type.toUpperCase();
-
-                if (type === "DIALOGUE") {
-                    const ch = (item as DialogueItem).characterName.toUpperCase();
-                    return ch + (body ? "\n" + body : "");
-                }
-
-                let rv = type + (title ? " " + title : "");
-                if (body) rv += "\n" + body;
-                return rv;
-            })
-            .join("\n\n");
+// === Hidden marker widget ===
+class HiddenMarkerWidget extends WidgetType {
+    constructor(readonly id: string) {
+        super();
     }
-
-    function splitBlocks(text: string) {
-        return text.split(/\n{2,}/g);
+    eq(other: HiddenMarkerWidget) {
+        return this.id === other.id;
     }
-
-    function blockIndexAtPos(text: string, pos: number) {
-        let running = 0;
-        const blocks = splitBlocks(text);
-        for (let i = 0; i < blocks.length; i++) {
-            const len = blocks[i].length + 2;
-            if (pos < running + len) return i;
-            running += len;
-        }
-        return blocks.length - 1;
+    toDOM() {
+        const span = document.createElement("span");
+        span.textContent = `<!--ID:${this.id}-->`;
+        span.style.display = "none";
+        return span;
     }
+}
 
-    function applyTextToTimeline(text: string) {
-        const blocks = splitBlocks(text);
-        const seq = timelineSequence();
+// === Build decoration set based on sequence ===
+function buildDecorations(): DecorationSet {
+    const builder = new RangeSetBuilder<Decoration>();
+    let pos = 0;
 
-        blocks.forEach((block, i) => {
-            const id = seq[i];
-            if (!id) return;
-
-            const item = timelineItems[id];
-            if (!item) return;
-
-            const lines = block.split("\n");
-            const firstLine = lines[0]?.trim() || "";
-            const body = lines.slice(1).join("\n").trim();
-
-            if (item.type === "DIALOGUE") {
-                const dlg = item as DialogueItem;
-                dlg.characterName = firstLine;
-                dlg.details = dlg.details || {};
-                dlg.details.text = body;
-                return;
-            }
-
-            const [maybeType, ...rest] = firstLine.split(" ");
-            const upper = maybeType.toUpperCase();
-
-            if (upper === item.type.toUpperCase()) {
-                item.title = rest.join(" ").trim();
-                item.details = item.details || {};
-                item.details.text = body;
-                return;
-            }
-
-            item.type = upper;
-            item.title = rest.join(" ").trim();
-            item.details = item.details || {};
-            item.details.text = body;
+    for (const id of timelineSequence()) {
+        const widget = Decoration.widget({
+            widget: new HiddenMarkerWidget(id),
+            side: -1
         });
+        builder.add(pos, pos, widget);
+
+        const text = timelineItems[id]?.details?.text ?? "";
+        pos += text.length + 2;
     }
+
+    return builder.finish();
+}
+
+// === CM6 plugin to sync editor <-> Solid store ===
+const syncPlugin = ViewPlugin.fromClass(
+    class {
+        decorations: DecorationSet;
+
+        constructor(view: EditorView) {
+            this.decorations = buildDecorations();
+        }
+
+        update(update: ViewUpdate) {
+            if (!update.docChanged) return;
+
+            const text = update.state.doc.toString();
+            const markerRegex = /<!--ID:([a-zA-Z0-9_-]+)-->/g;
+            const seenIds = new Set<string>();
+            let match: RegExpExecArray | null;
+
+            while ((match = markerRegex.exec(text))) {
+                const id = match[1];
+                seenIds.add(id);
+
+                // Find next marker, get block text
+                const start = match.index + match[0].length;
+                const nextMarkerPos = text.indexOf("<!--ID:", start);
+                const blockText = text.substring(start, nextMarkerPos === -1 ? undefined : nextMarkerPos).trim();
+
+                if (timelineItems[id]) {
+                    // ✅ Update existing item content in shared store
+                    updateTimelineItem(id, "details", "text", blockText);
+                } else {
+                    // 🆕 Create a new item if marker appears unexpectedly
+                    console.warn("Unknown ID found in editor; creating new item", id);
+                    createTimelineItemAfter(timelineSequence()[timelineSequence().length - 1], "dialogue", { text: blockText });
+                }
+            }
+
+            // 🗑 Remove deleted items
+            for (const id of timelineSequence()) {
+                if (!seenIds.has(id)) {
+                    deleteTimelineItem(id);
+                }
+            }
+        }
+    },
+    {
+        decorations: v => v.decorations
+    }
+);
+
+// === Main editor component ===
+export default function TypingInput() {
+    let parentEl!: HTMLDivElement;
+    let view: EditorView | null = null;
 
     onMount(() => {
-        const initialText = timelineToText();
-        let updateTimeout: number | null = null;
+        // Build doc string from current sequence
+        const doc = timelineSequence()
+            .map(id => `<!--ID:${id}-->\n${timelineItems[id]?.details?.text ?? ""}`)
+            .join("\n\n");
 
         const state = EditorState.create({
-            doc: initialText,
+            doc,
             extensions: [
                 basicSetup,
-                history(),
-                keymap.of([...defaultKeymap, ...historyKeymap]),
-
-                EditorView.updateListener.of(update => {
-                    const text = update.state.doc.toString();
-
-                    if (update.docChanged) {
-                        if (updateTimeout) clearTimeout(updateTimeout);
-                        updateTimeout = window.setTimeout(() => {
-                            applyTextToTimeline(text);
-                        }, 50);
-                    }
-
-                    if (update.selectionSet) {
-                        const pos = update.state.selection.main.head;
-                        const block = blockIndexAtPos(text, pos);
-                        setCurrentBlock(block);
-                    }
-                })
+                syncPlugin
             ]
         });
 
-        view = new EditorView({
-            state,
-            parent: editorParent
-        });
+        view = new EditorView({ state, parent: parentEl });
     });
 
     onCleanup(() => {
         view?.destroy();
-        view = null;
     });
 
-    // --- Compute the current timeline item ---
-    const currentItem = () => {
-        const idx = currentBlock();
-        const seq = timelineSequence();
-        const id = seq[idx];
-        if (!id) return null;
-        return timelineItems[id] || null;
-    };
-
-    return (
-        <>
-            {currentItem() && (
-                <div class={styles.currentBlock}>
-                    {currentItem()!.type === "DIALOGUE"
-                        ? `DIALOGUE: ${(currentItem() as DialogueItem).characterName}`
-                        : `${currentItem()!.type} ${currentItem()!.title || ""}`}
-                </div>
-            )}
-            <article ref={editorParent} class={styles.typingEditor}>
-            </article>
-        </>
-    );
+    return <article ref={parentEl} class="typing-editor" />;
 }

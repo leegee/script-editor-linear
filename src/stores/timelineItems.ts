@@ -3,6 +3,7 @@ import { createSignal, createMemo } from "solid-js";
 import { DialogueItem, TimelineItem, TimelineItemProps, reviveItem } from "../components/CoreItems/";
 import { storage } from "../db";
 import { locations } from "./locations";
+import { tags } from "./tags";
 
 const [timelineItems, _setTimelineItems] = createStore<Record<string, TimelineItem>>({});
 
@@ -352,6 +353,24 @@ export const timelineitemStartTimes = createMemo(() => {
     return starts;
 });
 
+export const timelineItemsByTag = createMemo(() => {
+    const result: Record<string, typeof timelineItems[string][]> = {};
+
+    // Iterate over each tag
+    for (const tagId in tags) {
+        result[tagId] = [];
+
+        // Iterate over each timeline item
+        for (const itemId in timelineItems) {
+            const item = timelineItems[itemId];
+            if (item.tags?.includes(tagId)) {
+                result[tagId].push(item);
+            }
+        }
+    }
+
+    return result;
+});
 
 export const actCharacters = _collectCharacters("act");
 export const sceneCharacters = _collectCharacters("scene");

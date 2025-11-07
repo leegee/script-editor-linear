@@ -2,6 +2,7 @@ import { characters, locations, tags } from "../../stores";
 import { CharacterItem, TimelineLocationItem, TimelineItem } from "../CoreItems";
 import { FilterList, filtersActiveCount } from "../FilterList";
 import PanelSectionHeader from "../PanelSectionHeader";
+import { TagList } from "../TagList";
 
 export default function Default() {
     return <>
@@ -30,7 +31,7 @@ export default function Default() {
             <summary>
                 <PanelSectionHeader title='Tags' icon='label' badge={Object.keys(tags).length} />
             </summary>
-            {/* <FilterList.ListFilters /> */}
+            <TagList.ListTags />
         </details>
 
     </>

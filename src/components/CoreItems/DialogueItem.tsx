@@ -392,7 +392,7 @@ export class DialogueItem extends TimelineItem {
         this.characterName = char.id;
     }
 
-    async updateCharacterAndText(headerLine: string, bodyText: string) {
+    async update(headerLine: string, bodyText: string) {
         let changed = false;
 
         const newCharName = headerLine.trim();

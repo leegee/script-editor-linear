@@ -1,41 +1,39 @@
 // TypingInput.tsx
-import { onMount, onCleanup } from "solid-js";
+import { onMount, onCleanup, createSignal } from "solid-js";
 import { EditorView, ViewPlugin, ViewUpdate } from "@codemirror/view";
 import { EditorState, Extension } from "@codemirror/state";
 import { basicSetup } from "codemirror";
 import { StreamLanguage } from "@codemirror/stream-parser";
-import { timelineItems, timelineSequence, replaceTimelineItem, createTimelineItemAfter, deleteTimelineItem } from "../stores/timelineItems";
+import {
+    timelineItems,
+    timelineSequence,
+    replaceTimelineItem,
+    createTimelineItemAfter,
+    deleteTimelineItem
+} from "../stores/timelineItems";
 import { TimelineItem, DialogueItem } from "./CoreItems";
 import { timelineItemTypesForTyping } from "../lib/timelineItemRegistry";
 
 /* -----------------------
    Small Stream tokenizer
-   -----------------------
-   - HEADERS: ACT, SCENE, LOCATION, MUSIC, SOUNDFX, LIGHTING, BEAT
-   - CHARACTER NAMES: lines of ALL CAPS or capitalised words (we mark as "name")
-   - Everything else: plain text
-*/
+   ----------------------- */
 const typeRegex = new RegExp(`^(${timelineItemTypesForTyping.join("|")})\\b`);
 
 const scriptLanguage = StreamLanguage.define({
     startState: () => ({}),
     token(stream) {
         if (stream.sol()) {
-            // header lines starting with uppercase keyword (ACT, SCENE...)
-            if (stream.match(typeRegex)) {
-                return "keyword";
-            }
-            // CHARACTER NAME line (all caps or words with spaces, allow APOSTROPHE)
-            if (stream.match(/^[A-Z][A-Z0-9' ]+$/)) {
-                return "atom"; // use a token class for names
-            }
+            if (stream.match(typeRegex)) return "keyword";
+            if (stream.match(/^[A-Z][A-Z0-9' ]+$/)) return "atom";
         }
-        // consume the rest of the line
         stream.skipToEnd();
         return null;
     }
 });
 
+/* -----------------------
+   Helpers: render / parse
+   ----------------------- */
 function renderItemToBlock(id: string): string {
     const item = timelineItems[id];
     if (!item) return "";
@@ -49,13 +47,9 @@ function renderItemToBlock(id: string): string {
         const typeLabel = (item.type || "").toUpperCase();
         const title = (item.title || "").trim();
         const body = (item.details?.text || "").trim();
-
-        // If body exists, put it on a separate line
-        if (body) return `${typeLabel}${title ? " " + title : ""}\n${body}`;
-        else return `${typeLabel}${title ? " " + title : ""}`;
+        return body ? `${typeLabel}${title ? " " + title : ""}\n${body}` : `${typeLabel}${title ? " " + title : ""}`;
     }
 }
-
 
 function parseBlock(block: string) {
     const lines = block.split("\n");
@@ -64,11 +58,6 @@ function parseBlock(block: string) {
     return { headerLine, bodyText };
 }
 
-/**
- * Infer item type/title/character from header line.
- * If header matches /^([A-Z]+)\s*(.*)$/ and the first token is a known TYPE,
- * treat as non-dialogue; otherwise treat as dialogue.
- */
 const KNOWN_TYPES = new Set(["ACT", "SCENE", "LOCATION", "MUSIC", "SOUNDFX", "LIGHTING", "BEAT"]);
 
 function inferFromHeader(headerLine: string) {
@@ -76,122 +65,119 @@ function inferFromHeader(headerLine: string) {
     if (m && KNOWN_TYPES.has(m[1].toUpperCase())) {
         return { type: m[1].toLowerCase(), title: (m[2] || "").trim(), characterName: null };
     } else {
-        // dialogue header
         return { type: "dialogue", title: null, characterName: headerLine };
     }
 }
 
 /* -----------------------
-   Sync plugin
+   Sync + debug plugin
    ----------------------- */
-const syncPlugin = ViewPlugin.fromClass(
-    class {
-        constructor(view: EditorView) {
-            // nothing to initialize here
-        }
+function createSyncPlugin(setCurrentBlockInfo: (info: string) => void) {
+    return ViewPlugin.fromClass(
+        class {
+            view: EditorView;
+            constructor(view: EditorView) {
+                this.view = view;
+                this.updateCursorInfo();
+            }
 
-        async update(update: ViewUpdate) {
-            if (!update.docChanged) return;
+            async update(update: ViewUpdate) {
+                if (update.docChanged) await this.syncTimeline(update.state);
+                if (update.selectionSet || update.docChanged) this.updateCursorInfo();
+            }
 
-            const doc = update.state.doc.toString();
-            // Split into blocks by two or more newlines (keeps editor flexible)
-            const blocks = doc.split(/\n{2,}/g).map(b => b.trim()).filter(b => b.length || true);
-            const seq = timelineSequence();
+            private updateCursorInfo() {
+                const { from } = this.view.state.selection.main;
+                const line = this.view.state.doc.lineAt(from);
+                const blockStart = this.view.state.doc.sliceString(0, from).lastIndexOf("\n\n") + 2;
+                const blockEndIdx = this.view.state.doc.sliceString(from).indexOf("\n\n");
+                const blockEnd = blockEndIdx === -1 ? this.view.state.doc.length : from + blockEndIdx;
+                const blockText = this.view.state.doc.sliceString(blockStart, blockEnd).trim();
 
-            // If blocks > seq -> we will create new items where needed
-            // If blocks < seq -> we will delete trailing items
-            // We map by index: block i -> seq[i]
+                const { headerLine, bodyText } = parseBlock(blockText);
+                const seq = timelineSequence();
+                const idx = seq.findIndex(id => renderItemToBlock(id).startsWith(headerLine));
 
-            for (let i = 0; i < blocks.length; i++) {
-                const block = blocks[i];
-                const { headerLine, bodyText } = parseBlock(block);
+                let info = `No block found`;
+                if (idx !== -1) {
+                    const item = timelineItems[seq[idx]];
+                    info = `#${item.id} [${item.type}] header: "${headerLine}" body: "${bodyText}"`;
+                }
+                setCurrentBlockInfo(info);
+            }
 
-                if (i < seq.length) {
-                    const id = seq[i];
-                    const existing = timelineItems[id];
-                    if (!existing) continue;
+            private async syncTimeline(state: EditorState) {
+                const doc = state.doc.toString();
+                const blocks = doc.split(/\n{2,}/g).map(b => b.trim()).filter(b => true);
+                const seq = timelineSequence();
 
-                    if (existing.type === "dialogue") {
+                for (let i = 0; i < blocks.length; i++) {
+                    const block = blocks[i];
+                    const { headerLine, bodyText } = parseBlock(block);
+
+                    if (i < seq.length) {
+                        const id = seq[i];
+                        const existing = timelineItems[id];
+                        if (!existing) continue;
+
                         if (existing.type === "dialogue") {
                             const dialogue = existing as DialogueItem;
-                            await dialogue.updateCharacterAndText(headerLine, bodyText);
+                            await dialogue.update(headerLine, bodyText);
+                            await replaceTimelineItem(id, dialogue);
+                        } else {
+                            const headerMatch = headerLine.match(/^([A-Z]+)\s*(.*)$/);
+                            if (!headerMatch) continue;
+                            const type = headerMatch[1].toLowerCase();
+                            const title = headerMatch[2]?.trim() || "";
+                            if (type !== existing.type || title !== existing.title || bodyText !== (existing.details?.text || "")) {
+                                const cloned = existing.cloneWith({
+                                    type,
+                                    title,
+                                    details: { ...(existing.details || {}), text: bodyText }
+                                });
+                                await replaceTimelineItem(id, cloned);
+                            }
                         }
+                    } else {
+                        const prevId = seq[seq.length - 1] ?? "";
+                        const inferred = inferFromHeader(headerLine);
+                        const props = inferred.type === "dialogue" ? { text: bodyText, ref: null } : { title: inferred.title, text: bodyText };
+                        await createTimelineItemAfter(prevId, inferred.type, props);
                     }
-                    else {
-                        // non-dialogue
-                        const headerMatch = headerLine.match(/^([A-Z]+)\s*(.*)$/);
-                        if (!headerMatch) continue;
-
-                        const type = headerMatch[1].toLowerCase();
-                        const title = headerMatch[2]?.trim() || "";
-                        const currentTitle = existing.title || "";
-                        const currentBody = existing.details?.text || "";
-
-                        if (title !== currentTitle || bodyText !== currentBody || type !== existing.type) {
-                            const cloned = existing.cloneWith({
-                                type,
-                                title,
-                                details: { ...(existing.details || {}), text: bodyText }
-                            });
-                            await replaceTimelineItem(id, cloned);
-                        }
-                    }
-                } else {
-                    // create new item if needed
-                    const prevId = seq[seq.length - 1] ?? "";
-                    const inferred = inferFromHeader(headerLine);
-
-                    const props = inferred.type === "dialogue"
-                        ? { text: bodyText, ref: null }
-                        : { title: inferred.title, text: bodyText };
-
-                    await createTimelineItemAfter(prevId, inferred.type, props);
                 }
-            }
 
-            // Delete trailing items if user removed blocks
-            if (blocks.length < seq.length) {
-                for (let j = blocks.length; j < seq.length; j++) {
-                    const idToDelete = seq[j];
-                    deleteTimelineItem(idToDelete).catch(err => console.error("deleteTimelineItem err", err));
+                if (blocks.length < seq.length) {
+                    for (let j = blocks.length; j < seq.length; j++) {
+                        await deleteTimelineItem(seq[j]).catch(err => console.error("deleteTimelineItem err", err));
+                    }
                 }
             }
         }
-    }
-);
+    );
+}
 
 /* -----------------------
    Component
    ----------------------- */
 export default function TypingInput() {
     let parentEl!: HTMLDivElement;
+    const [currentBlockInfo, setCurrentBlockInfo] = createSignal("No block selected");
     let view: EditorView | null = null;
 
     onMount(() => {
-        // Build initial document from timelineSequence (order matters)
-        const doc = timelineSequence()
-            .map(id => renderItemToBlock(id))
-            .join("\n\n");
-
-        const extensions: Extension[] = [
-            basicSetup,
-            scriptLanguage,
-            syncPlugin
-        ];
-
+        const doc = timelineSequence().map(id => renderItemToBlock(id)).join("\n\n");
+        const extensions: Extension[] = [basicSetup, scriptLanguage, createSyncPlugin(setCurrentBlockInfo)];
         const state = EditorState.create({ doc, extensions });
 
-        view = new EditorView({
-            state,
-            parent: parentEl
-        });
+        view = new EditorView({ state, parent: parentEl });
     });
 
-    onCleanup(() => {
-        view?.destroy();
-    });
+    onCleanup(() => view?.destroy());
 
     return <>
+        <div class="block-debug-info" style="padding: 0.25rem; font-size: 0.9em; color: #555;">
+            {currentBlockInfo()}
+        </div>
         <article ref={parentEl} class="typing-editor" />
     </>;
 }

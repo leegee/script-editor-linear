@@ -36,14 +36,13 @@ function renderItemToBlock(id: string): string {
 
     if (item.type === "dialogue") {
         const d = item as DialogueItem;
-        const header = (d.characterName || "").trim();
+        const header = (d.characterName || "").trim().toLocaleUpperCase();
         const body = (d.details?.text || "").trim();
         return header + (body ? `\n${body}` : "");
     } else {
-        const typeLabel = (item.type || "").toLocaleUpperCase();
+        const typeLabel = (item.type || "").toUpperCase();
         const title = (item.title || "").trim();
         const body = (item.details?.text || "").trim();
-        console.log(body ? `${typeLabel}${title ? " " + title : ""}\n${body}` : `${typeLabel}${title ? " " + title : ""}`)
         return body ? `${typeLabel}${title ? " " + title : ""}\n${body}` : `${typeLabel}${title ? " " + title : ""}`;
     }
 }
@@ -89,9 +88,7 @@ function createSyncPlugin(setCurrentBlockInfo: (info: string) => void) {
                 for (let i = 0; i < blocks.length; i++) {
                     const b = blocks[i];
                     const blockStart = accumulated;
-                    const blockEnd = accumulated + b.length;
-
-                    if (from >= blockStart && from <= blockEnd) {
+                    if (from >= blockStart && from <= blockStart + b.length + 1) {
                         blockIndex = i;
                         break;
                     }
@@ -118,7 +115,7 @@ function createSyncPlugin(setCurrentBlockInfo: (info: string) => void) {
 
             private async syncTimeline(state: EditorState) {
                 const doc = state.doc.toString();
-                const blocks = doc.split(/\n{2,}/g).map(b => b.trim()).filter(b => true);
+                const blocks = doc.split(/\n{2,}/g).map(b => b.trim()).filter(Boolean);
                 const seq = timelineSequence();
 
                 for (let i = 0; i < blocks.length; i++) {
@@ -137,7 +134,7 @@ function createSyncPlugin(setCurrentBlockInfo: (info: string) => void) {
                         } else {
                             const headerMatch = headerLine.match(/^([A-Z]+)\s*(.*)$/);
                             if (!headerMatch) continue;
-                            const type = headerMatch[1].toLocaleLowerCase();
+                            const type = headerMatch[1].toLowerCase();
                             const title = headerMatch[2]?.trim() || "";
                             if (type !== existing.type || title !== existing.title || bodyText !== (existing.details?.text || "")) {
                                 const cloned = existing.cloneWith({

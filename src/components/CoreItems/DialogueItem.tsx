@@ -1,5 +1,5 @@
 import { type JSX, createSignal, Match, type Signal, Switch } from "solid-js";
-import { addCharacter, characters, findCharacterByName, getCharacterName, updateTimelineItem } from "../../stores";
+import { addCharacter, characters, findCharacterByName, getCharacterName, replaceTimelineItem, updateTimelineItem } from "../../stores";
 import { TimelineItem, TimelineItemProps } from "./TimelineItem";
 import { CharacterItem } from "./CharacterItem";
 import TimelineItemEditor from "../TimelineItemEditor";
@@ -390,6 +390,31 @@ export class DialogueItem extends TimelineItem {
             throw new Error("Could not find character with name " + charName);
         }
         this.characterName = char.id;
+    }
+
+    async updateCharacterAndText(headerLine: string, bodyText: string) {
+        let changed = false;
+
+        const newCharName = headerLine.trim();
+        if (newCharName && newCharName !== this.characterName) {
+            try {
+                await this.changeCharacter(newCharName);
+                changed = true;
+            } catch (err) {
+                console.warn("Character not found:", newCharName, err);
+                // optionally: leave character unchanged
+            }
+        }
+
+        const currentText = this.details?.text ?? "";
+        if (bodyText !== currentText) {
+            this.details = { ...(this.details || {}), text: bodyText };
+            changed = true;
+        }
+
+        if (changed) {
+            await replaceTimelineItem(this.id, this);
+        }
     }
 
 }

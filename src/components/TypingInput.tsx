@@ -1,9 +1,12 @@
 // TypingInput.tsx
+import styles from './TypingInput.module.scss';
 import { onMount, onCleanup, createSignal } from "solid-js";
 import { EditorView, ViewPlugin, ViewUpdate } from "@codemirror/view";
 import { EditorState, Extension } from "@codemirror/state";
 import { basicSetup } from "codemirror";
 import { StreamLanguage } from "@codemirror/stream-parser";
+import { DialogueItem } from "./CoreItems";
+import { timelineItemTypesForTyping, TimelineItemTypeType, TimelineItemUpper } from "../lib/timelineItemRegistry";
 import {
     timelineItems,
     timelineSequence,
@@ -11,12 +14,8 @@ import {
     createTimelineItemAfter,
     deleteTimelineItem
 } from "../stores/timelineItems";
-import { TimelineItem, DialogueItem } from "./CoreItems";
-import { timelineItemTypesForTyping } from "../lib/timelineItemRegistry";
 
-/* -----------------------
-   Small Stream tokenizer
-   ----------------------- */
+const KNOWN_TYPES = new Set(timelineItemTypesForTyping);
 const typeRegex = new RegExp(`^(${timelineItemTypesForTyping.join("|")})\\b`);
 
 const scriptLanguage = StreamLanguage.define({
@@ -24,16 +23,13 @@ const scriptLanguage = StreamLanguage.define({
     token(stream) {
         if (stream.sol()) {
             if (stream.match(typeRegex)) return "keyword";
-            if (stream.match(/^[A-Z][A-Z0-9' ]+$/)) return "atom";
+            if (stream.match(/^[\p{Lu}][\p{Lu}0-9' ]+$/u)) return "atom";
         }
         stream.skipToEnd();
         return null;
     }
 });
 
-/* -----------------------
-   Helpers: render / parse
-   ----------------------- */
 function renderItemToBlock(id: string): string {
     const item = timelineItems[id];
     if (!item) return "";
@@ -44,7 +40,7 @@ function renderItemToBlock(id: string): string {
         const body = (d.details?.text || "").trim();
         return header + (body ? `\n${body}` : "");
     } else {
-        const typeLabel = (item.type || "").toUpperCase();
+        const typeLabel = (item.type || "").toLocaleUpperCase();
         const title = (item.title || "").trim();
         const body = (item.details?.text || "").trim();
         console.log(body ? `${typeLabel}${title ? " " + title : ""}\n${body}` : `${typeLabel}${title ? " " + title : ""}`)
@@ -59,20 +55,15 @@ function parseBlock(block: string) {
     return { headerLine, bodyText };
 }
 
-const KNOWN_TYPES = new Set(["ACT", "SCENE", "LOCATION", "MUSIC", "SOUNDFX", "LIGHTING", "BEAT"]);
-
 function inferFromHeader(headerLine: string) {
     const m = headerLine.match(/^([A-Z]+)\s*(.*)$/);
-    if (m && KNOWN_TYPES.has(m[1].toUpperCase())) {
-        return { type: m[1].toLowerCase(), title: (m[2] || "").trim(), characterName: null };
+    if (m && KNOWN_TYPES.has(m[1].toUpperCase() as TimelineItemUpper)) {
+        return { type: m[1].toLowerCase() as TimelineItemTypeType, title: (m[2] || "").trim(), characterName: null };
     } else {
-        return { type: "dialogue", title: null, characterName: headerLine };
+        return { type: "dialogue" as const, title: null, characterName: headerLine };
     }
 }
-
-/* -----------------------
-   Sync + debug plugin
-   ----------------------- */
+// Sync and debug plugin
 function createSyncPlugin(setCurrentBlockInfo: (info: string) => void) {
     return ViewPlugin.fromClass(
         class {
@@ -146,7 +137,7 @@ function createSyncPlugin(setCurrentBlockInfo: (info: string) => void) {
                         } else {
                             const headerMatch = headerLine.match(/^([A-Z]+)\s*(.*)$/);
                             if (!headerMatch) continue;
-                            const type = headerMatch[1].toLowerCase();
+                            const type = headerMatch[1].toLocaleLowerCase();
                             const title = headerMatch[2]?.trim() || "";
                             if (type !== existing.type || title !== existing.title || bodyText !== (existing.details?.text || "")) {
                                 const cloned = existing.cloneWith({
@@ -175,9 +166,6 @@ function createSyncPlugin(setCurrentBlockInfo: (info: string) => void) {
     );
 }
 
-/* -----------------------
-   Component
-   ----------------------- */
 export default function TypingInput() {
     let parentEl!: HTMLDivElement;
     const [currentBlockInfo, setCurrentBlockInfo] = createSignal("No block selected");
@@ -197,6 +185,6 @@ export default function TypingInput() {
         <div class="block-debug-info" style="padding: 0.25rem; font-size: 0.9em; color: #555;">
             {currentBlockInfo()}
         </div>
-        <article ref={parentEl} class="typing-editor" />
+        <article ref={parentEl} class={styles.typingEditor} />
     </>;
 }

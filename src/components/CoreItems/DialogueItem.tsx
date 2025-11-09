@@ -384,5 +384,13 @@ export class DialogueItem extends TimelineItem {
         }
     }
 
+    async changeCharacter(charName: string) {
+        const char = findCharacterByName(charName);
+        if (!char) {
+            throw new Error("Could not find character with name " + charName);
+        }
+        this.characterName = char.id;
+    }
+
 }
 

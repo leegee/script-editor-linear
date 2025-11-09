@@ -99,10 +99,6 @@ export function getTimelineItem(itemId: string) {
     return timelineItems[itemId];
 }
 
-export async function replaceTimelineItem(id: string, newItem: TimelineItem) {
-    _setTimelineItems(id, newItem);
-    await storage.put("timelineItems", newItem);
-}
 
 export async function duplicateTimelineItem(originalId: string, newItem: TimelineItem, insertAtIndex?: number) {
     const seq = [...timelineSequence()];
@@ -133,6 +129,11 @@ export async function updateTimelineItem(
     );
 
     _setTimelineItems(item.id, newItem);
+    await storage.put("timelineItems", newItem);
+}
+
+export async function replaceTimelineItem(id: string, newItem: TimelineItem) {
+    _setTimelineItems(id, newItem);
     await storage.put("timelineItems", newItem);
 }
 

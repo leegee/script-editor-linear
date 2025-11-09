@@ -47,6 +47,7 @@ function renderItemToBlock(id: string): string {
         const typeLabel = (item.type || "").toUpperCase();
         const title = (item.title || "").trim();
         const body = (item.details?.text || "").trim();
+        console.log(body ? `${typeLabel}${title ? " " + title : ""}\n${body}` : `${typeLabel}${title ? " " + title : ""}`)
         return body ? `${typeLabel}${title ? " " + title : ""}\n${body}` : `${typeLabel}${title ? " " + title : ""}`;
     }
 }
@@ -88,23 +89,41 @@ function createSyncPlugin(setCurrentBlockInfo: (info: string) => void) {
 
             private updateCursorInfo() {
                 const { from } = this.view.state.selection.main;
-                const line = this.view.state.doc.lineAt(from);
-                const blockStart = this.view.state.doc.sliceString(0, from).lastIndexOf("\n\n") + 2;
-                const blockEndIdx = this.view.state.doc.sliceString(from).indexOf("\n\n");
-                const blockEnd = blockEndIdx === -1 ? this.view.state.doc.length : from + blockEndIdx;
-                const blockText = this.view.state.doc.sliceString(blockStart, blockEnd).trim();
+                const docText = this.view.state.doc.toString();
+                const blocks = docText.split(/\n{2,}/g).map(b => b.trim()).filter(Boolean);
 
-                const { headerLine, bodyText } = parseBlock(blockText);
-                const seq = timelineSequence();
-                const idx = seq.findIndex(id => renderItemToBlock(id).startsWith(headerLine));
+                let accumulated = 0;
+                let blockIndex = -1;
 
-                let info = `No block found`;
-                if (idx !== -1) {
-                    const item = timelineItems[seq[idx]];
-                    info = `#${item.id} [${item.type}] header: "${headerLine}" body: "${bodyText}"`;
+                for (let i = 0; i < blocks.length; i++) {
+                    const b = blocks[i];
+                    const blockStart = accumulated;
+                    const blockEnd = accumulated + b.length;
+
+                    if (from >= blockStart && from <= blockEnd) {
+                        blockIndex = i;
+                        break;
+                    }
+                    accumulated += b.length + 2; // +2 for the two newlines between blocks
                 }
+
+                const seq = timelineSequence();
+                let info = "No block found";
+
+                if (blockIndex >= 0 && blockIndex < seq.length) {
+                    const id = seq[blockIndex];
+                    const item = timelineItems[id];
+                    const blockText = blocks[blockIndex];
+                    const { headerLine, bodyText } = parseBlock(blockText);
+
+                    if (item) {
+                        info = `#${item.id} [${item.type}] header: "${headerLine}" body: "${bodyText}"`;
+                    }
+                }
+
                 setCurrentBlockInfo(info);
             }
+
 
             private async syncTimeline(state: EditorState) {
                 const doc = state.doc.toString();

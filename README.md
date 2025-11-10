@@ -309,3 +309,6 @@ gantt
 
 ---
 
+## TODO
+
+No char name can be a member of `Set(Set(timelineItemTypesForTyping))`.

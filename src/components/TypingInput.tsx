@@ -65,17 +65,26 @@ function inferFromHeader(headerLine: string) {
 
 // Sync and debug plugin
 function createSyncPlugin(setCurrentBlockInfo: (info: string) => void) {
+
     return ViewPlugin.fromClass(
         class {
             view: EditorView;
+            private debounceTimer?: number;
+
             constructor(view: EditorView) {
                 this.view = view;
                 this.updateCursorInfo();
             }
 
             async update(update: ViewUpdate) {
-                if (update.docChanged) await this.syncTimeline(update.state);
-                if (update.selectionSet || update.docChanged) this.updateCursorInfo();
+                if (update.docChanged) {
+                    clearTimeout(this.debounceTimer);
+                    this.debounceTimer = window.setTimeout(() => {
+                        this.syncTimeline(update.state);
+                    }, 300);
+                }
+
+                if (update.selectionSet) this.updateCursorInfo();
             }
 
             private updateCursorInfo() {
@@ -171,7 +180,9 @@ export default function TypingInput() {
 
     onMount(() => {
         const doc = timelineSequence().map(id => renderItemToBlock(id)).join("\n\n");
-        const extensions: Extension[] = [basicSetup, scriptLanguage, createSyncPlugin(setCurrentBlockInfo)];
+        const extensions: Extension[] = [
+            basicSetup, scriptLanguage, createSyncPlugin(setCurrentBlockInfo)
+        ];
         const state = EditorState.create({ doc, extensions });
 
         view = new EditorView({ state, parent: parentEl });

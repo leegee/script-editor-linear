@@ -8,7 +8,7 @@ import { autocompletion, Completion, CompletionContext } from "@codemirror/autoc
 
 import styles from "./TypingInput.module.scss";
 import { timelineItemTypesForTyping } from "../lib/timelineItemRegistry";
-import { allCharacterNames, findCharacterByName, timelineItems, timelineSequence } from "../stores";
+import { allCharacterNames, allLocationNames, findCharacterByName, timelineItems, timelineSequence } from "../stores";
 
 type TypingInputProps = {
     initialText?: string;
@@ -20,19 +20,36 @@ export default function TypingInput(props: TypingInputProps) {
     const [view, setView] = createSignal<EditorView | null>(null);
     const [isDirty, setIsDirty] = createSignal(false);
 
-    // Autocomplete source: known headers + characters
     const completionSource = (context: CompletionContext) => {
-        const word = context.matchBefore(/\w*/);
-        if (!word) return null;
+        const word = context.matchBefore(/\w+$/);
+        console.log('word', word)
+        if (!word) {
+            // Check if the cursor is right after a space and maybe offer context-based completions
+            const line = context.state.doc.lineAt(context.pos);
+            const textBeforeCursor = line.text.slice(0, context.pos - line.from).trimEnd();
+            console.log('textBeforeCursor', textBeforeCursor)
+            if (textBeforeCursor.endsWith("LOCATION")) {
+                console.log('bingo')
+                return {
+                    from: context.pos, // insert at cursor
+                    options: allLocationNames().map((loc) => ({ label: loc, type: "variable" })),
+                    validFor: /.*/,
+                };
+            }
 
-        const options: Completion[] = [
-            ...timelineItemTypesForTyping.map((h) => ({ label: h, type: "keyword" })),
-            ...allCharacterNames().map((h) => ({ label: h, type: "keyword" })),
-            // ...Object.values(timelineItems)
-            //     .map((item) => item.title?.toUpperCase())
-            //     .filter(Boolean)
-            //     .map((label) => ({ label: label!, type: "variable" })),
-        ];
+            return null;
+        }
+
+        let options: Completion[] = [];
+
+        if (/^LOCATION\w*$/i.test(word.text.toUpperCase())) {
+            options = allLocationNames().map(loc => ({ label: loc, type: "variable" }));
+        } else {
+            options = [
+                ...timelineItemTypesForTyping.map(h => ({ label: h, type: "keyword" })),
+                ...allCharacterNames().map(c => ({ label: c, type: "variable" })),
+            ];
+        }
 
         return {
             from: word.from,

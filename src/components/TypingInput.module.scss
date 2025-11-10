@@ -40,4 +40,14 @@
         color: black;
     }
 
+    .cm-tooltip-autocomplete {
+        background-color: var(--surface-container-high) !important;
+        color: var(--on-surface) !important;
+        border-radius: 1pt !important;
+    }
+
+    .cm-completionIcon {
+        margin-right: 0.25rem;
+    }
+
 }

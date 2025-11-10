@@ -23,4 +23,9 @@
         background-color: #777;
         color: #ddd
     }
+
+    .cm-cursor {
+        background-color: var(--primary);
+        width: 1ch;
+    }
 }

@@ -12,7 +12,7 @@ export async function loadAllCharacters() {
     setCharacters(revived);
 }
 
-export async function allCharacterNames() {
+export function allCharacterNames() {
     return Object.values(characters).map(c => c.title.trim().toUpperCase());
 }
 

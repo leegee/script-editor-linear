@@ -28,4 +28,14 @@
         background-color: var(--primary);
         width: 1ch;
     }
+
+    .invalid-line {
+        border: 3pt dashed rgba(255, 0, 0, 0.9);
+        color: white;
+    }
+
+    .cm-dialogue {
+        color: black;
+    }
+
 }

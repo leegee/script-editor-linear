@@ -172,6 +172,12 @@ export class DialogueItem extends TimelineItem {
         alert(this.id)
     }
 
+    renderAsText(): string {
+        return this.characterName.toUpperCase() + (
+            this.details.text ? `\n${this.details.text}` : ''
+        );
+    }
+
     renderCompact() {
         const char = characters[this.details.ref];
         const speakerName = char?.title ?? "Unknown Speaker";
@@ -401,6 +407,7 @@ export class DialogueItem extends TimelineItem {
             try {
                 await this.changeCharacter(newCharName);
                 changed = true;
+                console.log('changed character')
             } catch (err) {
                 console.warn("Character not found:", newCharName, err);
             }
@@ -414,6 +421,7 @@ export class DialogueItem extends TimelineItem {
 
         if (changed) {
             await replaceTimelineItem(this.id, this);
+            console.log('changed ' + this.type)
         }
     }
 

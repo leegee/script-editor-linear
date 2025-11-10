@@ -77,6 +77,12 @@ export class TimelineItem {
         return new (this.constructor as any)(props);
     }
 
+    renderAsText(): string {
+        return this.type.toUpperCase() + ' ' + this.title + (
+            this.details.text ? `\n${this.details.text}` : ''
+        );
+    }
+
     renderCompact(): JSX.Element {
         if (this.type === 'act' || this.type === 'scene' || this.type === "location") {
             return (

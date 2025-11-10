@@ -1,182 +1,147 @@
-// TypingInput.tsx
-import styles from "./TypingInput.module.scss";
-import { onMount, onCleanup, createSignal, createEffect } from "solid-js";
-import { EditorView, ViewUpdate } from "@codemirror/view";
-import { EditorState, Extension } from "@codemirror/state";
+import { onMount, onCleanup, createSignal } from "solid-js";
+import { EditorView, ViewUpdate, Decoration, DecorationSet, ViewPlugin } from "@codemirror/view";
+import { EditorState, Range } from "@codemirror/state";
 import { basicSetup } from "codemirror";
-import { StreamLanguage } from "@codemirror/stream-parser";
-import { DialogueItem } from "./CoreItems";
-import { timelineItemTypesForTyping, TimelineItemTypeType, TimelineItemUpper } from "../lib/timelineItemRegistry";
-import {
-    timelineItems,
-    timelineSequence,
-    replaceTimelineItem,
-    createTimelineItemAfter,
-    deleteTimelineItem
-} from "../stores/timelineItems";
 
-// ---- GLOBAL SUPPRESSION FLAG ----
-let suppressExternalSync = false;
+import styles from "./TypingInput.module.scss";
+import { timelineItemTypesForTyping } from "../lib/timelineItemRegistry";
+import { allCharacterNames, timelineItems, timelineSequence } from "../stores";
 
-const KNOWN_TYPES = new Set(timelineItemTypesForTyping);
-const typeRegex = new RegExp(`^(${timelineItemTypesForTyping.join("|")})\\b`);
+type TypingInputProps = {
+    initialText: string;
+    onSave: (text: string) => void;
+};
 
-const scriptLanguage = StreamLanguage.define({
-    startState: () => ({}),
-    token(stream) {
-        if (stream.sol()) {
-            if (stream.match(typeRegex)) return "keyword";
-            if (stream.match(/^[\p{Lu}][\p{Lu}0-9' ]+$/u)) return "atom";
+export default function TypingInput(props: TypingInputProps) {
+    let editorRef!: HTMLDivElement;
+    let view: EditorView;
+    const [isDirty, setIsDirty] = createSignal(false);
+
+    const clickPlugin = ViewPlugin.fromClass(
+        class {
+            constructor(public view: EditorView) { }
+
+            update() { }
+
+        },
+        {
+            eventHandlers: {
+                click(event, view) {
+                    const pos = view.posAtDOM(event.target as HTMLElement);
+                    const line = view.state.doc.lineAt(pos);
+                    const trimmed = line.text.trim();
+                    if (/^[A-Z0-9 _'-]+$/.test(trimmed)) {
+                        const firstWord = trimmed.split(/\s+/)[0].toUpperCase();
+                        const isKnownHeader = timelineItemTypesForTyping.includes(firstWord as Uppercase<string>);
+                        const isKnownCharacter = allCharacterNames().includes(trimmed.toUpperCase());
+                        if (!isKnownHeader && !isKnownCharacter) {
+                            alert(`Clicked invalid line: "${trimmed}"`);
+                        }
+                    }
+                },
+            },
         }
-        stream.skipToEnd();
-        return null;
-    }
-});
+    );
 
-function renderItemToBlock(id: string): string {
-    const item = timelineItems[id];
-    if (!item) return "";
+    // Plugin for highlighting invalid lines
+    const highlightInvalidLines = ViewPlugin.fromClass(
+        class {
+            decorations: DecorationSet;
 
-    if (item.type === "dialogue") {
-        const d = item as DialogueItem;
-        const header = (d.characterName || "").trim().toUpperCase();
-        const body = (d.details?.text || "").trim();
-        return header + (body ? `\n${body}` : "");
-    } else {
-        const typeLabel = (item.type || "").toUpperCase();
-        const title = (item.title || "").trim();
-        const body = (item.details?.text || "").trim();
-        return body ? `${typeLabel}${title ? " " + title : ""}\n${body}` : `${typeLabel}${title ? " " + title : ""}`;
-    }
-}
+            constructor(view: EditorView) {
+                this.decorations = this.buildDecorations(view);
+            }
 
-function parseBlock(block: string) {
-    const lines = block.split("\n");
-    const headerLine = (lines[0] ?? "").trim();
-    const bodyText = lines.slice(1).join("\n").trim();
-    return { headerLine, bodyText };
-}
+            update(update: ViewUpdate) {
+                if (update.docChanged || update.viewportChanged) {
+                    this.decorations = this.buildDecorations(update.view);
+                }
+            }
 
-function inferFromHeader(headerLine: string) {
-    const m = headerLine.match(/^([A-Z]+)\s*(.*)$/);
-    if (m && KNOWN_TYPES.has(m[1].toUpperCase() as TimelineItemUpper)) {
-        return { type: m[1].toLowerCase() as TimelineItemTypeType, title: (m[2] || "").trim(), characterName: null };
-    } else {
-        return { type: "dialogue" as const, title: null, characterName: headerLine };
-    }
-}
+            buildDecorations(view: EditorView) {
+                const builder: Range<Decoration>[] = [];
+                const text = view.state.doc.toString();
+                const lines = text.split("\n");
+                let pos = 0;
+                let lastHeaderValid = false;
 
-// ---- TYPING INPUT COMPONENT ----
-export default function TypingInput() {
-    let parentEl!: HTMLDivElement;
-    const [currentBlockInfo, setCurrentBlockInfo] = createSignal("No block selected");
-    let view: EditorView | null = null;
+                for (const line of lines) {
+                    const trimmed = line.trim();
+                    if (!trimmed) { pos += line.length + 1; continue; }
+
+                    const isAllCaps = /^[A-Z0-9 _'-]+$/.test(trimmed);
+
+                    if (isAllCaps) {
+                        const firstWord = trimmed.split(/\s+/)[0].toUpperCase();
+                        const isKnownHeader = timelineItemTypesForTyping.includes(firstWord as Uppercase<string>);
+                        const isKnownCharacter = allCharacterNames().includes(trimmed.toUpperCase());
+
+                        if (isKnownHeader || isKnownCharacter) {
+                            lastHeaderValid = true;
+                        } else {
+                            lastHeaderValid = false;
+                            builder.push(
+                                Decoration.mark({
+                                    class: "invalid-line",
+                                    attributes: { title: "Unknown character or part" },
+                                }).range(pos, pos + line.length)
+                            );
+                        }
+                    } else {
+                        // body attaches to previous header
+                        lastHeaderValid = true;
+                    }
+
+                    pos += line.length + 1;
+                }
+
+                return Decoration.set(builder);
+            }
+
+        },
+        { decorations: (v) => v.decorations }
+    );
 
     onMount(() => {
-        // initialize editor with current timelineSequence
-        const doc = timelineSequence().map(id => renderItemToBlock(id)).join("\n\n");
-        const extensions: Extension[] = [
-            basicSetup,
-            scriptLanguage,
-            EditorView.updateListener.of(async (update: ViewUpdate) => {
-                if (update.docChanged && !suppressExternalSync) {
-                    // push user edits to store
-                    const blocks = update.state.doc.toString().split(/\n{2,}/g).map(b => b.trim()).filter(Boolean);
-                    const seq = timelineSequence();
+        const initialText = timelineSequence().map(
+            id => timelineItems[id].renderAsText()
+        ).join("\n\n");
 
-                    for (let i = 0; i < blocks.length; i++) {
-                        const blockText = blocks[i];
-                        const { headerLine, bodyText } = parseBlock(blockText);
-                        const seqId = seq[i];
-                        const inferred = inferFromHeader(headerLine);
-
-                        if (seqId) {
-                            const existing = timelineItems[seqId];
-                            if (!existing) continue;
-
-                            if (existing.type === "dialogue") {
-                                const dialogue = existing as DialogueItem;
-                                if (dialogue.characterName !== inferred.characterName || (dialogue.details?.text || "") !== bodyText) {
-                                    await dialogue.update(headerLine, bodyText);
-                                    await replaceTimelineItem(seqId, dialogue);
-                                }
-                            } else {
-                                const type = headerLine.match(/^([A-Z]+)\s*(.*)$/)?.[1]?.toLowerCase();
-                                const title = headerLine.match(/^([A-Z]+)\s*(.*)$/)?.[2]?.trim() || "";
-                                if (type !== existing.type || title !== existing.title || bodyText !== (existing.details?.text || "")) {
-                                    const cloned = existing.cloneWith({
-                                        type,
-                                        title,
-                                        details: { ...(existing.details || {}), text: bodyText }
-                                    });
-                                    await replaceTimelineItem(seqId, cloned);
-                                }
-                            }
-                        } else {
-                            // new block appended
-                            const prevId = seq[seq.length - 1] ?? "";
-                            const props = inferred.type === "dialogue" ? { text: bodyText, ref: null } : { title: inferred.title, text: bodyText };
-                            await createTimelineItemAfter(prevId, inferred.type, props);
-                        }
+        const state = EditorState.create({
+            doc: initialText,
+            extensions: [
+                basicSetup,
+                highlightInvalidLines,
+                clickPlugin,
+                EditorView.lineWrapping,
+                EditorView.updateListener.of((update) => {
+                    if (update.docChanged) {
+                        setIsDirty(true);
                     }
-
-                    // delete removed blocks
-                    if (blocks.length < seq.length) {
-                        for (let j = blocks.length; j < seq.length; j++) {
-                            await deleteTimelineItem(seq[j]).catch(console.error);
-                        }
-                    }
-                }
-
-                if (update.selectionSet) {
-                    // update cursor debug info
-                    const from = update.state.selection.main.from;
-                    const blocks = update.state.doc.toString().split(/\n{2,}/g).map(b => b.trim()).filter(Boolean);
-                    let accumulated = 0, blockIndex = -1;
-                    for (let i = 0; i < blocks.length; i++) {
-                        const b = blocks[i];
-                        if (from >= accumulated && from <= accumulated + b.length + 1) {
-                            blockIndex = i;
-                            break;
-                        }
-                        accumulated += b.length + 2;
-                    }
-                    const seq = timelineSequence();
-                    let info = "No block found";
-                    if (blockIndex >= 0 && blockIndex < seq.length) {
-                        const id = seq[blockIndex];
-                        const item = timelineItems[id];
-                        const { headerLine, bodyText } = parseBlock(blocks[blockIndex]);
-                        if (item) info = `#${item.id} [${item.type}] header: "${headerLine}" body: "${bodyText}"`;
-                    }
-                    setCurrentBlockInfo(info);
-                }
-            })
-        ];
-
-        view = new EditorView({ state: EditorState.create({ doc, extensions }), parent: parentEl });
-
-        createEffect(() => {
-            const newDoc = timelineSequence().map(id => renderItemToBlock(id)).join("\n\n");
-
-            if (!view) return;
-            const cur = view.state.doc.toString();
-            if (newDoc !== cur) {
-                suppressExternalSync = true;
-                view.dispatch({ changes: { from: 0, to: cur.length, insert: newDoc } });
-                suppressExternalSync = false;
-            }
+                }),
+            ],
         });
 
-        onCleanup(() => {
-            view?.destroy();
+        view = new EditorView({
+            state,
+            parent: editorRef,
         });
     });
 
-    return <>
-        <div class="block-debug-info" style="padding: 0.25rem; font-size: 0.9em; color: #999;">
-            {currentBlockInfo()}
+    onCleanup(() => view?.destroy());
+
+    function handleSave() {
+        const text = view.state.doc.toString();
+        props.onSave(text);
+        setIsDirty(false);
+    }
+
+    return (
+        <div class={styles.wrapper}>
+            <div class={styles.editor} ref={editorRef}></div>
+            <button class={styles.saveButton} disabled={!isDirty()} onClick={handleSave}>
+                Save
+            </button>
         </div>
-        <article ref={parentEl} class={styles.typingEditor} />
-    </>;
+    );
 }

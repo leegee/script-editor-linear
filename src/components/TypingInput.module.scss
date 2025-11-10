@@ -1,8 +1,10 @@
 .typingEditor {
-    height: calc(100% - 60pt);
+    height: calc(100% - 110pt);
     overflow-y: auto;
     white-space: pre-wrap;
     font-family: 'Courier New', Courier, monospace;
+    padding-top: 0 !important;
+    margin-top: 0 !important;
 
     .dialogueItem,
     .timelineItem {

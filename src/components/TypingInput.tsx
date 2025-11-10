@@ -140,7 +140,7 @@ export default function TypingInput(props: TypingInputProps) {
 
     return (
         <>
-            <nav class="toolbar max right-align">
+            <nav class="right-align no-top-padding no-margin">
                 <button class="icon small circle" disabled={!isDirty()} onClick={() => undo(view)}>
                     <i>undo</i>
                     <div class="tooltip bottom">Undo</div>

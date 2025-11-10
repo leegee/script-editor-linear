@@ -2,74 +2,66 @@
 import { onMount, onCleanup, createSignal } from "solid-js";
 import { EditorView, ViewUpdate, Decoration, DecorationSet, ViewPlugin } from "@codemirror/view";
 import { EditorState, Range } from "@codemirror/state";
-import { basicSetup } from "codemirror";
+import { basicSetup } from "@codemirror/basic-setup";
 import { history, undo, redo, undoDepth, redoDepth } from "@codemirror/commands";
+import { autocompletion, Completion, CompletionContext } from "@codemirror/autocomplete";
 
 import styles from "./TypingInput.module.scss";
 import { timelineItemTypesForTyping } from "../lib/timelineItemRegistry";
-import { findCharacterByName, timelineItems, timelineSequence } from "../stores";
+import { allCharacterNames, findCharacterByName, timelineItems, timelineSequence } from "../stores";
 
 type TypingInputProps = {
-    initialText: string;
+    initialText?: string;
     onSave: (text: string) => void;
 };
 
 export default function TypingInput(props: TypingInputProps) {
     let editorRef!: HTMLDivElement;
-    const [editorView, setEditorView] = createSignal<EditorView | null>(null);
+    const [view, setView] = createSignal<EditorView | null>(null);
     const [isDirty, setIsDirty] = createSignal(false);
 
-    const clickPlugin = ViewPlugin.fromClass(
-        class {
-            constructor(public view: EditorView) { }
-            update() { }
-        },
-        {
-            eventHandlers: {
-                click(event, view) {
-                    const pos = view.posAtDOM(event.target as HTMLElement);
-                    const line = view.state.doc.lineAt(pos);
-                    const trimmed = line.text.trim();
-                    if (/^[A-Z0-9 _'-]+$/.test(trimmed)) {
-                        const firstWord = trimmed.split(/\s+/)[0].toUpperCase();
-                        const isKnownHeader = timelineItemTypesForTyping.includes(firstWord as Uppercase<string>);
-                        const isKnownCharacter = findCharacterByName(trimmed.toUpperCase());
-                        if (!isKnownHeader && !isKnownCharacter) {
-                            alert(`Clicked invalid line: "${trimmed}"`);
-                        }
-                    }
-                },
-            },
-        }
-    );
+    // Autocomplete source: known headers + characters
+    const completionSource = (context: CompletionContext) => {
+        const word = context.matchBefore(/\w*/);
+        if (!word) return null;
 
+        const options: Completion[] = [
+            ...timelineItemTypesForTyping.map((h) => ({ label: h, type: "keyword" })),
+            ...allCharacterNames().map((h) => ({ label: h, type: "keyword" })),
+            // ...Object.values(timelineItems)
+            //     .map((item) => item.title?.toUpperCase())
+            //     .filter(Boolean)
+            //     .map((label) => ({ label: label!, type: "variable" })),
+        ];
+
+        return {
+            from: word.from,
+            options,
+            validFor: /^\w*$/,
+        };
+    };
+
+    // Plugin for highlighting invalid lines
     const highlightInvalidLines = ViewPlugin.fromClass(
         class {
             decorations: DecorationSet;
-
             constructor(view: EditorView) {
                 this.decorations = this.buildDecorations(view);
             }
-
             update(update: ViewUpdate) {
                 if (update.docChanged || update.viewportChanged) {
                     this.decorations = this.buildDecorations(update.view);
                 }
             }
-
             buildDecorations(view: EditorView) {
                 const builder: Range<Decoration>[] = [];
                 const text = view.state.doc.toString();
                 const lines = text.split("\n");
                 let pos = 0;
-                let lastHeaderValid = false;
 
                 for (const line of lines) {
                     const trimmed = line.trim();
-                    if (!trimmed) {
-                        pos += line.length + 1;
-                        continue;
-                    }
+                    if (!trimmed) { pos += line.length + 1; continue; }
 
                     const isAllCaps = /^[A-Z0-9 _'-]+$/.test(trimmed);
                     if (isAllCaps) {
@@ -77,10 +69,7 @@ export default function TypingInput(props: TypingInputProps) {
                         const isKnownHeader = timelineItemTypesForTyping.includes(firstWord as Uppercase<string>);
                         const isKnownCharacter = findCharacterByName(trimmed.toUpperCase());
 
-                        if (isKnownHeader || isKnownCharacter) {
-                            lastHeaderValid = true;
-                        } else {
-                            lastHeaderValid = false;
+                        if (!isKnownHeader && !isKnownCharacter) {
                             builder.push(
                                 Decoration.mark({
                                     class: "invalid-line",
@@ -88,8 +77,6 @@ export default function TypingInput(props: TypingInputProps) {
                                 }).range(pos, pos + line.length)
                             );
                         }
-                    } else {
-                        lastHeaderValid = true; // attach body to previous header
                     }
 
                     pos += line.length + 1;
@@ -101,8 +88,36 @@ export default function TypingInput(props: TypingInputProps) {
         { decorations: (v) => v.decorations }
     );
 
+    // Plugin for click detection on invalid lines
+    const clickPlugin = ViewPlugin.fromClass(
+        class {
+            constructor(public view: EditorView) { }
+            update() { }
+        },
+        {
+            eventHandlers: {
+                click(event, view) {
+                    const pos = view.posAtDOM(event.target as HTMLElement);
+                    const line = view.state.doc.lineAt(pos);
+                    const trimmed = line.text.trim();
+
+                    const isAllCaps = /^[A-Z0-9 _'-]+$/.test(trimmed);
+                    if (isAllCaps) {
+                        const firstWord = trimmed.split(/\s+/)[0].toUpperCase();
+                        const isKnownHeader = timelineItemTypesForTyping.includes(firstWord as Uppercase<string>);
+                        const isKnownCharacter = findCharacterByName(trimmed.toUpperCase());
+
+                        if (!isKnownHeader && !isKnownCharacter) {
+                            alert(`Clicked invalid line: "${trimmed}"`);
+                        }
+                    }
+                },
+            },
+        }
+    );
+
     onMount(() => {
-        const initialText = timelineSequence()
+        const initialText = props.initialText ?? timelineSequence()
             .map((id) => timelineItems[id].renderAsText())
             .join("\n\n");
 
@@ -113,6 +128,7 @@ export default function TypingInput(props: TypingInputProps) {
                 highlightInvalidLines,
                 clickPlugin,
                 history(),
+                autocompletion({ override: [completionSource] }),
                 EditorView.lineWrapping,
                 EditorView.updateListener.of((update) => {
                     if (update.docChanged) setIsDirty(true);
@@ -120,17 +136,15 @@ export default function TypingInput(props: TypingInputProps) {
             ],
         });
 
-        const view = new EditorView({ state, parent: editorRef });
-        setEditorView(view);
+        const v = new EditorView({ state, parent: editorRef });
+        setView(v);
     });
 
-    onCleanup(() => editorView()?.destroy());
+    onCleanup(() => view()?.destroy());
 
     function handleSave() {
-        const view = editorView();
-        if (!view) return;
-        const text = view.state.doc.toString();
-        props.onSave(text);
+        if (!view()) return;
+        props.onSave(view()!.state.doc.toString());
         setIsDirty(false);
     }
 
@@ -139,8 +153,8 @@ export default function TypingInput(props: TypingInputProps) {
             <nav class="right-align no-top-padding no-margin">
                 <button
                     class="icon small circle"
-                    disabled={!editorView() || undoDepth(editorView()!.state) === 0}
-                    onClick={() => editorView() && undo(editorView()!)}
+                    disabled={!view() || undoDepth(view()!.state) === 0}
+                    onClick={() => view() && undo(view()!)}
                 >
                     <i>undo</i>
                     <div class="tooltip bottom">Undo</div>
@@ -148,8 +162,8 @@ export default function TypingInput(props: TypingInputProps) {
 
                 <button
                     class="icon small circle"
-                    disabled={!editorView() || redoDepth(editorView()!.state) === 0}
-                    onClick={() => editorView() && redo(editorView()!)}
+                    disabled={!view() || redoDepth(view()!.state) === 0}
+                    onClick={() => view() && redo(view()!)}
                 >
                     <i>redo</i>
                     <div class="tooltip bottom">Redo</div>

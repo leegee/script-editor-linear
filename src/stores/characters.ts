@@ -12,11 +12,14 @@ export async function loadAllCharacters() {
     setCharacters(revived);
 }
 
+export async function allCharacterNames() {
+    return Object.values(characters).map(c => c.title.trim().toUpperCase());
+}
+
 export async function resetCharacters() {
     await storage.clearTable("characters");
     setCharacters({});
 }
-
 
 export function getCharacterName(id: string) {
     return characters[id].title;

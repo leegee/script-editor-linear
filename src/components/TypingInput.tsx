@@ -1,8 +1,9 @@
+// src/components/TypingInput.tsx
 import { onMount, onCleanup, createSignal } from "solid-js";
 import { EditorView, ViewUpdate, Decoration, DecorationSet, ViewPlugin } from "@codemirror/view";
 import { EditorState, Range } from "@codemirror/state";
 import { basicSetup } from "codemirror";
-import { history, undo, redo } from "@codemirror/commands";
+import { history, undo, redo, undoDepth, redoDepth } from "@codemirror/commands";
 
 import styles from "./TypingInput.module.scss";
 import { timelineItemTypesForTyping } from "../lib/timelineItemRegistry";
@@ -15,15 +16,13 @@ type TypingInputProps = {
 
 export default function TypingInput(props: TypingInputProps) {
     let editorRef!: HTMLDivElement;
-    let view: EditorView;
+    const [editorView, setEditorView] = createSignal<EditorView | null>(null);
     const [isDirty, setIsDirty] = createSignal(false);
 
     const clickPlugin = ViewPlugin.fromClass(
         class {
             constructor(public view: EditorView) { }
-
             update() { }
-
         },
         {
             eventHandlers: {
@@ -44,7 +43,6 @@ export default function TypingInput(props: TypingInputProps) {
         }
     );
 
-    // Plugin for highlighting invalid lines
     const highlightInvalidLines = ViewPlugin.fromClass(
         class {
             decorations: DecorationSet;
@@ -68,10 +66,12 @@ export default function TypingInput(props: TypingInputProps) {
 
                 for (const line of lines) {
                     const trimmed = line.trim();
-                    if (!trimmed) { pos += line.length + 1; continue; }
+                    if (!trimmed) {
+                        pos += line.length + 1;
+                        continue;
+                    }
 
                     const isAllCaps = /^[A-Z0-9 _'-]+$/.test(trimmed);
-
                     if (isAllCaps) {
                         const firstWord = trimmed.split(/\s+/)[0].toUpperCase();
                         const isKnownHeader = timelineItemTypesForTyping.includes(firstWord as Uppercase<string>);
@@ -89,8 +89,7 @@ export default function TypingInput(props: TypingInputProps) {
                             );
                         }
                     } else {
-                        // body attaches to previous header
-                        lastHeaderValid = true;
+                        lastHeaderValid = true; // attach body to previous header
                     }
 
                     pos += line.length + 1;
@@ -98,15 +97,14 @@ export default function TypingInput(props: TypingInputProps) {
 
                 return Decoration.set(builder);
             }
-
         },
         { decorations: (v) => v.decorations }
     );
 
     onMount(() => {
-        const initialText = timelineSequence().map(
-            id => timelineItems[id].renderAsText()
-        ).join("\n\n");
+        const initialText = timelineSequence()
+            .map((id) => timelineItems[id].renderAsText())
+            .join("\n\n");
 
         const state = EditorState.create({
             doc: initialText,
@@ -117,22 +115,20 @@ export default function TypingInput(props: TypingInputProps) {
                 history(),
                 EditorView.lineWrapping,
                 EditorView.updateListener.of((update) => {
-                    if (update.docChanged) {
-                        setIsDirty(true);
-                    }
+                    if (update.docChanged) setIsDirty(true);
                 }),
             ],
         });
 
-        view = new EditorView({
-            state,
-            parent: editorRef,
-        });
+        const view = new EditorView({ state, parent: editorRef });
+        setEditorView(view);
     });
 
-    onCleanup(() => view?.destroy());
+    onCleanup(() => editorView()?.destroy());
 
     function handleSave() {
+        const view = editorView();
+        if (!view) return;
         const text = view.state.doc.toString();
         props.onSave(text);
         setIsDirty(false);
@@ -141,12 +137,20 @@ export default function TypingInput(props: TypingInputProps) {
     return (
         <>
             <nav class="right-align no-top-padding no-margin">
-                <button class="icon small circle" disabled={!isDirty()} onClick={() => undo(view)}>
+                <button
+                    class="icon small circle"
+                    disabled={!editorView() || undoDepth(editorView()!.state) === 0}
+                    onClick={() => editorView() && undo(editorView()!)}
+                >
                     <i>undo</i>
                     <div class="tooltip bottom">Undo</div>
                 </button>
 
-                <button class="icon small circle" disabled={!isDirty()} onClick={() => redo(view)}>
+                <button
+                    class="icon small circle"
+                    disabled={!editorView() || redoDepth(editorView()!.state) === 0}
+                    onClick={() => editorView() && redo(editorView()!)}
+                >
                     <i>redo</i>
                     <div class="tooltip bottom">Redo</div>
                 </button>
@@ -155,7 +159,7 @@ export default function TypingInput(props: TypingInputProps) {
                     <i>save</i>
                     <div class="tooltip bottom">Save</div>
                 </button>
-            </nav >
+            </nav>
             <article class={styles.typingEditor} ref={editorRef}></article>
         </>
     );

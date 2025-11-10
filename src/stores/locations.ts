@@ -59,3 +59,7 @@ export function resolveLocationRef(item: TimelineLocationItemType): CanonicalLoc
     const ref = item.details?.ref ?? item.id;
     return locations[ref];
 }
+
+export function allLocationNames() {
+    return Object.values(locations).map(c => c.title.trim());
+}

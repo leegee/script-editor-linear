@@ -62,6 +62,7 @@ function inferFromHeader(headerLine: string) {
         return { type: "dialogue" as const, title: null, characterName: headerLine };
     }
 }
+
 // Sync and debug plugin
 function createSyncPlugin(setCurrentBlockInfo: (info: string) => void) {
     return ViewPlugin.fromClass(
@@ -179,7 +180,7 @@ export default function TypingInput() {
     onCleanup(() => view?.destroy());
 
     return <>
-        <div class="block-debug-info" style="padding: 0.25rem; font-size: 0.9em; color: #555;">
+        <div class="block-debug-info" style="padding: 0.25rem; font-size: 0.9em; color: #999;">
             {currentBlockInfo()}
         </div>
         <article ref={parentEl} class={styles.typingEditor} />

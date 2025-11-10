@@ -396,13 +396,13 @@ export class DialogueItem extends TimelineItem {
         let changed = false;
 
         const newCharName = headerLine.trim();
-        if (newCharName && newCharName !== this.characterName) {
+
+        if (newCharName && newCharName.toLocaleUpperCase() !== this.characterName.toLocaleUpperCase()) {
             try {
                 await this.changeCharacter(newCharName);
                 changed = true;
             } catch (err) {
                 console.warn("Character not found:", newCharName, err);
-                // optionally: leave character unchanged
             }
         }
 

@@ -2,10 +2,11 @@ import { onMount, onCleanup, createSignal } from "solid-js";
 import { EditorView, ViewUpdate, Decoration, DecorationSet, ViewPlugin } from "@codemirror/view";
 import { EditorState, Range } from "@codemirror/state";
 import { basicSetup } from "codemirror";
+import { history, undo, redo } from "@codemirror/commands";
 
 import styles from "./TypingInput.module.scss";
 import { timelineItemTypesForTyping } from "../lib/timelineItemRegistry";
-import { allCharacterNames, timelineItems, timelineSequence } from "../stores";
+import { findCharacterByName, timelineItems, timelineSequence } from "../stores";
 
 type TypingInputProps = {
     initialText: string;
@@ -33,7 +34,7 @@ export default function TypingInput(props: TypingInputProps) {
                     if (/^[A-Z0-9 _'-]+$/.test(trimmed)) {
                         const firstWord = trimmed.split(/\s+/)[0].toUpperCase();
                         const isKnownHeader = timelineItemTypesForTyping.includes(firstWord as Uppercase<string>);
-                        const isKnownCharacter = allCharacterNames().includes(trimmed.toUpperCase());
+                        const isKnownCharacter = findCharacterByName(trimmed.toUpperCase());
                         if (!isKnownHeader && !isKnownCharacter) {
                             alert(`Clicked invalid line: "${trimmed}"`);
                         }
@@ -74,7 +75,7 @@ export default function TypingInput(props: TypingInputProps) {
                     if (isAllCaps) {
                         const firstWord = trimmed.split(/\s+/)[0].toUpperCase();
                         const isKnownHeader = timelineItemTypesForTyping.includes(firstWord as Uppercase<string>);
-                        const isKnownCharacter = allCharacterNames().includes(trimmed.toUpperCase());
+                        const isKnownCharacter = findCharacterByName(trimmed.toUpperCase());
 
                         if (isKnownHeader || isKnownCharacter) {
                             lastHeaderValid = true;
@@ -113,6 +114,7 @@ export default function TypingInput(props: TypingInputProps) {
                 basicSetup,
                 highlightInvalidLines,
                 clickPlugin,
+                history(),
                 EditorView.lineWrapping,
                 EditorView.updateListener.of((update) => {
                     if (update.docChanged) {
@@ -137,11 +139,24 @@ export default function TypingInput(props: TypingInputProps) {
     }
 
     return (
-        <div class={styles.wrapper}>
-            <div class={styles.editor} ref={editorRef}></div>
-            <button class={styles.saveButton} disabled={!isDirty()} onClick={handleSave}>
-                Save
-            </button>
-        </div>
+        <>
+            <nav class="toolbar max right-align">
+                <button class="icon small circle" disabled={!isDirty()} onClick={() => undo(view)}>
+                    <i>undo</i>
+                    <div class="tooltip bottom">Undo</div>
+                </button>
+
+                <button class="icon small circle" disabled={!isDirty()} onClick={() => redo(view)}>
+                    <i>redo</i>
+                    <div class="tooltip bottom">Redo</div>
+                </button>
+
+                <button class="icon small circle" disabled={!isDirty()} onClick={handleSave}>
+                    <i>save</i>
+                    <div class="tooltip bottom">Save</div>
+                </button>
+            </nav >
+            <article class={styles.typingEditor} ref={editorRef}></article>
+        </>
     );
 }

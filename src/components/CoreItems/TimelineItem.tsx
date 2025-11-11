@@ -6,6 +6,7 @@ import { notes, tags, updateTimelineItem } from "../../stores";
 import PanelSectionHeader from "../PanelSectionHeader";
 import { For } from "solid-js";
 import { useChildRoute } from "../ChildRoute";
+import { style } from "solid-js/web";
 
 export interface TimelineItemProps {
     id: string;
@@ -234,14 +235,11 @@ export class TimelineItem {
             <For each={this.tags}>
                 {(tag) => (
                     <>
-                        <span class="right tag circle" style={{
+                        <span class={"circle large tag"} style={{
+                            "color": tags[tag].details.clr,
                             "background-color": tags[tag].details.clr,
-                            zoom: "100%",
-                            "font-size": "unset",
-                            width: "auto",
-                            color: tags[tag].details.clr,
                         }}>
-                            <i style="filter: invert(100%) brightness(200%); font-size: 12pt; zoom: 100%">tag</i>
+                            <i style="filter: invert(100%) brightness(200%)">tag</i>
                             <div class="tooltip left">{tags[tag].title}</div>
                         </span>
                     </>

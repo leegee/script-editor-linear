@@ -16,10 +16,12 @@ import { loadAll } from "./stores";
 import SettingsLayout from "./layouts/SettingsLayout";
 import FiltersView from "./components/panels/FiltersView";
 import NoteCreator from "./components/panels/NoteCreator";
-import TagCreator from "./components/panels/TagCreator";
+import TagCreator from "./components/panels/TagNewView";
 import ViewEditNote from "./components/ViewEditNote";
 import TypingLayout from "./layouts/TypingLayout";
 import { ChildRouteProvider } from "./components/ChildRoute";
+import TagsView from "./components/panels/TagsListView";
+import ViewEditTag from "./components/ViewEditTag";
 
 const root = document.getElementById("root");
 
@@ -39,6 +41,8 @@ const commonRoutes = (
     <Route path="/locations/:id" component={LocationView} />
     <Route path="/locations" component={LocationView} />
     <Route path="/notes/:id" component={ViewEditNote} />
+    <Route path="/tags" component={TagsView} />
+    <Route path="/tags/:id" component={ViewEditTag} />
     <Route path="/filters" component={FiltersView} />
   </>
 );

@@ -10,7 +10,7 @@ import { reorderTimeline, timelineItems, timelineSequence } from "../../stores";
 import { createTimelineItemInstance } from "../../lib/timelineItemRegistry";
 import { showAlert } from "../../stores/modals";
 import { type TimelineItem } from "../CoreItems";
-import { childRoute } from "../../lib/routeResolver";
+import { useChildRoute } from "../ChildRoute";
 
 function formatTime(totalSeconds: number): string {
   const minutes = Math.floor(totalSeconds / 60);
@@ -20,6 +20,7 @@ function formatTime(totalSeconds: number): string {
 
 export default function DragDropList() {
   const navigate = useNavigate();
+  const { childRoute } = useChildRoute();
   const items = () => timelineSequence().map(id => timelineItems[id]).filter(Boolean);
   const [draggingIndex, setDraggingIndex] = createSignal<number | null>(null);
   const draggingId = () => timelineSequence()[draggingIndex()!];

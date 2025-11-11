@@ -1,47 +1,45 @@
-/**
- * Resolve a relative router path against the current location
- * when using a hash router (SolidJS).
- *
- * relative: string like "../item/123"
- * base: current router path like "/script/attach-new/note/abc"
- */
-export function resolveRoute(relative: string): string {
-    const base = location.hash;
-    console.log('resolveRoute - enter with', relative, base);
-    const cleanBase = base.replace(/^#/, "");
+// import { createSignal, onCleanup } from "solid-js";
 
-    const baseParts = cleanBase.split("/").filter(Boolean);
-    const relParts = relative.split("/");
+// export function resolveRoute(relative: string): string {
+//     const base = location.hash;
+//     console.log('resolveRoute - enter with', relative, base);
+//     const cleanBase = base.replace(/^#/, "");
 
-    const resultParts = [...baseParts];
+//     const baseParts = cleanBase.split("/").filter(Boolean);
+//     const relParts = relative.split("/");
 
-    for (const part of relParts) {
-        if (part === "" || part === ".") {
-            continue;
-        }
-        if (part === "..") {
-            resultParts.pop();
-        } else {
-            resultParts.push(part);
-        }
-    }
+//     const resultParts = [...baseParts];
 
-    console.log('resolveRoute - exit', "/" + resultParts.join("/"));
-    return "/" + resultParts.join("/");
-}
+//     for (const part of relParts) {
+//         if (part === "" || part === ".") {
+//             continue;
+//         }
+//         if (part === "..") {
+//             resultParts.pop();
+//         } else {
+//             resultParts.push(part);
+//         }
+//     }
 
+//     console.log('resolveRoute - exit', "/" + resultParts.join("/"));
+//     return "/" + resultParts.join("/");
+// }
 
-export function childRoute(path: string): string {
-    const clean = location.hash.replace(/^#/, "");
-    const parts = clean.split("/").filter(Boolean);
+// // Solid router is not developed enough to have hooks or guards....
 
-    let section = parts[0] ?? "script";
+// const [currentSection, setCurrentSection] = createSignal("script");
+// const updateSectionFromHash = () => {
+//     const clean = window.location.hash.replace(/^#\/?/, "");
+//     const parts = clean.split("/").filter(Boolean);
+//     const section = parts[0];
+//     setCurrentSection(/^(script|typing|timeline)$/.test(section) ? section : "script");
+// };
+// updateSectionFromHash();
 
-    if (!/^(script|typing|timeline)$/.test(section)) {
-        section = "script";
-    }
+// window.addEventListener("hashchange", updateSectionFromHash);
+// onCleanup(() => window.removeEventListener("hashchange", updateSectionFromHash));
 
-    const child = path.replace(/^\/+/, "");
-
-    return `/${section}/${child}`;
-}
+// export function childRoute(path: string): string {
+//     const child = path.replace(/^\/+/, "");
+//     return `#/${currentSection()}/${child}`;
+// }

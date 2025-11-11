@@ -1,11 +1,11 @@
 import { A, useNavigate } from "@solidjs/router";
-import { childRoute } from "../lib/routeResolver";
 import { ConfirmLink } from "../components/ConfirmLink";
 import JSONUploader from "../components/JsonUploader";
 import { initNewScript, downloadJSON, loadJSONfromPath } from "../lib/io";
-
+import { useChildRoute } from "../components/ChildRoute";
 
 export function Menu() {
+    const { childRoute } = useChildRoute();
     const navigate = useNavigate();
     let buttonRef: HTMLButtonElement | undefined;
     let menuRef: HTMLMenuElement | undefined;
@@ -50,6 +50,8 @@ export function Menu() {
 
 function ViewMenuItems() {
     const navigate = useNavigate()
+    const { childRoute } = useChildRoute();
+
     return (<>
         <li>
             <i>move_location</i>

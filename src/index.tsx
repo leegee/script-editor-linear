@@ -19,6 +19,7 @@ import NoteCreator from "./components/panels/NoteCreator";
 import TagCreator from "./components/panels/TagCreator";
 import ViewEditNote from "./components/ViewEditNote";
 import TypingLayout from "./layouts/TypingLayout";
+import { ChildRouteProvider } from "./components/ChildRoute";
 
 const root = document.getElementById("root");
 
@@ -46,21 +47,24 @@ await loadAll();
 
 render(
   () => (
-    <HashRouter root={MainLayout}>
-      <Route path="/script" component={ScriptLayout}>
-        {commonRoutes}
-      </Route>
+    <ChildRouteProvider>
+      <HashRouter root={MainLayout}>
+        <Route path="/script" component={ScriptLayout}>
+          {commonRoutes}
+        </Route>
 
-      <Route path="/timeline" component={TimelineLayout}>
-        {commonRoutes}
-      </Route>
+        <Route path="/timeline" component={TimelineLayout}>
+          {commonRoutes}
+        </Route>
 
-      <Route path="/typing" component={TypingLayout} >
-        {commonRoutes}
-      </Route>
+        <Route path="/typing" component={TypingLayout} >
+          {commonRoutes}
+        </Route>
 
-      <Route path="/settings" component={SettingsLayout} />
-    </HashRouter>
+        <Route path="/settings" component={SettingsLayout} />
+      </HashRouter>
+    </ChildRouteProvider>
+
   ),
   root!
 );

@@ -5,13 +5,13 @@ import { locations, addLocation } from "../../../stores";
 import { TimelineItem, TimelineItemProps } from "../TimelineItem";
 import { LocationRenderMixin } from "./LocationRenderMixin";
 import { CanonicalLocation } from "./CanonicalLocation";
-import { childRoute } from "../../../lib/routeResolver";
+import { useChildRoute } from "../../ChildRoute";
 
 export type TimelineLocationItemType = InstanceType<typeof TimelineLocationItem>;
 
 class BaseTimelineLocationItem extends TimelineItem {
     /**
-     * Safely reconstructs a TimelineLocationItem from serialized data.
+     * Safely reconstruct a TimelineLocationItem from serialized data.
      * Preserves coordinate details if they exist.
      */
     static revive(obj: any): TimelineLocationItemType {
@@ -27,6 +27,8 @@ class BaseTimelineLocationItem extends TimelineItem {
     }
 
     static ListAllLocations() {
+        const { childRoute } = useChildRoute();
+
         return (
             <ul class="responsive no-space list scroll surface border">
                 <For each={Object.values(locations)}>

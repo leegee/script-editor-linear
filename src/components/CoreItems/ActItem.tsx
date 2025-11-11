@@ -3,9 +3,9 @@ import { actCharacters, actDurations, actLocations, characters, locations, notes
 import { TimelineItem, TimelineItemProps } from "./TimelineItem";
 import TimelineItemEditor from "../TimelineItemEditor";
 import { A } from "@solidjs/router";
-import { childRoute } from "../../lib/routeResolver";
 import PanelSectionHeader from "../PanelSectionHeader";
 import { For } from "solid-js";
+import { useChildRoute } from "../ChildRoute";
 
 export class ActItem extends TimelineItem {
     constructor(props: Omit<TimelineItemProps, "type">) {
@@ -13,6 +13,8 @@ export class ActItem extends TimelineItem {
     }
 
     renderFull() {
+        const { childRoute } = useChildRoute();
+
         return (
             <>
                 <header>

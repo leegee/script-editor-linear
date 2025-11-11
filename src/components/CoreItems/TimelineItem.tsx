@@ -2,10 +2,10 @@ import "./CoreItems.scss";
 import TimelineItemEditor from "../TimelineItemEditor";
 import { JSX } from "solid-js/jsx-runtime";
 import { A } from "@solidjs/router";
-import { childRoute } from "../../lib/routeResolver";
 import { notes, tags, updateTimelineItem } from "../../stores";
 import PanelSectionHeader from "../PanelSectionHeader";
 import { For } from "solid-js";
+import { useChildRoute } from "../ChildRoute";
 
 export interface TimelineItemProps {
     id: string;
@@ -30,6 +30,8 @@ export class TimelineItem {
     notes: string[];
 
     static ListTheseNotes(noteIds: string[], parentId: string) {
+        const { childRoute } = useChildRoute();
+
         return (
             <ul class="list no-space border scroll">
                 <li class="row middle-align">
@@ -177,6 +179,8 @@ export class TimelineItem {
     }
 
     panelNotesSection() {
+        const { childRoute } = useChildRoute();
+
         return (
             <article class="no-margin">
                 <details>

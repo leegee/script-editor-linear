@@ -4,8 +4,7 @@ import { TimelineItem, TimelineItemProps } from "./TimelineItem";
 import { A } from "@solidjs/router";
 import TimelineItemEditor from "../TimelineItemEditor";
 import { showAlert } from "../../stores/modals";
-import { childRoute } from "../../lib/routeResolver";
-import PanelSectionHeader from "../PanelSectionHeader";
+import { useChildRoute } from "../ChildRoute";
 
 function isCharacterUsed(id: string) {
     return Object.values(timelineItems).some(
@@ -21,6 +20,8 @@ export class CharacterItem extends TimelineItem {
     }
 
     static ListAllCharacters() {
+        const { childRoute } = useChildRoute();
+
         return (
             <ul class="responsive no-space list scroll surface border">
                 <For each={Object.values(characters).sort((a, b) => a.title.toLowerCase().localeCompare(b.title.toLowerCase()))}>

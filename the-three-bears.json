@@ -9,6 +9,17 @@
             }
         }
     ],
+    "notes": [
+        {
+            "id": "goldilocks",
+            "title": "Goldilocks",
+            "details": {
+                "urls": [
+                    "https://pulpinternational.com/images/postimg/goldilocks_zone_01.jpg"
+                ]
+            }
+        }
+    ],
     "characters": [
         {
             "title": "Narrator",
@@ -187,6 +198,9 @@
                 "ref": "Narrator",
                 "text": "While they were away, Goldilocks wandered along the same path."
             },
+            "notes": [
+                "goldilocks"
+            ],
             "duration": 5
         },
         {

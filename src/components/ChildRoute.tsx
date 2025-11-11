@@ -23,7 +23,6 @@ export function ChildRouteProvider(props: ParentProps) {
 
     const childRoute = (path: string) => {
         const child = path.replace(/^\/+/, "");
-        console.log(child)
         return `/${currentSection()}/${child}`;
     };
 

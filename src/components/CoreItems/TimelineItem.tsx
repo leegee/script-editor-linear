@@ -78,7 +78,7 @@ export class TimelineItem {
     }
 
     renderAsText(): string {
-        return this.type.toUpperCase() + ' ' + this.title + (
+        return this.type.toUpperCase() + ' ' + (this.title ?? '') + (
             this.details.text ? `\n${this.details.text}` : ''
         );
     }

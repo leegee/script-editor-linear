@@ -7,7 +7,7 @@ import { autocompletion, Completion, CompletionContext } from "@codemirror/autoc
 
 import styles from "./TypingInput.module.scss";
 import { createTimelineItemInstance, timelineItemTypesForTyping } from "../lib/timelineItemRegistry";
-import { allCharacterNames, allLocationNames, findCharacterByName, findLocationByName, timelineItems, timelineSequence } from "../stores";
+import { allCharacterNames, allLocationNames, findCharacterByName, findLocationByName, notes, tags, TagType, timelineItems, timelineSequence } from "../stores";
 import { text2timelineItemsJson } from "../lib/text2timelineItems";
 import { showAlert } from "../stores/modals";
 
@@ -17,38 +17,58 @@ export default function TypingInput() {
     const [isDirty, setIsDirty] = createSignal(false);
 
     const completionSource = (context: CompletionContext) => {
-        const word = context.matchBefore(/\w+$/);
-        console.log('word', word)
-        if (!word) {
-            // Check if the cursor is right after a space and maybe offer context-based completions
-            const line = context.state.doc.lineAt(context.pos);
-            const textBeforeCursor = line.text.slice(0, context.pos - line.from).trimEnd();
-            if (textBeforeCursor.endsWith("LOCATION")) {
-                return {
-                    from: context.pos, // insert at cursor
-                    options: allLocationNames().map((loc) => ({ label: loc, type: "variable" })),
-                    validFor: /.*/,
-                };
-            }
+        const word = context.matchBefore(/[@#\w]+$/);
+        const line = context.state.doc.lineAt(context.pos);
+        const textBeforeCursor = line.text.slice(0, context.pos - line.from);
+        const trimmed = textBeforeCursor.trimStart();
 
-            return null;
+        if (trimmed.startsWith("#")) {
+            const allTags = Object.values(tags);
+            return {
+                from: line.from + textBeforeCursor.indexOf("#") + 1,
+                options: allTags.map(tag => ({
+                    label: tag.title,
+                    detail: tag.id,
+                    apply: tag.id,
+                    type: "tag"
+                })),
+                validFor: /^\w*$/
+            };
         }
 
-        let options: Completion[] = [];
+        if (trimmed.startsWith("#")) {
+            const allNotes = Object.values(notes);
+            return {
+                from: line.from + textBeforeCursor.indexOf("#") + 1,
+                options: allNotes.map(note => ({
+                    label: note.title,
+                    detail: note.id,
+                    apply: note.id,
+                    type: "tag"
+                })),
+                validFor: /^\w*$/
+            };
+        }
 
-        if (/^LOCATION\w*$/i.test(word.text.toUpperCase())) {
-            options = allLocationNames().map(loc => ({ label: loc, type: "variable" }));
-        } else {
-            options = [
-                ...timelineItemTypesForTyping.map(h => ({ label: h, type: "keyword" })),
-                ...allCharacterNames().map(c => ({ label: c, type: "variable" })),
-            ];
+
+        if (!word) {
+            if (textBeforeCursor.trimEnd().endsWith("LOCATION")) {
+                return {
+                    from: context.pos,
+                    options: allLocationNames().map(loc => ({ label: loc, type: "variable" })),
+                    validFor: /.*/
+                };
+            }
+            return null;
         }
 
         return {
             from: word.from,
-            options,
-            validFor: /^\w*$/,
+            options: [
+                ...timelineItemTypesForTyping.map(h => ({ label: h, type: "keyword" })),
+                ...allCharacterNames().map(c => ({ label: c, type: "variable" }))
+            ],
+            validFor: /^\w*$/
         };
     };
 
@@ -163,9 +183,12 @@ export default function TypingInput() {
                     </nav>
                 </header>
                 <p>The sample script is a good way to learn the syntax.</p>
-                <p>You can include tags and notes by using their IDs at the start of a line:</p>
+                <p>If you have crated tags or notes in the List View, you can referenes to them
+                    by using their IDs at the start of a line:
+                </p>
                 <pre>
-                    <code>#tagId<br />
+                    <code>
+                        #tagId<br />
                         @noteId
                     </code>
                 </pre>
@@ -210,16 +233,15 @@ export default function TypingInput() {
                     <div class="tooltip bottom">Redo</div>
                 </button>
 
-                <button class="icon small circle" onClick={handleHelp}>
-                    <i>help</i>
-                    <div class="tooltip bottom">Help</div>
-                </button>
-
                 <button class="icon small circle" disabled={!isDirty()} onClick={handleSave}>
                     <i>save</i>
                     <div class="tooltip bottom">Save</div>
                 </button>
-            </nav>
+
+                <button class="icon small circle" onClick={handleHelp}>
+                    <i>help</i>
+                    <div class="tooltip bottom">Help</div>
+                </button>            </nav>
             <article class={styles.typingEditor} ref={editorRef}></article>
         </>
     );

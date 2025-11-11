@@ -53,7 +53,6 @@ class BaseTimelineLocationItem extends TimelineItem {
         });
     }
 
-
     renderCreateNew(props: { duration?: number; onChange: (field: string, value: any) => void }) {
         const [mode, setMode] = createSignal<"select" | "new">("select");
 

@@ -1,10 +1,13 @@
+import { CharacterItem } from "../components/CoreItems/CharacterItem";
+import { CanonicalLocationType } from "../components/CoreItems/Locations/CanonicalLocation";
+
 const RE_FIRST_WORD_CAPS = /^[A-Z0-9 _'-]+\b/;
 
 export function text2timelineItems(
     text: string,
     timelineItemTypesForTyping: string[],
-    findCharacterByName: (name: string) => string | undefined,
-    findLocationByName: (name: string) => string | undefined,
+    findCharacterByName: (name: string) => CharacterItem | undefined,
+    findLocationByName: (name: string) => CanonicalLocationType | undefined,
 ) {
     const lines = text.split(/\r?\n/);
     const items: any[] = [];

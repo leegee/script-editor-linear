@@ -28,7 +28,7 @@ export async function resetNotes() {
     setNotes({});
 }
 
-export function createNote(obj: Partial<NoteType>): NoteType {
+export function addNote(obj: Partial<NoteType>): NoteType {
     if ("ref" in obj) {
         throw new TypeError("createNote fields should not contain ref");
     }

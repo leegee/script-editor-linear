@@ -1,7 +1,7 @@
 import styles from "./TagEditor.module.scss";
 import { createSignal, createEffect, Show, For, Match, Switch } from "solid-js";
 import AutoResizingTextarea from "../AutoResizingTextarea";
-import { createTag, getTag, TagType, patchTag, removeTag, timelineItems, updateTimelineItem } from "../../stores";
+import { addTag, getTag, TagType, patchTag, removeTag, timelineItems, updateTimelineItem } from "../../stores";
 import { showAlert } from "../../stores/modals";
 
 interface TagEditorProps {
@@ -36,7 +36,7 @@ export default function TagEditor(props: TagEditorProps) {
 
         let savedTag: TagType;
         if (!tag()) {
-            savedTag = createTag({
+            savedTag = addTag({
                 title: title(),
                 details: { text: text(), clr: clr() },
             });

@@ -1,7 +1,7 @@
 import styles from "./NoteEditor.module.scss";
 import { createSignal, createEffect, Show, For, Match, Switch } from "solid-js";
 import AutoResizingTextarea from "../AutoResizingTextarea";
-import { createNote, getNote, NoteType, patchNote, removeNote, timelineItems, updateTimelineItem } from "../../stores";
+import { addNote, getNote, NoteType, patchNote, removeNote, timelineItems, updateTimelineItem } from "../../stores";
 import { showAlert } from "../../stores/modals";
 
 interface NoteEditorProps {
@@ -60,7 +60,7 @@ export default function NoteEditor(props: NoteEditorProps) {
         let savedNote: NoteType;
         if (!note()) {
             // Create new note
-            savedNote = createNote({
+            savedNote = addNote({
                 title: title(),
                 details: { text: text(), urls: urls() },
             });

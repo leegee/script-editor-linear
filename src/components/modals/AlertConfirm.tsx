@@ -17,7 +17,9 @@ export default function AlertConfirm() {
             <Show when={confirmState()}>
                 <div class="overlay blur active" style="z-index: 9999"></div>
                 <dialog class="active" style="z-index: 10000">
-                    {confirmState()!.message}
+                    <div>
+                        {confirmState()!.message}
+                    </div>
                     <nav class="right-align">
                         <button class="transparent" onClick={() => closeConfirm(false)}>Cancel</button>
                         <button class="primary" onClick={() => closeConfirm(true)}>OK</button>

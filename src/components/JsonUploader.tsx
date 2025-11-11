@@ -20,7 +20,7 @@ export default function JSONUploader() {
             const text = await file.text();
             const data = JSON.parse(text);
             console.log("Parsed JSON:", data);
-            await ingest(data.script, data.characters, data.locations);
+            await ingest(data.script, data.characters, data.locations, data.tags, data.notes);
             // TODO Pass this in an onCompete prop
             navigate('/script/');
         } catch (err) {

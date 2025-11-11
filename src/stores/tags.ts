@@ -24,7 +24,7 @@ export async function resetTags() {
     setTags({});
 }
 
-export function createTag(obj: Partial<TagType>): TagType {
+export function addTag(obj: Partial<TagType>): TagType {
     if ("ref" in obj) {
         throw new TypeError("createTag fields should not contain ref");
     }

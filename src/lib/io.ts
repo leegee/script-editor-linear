@@ -1,4 +1,4 @@
-import { reviveItem } from "../components/CoreItems";
+import { reviveItem, Tag } from "../components/CoreItems";
 import { CharacterItem } from "../components/CoreItems/CharacterItem";
 import { type CanonicalLocationType } from "../components/CoreItems/Locations/CanonicalLocation";
 import { TimelineItemProps } from "../components/CoreItems/TimelineItem";
@@ -11,14 +11,19 @@ import {
     addCharacter,
     createTimelineItem as storeCreateTimelineItem,
     clearAll,
-    reorderTimeline
+    reorderTimeline,
+    NoteType,
+    tags,
+    notes,
+    addNote,
+    addTag
 } from "../stores";
 
 /**
  * Initialize a new empty script
  */
 export async function initNewScript() {
-    await ingest([], [], []);
+    await ingest([], [], [], [], []);
 }
 
 /**
@@ -44,6 +49,8 @@ export function downloadJSON() {
  */
 function serialiseAll() {
     return {
+        tags: Object.values(tags).map(value => ({ ...value })),
+        notes: Object.values(notes).map(value => ({ ...value })),
         locations: Object.values(locations).map(value => ({ ...value })),
         characters: Object.values(characters).map(value => ({ ...value })),
         script: Object.values(timelineItems).map(value => ({ ...value })),
@@ -57,7 +64,7 @@ export async function loadJSONfromPath(jsonPath: string) {
     const response = await fetch(jsonPath);
     const data = await response.json();
 
-    await ingest(data.script, data.characters, data.locations);
+    await ingest(data.script, data.characters, data.locations, data.tags, data.notes);
 }
 
 /**
@@ -67,17 +74,27 @@ export async function ingest(
     sampleScript: TimelineItemProps[],
     sampleCharacters: CharacterItem[],
     sampleLocations: CanonicalLocationType[],
+    sampleTags: Tag[],
+    sampleNotes: NoteType[]
 ) {
-    console.log("io/ingest: starting ingestion...");
+    console.log("io/ingest: starting ingestion...",
+        { sampleTags, sampleNotes, sampleCharacters, sampleLocations, sampleScript }
+    );
 
     // Clear all existing data
     await clearAll();
 
+    console.log('Shall add tags')
+    for (const tag of sampleTags || []) await addTag(tag);
+
+    console.log('Shall add notes')
+    for (const note of sampleNotes || []) await addNote(note);
+
     console.log('Shall add characters')
-    for (const char of sampleCharacters) await addCharacter(char);
+    for (const char of sampleCharacters || []) await addCharacter(char);
 
     console.log('Shall add locations')
-    for (const loc of sampleLocations) await addLocation(loc);
+    for (const loc of sampleLocations || []) await addLocation(loc);
 
     console.log('Shall add timilne itmes')
 
@@ -99,3 +116,4 @@ export async function ingest(
 
     console.log("Ingestion complete. Sequence length:", seq.length);
 }
+

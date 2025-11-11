@@ -50,4 +50,10 @@
         margin-right: 0.25rem;
     }
 
+    .cm-selection,
+    .cm-selectionBackground {
+        border-radius: 0;
+        background-color: #444 !important;
+        color: white !important;
+    }
 }

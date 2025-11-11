@@ -23,9 +23,7 @@ export default function TypingInput() {
             // Check if the cursor is right after a space and maybe offer context-based completions
             const line = context.state.doc.lineAt(context.pos);
             const textBeforeCursor = line.text.slice(0, context.pos - line.from).trimEnd();
-            console.log('textBeforeCursor', textBeforeCursor)
             if (textBeforeCursor.endsWith("LOCATION")) {
-                console.log('bingo')
                 return {
                     from: context.pos, // insert at cursor
                     options: allLocationNames().map((loc) => ({ label: loc, type: "variable" })),

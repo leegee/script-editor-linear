@@ -1,5 +1,9 @@
 # Project Feature List:  Script Visualizer / Story Matrix
 
+![List view](./README/list.png)
+![Timeline view](./README/timeline.png)
+![Word-processor view](./README/typing.png)
+
 ## Core Concepts
 
 ### Script Items

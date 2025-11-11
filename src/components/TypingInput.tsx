@@ -165,8 +165,7 @@ export default function TypingInput() {
         const newTimelineItems = parsed.map(obj => createTimelineItemInstance(obj.type, obj.id));
 
         // todo: save timelineItems
-
-        console.log(newTimelineItems)
+        // console.log(JSON.stringify(newTimelineItems, null, 2))
 
         setIsDirty(false);
     }

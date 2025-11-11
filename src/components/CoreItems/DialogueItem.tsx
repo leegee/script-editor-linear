@@ -173,9 +173,11 @@ export class DialogueItem extends TimelineItem {
     }
 
     renderAsText(): string {
-        return this.characterName.toUpperCase() + (
-            this.details.text ? `\n${this.details.text}` : ''
-        );
+        return this.characterName.toUpperCase()
+            + (this.details.tags ? `\n${this.details.tags.map((id: string) => `#${id}\n`)}` : '')
+            + (this.details.notes ? `\n${this.details.notes.map((id: string) => `@${id}\n`)}` : '')
+            + (this.details.text ? `\n${this.details.text}` : '')
+            ;
     }
 
     renderCompact() {

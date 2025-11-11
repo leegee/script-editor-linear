@@ -28,7 +28,7 @@ export function text2timelineItemsJson(
         const firstWord = trimmed.split(/\s+/)[0].toUpperCase();
         const rest = trimmed.slice(firstWord.length).trim();
 
-        // If the first word is a known header:
+        // Known header types (act, scene, beat, location, etc.)
         if (timelineItemTypesForTyping.includes(firstWord as Uppercase<string>)) {
             commit();
             const type = firstWord.toLowerCase();
@@ -36,25 +36,31 @@ export function text2timelineItemsJson(
             if (type === "location") {
                 const ref = findLocationByName(rest);
                 if (!ref) throw new Error(`Could not find location referenced by "${rest}"`);
-                currentItem = { type, details: { ref: ref.id, text: "" } };
+                currentItem = { type, notes: [], tags: [], details: { ref: ref.id, text: "" } };
             } else {
-                currentItem = { type, title: rest || "", details: { text: "" } };
+                currentItem = { type, notes: [], tags: [], title: rest || "", details: { text: "" } };
             }
         }
-
-        // All-caps line: dialogue header
+        // All-caps line not known header: dialogue character
         else if (RE_FIRST_WORD_CAPS.test(trimmed)) {
             const ref = findCharacterByName(trimmed);
             if (!ref) throw new Error(`Could not find dialogue referenced by "${trimmed}"`);
             commit();
-            currentItem = { type: "dialogue", details: { ref: ref.id, text: "" } };
+            currentItem = { type: "dialogue", notes: [], tags: [], details: { ref: ref.id, text: "" } };
         }
-
-        // All else: append to current item's text
+        // Lines starting with @ or #: notes or tags
+        else if (currentItem && trimmed.startsWith("@")) {
+            currentItem.notes.push(trimmed.slice(1).trim());
+        }
+        else if (currentItem && trimmed.startsWith("#")) {
+            currentItem.tags.push(trimmed.slice(1).trim());
+        }
+        // Regular text
         else if (currentItem) {
-            currentItem.details.text += (currentItem.details.text ? "\n\n" : "") + line;
-        } else {
-            console.warn("Ignoring line without current item:", line);
+            currentItem.details.text += (currentItem.details.text ? "\n\n" : "") + trimmed;
+        }
+        else {
+            console.warn("Ignoring line without current item:", trimmed);
         }
     }
 

@@ -78,9 +78,11 @@ export class TimelineItem {
     }
 
     renderAsText(): string {
-        return this.type.toUpperCase() + ' ' + (this.title ?? '') + (
-            this.details.text ? `\n${this.details.text}` : ''
-        );
+        return this.type.toUpperCase() + ' ' + (this.title ?? '')
+            + (this.details.tags ? `\n${this.details.tags.map((id: string) => `#${id}\n`)}` : '')
+            + (this.details.notes ? `\n${this.details.notes.map((id: string) => `@${id}\n`)}` : '')
+            + (this.details.text ? `\n${this.details.text}` : '')
+            ;
     }
 
     renderCompact(): JSX.Element {

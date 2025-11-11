@@ -63,3 +63,8 @@ export function resolveLocationRef(item: TimelineLocationItemType): CanonicalLoc
 export function allLocationNames() {
     return Object.values(locations).map(c => c.title.trim());
 }
+
+export function findLocationByName(name: string) {
+    const trimmed = name.trim().toUpperCase();
+    return Object.values(locations).find(c => c.title.toUpperCase() === trimmed);
+}

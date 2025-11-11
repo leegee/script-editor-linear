@@ -1,4 +1,14 @@
 {
+    "tags": [
+        {
+            "id": "todo",
+            "title": "To Do",
+            "details": {
+                "text": "An item to do",
+                "clr": "#FFDD22"
+            }
+        }
+    ],
     "characters": [
         {
             "title": "Narrator",
@@ -53,7 +63,10 @@
     "script": [
         {
             "type": "act",
-            "title": "Act 1"
+            "title": "Act 1",
+            "tags": [
+                "todo"
+            ]
         },
         {
             "type": "scene",

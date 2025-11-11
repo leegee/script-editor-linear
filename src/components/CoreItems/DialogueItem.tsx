@@ -174,8 +174,8 @@ export class DialogueItem extends TimelineItem {
 
     renderAsText(): string {
         return this.characterName.toUpperCase()
-            + (this.details.tags ? `\n${this.details.tags.map((id: string) => `#${id}\n`)}` : '')
-            + (this.details.notes ? `\n${this.details.notes.map((id: string) => `@${id}\n`)}` : '')
+            + (this.tags.length ? `\n${this.tags.map((id: string) => `#${id}`).join("\n")}` : '')
+            + (this.notes.length ? `\n${this.notes.map((id: string) => `@${id}`).join("\n")}` : '')
             + (this.details.text ? `\n${this.details.text}` : '')
             ;
     }

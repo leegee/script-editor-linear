@@ -1,20 +1,17 @@
 {
   "compilerOptions": {
-    // General
     "jsx": "preserve",
     "jsxImportSource": "solid-js",
     "target": "ESNext",
-    // Modules
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "isolatedModules": true,
     "module": "ESNext",
     "moduleResolution": "bundler",
-    // Type Checking & Safety
     "strict": true,
     "types": [
       "vite/client",
-      "@testing-library/jest-dom"
+      "bun-types"
     ],
     "outDir": "dist"
   },

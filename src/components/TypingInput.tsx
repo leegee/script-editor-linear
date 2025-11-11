@@ -1,4 +1,3 @@
-// src/components/TypingInput.tsx
 import { onMount, onCleanup, createSignal } from "solid-js";
 import { EditorView, ViewUpdate, Decoration, DecorationSet, ViewPlugin } from "@codemirror/view";
 import { EditorState, Range } from "@codemirror/state";
@@ -9,13 +8,9 @@ import { autocompletion, Completion, CompletionContext } from "@codemirror/autoc
 import styles from "./TypingInput.module.scss";
 import { timelineItemTypesForTyping } from "../lib/timelineItemRegistry";
 import { allCharacterNames, allLocationNames, findCharacterByName, timelineItems, timelineSequence } from "../stores";
+import { text2timelineItems } from "../lib/text2timelineItems";
 
-type TypingInputProps = {
-    initialText?: string;
-    onSave: (text: string) => void;
-};
-
-export default function TypingInput(props: TypingInputProps) {
+export default function TypingInput() {
     let editorRef!: HTMLDivElement;
     const [view, setView] = createSignal<EditorView | null>(null);
     const [isDirty, setIsDirty] = createSignal(false);
@@ -134,7 +129,7 @@ export default function TypingInput(props: TypingInputProps) {
     );
 
     onMount(() => {
-        const initialText = props.initialText ?? timelineSequence()
+        const initialText = timelineSequence()
             .map((id) => timelineItems[id].renderAsText())
             .join("\n\n");
 
@@ -161,7 +156,10 @@ export default function TypingInput(props: TypingInputProps) {
 
     function handleSave() {
         if (!view()) return;
-        props.onSave(view()!.state.doc.toString());
+        text2timelineItems(
+            view()!.state.doc.toString(),
+            timelineItemTypesForTyping
+        );
         setIsDirty(false);
     }
 

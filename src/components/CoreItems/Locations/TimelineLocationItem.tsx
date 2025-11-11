@@ -6,7 +6,6 @@ import { TimelineItem, TimelineItemProps } from "../TimelineItem";
 import { LocationRenderMixin } from "./LocationRenderMixin";
 import { CanonicalLocation } from "./CanonicalLocation";
 import { childRoute } from "../../../lib/routeResolver";
-import PanelSectionHeader from "../../PanelSectionHeader";
 
 export type TimelineLocationItemType = InstanceType<typeof TimelineLocationItem>;
 
@@ -53,6 +52,7 @@ class BaseTimelineLocationItem extends TimelineItem {
             details: { ref, ...props.details },
         });
     }
+
 
     renderCreateNew(props: { duration?: number; onChange: (field: string, value: any) => void }) {
         const [mode, setMode] = createSignal<"select" | "new">("select");

@@ -14,7 +14,7 @@ export interface NoteType {
 export const [notes, setNotes] = createStore<Record<string, NoteType>>({});
 
 // Load all notes from storage
-export async function loadAllNotes() {
+export async function loadAllNotesFromStorage() {
     const items = await storage.getAll<NoteType>("notes");
     const revived = Object.fromEntries(
         Object.entries(items).map(([id, obj]) => [id, obj as NoteType])

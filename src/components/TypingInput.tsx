@@ -163,8 +163,11 @@ export default function TypingInput() {
             findLocationByName
         );
         const newTimelineItems = parsed.map(obj => createTimelineItemInstance(obj.type, obj.id));
+
         // todo: save timelineItems
+
         console.log(newTimelineItems)
+
         setIsDirty(false);
     }
 

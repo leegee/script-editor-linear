@@ -12,7 +12,7 @@ const [timelineSequence, _setTimelineSequence] = createSignal<string[]>([]);
 export { timelineItems, timelineSequence };
 
 
-export async function loadAllTimelineItems() {
+export async function loadAllTimelineItemsFromStorage() {
     const items = await storage.getAll<TimelineItemProps>("timelineItems");
     const revived = Object.fromEntries(
         Object.entries(items).map(([id, props]) => [id, reviveItem(props)])

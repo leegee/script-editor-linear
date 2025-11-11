@@ -5,7 +5,7 @@ import { TimelineLocationItemType } from "../components/CoreItems";
 
 export const [locations, setLocations] = createStore<Record<string, CanonicalLocationType>>({});
 
-export async function loadAllLocations() {
+export async function loadAllLocationsFromStorage() {
     const items = await storage.getAll<CanonicalLocationType>("locations");
     const revived = Object.fromEntries(
         Object.entries(items).map(([id, obj]) => [id, CanonicalLocation.revive(obj)])
@@ -13,7 +13,7 @@ export async function loadAllLocations() {
     setLocations(revived);
 }
 
-export async function resetLocations() {
+export async function deleteAllLocations() {
     await storage.clearTable("locations");
     setLocations({});
 }

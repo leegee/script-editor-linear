@@ -1,8 +1,8 @@
-import { loadAllCharacters, resetCharacters } from "./characters";
-import { loadAllLocations, resetLocations } from "./locations";
-import { loadAllNotes } from "./notes";
-import { loadAllTimelineItems, deleteAllTimelineItems } from "./timelineItems";
-import { loadAllTags } from "./tags";
+import { loadAllCharacters as loadAllCharactersFromStorage, } from "./characters";
+import { loadAllLocationsFromStorage as loadAllLocationsFromStorage, } from "./locations";
+import { loadAllNotesFromStorage } from "./notes";
+import { loadAllTimelineItemsFromStorage, } from "./timelineItems";
+import { loadAllTags as loadAllTagsFromStorage } from "./tags";
 import { storage } from "../db";
 
 export * from "./timelineItems";
@@ -16,11 +16,11 @@ export * from "./notes";
  */
 export async function loadAll() {
     console.log('stores/loadAll: Enter')
-    await loadAllTimelineItems();
-    await loadAllLocations();
-    await loadAllCharacters();
-    await loadAllTags();
-    await loadAllNotes();
+    await loadAllTimelineItemsFromStorage();
+    await loadAllLocationsFromStorage();
+    await loadAllCharactersFromStorage();
+    await loadAllTagsFromStorage();
+    await loadAllNotesFromStorage();
     console.log("stores/loadAll: all stores loaded from IndexedDB.");
 }
 

@@ -16,7 +16,7 @@ export function allCharacterNames() {
     return Object.values(characters).map(c => c.title.trim().toUpperCase());
 }
 
-export async function resetCharacters() {
+export async function deleteAllCharacters() {
     await storage.clearTable("characters");
     setCharacters({});
 }

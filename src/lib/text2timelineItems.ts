@@ -48,12 +48,22 @@ export function text2timelineItemsJson(
             commit();
             currentItem = { type: "dialogue", notes: [], tags: [], details: { ref: ref.id, text: "" } };
         }
-        // Lines starting with @ or #: notes or tags
+        // Notes
         else if (currentItem && trimmed.startsWith("@")) {
             currentItem.notes.push(trimmed.slice(1).trim());
         }
+        // Tags
         else if (currentItem && trimmed.startsWith("#")) {
             currentItem.tags.push(trimmed.slice(1).trim());
+        }
+        // Duration
+        else if (currentItem.type === "dialogue" && currentItem && trimmed.startsWith("%")) {
+            const value = trimmed.slice(1).trim();
+            if (/^\d+$/.test(value)) {
+                currentItem.duration = Number(value);
+            } else {
+                console.warn("Duration must be numeric:", value);
+            }
         }
         // Regular text
         else if (currentItem) {

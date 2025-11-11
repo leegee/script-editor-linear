@@ -177,6 +177,7 @@ export class DialogueItem extends TimelineItem {
             + (this.tags.length ? `\n${this.tags.map((id: string) => `#${id}`).join("\n")}` : '')
             + (this.notes.length ? `\n${this.notes.map((id: string) => `@${id}`).join("\n")}` : '')
             + (this.details.text ? `\n${this.details.text}` : '')
+            + (this.duration ? `\n%${this.duration}` : '')
             ;
     }
 

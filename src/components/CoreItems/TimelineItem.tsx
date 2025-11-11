@@ -24,8 +24,8 @@ export class TimelineItem {
     id: string;
     type: string;
     title?: string;
-    duration?: number;
     details: Record<string, any>;
+    duration?: number;
     tags: string[];
     notes: string[];
 
@@ -81,6 +81,7 @@ export class TimelineItem {
         return this.type.toUpperCase() + ' ' + (this.title ?? '')
             + (this.tags.length ? `\n${this.tags.map((id: string) => `#${id}`).join("\n")}` : '')
             + (this.notes.length ? `\n${this.notes.map((id: string) => `@${id}`).join("\n")}` : '')
+            + (this.duration ? `\n%${this.duration}` : '')
             + (this.details.text ? `\n${this.details.text}` : '')
             ;
     }

@@ -7,7 +7,7 @@ import { autocompletion, Completion, CompletionContext } from "@codemirror/autoc
 
 import styles from "./TypingInput.module.scss";
 import { createTimelineItemInstance, timelineItemTypesForTyping } from "../lib/timelineItemRegistry";
-import { allCharacterNames, allLocationNames, findCharacterByName, findLocationByName, notes, tags, TagType, timelineItems, timelineSequence } from "../stores";
+import { allCharacterNames, allLocationNames, findCharacterByName, findLocationByName, notes, tags, timelineItems, timelineSequence } from "../stores";
 import { text2timelineItemsJson } from "../lib/text2timelineItems";
 import { showAlert } from "../stores/modals";
 
@@ -23,10 +23,15 @@ export default function TypingInput() {
         const trimmed = textBeforeCursor.trimStart();
 
         if (trimmed.startsWith("#")) {
+            const prefix = trimmed.slice(1).toLowerCase();
             const allTags = Object.values(tags);
+            const filtered = prefix
+                ? allTags.filter(t => t.title.toLowerCase().includes(prefix))
+                : allTags;
+
             return {
                 from: line.from + textBeforeCursor.indexOf("#") + 1,
-                options: allTags.map(tag => ({
+                options: filtered.map(tag => ({
                     label: tag.title,
                     detail: tag.id,
                     apply: tag.id,
@@ -36,11 +41,16 @@ export default function TypingInput() {
             };
         }
 
-        if (trimmed.startsWith("#")) {
+        if (trimmed.startsWith("@")) {
+            const prefix = trimmed.slice(1).toLowerCase();
             const allNotes = Object.values(notes);
+            const filtered = prefix
+                ? allNotes.filter(t => t.title.toLowerCase().includes(prefix))
+                : allNotes;
+
             return {
                 from: line.from + textBeforeCursor.indexOf("#") + 1,
-                options: allNotes.map(note => ({
+                options: filtered.map(note => ({
                     label: note.title,
                     detail: note.id,
                     apply: note.id,
@@ -49,7 +59,6 @@ export default function TypingInput() {
                 validFor: /^\w*$/
             };
         }
-
 
         if (!word) {
             if (textBeforeCursor.trimEnd().endsWith("LOCATION")) {
@@ -189,7 +198,14 @@ export default function TypingInput() {
                 <pre>
                     <code>
                         #tagId<br />
-                        @noteId
+                        @noteId<br />
+                        %5
+                    </code>
+                </pre>
+                <p>You can specify duration in secconds of a dialogue item like this:</p>
+                <pre>
+                    <code>
+                        %5
                     </code>
                 </pre>
             </aside>

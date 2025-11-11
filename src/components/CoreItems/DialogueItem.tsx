@@ -341,55 +341,6 @@ export class DialogueItem extends TimelineItem {
         this.details.ref = char.title;
     }
 
-    async updateFromTyping(newRawText: string) {
-        const lines = newRawText.split("\n");
-
-        // New item or no speaker assigned yet?
-        const isNewItem = !this.details.ref;
-
-        if (isNewItem) {
-            // --- NEW DIALOGUE ITEM LOGIC ---
-            const first = lines[0].trim();
-
-            const found = CharacterItem.findCharacterByName(first);
-
-            if (found) {
-                // First line *is* a character → good
-                const updatedText = lines.slice(1).join("\n").trim();
-
-                if (updatedText !== this.details.text) {
-                    await updateTimelineItem(this.id, "details", "text", updatedText);
-                }
-                if (found.id !== this.details.ref) {
-                    await updateTimelineItem(this.id, "details", "ref", found.id);
-                }
-            } else {
-                // First line is NOT a character → treat whole thing as text
-                const updatedText = newRawText.trim();
-
-                if (updatedText !== this.details.text) {
-                    await updateTimelineItem(this.id, "details", "text", updatedText);
-                }
-                // speaker remains unset
-            }
-
-            return;
-        }
-
-        const [maybeSpeaker, ...rest] = lines;
-        const updatedText = rest.join("\n").trim();
-
-        const character = CharacterItem.findCharacterByName(maybeSpeaker.trim());
-
-        if (updatedText !== this.details.text) {
-            await updateTimelineItem(this.id, "details", "text", updatedText);
-        }
-
-        if (character && character.id !== this.details.ref) {
-            await updateTimelineItem(this.id, "details", "ref", character.id);
-        }
-    }
-
     async changeCharacter(charName: string) {
         const char = findCharacterByName(charName);
         if (!char) {

@@ -6,7 +6,7 @@ import { history, undo, redo, undoDepth, redoDepth } from "@codemirror/commands"
 import { autocompletion, Completion, CompletionContext } from "@codemirror/autocomplete";
 
 import styles from "./TypingInput.module.scss";
-import { timelineItemTypesForTyping } from "../lib/timelineItemRegistry";
+import { createTimelineItemInstance, timelineItemTypesForTyping } from "../lib/timelineItemRegistry";
 import { allCharacterNames, allLocationNames, findCharacterByName, timelineItems, timelineSequence } from "../stores";
 import { text2timelineItems } from "../lib/text2timelineItems";
 
@@ -156,10 +156,12 @@ export default function TypingInput() {
 
     function handleSave() {
         if (!view()) return;
-        text2timelineItems(
+        const parsed = text2timelineItems(
             view()!.state.doc.toString(),
             timelineItemTypesForTyping
         );
+        const timelineItems = parsed.map(obj => createTimelineItemInstance(obj.type, obj.id));
+        // todo: save timelineItems
         setIsDirty(false);
     }
 

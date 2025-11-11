@@ -8,7 +8,7 @@ import { autocompletion, Completion, CompletionContext } from "@codemirror/autoc
 import styles from "./TypingInput.module.scss";
 import { createTimelineItemInstance, timelineItemTypesForTyping } from "../lib/timelineItemRegistry";
 import { allCharacterNames, allLocationNames, findCharacterByName, findLocationByName, timelineItems, timelineSequence } from "../stores";
-import { text2timelineItems } from "../lib/text2timelineItems";
+import { text2timelineItemsJson } from "../lib/text2timelineItems";
 
 export default function TypingInput() {
     let editorRef!: HTMLDivElement;
@@ -156,7 +156,7 @@ export default function TypingInput() {
 
     function handleSave() {
         if (!view()) return;
-        const parsed = text2timelineItems(
+        const parsed = text2timelineItemsJson(
             view()!.state.doc.toString(),
             timelineItemTypesForTyping,
             findCharacterByName,

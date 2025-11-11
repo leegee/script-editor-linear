@@ -3,7 +3,7 @@ import { CanonicalLocationType } from "../components/CoreItems/Locations/Canonic
 
 const RE_FIRST_WORD_CAPS = /^[A-Z0-9 _'-]+$/;
 
-export function text2timelineItems(
+export function text2timelineItemsJson(
     text: string,
     timelineItemTypesForTyping: string[],
     findCharacterByName: (name: string) => CharacterItem | undefined,

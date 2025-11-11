@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll, afterAll, mock } from "bun:test";
-import { text2timelineItems } from "./text2timelineItems";
+import { text2timelineItemsJson } from "./text2timelineItems";
 
 // mock stores
 let characters: Record<string, any> = {};
@@ -50,7 +50,7 @@ A bird sings in the distance.
 
 `;
 
-        const result = text2timelineItems(
+        const result = text2timelineItemsJson(
             text,
             ["ACT", "BEAT", "LOCATION", "SCENE",],
             findCharacterByName,

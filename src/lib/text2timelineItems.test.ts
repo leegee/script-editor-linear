@@ -44,16 +44,20 @@ BABY BEAR
 Hello!
 
 How are you?
+
+BEAT 
+A bird sings in the distance.
+
 `;
 
         const result = text2timelineItems(
             text,
-            ["ACT", "SCENE", "LOCATION"],
+            ["ACT", "BEAT", "LOCATION", "SCENE",],
             findCharacterByName,
             findLocationByName
         );
 
-        expect(result).toHaveLength(5);
+        expect(result).toHaveLength(6);
 
         expect(result[0]).toMatchObject({ type: "act", title: "Act 1", details: { text: "" } });
         expect(result[1]).toMatchObject({ type: "scene", title: "Scene 1", details: { text: "" } });

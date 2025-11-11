@@ -9,6 +9,7 @@ import styles from "./TypingInput.module.scss";
 import { createTimelineItemInstance, timelineItemTypesForTyping } from "../lib/timelineItemRegistry";
 import { allCharacterNames, allLocationNames, findCharacterByName, findLocationByName, timelineItems, timelineSequence } from "../stores";
 import { text2timelineItemsJson } from "../lib/text2timelineItems";
+import { showAlert } from "../stores/modals";
 
 export default function TypingInput() {
     let editorRef!: HTMLDivElement;
@@ -154,6 +155,26 @@ export default function TypingInput() {
 
     onCleanup(() => view()?.destroy());
 
+    function handleHelp() {
+        showAlert(
+            <aside>
+                <header class="no-padding">
+                    <nav>
+                        <i>help</i>
+                        <h2 class="max">Help</h2>
+                    </nav>
+                </header>
+                <p>The sample script is a good way to learn the syntax.</p>
+                <p>You can include tags and notes by using their IDs at the start of a line:</p>
+                <pre>
+                    <code>#tagId<br />
+                        @noteId
+                    </code>
+                </pre>
+            </aside>
+        );
+    }
+
     function handleSave() {
         if (!view()) return;
         const parsed = text2timelineItemsJson(
@@ -189,6 +210,11 @@ export default function TypingInput() {
                 >
                     <i>redo</i>
                     <div class="tooltip bottom">Redo</div>
+                </button>
+
+                <button class="icon small circle" onClick={handleHelp}>
+                    <i>help</i>
+                    <div class="tooltip bottom">Help</div>
                 </button>
 
                 <button class="icon small circle" disabled={!isDirty()} onClick={handleSave}>

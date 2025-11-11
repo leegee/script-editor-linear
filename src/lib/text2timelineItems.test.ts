@@ -1,20 +1,32 @@
-// text2timelineItems.test.ts
-
 import { describe, it, expect, beforeAll, afterAll, mock } from "bun:test";
 import { text2timelineItems } from "./text2timelineItems";
 
+// mock stores
+let characters: Record<string, any> = {};
+let locations: Record<string, any> = {};
+
+// mock lookup functions
+function findCharacterByName(name: string) {
+    const trimmed = name.trim().toUpperCase();
+    return Object.values(characters).find(c => c.title.toUpperCase() === trimmed)?.id;
+}
+
+function findLocationByName(name: string) {
+    const trimmed = name.trim().toUpperCase();
+    return Object.values(locations).find(c => c.title.toUpperCase() === trimmed)?.id;
+}
+
 describe("text2timelineItems", () => {
-    // Mock crypto.randomUUID for predictable output
-    const mockUUIDs = ["id1", "id2", "id3"];
-    let callIndex = 0;
-    const mockUUID = mock(() => mockUUIDs[callIndex++ % mockUUIDs.length]);
-
     beforeAll(() => {
-        globalThis.crypto = { randomUUID: mockUUID } as any;
-    });
-
-    afterAll(() => {
-        delete (globalThis as any).crypto;
+        // populate character/location stores for test
+        characters = {
+            Narrator: { id: "Narrator", title: "NARRATOR" },
+            MotherBear: { id: "MotherBear", title: "Mother Bear" },
+            BabyBear: { id: "BabyBear", title: "Baby Bear" },
+        };
+        locations = {
+            BearsCottage: { id: "loc1", title: "The Bears’ Cottage" },
+        };
     });
 
     it("parses a simple script into timeline items", () => {
@@ -34,45 +46,25 @@ Hello!
 
         const result = text2timelineItems(
             text,
-            ["ACT", "SCENE", "LOCATION"]
+            ["ACT", "SCENE", "LOCATION"],
+            findCharacterByName,
+            findLocationByName
         );
 
         expect(result).toHaveLength(5);
 
-        expect(result[0]).toMatchObject({
-            type: "act",
-            title: "Act 1",
-            details: { text: "" },
-        });
-
-        expect(result[1]).toMatchObject({
-            type: "scene",
-            title: "Scene 1",
-            details: { text: "" },
-        });
+        expect(result[0]).toMatchObject({ type: "act", title: "Act 1", details: { text: "" } });
+        expect(result[1]).toMatchObject({ type: "scene", title: "Scene 1", details: { text: "" } });
+        expect(result[2]).toMatchObject({ type: "location", details: { ref: "loc1", text: "" } });
 
         expect(result[3]).toMatchObject({
-            type: "NARRATOR",
-            title: "",
-            details: { text: "Once upon a time, there were three bears." },
+            type: "dialogue",
+            details: { ref: "Narrator", text: "Once upon a time, there were three bears." }
         });
 
-        // expect(result[4]).toMatchObject({
-        //     type: "BABY BEAR",
-        //     title: "",
-        //     details: { text: "Hello!" },
-        // });
-
-        expect(result[2]).toMatchObject({
-            type: "location",
-            title: "The Bears’ Cottage",
-            details: { text: "" },
+        expect(result[4]).toMatchObject({
+            type: "dialogue",
+            details: { ref: "BabyBear", text: "Hello!" }
         });
-
-        // for (const item of result) {
-        //     expect(typeof item.id).toBe("string");
-        //     expect(item.id.length).toBeGreaterThan(0);
-        // }
     });
-
 });

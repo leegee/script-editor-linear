@@ -2,7 +2,9 @@ const RE_FIRST_WORD_CAPS = /^[A-Z0-9 _'-]+\b/;
 
 export function text2timelineItems(
     text: string,
-    timelineItemTypesForTyping: string[]
+    timelineItemTypesForTyping: string[],
+    findCharacterByName: (name: string) => string | undefined,
+    findLocationByName: (name: string) => string | undefined,
 ) {
     const lines = text.split(/\r?\n/);
     const items: any[] = [];
@@ -16,8 +18,6 @@ export function text2timelineItems(
         currentItem = null;
     };
 
-    // known headers that should have lowercase type
-
     for (let line of lines) {
         const trimmed = line.trim();
         if (!trimmed) continue;
@@ -29,14 +29,34 @@ export function text2timelineItems(
             const firstWord = trimmed.split(/\s+/)[0].toUpperCase();
             const rest = trimmed.slice(firstWord.length).trim();
 
-            currentItem = {
-                id: crypto.randomUUID(),
-                type: timelineItemTypesForTyping.includes(firstWord as Uppercase<string>)
-                    ? firstWord.toLowerCase()
-                    : firstWord,
-                title: rest || "",
-                details: { text: "" }
-            };
+            const type = timelineItemTypesForTyping.includes(firstWord as Uppercase<string>)
+                ? firstWord.toLowerCase()
+                : 'dialogue';
+
+            if (type === 'dialogue' || type === 'location') {
+                const ref = type === 'dialogue'
+                    ? findCharacterByName(trimmed)
+                    : findLocationByName(rest);
+
+                if (!ref) {
+                    throw new Error(`Could not find ${type} referenced by "${trimmed}"`)
+                }
+
+                currentItem = {
+                    type: type,
+                    details: {
+                        ref: ref,
+                        text: ""
+                    }
+                };
+            }
+            else {
+                currentItem = {
+                    type: type,
+                    title: rest || "",
+                    details: { text: "" }
+                };
+            }
         }
 
         else if (currentItem) {
@@ -44,7 +64,7 @@ export function text2timelineItems(
         }
 
         else {
-            console.warn('Ignoreing:', currentItem)
+            console.warn('Ignoring:', currentItem)
         }
     }
 

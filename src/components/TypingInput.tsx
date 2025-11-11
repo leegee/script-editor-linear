@@ -159,7 +159,8 @@ export default function TypingInput() {
         const parsed = text2timelineItems(
             view()!.state.doc.toString(),
             timelineItemTypesForTyping,
-            findCharacterByName, findLocationByName
+            findCharacterByName,
+            findLocationByName
         );
         const newTimelineItems = parsed.map(obj => createTimelineItemInstance(obj.type, obj.id));
         // todo: save timelineItems

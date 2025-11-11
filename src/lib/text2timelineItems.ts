@@ -42,13 +42,16 @@ export function text2timelineItems(
                     : findLocationByName(rest);
 
                 if (!ref) {
+                    console.debug({
+                        trimmed, firstWord, rest, type
+                    })
                     throw new Error(`Could not find ${type} referenced by "${trimmed}"`)
                 }
 
                 currentItem = {
                     type: type,
                     details: {
-                        ref: ref,
+                        ref: ref.id,
                         text: ""
                     }
                 };

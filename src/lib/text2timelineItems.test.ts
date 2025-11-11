@@ -8,12 +8,12 @@ let locations: Record<string, any> = {};
 // mock lookup functions
 function findCharacterByName(name: string) {
     const trimmed = name.trim().toUpperCase();
-    return Object.values(characters).find(c => c.title.toUpperCase() === trimmed)?.id;
+    return Object.values(characters).find(c => c.title.toUpperCase() === trimmed);
 }
 
 function findLocationByName(name: string) {
     const trimmed = name.trim().toUpperCase();
-    return Object.values(locations).find(c => c.title.toUpperCase() === trimmed)?.id;
+    return Object.values(locations).find(c => c.title.toUpperCase() === trimmed);
 }
 
 describe("text2timelineItems", () => {

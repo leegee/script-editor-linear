@@ -42,6 +42,8 @@ Once upon a time, there were three bears.
 
 BABY BEAR
 Hello!
+
+How are you?
 `;
 
         const result = text2timelineItems(
@@ -64,7 +66,7 @@ Hello!
 
         expect(result[4]).toMatchObject({
             type: "dialogue",
-            details: { ref: "BabyBear", text: "Hello!" }
+            details: { ref: "BabyBear", text: "Hello!\n\nHow are you?" }
         });
     });
 });

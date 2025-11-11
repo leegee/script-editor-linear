@@ -60,7 +60,7 @@ export function text2timelineItems(
         }
 
         else if (currentItem) {
-            currentItem.details.text += (currentItem.details.text ? "\n" : "") + line;
+            currentItem.details.text += (currentItem.details.text ? "\n\n" : "") + line;
         }
 
         else {

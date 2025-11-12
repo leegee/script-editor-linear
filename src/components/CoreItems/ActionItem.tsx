@@ -12,7 +12,6 @@ export class ActionItem extends TimelineItem {
         this.duration = props.duration;
         this.details = {
             ...this.details,
-            doesNotAdvanceTime: true,
         }
     }
 

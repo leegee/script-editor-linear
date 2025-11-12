@@ -6,7 +6,7 @@ export class MusicItem extends TimelineItem {
         super({ ...props, type: "music" });
         this.details = {
             ...this.details,
-            doesNotAdvanceTime: true,
+            doesNotAdvanceTime: false,
         }
     }
 

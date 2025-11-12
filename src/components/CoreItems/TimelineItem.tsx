@@ -30,29 +30,29 @@ export class TimelineItem {
     tags: string[];
     notes: string[];
 
-    static ListTheseNotes(noteIds: string[], parentId: string) {
-        const { childRoute } = useChildRoute();
+    // static ListTheseNotes(noteIds: string[], parentId: string) {
+    //     const { childRoute } = useChildRoute();
 
-        return (
-            <ul class="list no-space border scroll">
-                <li class="row middle-align">
-                    <A href={childRoute('/attach-new/note/' + parentId)} class="chip small transparent">
-                        <i>add</i><span>Add note</span>
-                    </A>
-                </li>
+    //     return (
+    //         <ul class="list no-space border scroll">
+    //             <li class="row middle-align">
+    //                 <A href={childRoute('/attach-new/note/' + parentId)} class="chip small transparent">
+    //                     <i>add</i><span>Add note</span>
+    //                 </A>
+    //             </li>
 
-                <For each={noteIds}>
-                    {(noteId) => (
-                        <li>
-                            <A href={childRoute("/notes/" + noteId)}>
-                                {notes[noteId]?.title}
-                            </A>
-                        </li>
-                    )}
-                </For>
-            </ul>
-        );
-    }
+    //             <For each={noteIds}>
+    //                 {(noteId) => (
+    //                     <li>
+    //                         <A href={childRoute("/notes/" + noteId)}>
+    //                             {notes[noteId]?.title}
+    //                         </A>
+    //                     </li>
+    //                 )}
+    //             </For>
+    //         </ul>
+    //     );
+    // }
 
     constructor(props: TimelineItemProps) {
         this.id = props.id;
@@ -80,6 +80,7 @@ export class TimelineItem {
         return new (this.constructor as any)(props);
     }
 
+    // Used by TypingInput
     renderAsText(): string {
         return this.type.toUpperCase() + ' ' + (this.title ?? '')
             + (this.tags.length ? `\n${this.tags.map((id: string) => `#${id}`).join("\n")}` : '')
@@ -89,6 +90,7 @@ export class TimelineItem {
             ;
     }
 
+    // Used by drag-and-drop list
     renderCompact(): JSX.Element {
         if (this.type === 'act' || this.type === 'scene' || this.type === "location") {
             return (
@@ -115,6 +117,7 @@ export class TimelineItem {
     }
 
     renderFull(): JSX.Element {
+        console.trace('render full');
         return <fieldset>
             <h3>{this.type}</h3>
             <pre>{JSON.stringify(this, null, 2)}</pre>
@@ -125,6 +128,7 @@ export class TimelineItem {
         duration?: number;
         onChange: (field: string, value: any) => void;
     }): JSX.Element {
+        console.trace('render create new');
         return (
             <article>
                 <div class="field border label max">
@@ -165,6 +169,21 @@ export class TimelineItem {
 
     timelineContent(zoom: number): JSX.Element | string | undefined {
         return undefined;
+    }
+
+    detailsDate() {
+        return (
+            <div class="field prefix max small">
+                <input type="date" class="small no-padding"
+                    value={this.details.date}
+                    onInput={(e) => {
+                        updateTimelineItem(this.id, "details", "date", e.currentTarget.value);
+                        this.details.date = e.currentTarget.value;
+                    }}
+                />
+                <i style="inset:50% 0 auto auto">today</i>
+            </div>
+        );
     }
 
     renderNotesList() {
@@ -212,21 +231,6 @@ export class TimelineItem {
                     </ul>
                 </details>
             </article>
-        );
-    }
-
-    detailsDate() {
-        return (
-            <div class="field prefix max small">
-                <input type="date" class="small no-padding"
-                    value={this.details.date}
-                    onInput={(e) => {
-                        updateTimelineItem(this.id, "details", "date", e.currentTarget.value);
-                        this.details.date = e.currentTarget.value;
-                    }}
-                />
-                <i style="inset:50% 0 auto auto">today</i>
-            </div>
         );
     }
 

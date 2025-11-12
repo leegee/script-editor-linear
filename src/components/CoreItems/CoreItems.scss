@@ -8,11 +8,26 @@
     }
 }
 
-.tag {
-    font-size: 100%;
+.tag.circle {
+    font-size: 77%;
     width: 1em;
     height: 1em;
     display: flex;
     justify-content: center;
     align-items: center;
+
+    i {
+        filter: invert(100%) brightness(200%);
+    }
+}
+
+.tag.chip {
+    border-color: var(--this-clr);
+
+    :hover {
+        background-color: var(--this-clr);
+        color: var(--this-clr);
+
+        filter: invert(100%) brightness(200%);
+    }
 }

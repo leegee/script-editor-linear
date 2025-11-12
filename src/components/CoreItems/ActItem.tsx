@@ -1,5 +1,5 @@
 import { formatHHMMSS } from "../../lib/formatSecondsToHMS";
-import { actCharacters, actDurations, actLocations, characters, locations, notes, tags, updateTimelineItem } from "../../stores";
+import { actCharacters, actDurations, actLocations, characters, locations } from "../../stores";
 import { TimelineItem, TimelineItemProps } from "./TimelineItem";
 import TimelineItemEditor from "../TimelineItemEditor";
 import { A } from "@solidjs/router";
@@ -22,21 +22,18 @@ export class ActItem extends TimelineItem {
                         <TimelineItemEditor id={this.id} path="title" />
                     </h3>
 
-                    <div class="row">
+                    <div class="row no-space">
                         Duration
                         <span class="max" />
                         <code>{formatHHMMSS(actDurations()[this.id])}</code>
                     </div>
 
-                    <div class="row">
+                    <div class="row no-space">
                         {this.detailsDate()}
-                    </div>
-
-                    <div class="row">
-                        {this.renderTags()}
                     </div>
                 </header>
 
+                {this.panelTagsSection()}
                 {this.panelNotesSection()}
 
                 <article class="no-margin">
@@ -74,18 +71,6 @@ export class ActItem extends TimelineItem {
                 </article>
 
             </ >
-        );
-    }
-
-    renderTags() {
-        return (
-            <For each={this.tags}>
-                {(tag) => (
-                    <>
-                        <div class="chip tiny-padding" style={`text-transform: uppercase; font-size: 8pt !important; border-width: 1pt; border-color:${tags[tag].details.clr}`}>{tags[tag].title}</div>
-                    </>
-                )}
-            </For>
         );
     }
 

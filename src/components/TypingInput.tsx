@@ -7,7 +7,7 @@ import { autocompletion, Completion, CompletionContext } from "@codemirror/autoc
 
 import styles from "./TypingInput.module.scss";
 import { createTimelineItemInstance, timelineItemTypesForTyping } from "../lib/timelineItemRegistry";
-import { allCharacterNames, allLocationNames, findCharacterByName, findLocationByName, notes, tags, timelineItems, timelineSequence } from "../stores";
+import { addTimelineItems, allCharacterNames, allLocationNames, deleteAllTimelineItems, findCharacterByName, findLocationByName, loadAll, notes, tags, timelineItems, timelineSequence } from "../stores";
 import { text2timelineItemsJson } from "../lib/text2timelineItems";
 import { showAlert } from "../stores/modals";
 
@@ -212,7 +212,7 @@ export default function TypingInput() {
         );
     }
 
-    function handleSave() {
+    async function handleSave() {
         if (!view()) return;
         const parsed = text2timelineItemsJson(
             view()!.state.doc.toString(),
@@ -220,10 +220,14 @@ export default function TypingInput() {
             findCharacterByName,
             findLocationByName
         );
-        const newTimelineItems = parsed.map(obj => createTimelineItemInstance(obj.type, obj.id));
 
-        // todo: save timelineItems
-        // console.log(JSON.stringify(newTimelineItems, null, 2))
+        console.log(
+            JSON.stringify(parsed, null, 4)
+        )
+
+        await deleteAllTimelineItems();
+        await addTimelineItems(parsed);
+        await loadAll();
 
         setIsDirty(false);
     }

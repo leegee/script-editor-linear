@@ -21,8 +21,8 @@ export class TransitionItem extends TimelineItem {
         return <span><code style="opacity:80%">Transition</code> <i class="large">{'transition_' + (this.details.transitionType ?? 'chop')}</i> </span>;
     }
 
-    timelineContent(zoom: number): JSX.Element | string | undefined {
-        return <i>{'transition_' + (this.details.transitionType ?? 'chop')}</i>;
+    get icon(): string {
+        return 'transition_' + (this.details.transitionType ?? 'chop');
     }
 
     renderFull() {

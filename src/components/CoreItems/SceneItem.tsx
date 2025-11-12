@@ -30,13 +30,13 @@ export class SceneItem extends TimelineItem {
                         <TimelineItemEditor id={this.id} path="title" />
                     </h3>
 
-                    <div class="row">
+                    <div class="row no-space">
                         Duration
                         <span class="max" />
                         <code>{formatHHMMSS(sceneDurations()[this.id])}</code>
                     </div>
 
-                    <div class="row">
+                    <div class="row no-space">
                         {this.detailsDate()}
                     </div>
 

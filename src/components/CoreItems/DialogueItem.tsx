@@ -154,6 +154,8 @@ function DialogueForm(props: DialogueFormProps) {
 }
 
 export class DialogueItem extends TimelineItem {
+    _icon = "3p";
+
     static createForCharacter(text: string, charId: string) {
         return new DialogueItem({
             id: crypto.randomUUID(),
@@ -328,10 +330,6 @@ export class DialogueItem extends TimelineItem {
                 ref,
             },
         };
-    }
-
-    timelineContent(zoom: number): JSX.Element | string | undefined {
-        return <i>3p</i>;
     }
 
     get characterName() {

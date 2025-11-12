@@ -6,6 +6,8 @@ export type PauseType = {
 } & TimelineItem;
 
 export class PauseItem extends TimelineItem {
+    _icon = "pause";
+
     constructor(props: PauseType) {
         super({ ...props, type: "pause" });
         this.duration = props.duration;
@@ -13,10 +15,6 @@ export class PauseItem extends TimelineItem {
             ...this.details,
             doesNotAdvanceTime: true,
         }
-    }
-
-    timelineContent(zoom: number): JSX.Element | string | undefined {
-        return <i>pause</i>;
     }
 
     renderAsText(): string {

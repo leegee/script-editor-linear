@@ -1,4 +1,33 @@
 {
+    "tags": [
+        {
+            "id": "mood1",
+            "title": "Mood One",
+            "details": {
+                "text": "Some kinda mood",
+                "clr": "purple"
+            }
+        },
+        {
+            "id": "todo",
+            "title": "To Do",
+            "details": {
+                "text": "An item to do",
+                "clr": "#FFDD22"
+            }
+        }
+    ],
+    "notes": [
+        {
+            "id": "goldilocks",
+            "title": "Goldilocks",
+            "details": {
+                "urls": [
+                    "https://pulpinternational.com/images/postimg/goldilocks_zone_01.jpg"
+                ]
+            }
+        }
+    ],
     "characters": [
         {
             "id": "Narrator",
@@ -54,7 +83,11 @@
         {
             "id": "uuid-1",
             "type": "act",
-            "title": "Act 1"
+            "title": "Act 1",
+            "tags": [
+                "todo",
+                "mood1"
+            ]
         },
         {
             "id": "uuid-2",
@@ -74,7 +107,10 @@
             "duration": 5,
             "details": {
                 "text": "Opening Theme"
-            }
+            },
+            "notes": [
+                "goldilocks"
+            ]
         },
         {
             "id": "action-1",

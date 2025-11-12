@@ -53,3 +53,9 @@ menu li li a {
 .field>:is(i, img, svg, progress, a:not(.helper, .error)) {
     inset: 50% 0 auto auto;
 }
+
+/* Fix beer */
+.row.no-space {
+    /* margin-block-start: 0 !important; */
+    min-block-size: 2rem;
+}

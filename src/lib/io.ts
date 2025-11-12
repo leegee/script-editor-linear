@@ -1,4 +1,4 @@
-import { reviveItem, Tag } from "../components/CoreItems";
+import { Tag } from "../components/CoreItems";
 import { CharacterItem } from "../components/CoreItems/CharacterItem";
 import { type CanonicalLocationType } from "../components/CoreItems/Locations/CanonicalLocation";
 import { TimelineItemProps } from "../components/CoreItems/TimelineItem";
@@ -9,14 +9,13 @@ import {
     loadAll,
     addLocation,
     addCharacter,
-    createTimelineItem as storeCreateTimelineItem,
     clearAll,
-    reorderTimeline,
     NoteType,
     tags,
     notes,
     addNote,
-    addTag
+    addTag,
+    addTimelineItems
 } from "../stores";
 
 /**
@@ -97,23 +96,11 @@ export async function ingest(
     for (const loc of sampleLocations || []) await addLocation(loc);
 
     console.log('Shall add timilne itmes')
-
-    // Add timeline items using store API (handles sequence & storage)
-    const seq: string[] = [];
-    for (const props of sampleScript) {
-        const item = reviveItem(props);
-        if (!item.id) item.id = crypto.randomUUID();
-        await storeCreateTimelineItem(item);
-        seq.push(item.id);
-    }
-
-
-    // Ensure sequence is consistent with store
-    await reorderTimeline(seq);
+    await addTimelineItems(sampleScript);
 
     // Reload all derived data
     await loadAll();
 
-    console.log("Ingestion complete. Sequence length:", seq.length);
+    console.log("Ingestion complete.");
 }
 

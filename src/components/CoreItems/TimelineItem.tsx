@@ -4,9 +4,8 @@ import { JSX } from "solid-js/jsx-runtime";
 import { A } from "@solidjs/router";
 import { notes, tags, updateTimelineItem } from "../../stores";
 import PanelSectionHeader from "../PanelSectionHeader";
-import { For } from "solid-js";
+import { For, Show } from "solid-js";
 import { useChildRoute } from "../ChildRoute";
-import { style } from "solid-js/web";
 
 export interface TimelineItemProps {
     id: string;
@@ -29,6 +28,8 @@ export class TimelineItem {
     duration?: number;
     tags: string[];
     notes: string[];
+    protected _icon: string | undefined = undefined;
+    get icon(): string | undefined { return this._icon; }
 
     // static ListTheseNotes(noteIds: string[], parentId: string) {
     //     const { childRoute } = useChildRoute();
@@ -108,8 +109,11 @@ export class TimelineItem {
             <div style="opacity:80%" class="with-tag">
                 <div>
                     <code>{this.type.toLocaleUpperCase()}</code>
-                    {" "} &mdash; {" "}
-                    {this.title ?? this.details.text ?? ""}
+                    {" "}
+                    <Show when={this.title || this.details.text}>
+                        &mdash; {" "}
+                    </Show>
+                    {this.title || this.details.text || ""}
                 </div>
                 {this.compactTagList()}
             </div>
@@ -118,10 +122,46 @@ export class TimelineItem {
 
     renderFull(): JSX.Element {
         console.trace('render full');
-        return <fieldset>
-            <h3>{this.type}</h3>
-            <pre>{JSON.stringify(this, null, 2)}</pre>
-        </fieldset>;
+        return <article>
+            <PanelSectionHeader title={this.type} icon={this.icon} />
+            <div class="field border label max">
+                <TimelineItemEditor
+                    id={this.id}
+                    path="title"
+                    label="Title"
+                />
+            </div>
+
+            <Show when={this.details.hasOwnProperty('text')}>
+                <div class="field border label max textarea">
+                    <TimelineItemEditor
+                        id={this.id}
+                        path="details"
+                        key="text"
+                        label="Text"
+                        multiline
+                    />
+                </div>
+            </Show>
+
+            <Show when={this.hasOwnProperty('duration')}>
+                <div class="field border label max">
+                    <TimelineItemEditor
+                        id={this.id}
+                        path="duration"
+                        label="Duration"
+                    />
+                </div>
+            </Show>
+
+            {this.panelTagsSection()}
+
+            {this.panelNotesSection()}
+
+            <fieldset>
+                <pre>{JSON.stringify(this, null, 2)}</pre>
+            </fieldset>
+        </article>;
     }
 
     renderCreateNew(props: {
@@ -168,13 +208,15 @@ export class TimelineItem {
     openEditor() { }
 
     timelineContent(zoom: number): JSX.Element | string | undefined {
-        return undefined;
+        return <i>{this.icon}</i>;
     }
 
     detailsDate() {
         return (
             <div class="field prefix max small">
-                <input type="date" class="small no-padding"
+                <input type="date"
+                    style="font-size: 100%"
+                    class="small no-padding"
                     value={this.details.date}
                     onInput={(e) => {
                         updateTimelineItem(this.id, "details", "date", e.currentTarget.value);
@@ -208,27 +250,56 @@ export class TimelineItem {
                         <PanelSectionHeader title="Notes" icon="note_stack" badge={this.notes.length} />
                     </summary>
 
-                    <div class="top-padding center-align">
-                        <button class="transparent small border">
+                    <nav class="list no-space border scroll ">
+                        <For each={this.notes}>
+                            {(noteId) => {
+                                const n = notes[noteId];
+                                return (
+                                    <button class="chip small">
+                                        <A href={childRoute(`/notes/${n.id}`)}>{n.title}</A>
+                                    </button>
+                                );
+                            }}
+                        </For>
+
+                        <button class="chip small">
                             <A href={childRoute(`/attach-new/note/${this.id}`)}>
                                 <i>add</i>
                                 <span>Add Note</span>
                             </A>
                         </button>
-                    </div>
 
-                    <ul class="list no-space border scroll ">
-                        <For each={this.notes}>
-                            {(noteId) => {
-                                const n = notes[noteId];
-                                return (
-                                    <li>
-                                        <A href={childRoute(`/notes/${n.id}`)}>{n.title}</A>
-                                    </li>
-                                );
-                            }}
+                    </nav>
+                </details>
+            </article>
+        );
+    }
+
+    panelTagsSection() {
+        const { childRoute } = useChildRoute();
+
+        return (
+            <article class="no-margin">
+                <details>
+                    <summary>
+                        <PanelSectionHeader title="Tags" icon="tag" badge={this.tags.length} />
+                    </summary>
+
+                    <nav>
+                        <For each={this.tags}>
+                            {(tagId) => (
+                                <button class="tag chip small" style={`--this-clr:${tags[tagId].details.clr}`}>
+                                    <span># {tags[tagId].title}</span>
+                                </button>
+                            )}
                         </For>
-                    </ul>
+                        <button class="chip small">
+                            <A href={childRoute(`attach-new/tag/${this.id}`)}>
+                                <i>add</i>
+                                Add Tag
+                            </A>
+                        </button>
+                    </nav>
                 </details>
             </article>
         );
@@ -236,19 +307,20 @@ export class TimelineItem {
 
     compactTagList() {
         return (
-            <For each={this.tags}>
-                {(tag) => (
-                    <>
-                        <span class={"circle large tag"} style={{
+            <div class="row right">
+                <For each={this.tags}>
+                    {(tag) => (
+                        <span class={"circle tag"} style={{
                             "color": tags[tag].details.clr,
                             "background-color": tags[tag].details.clr,
                         }}>
-                            <i style="filter: invert(100%) brightness(200%)">tag</i>
+                            <i>tag</i>
                             <div class="tooltip left">{tags[tag].title}</div>
                         </span>
-                    </>
-                )}
-            </For>
+                    )}
+                </For>
+            </div>
         );
     }
+
 }

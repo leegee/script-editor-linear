@@ -7,16 +7,13 @@ export type ActionType = {
 } & TimelineItem;
 
 export class ActionItem extends TimelineItem {
+    _icon = "electric_bolt";
     constructor(props: ActionType) {
         super({ ...props, type: "action" });
         this.duration = props.duration;
         this.details = {
             ...this.details,
         }
-    }
-
-    timelineContent(zoom: number): JSX.Element | string | undefined {
-        return <i>electric_bolt</i>;
     }
 
     renderAsText(): string {

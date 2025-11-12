@@ -54,7 +54,7 @@ function ViewMenuItems() {
 
     return (<>
         <li>
-            <i>move_location</i>
+            <i>location_on</i>
             <A href="#"
                 onClick={async (e) => {
                     e.preventDefault();
@@ -71,6 +71,24 @@ function ViewMenuItems() {
                 navigate(childRoute('characters'));
             }}>
                 Characters
+            </A>
+        </li>
+        <li>
+            <i>tag</i>
+            <A href="# " onClick={(e) => {
+                e.preventDefault();
+                navigate(childRoute('tags'));
+            }}>
+                Tags
+            </A>
+        </li>
+        <li>
+            <i>label</i>
+            <A href="# " onClick={(e) => {
+                e.preventDefault();
+                navigate(childRoute('notse'));
+            }}>
+                Notes
             </A>
         </li>
         <li>

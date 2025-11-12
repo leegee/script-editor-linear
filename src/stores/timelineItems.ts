@@ -11,6 +11,18 @@ const [timelineSequence, _setTimelineSequence] = createSignal<string[]>([]);
 
 export { timelineItems, timelineSequence };
 
+export async function addTimelineItems(sampleScript: TimelineItemProps[]) {
+    const seq: string[] = [];
+    for (const props of sampleScript) {
+        const item = reviveItem(props);
+        if (!item.id) item.id = crypto.randomUUID();
+        await createTimelineItem(item);
+        seq.push(item.id);
+    }
+    // Ensure sequence is consistent with store
+    await reorderTimeline(seq);
+    console.log("Script ingestion complete. Sequence length:", seq.length);
+}
 
 export async function loadAllTimelineItemsFromStorage() {
     const items = await storage.getAll<TimelineItemProps>("timelineItems");

@@ -82,7 +82,7 @@ export class ActItem extends TimelineItem {
             <For each={this.tags}>
                 {(tag) => (
                     <>
-                        <div class="chip" style={`border-width: 2pt; border-color:${tags[tag].details.clr}`}>{tags[tag].title}</div>
+                        <div class="chip tiny-padding" style={`text-transform: uppercase; font-size: 8pt !important; border-width: 1pt; border-color:${tags[tag].details.clr}`}>{tags[tag].title}</div>
                     </>
                 )}
             </For>

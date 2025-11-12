@@ -1,11 +1,12 @@
 import "./CoreItems.scss";
 import TimelineItemEditor from "../TimelineItemEditor";
 import { JSX } from "solid-js/jsx-runtime";
-import { A } from "@solidjs/router";
 import { notes, tags, updateTimelineItem } from "../../stores";
 import PanelSectionHeader from "../PanelSectionHeader";
 import { For, Show } from "solid-js";
 import { useChildRoute } from "../ChildRoute";
+import { Tag } from "./Tag";
+import { Note } from "./Note";
 
 export interface TimelineItemProps {
     id: string;
@@ -109,7 +110,10 @@ export class TimelineItem {
                         id={this.id}
                         path="title"
                     />
-                    {this.compactTagList()}
+                    <div class="right row">
+                        {this.compactNoteList()}
+                        {this.compactTagList()}
+                    </div>
                 </h2>
             );
         }
@@ -124,7 +128,10 @@ export class TimelineItem {
                     </Show>
                     {this.title || this.details.text || ""}
                 </div>
-                {this.compactTagList()}
+                <div class="row right">
+                    {this.compactNoteList()}
+                    {this.compactTagList()}
+                </div>
             </div>
         );
     }
@@ -250,8 +257,6 @@ export class TimelineItem {
     }
 
     panelNotesSection() {
-        const { childRoute } = useChildRoute();
-
         return (
             <article class="no-margin">
                 <details>
@@ -259,25 +264,11 @@ export class TimelineItem {
                         <PanelSectionHeader title="Notes" icon="note_stack" badge={this.notes.length} />
                     </summary>
 
-                    <nav class="list no-space border scroll ">
+                    <nav class="scroll ">
                         <For each={this.notes}>
-                            {(noteId) => {
-                                const n = notes[noteId];
-                                return (
-                                    <button class="chip small">
-                                        <A href={childRoute(`/notes/${n.id}`)}>{n.title}</A>
-                                    </button>
-                                );
-                            }}
+                            {(noteId) => <Note.Chip id={noteId} />}
                         </For>
-
-                        <button class="chip small">
-                            <A href={childRoute(`/attach-new/note/${this.id}`)}>
-                                <i>add</i>
-                                <span>Add Note</span>
-                            </A>
-                        </button>
-
+                        <Note.Chip addToId={this.id} />
                     </nav>
                 </details>
             </article>
@@ -296,18 +287,9 @@ export class TimelineItem {
 
                     <nav>
                         <For each={this.tags}>
-                            {(tagId) => (
-                                <button class="tag chip small" style={`--this-clr:${tags[tagId].details.clr}`}>
-                                    <span># {tags[tagId].title}</span>
-                                </button>
-                            )}
+                            {(tagId) => <Tag.Chip id={tagId} />}
                         </For>
-                        <button class="chip small">
-                            <A href={childRoute(`attach-new/tag/${this.id}`)}>
-                                <i>add</i>
-                                Add Tag
-                            </A>
-                        </button>
+                        <Tag.Chip addToId={this.id} />
                     </nav>
                 </details>
             </article>
@@ -316,19 +298,22 @@ export class TimelineItem {
 
     compactTagList() {
         return (
-            <div class="row right">
+            <>
                 <For each={this.tags}>
-                    {(tag) => (
-                        <span class={"circle tag"} style={{
-                            "color": tags[tag].details.clr,
-                            "background-color": tags[tag].details.clr,
-                        }}>
-                            <i>tag</i>
-                            <div class="tooltip left">{tags[tag].title}</div>
-                        </span>
-                    )}
+                    {(tagId) => <Tag.Compact id={tagId} />}
                 </For>
-            </div>
+            </>
+        );
+    }
+
+    compactNoteList() {
+        console.log('NOTES for', this.type, this.notes)
+        return (
+            <>
+                <For each={this.notes}>
+                    {(noteId) => <Note.Compact id={noteId} />}
+                </For>
+            </>
         );
     }
 

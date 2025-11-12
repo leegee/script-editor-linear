@@ -42,6 +42,7 @@ export class SceneItem extends TimelineItem {
 
                 </header>
 
+                {this.panelTagsSection()}
                 {this.panelNotesSection()}
 
                 <article class="no-margin">

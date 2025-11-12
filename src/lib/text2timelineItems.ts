@@ -51,15 +51,15 @@ export function text2timelineItemsJson(
         }
 
         else if (RE_FIRST_CHAR_META.test(trimmed)) {
-            for (const part of trimmed.split(/[\s,]+(?=[@#%])/)) {
+            for (const part of trimmed.split(/[\s,]+(?=[#^&])/)) {
                 console.log('........', part)
                 const meta = part[0];
                 const val = part.slice(1);
                 console.log("meta:", meta, "id:", val);
                 switch (meta) {
-                    case "@": currentItem.notes.push(val); break;
+                    case "&": currentItem.notes.push(val); break;
                     case "#": currentItem.tags.push(val); break;
-                    case "%":
+                    case "^":
                         if (/^\d+$/.test(val)) {
                             currentItem.duration = Number(val);
                         } else {

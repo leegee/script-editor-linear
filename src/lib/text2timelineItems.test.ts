@@ -38,11 +38,11 @@ LOCATION The Bears’ Cottage
 NARRATOR
 Once upon a time, there were three bears.
 #tag1
-@note1
+&note1
 
 BABY BEAR
 #tag2 
-@note2
+&note2
 Hello!
 How are you?
 
@@ -51,11 +51,11 @@ A bird sings in the distance.
 #tag3
 
 MUSIC
-%5
+^5
 A tune
 
 ACTION Testing
-%5 #tag1 #tag2 @note1 @note2
+^5 #tag1 #tag2 &note1 &note2
 Testing multiline tag/note/time
 
 `;

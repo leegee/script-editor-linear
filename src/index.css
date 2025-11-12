@@ -44,6 +44,15 @@ h6 input {
     opacity: 50%;
 }
 
+.block {
+    width: 1em;
+    height: 1em;
+    background-color: var(--this-clr);
+    display: inline-block;
+    margin-right: 0.3em;
+    top: -0.1em;
+}
+
 menu li li a {
     width: 100%;
     justify-content: flex-start;
@@ -58,4 +67,9 @@ menu li li a {
 .row.no-space {
     /* margin-block-start: 0 !important; */
     min-block-size: 2rem;
+}
+
+/* Tooltip offset for first child of the drag-and-drop list */
+ul.drag-list>li:first-child .tooltip {
+    margin-top: 3em;
 }

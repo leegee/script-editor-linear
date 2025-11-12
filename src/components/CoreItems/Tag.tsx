@@ -1,10 +1,77 @@
-import { type JSX } from 'solid-js';
+import { For, Show, type JSX } from 'solid-js';
+import { tags } from '../../stores';
+import { A, useNavigate } from '@solidjs/router';
+import { useChildRoute } from '../ChildRoute';
 
 export class Tag {
     id!: string;
     title!: string;
     color?: string;
     notes?: string[];
+
+    static Tooltip(props: { id: string, align: string }) {
+        const { childRoute } = useChildRoute();
+        const link = () => childRoute('tag/' + props.id);
+        const tagId = props.id;
+        return (
+            <div class={"tooltip max " + (props.align || "bottom")} >
+                <b>
+                    <div class="block"
+                        style={`--this-clr:${tags[props.id].details.clr}`}
+                    />
+                    {tags[tagId].title}</b>
+                <Show when={tags[tagId].details.text}>
+                    <p>{tags[tagId].details.text}</p>
+                </Show>
+                <nav>
+                    <A href={link()} class="transparent">View</A>
+                </nav>
+            </div>
+        )
+    }
+
+    static Compact(props: { id: string }) {
+        const navigate = useNavigate();
+        const { childRoute } = useChildRoute();
+        const tagId = props.id;
+        const link = () => childRoute('tag/' + props.id);
+        return (
+            <button onClick={() => navigate(link())} class="circle tag"
+                style={{
+                    color: tags[tagId].details.clr,
+                    "background-color": tags[tagId].details.clr,
+                }}
+            >
+                <i>tag</i>
+                <Tag.Tooltip id={props.id} align="left" />
+            </button>
+        );
+    }
+
+    static Chip(props: { id?: string, addToId?: string, fill?: boolean }) {
+        const navigate = useNavigate();
+        const { childRoute } = useChildRoute();
+        const tagId = props.id;
+        if (tagId) {
+            return (
+                <button class="tag chip small" style={
+                    `--this-clr:${tags[tagId].details.clr}`
+                    + (props.fill ? `;background-color:${tags[tagId].details.clr}` : '')
+                }
+                    onClick={() => navigate(childRoute('tag/' + tagId))}
+                >
+                    <span># {tags[tagId].title}</span>
+                    <Tag.Tooltip id={tagId} align="bottom" />
+                </button>
+            );
+        }
+
+        return (
+            <button class="tag chip small" onClick={() => navigate(childRoute('attach-new/tag/' + tagId))} >
+                <i>add</i>Add Tag
+            </button>
+        );
+    }
 
     constructor(data: Partial<Tag>) {
         Object.assign(this, data);

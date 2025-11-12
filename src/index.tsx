@@ -41,7 +41,9 @@ const commonRoutes = (
     <Route path="/locations/:id" component={LocationView} />
     <Route path="/locations" component={LocationView} />
     <Route path="/notes/:id" component={ViewEditNote} />
+    <Route path="/note/:id" component={ViewEditNote} />
     <Route path="/tags" component={TagsView} />
+    <Route path="/tag/:id" component={ViewEditTag} />
     <Route path="/tags/:id" component={ViewEditTag} />
     <Route path="/filters" component={FiltersView} />
   </>

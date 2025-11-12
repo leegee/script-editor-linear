@@ -213,15 +213,11 @@ export default function TypingInput() {
                     by using their IDs at the start of a line:
                 </p>
                 <pre>
-                    <code>
-                        #tagId, @noteId, %5
-                    </code>
+                    <code> #tagId, &noteId, ^5 </code>
                 </pre>
                 <p>You can specify duration in secconds of a dialogue item like this:</p>
                 <pre>
-                    <code>
-                        %5
-                    </code>
+                    <code> ^5 </code>
                 </pre>
             </aside>
         );

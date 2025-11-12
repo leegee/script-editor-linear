@@ -69,6 +69,22 @@
             }
         },
         {
+            "id": "music-1",
+            "type": "music",
+            "duration": 5,
+            "details": {
+                "text": "Opening Theme"
+            }
+        },
+        {
+            "id": "action-1",
+            "type": "action",
+            "duration": 5,
+            "details": {
+                "text": "Opening Theme"
+            }
+        },
+        {
             "id": "uuid-4",
             "type": "dialogue",
             "details": {
@@ -78,170 +94,11 @@
             "duration": 5
         },
         {
-            "id": "uuid-5",
-            "type": "dialogue",
-            "details": {
-                "ref": "Narrator",
-                "text": "There was a great big father bear, a middle-sized mother bear, and a tiny little baby bear."
-            },
-            "duration": 5
-        },
-        {
             "id": "uuid-6",
             "type": "dialogue",
             "details": {
                 "ref": "FatherBear",
                 "text": "Breakfast time! My porridge is far too hot."
-            },
-            "duration": 3
-        },
-        {
-            "id": "uuid-7",
-            "type": "dialogue",
-            "details": {
-                "ref": "MotherBear",
-                "text": "Mine too, dear. Let’s take a little walk while it cools."
-            },
-            "duration": 3
-        },
-        {
-            "id": "uuid-8",
-            "type": "dialogue",
-            "details": {
-                "ref": "BabyBear",
-                "text": "Yes, let’s go! I love walks!"
-            },
-            "duration": 2
-        },
-        {
-            "id": "uuid-9",
-            "type": "scene",
-            "title": "Scene 2"
-        },
-        {
-            "id": "uuid-10",
-            "type": "location",
-            "details": {
-                "ref": "forest-path-1"
-            }
-        },
-        {
-            "id": "uuid-11",
-            "type": "dialogue",
-            "details": {
-                "ref": "Narrator",
-                "text": "So the three bears set off for their walk in the woods."
-            },
-            "duration": 5
-        },
-        {
-            "id": "uuid-12",
-            "type": "dialogue",
-            "details": {
-                "ref": "Narrator",
-                "text": "While they were away, Goldilocks wandered along the same path."
-            },
-            "duration": 5
-        },
-        {
-            "id": "uuid-13",
-            "type": "dialogue",
-            "details": {
-                "ref": "Goldilocks",
-                "text": "What a lovely little house! I wonder who lives here..."
-            },
-            "duration": 5
-        },
-        {
-            "id": "uuid-14",
-            "type": "scene",
-            "title": "Scene 3"
-        },
-        {
-            "id": "uuid-15",
-            "type": "location",
-            "details": {
-                "ref": "cottage-inside-1"
-            }
-        },
-        {
-            "id": "uuid-16",
-            "type": "dialogue",
-            "details": {
-                "ref": "Narrator",
-                "text": "Goldilocks knocked at the door, but no one answered."
-            },
-            "duration": 3
-        },
-        {
-            "id": "uuid-17",
-            "type": "dialogue",
-            "details": {
-                "ref": "Goldilocks",
-                "text": "Mmm! What a delicious smell! Porridge!"
-            },
-            "duration": 3
-        },
-        {
-            "id": "uuid-18",
-            "type": "dialogue",
-            "details": {
-                "ref": "Narrator",
-                "text": "On the table were three bowls of porridge."
-            },
-            "duration": 3
-        },
-        {
-            "id": "uuid-19",
-            "type": "dialogue",
-            "details": {
-                "ref": "Goldilocks",
-                "text": "Ouch! This porridge is too hot!"
-            },
-            "duration": 2
-        },
-        {
-            "id": "uuid-20",
-            "type": "dialogue",
-            "details": {
-                "ref": "Narrator",
-                "text": "She tasted the second bowl."
-            },
-            "duration": 2
-        },
-        {
-            "id": "uuid-21",
-            "type": "dialogue",
-            "details": {
-                "ref": "Goldilocks",
-                "text": "This one’s too cold."
-            },
-            "duration": 2
-        },
-        {
-            "id": "uuid-22",
-            "type": "dialogue",
-            "details": {
-                "ref": "Narrator",
-                "text": "Finally, she tasted the third bowl."
-            },
-            "duration": 2
-        },
-        {
-            "id": "uuid-23",
-            "type": "dialogue",
-            "details": {
-                "ref": "Goldilocks",
-                "text": "Ahh! This porridge is just right."
-            },
-            "duration": 2
-        },
-        {
-            "id": "uuid-24",
-            "type": "dialogue",
-            "details": {
-                "ref": "Narrator",
-                "text": "And she ate it all up."
             },
             "duration": 3
         }

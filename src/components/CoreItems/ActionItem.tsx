@@ -1,4 +1,3 @@
-import { type JSX } from "solid-js";
 import { TimelineItem, TimelineItemProps } from "./TimelineItem";
 
 

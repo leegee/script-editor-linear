@@ -54,16 +54,20 @@ MUSIC
 %5
 A tune
 
+ACTION Testing
+%5 #tag1 #tag2 @note1 @note2
+Testing multiline tag/note/time
+
 `;
 
         const result = text2timelineItemsJson(
             text,
-            ["ACT", "BEAT", "LOCATION", "SCENE", "MUSIC"],
+            ["ACT", "ACTION", "BEAT", "LOCATION", "SCENE", "MUSIC"],
             findCharacterByName,
             findLocationByName
         );
 
-        expect(result).toHaveLength(7);
+        expect(result).toHaveLength(8);
 
         expect(result[0]).toMatchObject({ type: "act", title: "Act 1", details: { text: "" } });
 
@@ -109,6 +113,17 @@ A tune
             duration: 5,
             details: {
                 text: "A tune",
+            }
+        });
+
+        expect(result[7]).toMatchObject({
+            type: "action",
+            title: "Testing",
+            tags: ['tag1', 'tag2'],
+            notes: ['note1', 'note2'],
+            duration: 5,
+            details: {
+                text: "Testing multiline tag/note/time",
             }
         });
     });

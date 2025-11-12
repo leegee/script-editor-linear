@@ -2,6 +2,7 @@ import { CharacterItem } from "../components/CoreItems/CharacterItem";
 import { CanonicalLocationType } from "../components/CoreItems/Locations/CanonicalLocation";
 
 const RE_FIRST_WORD_CAPS = /^[A-Z0-9 _'-]+$/;
+const RE_FIRST_CHAR_META = /^[@%#]+/;
 
 export function text2timelineItemsJson(
     text: string,
@@ -48,23 +49,44 @@ export function text2timelineItemsJson(
             commit();
             currentItem = { type: "dialogue", notes: [], tags: [], details: { ref: ref.id, text: "" } };
         }
-        // Notes
-        else if (currentItem && trimmed.startsWith("@")) {
-            currentItem.notes.push(trimmed.slice(1).trim());
-        }
-        // Tags
-        else if (currentItem && trimmed.startsWith("#")) {
-            currentItem.tags.push(trimmed.slice(1).trim());
-        }
-        // Duration
-        else if (currentItem && trimmed.startsWith("%")) {
-            const value = trimmed.slice(1).trim();
-            if (/^\d+$/.test(value)) {
-                currentItem.duration = Number(value);
-            } else {
-                console.warn("Duration must be numeric:", value);
+
+        else if (RE_FIRST_CHAR_META.test(trimmed)) {
+            for (const part of trimmed.split(/[\s,]+(?=[@#%])/)) {
+                console.log('........', part)
+                const meta = part[0];
+                const val = part.slice(1);
+                console.log("meta:", meta, "id:", val);
+                switch (meta) {
+                    case "@": currentItem.notes.push(val); break;
+                    case "#": currentItem.tags.push(val); break;
+                    case "%":
+                        if (/^\d+$/.test(val)) {
+                            currentItem.duration = Number(val);
+                        } else {
+                            console.warn("Duration must be numeric:", val);
+                        }
+                        break;
+                }
             }
+            // // Notes
+            // if (currentItem && trimmed.startsWith("@")) {
+            //     currentItem.notes.push(trimmed.slice(1).trim());
+            // }
+            // // Tags
+            // else if (currentItem && trimmed.startsWith("#")) {
+            //     currentItem.tags.push(trimmed.slice(1).trim());
+            // }
+            // // Duration
+            // else if (currentItem && trimmed.startsWith("%")) {
+            //     const value = trimmed.slice(1).trim();
+            //     if (/^\d+$/.test(value)) {
+            //         currentItem.duration = Number(value);
+            //     } else {
+            //         console.warn("Duration must be numeric:", value);
+            //     }
+            // }
         }
+
         // Regular text
         else if (currentItem) {
             currentItem.details.text += (currentItem.details.text ? "\n\n" : "") + trimmed;

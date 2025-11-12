@@ -127,6 +127,13 @@
                 "ref": "Narrator",
                 "text": "Once upon a time, there were three bears living together."
             },
+            "tags": [
+                "mood1",
+                "todo"
+            ],
+            "notes": [
+                "goldilocks"
+            ],
             "duration": 5
         },
         {

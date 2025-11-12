@@ -81,12 +81,21 @@ export class TimelineItem {
         return new (this.constructor as any)(props);
     }
 
+    metaAsText(): string {
+        return [
+            (this.tags.length ? `${this.tags.map(id => `#${id}`).join(", ")}` : ''),
+            (this.notes.length ? `${this.notes.map(id => `@${id}`).join(", ")}` : ''),
+            (this.duration ? `%${this.duration}` : '')
+        ]
+            .filter(Boolean)
+            .join(", ");
+    }
+
     // Used by TypingInput
     renderAsText(): string {
+        const meta = this.metaAsText();
         return this.type.toUpperCase() + ' ' + (this.title ?? '')
-            + (this.tags.length ? `\n${this.tags.map((id: string) => `#${id}`).join("\n")}` : '')
-            + (this.notes.length ? `\n${this.notes.map((id: string) => `@${id}`).join("\n")}` : '')
-            + (this.duration ? `\n%${this.duration}` : '')
+            + (meta ? "\n" + meta : "")
             + (this.details.text ? `\n${this.details.text}` : '')
             ;
     }

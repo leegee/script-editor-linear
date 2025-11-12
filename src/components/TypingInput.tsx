@@ -3,13 +3,16 @@ import { EditorView, ViewUpdate, Decoration, DecorationSet, ViewPlugin } from "@
 import { EditorState, Range } from "@codemirror/state";
 import { basicSetup } from "@codemirror/basic-setup";
 import { history, undo, redo, undoDepth, redoDepth } from "@codemirror/commands";
-import { autocompletion, Completion, CompletionContext } from "@codemirror/autocomplete";
+import { autocompletion, CompletionContext } from "@codemirror/autocomplete";
 
 import styles from "./TypingInput.module.scss";
-import { createTimelineItemInstance, timelineItemTypesForTyping } from "../lib/timelineItemRegistry";
-import { addTimelineItems, allCharacterNames, allLocationNames, deleteAllTimelineItems, findCharacterByName, findLocationByName, loadAll, notes, tags, timelineItems, timelineSequence } from "../stores";
+import { timelineItemTypesForTyping } from "../lib/timelineItemRegistry";
 import { text2timelineItemsJson } from "../lib/text2timelineItems";
 import { showAlert } from "../stores/modals";
+import {
+    addTimelineItems, allCharacterNames, allLocationNames, deleteAllTimelineItems, findCharacterByName,
+    findLocationByName, loadAll, notes, tags, timelineItems, timelineSequence
+} from "../stores";
 
 export default function TypingInput() {
     let editorRef!: HTMLDivElement;
@@ -178,6 +181,20 @@ export default function TypingInput() {
 
         const v = new EditorView({ state, parent: editorRef });
         setView(v);
+
+        // Keybindings
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") {
+                e.preventDefault();
+                handleSave();
+            }
+        };
+        window.addEventListener("keydown", handleKeyDown);
+
+        onCleanup(() => {
+            v.destroy();
+            window.removeEventListener("keydown", handleKeyDown);
+        });
     });
 
     onCleanup(() => view()?.destroy());
@@ -191,15 +208,13 @@ export default function TypingInput() {
                         <h2 class="max">Help</h2>
                     </nav>
                 </header>
-                <p>The sample script is a good way to learn the syntax.</p>
-                <p>If you have crated tags or notes in the List View, you can referenes to them
+                <p>Your changes only take effect when you save them ysing the save button or <kbd>CTRL S</kbd></p>
+                <p>If you have created tags or notes, you can referenes to them
                     by using their IDs at the start of a line:
                 </p>
                 <pre>
                     <code>
-                        #tagId<br />
-                        @noteId<br />
-                        %5
+                        #tagId, @noteId, %5
                     </code>
                 </pre>
                 <p>You can specify duration in secconds of a dialogue item like this:</p>
@@ -241,7 +256,7 @@ export default function TypingInput() {
                     onClick={() => view() && undo(view()!)}
                 >
                     <i>undo</i>
-                    <div class="tooltip bottom">Undo</div>
+                    <div class="tooltip left">Undo</div>
                 </button>
 
                 <button
@@ -250,17 +265,17 @@ export default function TypingInput() {
                     onClick={() => view() && redo(view()!)}
                 >
                     <i>redo</i>
-                    <div class="tooltip bottom">Redo</div>
+                    <div class="tooltip left">Redo</div>
                 </button>
 
                 <button class="icon small circle" disabled={!isDirty()} onClick={handleSave}>
                     <i>save</i>
-                    <div class="tooltip bottom">Save</div>
+                    <div class="tooltip left">Save (<kbd>CTRL S</kbd>)</div>
                 </button>
 
                 <button class="icon small circle" onClick={handleHelp}>
                     <i>help</i>
-                    <div class="tooltip bottom">Help</div>
+                    <div class="tooltip left">Help</div>
                 </button>            </nav>
             <article class={styles.typingEditor} ref={editorRef}></article>
         </>

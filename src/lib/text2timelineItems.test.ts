@@ -49,27 +49,28 @@ How are you?
 BEAT
 A bird sings in the distance. 
 #tag3
+
+MUSIC
+%5
+A tune
+
 `;
 
         const result = text2timelineItemsJson(
             text,
-            ["ACT", "BEAT", "LOCATION", "SCENE"],
+            ["ACT", "BEAT", "LOCATION", "SCENE", "MUSIC"],
             findCharacterByName,
             findLocationByName
         );
 
-        expect(result).toHaveLength(6);
+        expect(result).toHaveLength(7);
 
-        // ACT
         expect(result[0]).toMatchObject({ type: "act", title: "Act 1", details: { text: "" } });
 
-        // SCENE
         expect(result[1]).toMatchObject({ type: "scene", title: "Scene 1", details: { text: "" } });
 
-        // LOCATION
         expect(result[2]).toMatchObject({ type: "location", details: { ref: "loc1", text: "" } });
 
-        // NARRATOR dialogue with tag/note
         expect(result[3]).toMatchObject({
             type: "dialogue",
             tags: ["tag1"],
@@ -80,7 +81,6 @@ A bird sings in the distance.
             }
         });
 
-        // BABY BEAR dialogue with tag/note
         expect(result[4]).toMatchObject({
             type: "dialogue",
             tags: ["tag2"],
@@ -91,7 +91,6 @@ A bird sings in the distance.
             }
         });
 
-        // BEAT with tag only
         expect(result[5]).toMatchObject({
             type: "beat",
             title: "",
@@ -99,6 +98,17 @@ A bird sings in the distance.
             notes: [],
             details: {
                 text: "A bird sings in the distance.",
+            }
+        });
+
+        expect(result[6]).toMatchObject({
+            type: "music",
+            title: "",
+            tags: [],
+            notes: [],
+            duration: 5,
+            details: {
+                text: "A tune",
             }
         });
     });

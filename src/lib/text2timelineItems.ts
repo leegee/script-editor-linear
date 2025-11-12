@@ -57,7 +57,7 @@ export function text2timelineItemsJson(
             currentItem.tags.push(trimmed.slice(1).trim());
         }
         // Duration
-        else if (currentItem.type === "dialogue" && currentItem && trimmed.startsWith("%")) {
+        else if (currentItem && trimmed.startsWith("%")) {
             const value = trimmed.slice(1).trim();
             if (/^\d+$/.test(value)) {
                 currentItem.duration = Number(value);

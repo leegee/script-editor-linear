@@ -97,7 +97,10 @@ export default function TimelineItemEditor(props: TimelineItemEditorProps) {
             when={editing()}
             fallback={
                 <div class={props.class} onDblClick={handleDblClick}>
-                    {value() || <span class="placeholder">(empty)</span>}
+                    <div>
+                        {value() || <span class="placeholder">&mdash;</span>}
+                    </div>
+                    <label>{props.label} </label>
                 </div>
             }
         >

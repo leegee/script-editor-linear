@@ -10,8 +10,8 @@ export default function ScriptLayout(props: ParentProps) {
                         <ScriptView />
                     </div>
 
-                    <div class="surface-container-low s12 m4 l4 small-padding right-padding left-padding" style="height:100%; overflow:hidden;   display: flex; flex-direction: column;">
-                        <fieldset class="surface-container top-padding">
+                    <div class="surface-container-low s12 m4 l4 small-padding right-padding left-padding" style="overflow-y: auto; height:100%; display:flex; flex-direction: column;">
+                        <fieldset class="surface-container top-padding; overflow-y:auto">
                             {props.children}
                         </fieldset>
                     </div>

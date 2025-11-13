@@ -1,7 +1,16 @@
 import styles from "./TagEditor.module.scss";
-import { createSignal, createEffect, Show, For, Match, Switch } from "solid-js";
+import { createSignal, createEffect, Show, For } from "solid-js";
 import AutoResizingTextarea from "../AutoResizingTextarea";
-import { addTag, getTag, TagType, patchTag, removeTag, timelineItems, updateTimelineItem } from "../../stores";
+import {
+    addTag,
+    getTag,
+    TagType,
+    patchTag,
+    removeTag,
+    timelineItems,
+    updateTimelineItem,
+    tags
+} from "../../stores";
 import { showAlert } from "../../stores/modals";
 
 interface TagEditorProps {
@@ -15,22 +24,30 @@ export default function TagEditor(props: TagEditorProps) {
     const existingTag = props.tagId ? getTag(props.tagId) : undefined;
     const [tag, setTag] = createSignal<TagType | undefined>(existingTag);
 
-    // Local signals for editing
     const [title, setTitle] = createSignal(existingTag?.title ?? "");
     const [text, setText] = createSignal(existingTag?.details?.text ?? "");
     const [clr, setClr] = createSignal(existingTag?.details?.clr ?? "transparent");
+    const [selectedId, setSelectedId] = createSignal<string>("");
 
-    // Sync signals when tag changes
+    // Sync when tag changes
     createEffect(() => {
         const n = tag();
         if (!n) return;
         setTitle(n.title);
         setText(n.details?.text ?? "");
+        setClr(n.details?.clr ?? "transparent");
+        setSelectedId(n.id);
     });
+
+    const handleSelectExisting = (id: string) => {
+        if (!id) return;
+        const existing = getTag(id);
+        if (existing) setTag(existing);
+    };
 
     const handleSave = () => {
         if (!title()) {
-            showAlert('Tags must have at least a title.')
+            showAlert("Tags must have at least a title.");
             return;
         }
 
@@ -41,9 +58,7 @@ export default function TagEditor(props: TagEditorProps) {
                 details: { text: text(), clr: clr() },
             });
             setTag(savedTag);
-        }
-        else {
-            // Patch existing
+        } else {
             savedTag = tag()!;
             patchTag(savedTag.id, {
                 title: title(),
@@ -51,47 +66,49 @@ export default function TagEditor(props: TagEditorProps) {
             });
         }
 
-        // Attach to parent if given
-        console.log('Tag Editor: parent Id', props.parentId);
         if (props.parentId) {
             const parent = timelineItems[props.parentId];
-            console.log('Tag Editor: parent', parent);
-            if (parent) {
+            if (parent && !parent.tags.includes(savedTag.id)) {
                 parent.tags.push(savedTag.id);
                 updateTimelineItem(parent.id, "tags", "", parent.tags);
             }
         }
 
-        if (props.onSave) props.onSave(savedTag);
+        props.onSave?.(savedTag);
     };
 
     const handleDelete = () => {
         const id = tag()?.id;
         if (!id) return;
 
-        // Remove from every TimelineItem containing this tag
-        Object.values(timelineItems).forEach(item => {
+        Object.values(timelineItems).forEach((item) => {
             if (item.tags.includes(id)) {
-                item.tags = item.tags.filter(nid => nid !== id);
+                item.tags = item.tags.filter((nid) => nid !== id);
                 updateTimelineItem(item.id, "tags", "", item.tags);
             }
         });
 
         removeTag(id);
         setTag(undefined);
-
-        if (props.onDelete) props.onDelete(id);
-        if (props.onSave) props.onSave(undefined);
-    };
-
-    const removeUrl = (idx: number) => {
-        const copy = [...clr()];
-        copy.splice(idx, 1);
-        setClr(copy);
+        props.onDelete?.(id);
+        props.onSave?.(undefined);
     };
 
     return (
         <article class={styles.tagEditor}>
+            <div class="field border label">
+                <select
+                    value={selectedId()}
+                    onChange={(e) => handleSelectExisting(e.currentTarget.value)}
+                >
+                    <option value="">Choose existing tag</option>
+                    <For each={Object.values(tags)}>
+                        {(t) => <option value={t.id}>{t.title}</option>}
+                    </For>
+                </select>
+                <label>Attach existing tag</label>
+            </div>
+
             <div class="field label max border">
                 <input
                     type="text"
@@ -116,11 +133,10 @@ export default function TagEditor(props: TagEditorProps) {
                     <input
                         type="color"
                         value={clr()}
-                        onBlur={(e) => setClr(e.currentTarget.value)}
+                        onInput={(e) => setClr(e.currentTarget.value)}
                     />
                 </div>
             </fieldset>
-
 
             <footer class="top-padding extra-padding">
                 <button class="button" onClick={handleSave} disabled={!title()}>
@@ -130,10 +146,10 @@ export default function TagEditor(props: TagEditorProps) {
                 <Show when={tag()?.id}>
                     <button class="transparent" onClick={handleDelete}>
                         <i>delete</i>
-                        <span>Delete all occurances</span>
+                        <span>Delete all occurrences</span>
                     </button>
                 </Show>
             </footer>
-        </article >
+        </article>
     );
 }

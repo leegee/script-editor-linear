@@ -75,7 +75,7 @@ export class FilterList {
 
                         <span class="max" />
 
-                        <div class="field middle-align right">
+                        <div class="field middle-align right max">
                             <nav>
                                 <div class="max">
                                     <div>Hide filtered</div>
@@ -93,18 +93,6 @@ export class FilterList {
                                 </label>
                             </nav>
                         </div>
-
-                        {/* <label class="right switch icon large no-padding small-margin bottom-margin">
-                            <input
-                                type="checkbox"
-                                checked={hide()}
-                                onInput={(e) => setHide(e.currentTarget.checked)}
-                                title="Hide not dim"
-                            />
-                            <span><i>timer</i></span>
-
-                            <span class="left-padding small-padding">Hide filtered</span>
-                        </label> */}
                     </div>
 
                     <For each={sectionsWithMisc}>
@@ -114,7 +102,7 @@ export class FilterList {
                                 section.types.some((t) => filters[t]) && !allOn();
 
                             return (
-                                <div class="no-padding bottom-margin left-margin large-margin">
+                                <div class="no-padding bottom-margin">
                                     <label class="field checkbox no-padding no-margin">
                                         <input
                                             type="checkbox"

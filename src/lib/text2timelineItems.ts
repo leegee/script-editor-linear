@@ -2,7 +2,7 @@ import { CharacterItem } from "../components/CoreItems/CharacterItem";
 import { CanonicalLocationType } from "../components/CoreItems/Locations/CanonicalLocation";
 
 const RE_FIRST_WORD_CAPS = /^[A-Z0-9 _'-]+$/;
-const RE_FIRST_CHAR_META = /^[@%#]+/;
+const RE_FIRST_CHAR_META = /^[#^&]+/;
 
 export function text2timelineItemsJson(
     text: string,

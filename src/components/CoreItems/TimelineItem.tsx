@@ -85,8 +85,8 @@ export class TimelineItem {
     metaAsText(): string {
         return [
             (this.tags.length ? `${this.tags.map(id => `#${id}`).join(", ")}` : ''),
-            (this.notes.length ? `${this.notes.map(id => `@${id}`).join(", ")}` : ''),
-            (this.duration ? `%${this.duration}` : '')
+            (this.notes.length ? `${this.notes.map(id => `&${id}`).join(", ")}` : ''),
+            (this.duration ? `^${this.duration}` : '')
         ]
             .filter(Boolean)
             .join(", ");

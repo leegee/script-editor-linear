@@ -53,7 +53,7 @@ export class SceneItem extends TimelineItem {
                 {this.panelTagsSection()}
                 {this.panelNotesSection()}
 
-                <article class="no-margin">
+                <aside class="no-margin">
                     <details>
                         <summary>
                             <PanelSectionHeader title='Locations' icon='location_on' badge={(sceneLocations()[this.id]).size} />
@@ -64,9 +64,9 @@ export class SceneItem extends TimelineItem {
                             ))}
                         </ul>
                     </details>
-                </article>
+                </aside>
 
-                <article class="no-margin">
+                <aside class="no-margin">
                     <details>
                         <summary>
                             <PanelSectionHeader title='Characters' icon='people' badge={(sceneCharacters()[this.id]).size} />
@@ -77,7 +77,7 @@ export class SceneItem extends TimelineItem {
                             ))}
                         </ul>
                     </details>
-                </article>
+                </aside>
             </>
         );
     }

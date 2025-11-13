@@ -96,6 +96,7 @@ export default function TimelineItemEditor(props: TimelineItemEditorProps) {
 
     return (
         <Show when={editing()} fallback={
+
             <Show when={props.label} fallback={
                 <div class="bottom-padding" onClick={() => setEditing(true)}>
                     {value()}

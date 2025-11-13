@@ -136,7 +136,7 @@ export class TimelineItem {
     }
 
     renderFull(): JSX.Element {
-        return <article>
+        return <>
             <PanelSectionHeader title={this.type} icon={this.icon} />
 
             <TimelineItemEditor
@@ -168,10 +168,12 @@ export class TimelineItem {
             {this.panelNotesSection()}
 
             <details>
-                <summary class="padding">Debug</summary>
-                <pre><code>{JSON.stringify(this, null, 2)}</code></pre>
+                <summary class="top-margin">
+                    <h5 class="small-opacity">Debug</h5>
+                </summary>
+                <pre><code class="small-text">{JSON.stringify(this, null, 2)}</code></pre>
             </details>
-        </article>;
+        </>;
     }
 
     renderCreateNew(props: {

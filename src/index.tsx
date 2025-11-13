@@ -16,7 +16,7 @@ import { loadAll } from "./stores";
 import SettingsLayout from "./layouts/SettingsLayout";
 import FiltersView from "./components/panels/FiltersView";
 import NoteCreator from "./components/panels/NoteCreator";
-import TagCreator from "./components/panels/TagEditorView";
+import TagEditorView from "./components/panels/TagEditorView";
 import ViewEditNote from "./components/ViewEditNote";
 import TypingLayout from "./layouts/TypingLayout";
 import { ChildRouteProvider } from "./components/ChildRoute";
@@ -33,7 +33,7 @@ const commonRoutes = (
   <>
     <Route path="/" component={Default} />
     <Route path="/attach-new/note/:itemId" component={NoteCreator} />
-    <Route path="/attach-new/tag/:parentId" component={TagCreator} />
+    <Route path="/attach-new/tag/:parentId" component={TagEditorView} />
     <Route path="/new/:pos" component={NewTimelineItemSelector} />
     <Route path="/items/:id" component={TimelineItemView} />
     <Route path="/characters/:id" component={CharacterView} />

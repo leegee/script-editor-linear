@@ -67,7 +67,7 @@ export class Tag {
         }
 
         return (
-            <button class="tag chip small" onClick={() => navigate(childRoute('attach-new/tag/' + tagId))} >
+            <button class="tag chip small" onClick={() => navigate(childRoute('attach-new/tag/' + props.addToId))} >
                 <i>add</i>Add Tag
             </button>
         );

@@ -137,46 +137,41 @@ export class TimelineItem {
     }
 
     renderFull(): JSX.Element {
-        console.trace('render full');
         return <article>
             <PanelSectionHeader title={this.type} icon={this.icon} />
-            <div class="field border label max">
-                <TimelineItemEditor
-                    id={this.id}
-                    path="title"
-                    label="Title"
-                />
-            </div>
+
+            <TimelineItemEditor
+                id={this.id}
+                path="title"
+                label="Title"
+            />
 
             <Show when={this.details.hasOwnProperty('text')}>
-                <div class="field border label max textarea">
-                    <TimelineItemEditor
-                        id={this.id}
-                        path="details"
-                        key="text"
-                        label="Text"
-                        multiline
-                    />
-                </div>
+                <TimelineItemEditor
+                    id={this.id}
+                    path="details"
+                    key="text"
+                    label="Text"
+                    multiline
+                />
             </Show>
 
             <Show when={this.hasOwnProperty('duration')}>
-                <div class="field border label max">
-                    <TimelineItemEditor
-                        id={this.id}
-                        path="duration"
-                        label="Duration"
-                    />
-                </div>
+                <TimelineItemEditor
+                    id={this.id}
+                    path="duration"
+                    label="Duration"
+                />
             </Show>
 
             {this.panelTagsSection()}
 
             {this.panelNotesSection()}
 
-            <fieldset>
-                <pre>{JSON.stringify(this, null, 2)}</pre>
-            </fieldset>
+            <details>
+                <summary class="padding">Debug</summary>
+                <pre><code>{JSON.stringify(this, null, 2)}</code></pre>
+            </details>
         </article>;
     }
 
@@ -276,8 +271,6 @@ export class TimelineItem {
     }
 
     panelTagsSection() {
-        const { childRoute } = useChildRoute();
-
         return (
             <article class="no-margin">
                 <details>

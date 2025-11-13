@@ -48,7 +48,7 @@ export default function AutoResizingTextarea(props: AutoResizingTextareaProps) {
     });
 
     return (
-        <div class={props.class ?? ""}>
+        <>
             <textarea
                 ref={(el) => (textareaRef = el)}
                 class={styles.textarea}
@@ -69,6 +69,6 @@ export default function AutoResizingTextarea(props: AutoResizingTextareaProps) {
             />
 
             {props.label && <label>{props.label}</label>}
-        </div>
+        </>
     );
 }

@@ -94,18 +94,21 @@ export default function TimelineItemEditor(props: TimelineItemEditorProps) {
     };
 
     return (
-        <Show
-            when={editing()}
-            fallback={
-                <div class={props.class} onDblClick={handleDblClick}>
-                    <div>
-                        {value() || <span class="placeholder">&mdash;</span>}
-                    </div>
-                    <label>{props.label} </label>
-                </div>
-            }
-        >
-            {props.multiline ? (
+        <Show when={props.multiline} fallback={
+            <div class="field border label max">
+                <input
+                    ref={(el) => (inputRef = el)}
+                    type="text"
+                    class={props.class}
+                    value={value()}
+                    onInput={(e) => handleInput(e.currentTarget.value)}
+                    onBlur={handleBlur}
+                    autofocus
+                />
+                {props.label && <label>{props.label}</label>}
+            </div>
+        }>
+            <div class="field border label max textarea">
                 <AutoResizingTextarea
                     class={props.class}
                     value={value()}
@@ -117,20 +120,7 @@ export default function TimelineItemEditor(props: TimelineItemEditorProps) {
                     autofocus={editing()}
                     label={props.label}
                 />
-            ) : (
-                <div class="field">
-                    <input
-                        ref={(el) => (inputRef = el)}
-                        type="text"
-                        class={props.class}
-                        value={value()}
-                        onInput={(e) => handleInput(e.currentTarget.value)}
-                        onBlur={handleBlur}
-                        autofocus
-                    />
-                    {props.label && <label>{props.label}</label>}
-                </div>
-            )}
-        </Show>
+            </div>
+        </Show >
     );
 }

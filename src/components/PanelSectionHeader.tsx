@@ -8,7 +8,7 @@ export default function PanelSectionHeader(props: PanelSectionHeaderProps) {
     return (
         <header class="no-padding">
             <nav class="no-space">
-                <h3 class="max">{props.title}</h3>
+                <h3 class="max" style="text-transform:capitalize">{props.title}</h3>
 
                 {props.icon && (
                     <a>

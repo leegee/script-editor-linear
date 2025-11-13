@@ -2,7 +2,6 @@ import { For, createEffect, createSignal } from "solid-js";
 import { createStore } from "solid-js/store";
 import { timelineItemClasses } from "../lib/timelineItemRegistry";
 import { sectionMap } from "../stores/timelineViewModel";
-import PanelSectionHeader from "./PanelSectionHeader";
 
 const allTypes = Object.keys(timelineItemClasses);
 

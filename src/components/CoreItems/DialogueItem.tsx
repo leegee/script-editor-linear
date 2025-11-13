@@ -1,4 +1,4 @@
-import { type JSX, createSignal, Match, type Signal, Switch } from "solid-js";
+import { type JSX, createSignal, Match, type Signal, Switch, Show } from "solid-js";
 import { addCharacter, characters, findCharacterByName, getCharacterName, replaceTimelineItem, updateTimelineItem } from "../../stores";
 import { TimelineItem, TimelineItemProps } from "./TimelineItem";
 import { CharacterItem } from "./CharacterItem";
@@ -80,23 +80,13 @@ function DialogueForm(props: DialogueFormProps) {
                 </Match>
             </Switch>
 
-            <div class="field border max textarea">
-                <TimelineItemEditor
-                    store="timeline" path="details" key="text"
-                    class="border padding"
-                    label="dialogue"
-                    id={props.id}
-                    setItem={(newItem) => props.onChange("text", newItem.details?.text)}
-                />
-            </div>
-
-            {/* <textarea
-                class="dialogueText"
-                value={props.values.text ?? ""}
-                onInput={(e) => props.onChange("text", e.currentTarget.value)}
-                rows={3}
+            <TimelineItemEditor
+                store="timeline" path="details" key="text"
+                label="dialogue"
+                multiline
+                id={props.id}
+                setItem={(newItem) => props.onChange("text", newItem.details?.text)}
             />
-            <label>Dialogue</label> */}
 
             <div class="field border label max">
                 <input
@@ -114,7 +104,7 @@ function DialogueForm(props: DialogueFormProps) {
                 )}
             </div>
 
-            {props.showAdvanced && (
+            <Show when={props.showAdvanced}>
                 <fieldset>
                     <h6>Compute duration</h6>
                     <div class="field max no-border">
@@ -148,7 +138,7 @@ function DialogueForm(props: DialogueFormProps) {
                         </label>
                     </div>
                 </fieldset>
-            )}
+            </Show>
         </>
     );
 }

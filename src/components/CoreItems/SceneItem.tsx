@@ -30,6 +30,14 @@ export class SceneItem extends TimelineItem {
                         <TimelineItemEditor id={this.id} path="title" />
                     </h3>
 
+                    <TimelineItemEditor
+                        id={this.id}
+                        path="details"
+                        key="text"
+                        label="Description"
+                        multiline
+                    />
+
                     <div class="row no-space">
                         Duration
                         <span class="max" />

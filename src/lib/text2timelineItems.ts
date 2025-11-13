@@ -52,10 +52,8 @@ export function text2timelineItemsJson(
 
         else if (RE_FIRST_CHAR_META.test(trimmed)) {
             for (const part of trimmed.split(/[\s,]+(?=[#^&])/)) {
-                console.log('........', part)
                 const meta = part[0];
                 const val = part.slice(1);
-                console.log("meta:", meta, "id:", val);
                 switch (meta) {
                     case "&": currentItem.notes.push(val); break;
                     case "#": currentItem.tags.push(val); break;
@@ -68,26 +66,9 @@ export function text2timelineItemsJson(
                         break;
                 }
             }
-            // // Notes
-            // if (currentItem && trimmed.startsWith("@")) {
-            //     currentItem.notes.push(trimmed.slice(1).trim());
-            // }
-            // // Tags
-            // else if (currentItem && trimmed.startsWith("#")) {
-            //     currentItem.tags.push(trimmed.slice(1).trim());
-            // }
-            // // Duration
-            // else if (currentItem && trimmed.startsWith("%")) {
-            //     const value = trimmed.slice(1).trim();
-            //     if (/^\d+$/.test(value)) {
-            //         currentItem.duration = Number(value);
-            //     } else {
-            //         console.warn("Duration must be numeric:", value);
-            //     }
-            // }
         }
 
-        // Regular text
+        // Plain text
         else if (currentItem) {
             currentItem.details.text += (currentItem.details.text ? "\n\n" : "") + trimmed;
         }

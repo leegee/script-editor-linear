@@ -179,7 +179,6 @@ export class TimelineItem {
         duration?: number;
         onChange: (field: string, value: any) => void;
     }): JSX.Element {
-        console.trace('render create new');
         return (
             <article>
                 <div class="field border label max">
@@ -300,7 +299,6 @@ export class TimelineItem {
     }
 
     compactNoteList() {
-        console.log('NOTES for', this.type, this.notes)
         return (
             <>
                 <For each={this.notes}>

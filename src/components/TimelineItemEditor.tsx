@@ -1,4 +1,4 @@
-import { createSignal, createEffect, Show } from "solid-js";
+import { createSignal, createEffect, Show, Switch, Match } from "solid-js";
 import { characters, locations, timelineItems, updateCharacter, updateLocation, updateTimelineItem } from "../stores";
 import AutoResizingTextarea from "./AutoResizingTextarea";
 
@@ -93,34 +93,43 @@ export default function TimelineItemEditor(props: TimelineItemEditorProps) {
         if (props.onChange) props.onChange(v);
     };
 
+
     return (
-        <Show when={props.multiline} fallback={
-            <div class={`field border max ${props.label ? props.label : ''}`}>
-                <input
-                    ref={(el) => (inputRef = el)}
-                    type="text"
-                    class={props.class}
-                    value={value()}
-                    onInput={(e) => handleInput(e.currentTarget.value)}
-                    onBlur={handleBlur}
-                    autofocus={props.focus}
-                />
-                {props.label && <label>{props.label}</label>}
-            </div>
+        <Show when={editing()} fallback={
+            <fieldset class="padding border" onClick={() => setEditing(true)}>
+                {props.label && <legend>{props.label}</legend>}
+                {value()}
+            </fieldset>
         }>
-            <div class={`field border max textarea ${props.label ? 'label' : ''}`}>
-                <AutoResizingTextarea
-                    class={props.class}
-                    value={value()}
-                    onInput={handleInput}
-                    onBlur={handleBlur}
-                    maxHeight={300}
-                    minHeight={50}
-                    disabled={false}
-                    autofocus={editing()}
-                    label={props.label}
-                />
-            </div>
-        </Show >
+
+            <Show when={props.multiline} fallback={
+                <div class={`field border max ${props.label ? props.label : ''}`}>
+                    <input
+                        ref={(el) => (inputRef = el)}
+                        type="text"
+                        class={props.class}
+                        value={value()}
+                        onInput={(e) => handleInput(e.currentTarget.value)}
+                        onBlur={handleBlur}
+                        autofocus={props.focus}
+                    />
+                    {props.label && <label>{props.label}</label>}
+                </div>
+            }>
+                <div class={`field border max textarea ${props.label ? 'label' : ''}`}>
+                    <AutoResizingTextarea
+                        class={props.class}
+                        value={value()}
+                        onInput={handleInput}
+                        onBlur={handleBlur}
+                        maxHeight={300}
+                        minHeight={50}
+                        disabled={false}
+                        autofocus={editing()}
+                        label={props.label}
+                    />
+                </div>
+            </Show>
+        </Show>
     );
 }

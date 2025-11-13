@@ -9,7 +9,8 @@ import {
     removeTag,
     timelineItems,
     updateTimelineItem,
-    tags
+    tags,
+    removeTagInstances
 } from "../../stores";
 import { showAlert } from "../../stores/modals";
 
@@ -81,12 +82,7 @@ export default function TagEditor(props: TagEditorProps) {
         const id = tag()?.id;
         if (!id) return;
 
-        Object.values(timelineItems).forEach((item) => {
-            if (item.tags.includes(id)) {
-                item.tags = item.tags.filter((nid) => nid !== id);
-                updateTimelineItem(item.id, "tags", "", item.tags);
-            }
-        });
+        removeTagInstances(id);
 
         removeTag(id);
         setTag(undefined);

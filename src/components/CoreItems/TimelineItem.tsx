@@ -1,10 +1,9 @@
 import "./CoreItems.scss";
 import TimelineItemEditor from "../TimelineItemEditor";
 import { JSX } from "solid-js/jsx-runtime";
-import { notes, tags, updateTimelineItem } from "../../stores";
+import { notes, updateTimelineItem } from "../../stores";
 import PanelSectionHeader from "../PanelSectionHeader";
 import { For, Show } from "solid-js";
-import { useChildRoute } from "../ChildRoute";
 import { Tag } from "./Tag";
 import { Note } from "./Note";
 
@@ -290,11 +289,9 @@ export class TimelineItem {
 
     compactTagList() {
         return (
-            <>
-                <For each={this.tags}>
-                    {(tagId) => <Tag.Compact id={tagId} />}
-                </For>
-            </>
+            <For each={this.tags}>
+                {(tagId) => <Tag.Compact id={tagId} />}
+            </For>
         );
     }
 

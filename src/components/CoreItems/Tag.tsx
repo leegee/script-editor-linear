@@ -1,7 +1,8 @@
 import { For, Show, type JSX } from 'solid-js';
-import { tags } from '../../stores';
+import { removeTag, removeTagInstances, tags } from '../../stores';
 import { A, useNavigate } from '@solidjs/router';
 import { useChildRoute } from '../ChildRoute';
+import { showConfirm } from '../../stores/modals';
 
 export class Tag {
     id!: string;
@@ -36,10 +37,11 @@ export class Tag {
         const tagId = props.id;
         const link = () => childRoute('tag/' + props.id);
         return (
-            <button onClick={() => navigate(link())} class="circle tag"
+            <button onClick={() => navigate(link())}
+                class="circle tag"
                 style={{
-                    color: tags[tagId].details.clr,
-                    "background-color": tags[tagId].details.clr,
+                    color: tags[tagId].details.clr || 'white',
+                    "background-color": tags[tagId].details.clr || 'black',
                 }}
             >
                 <i>tag</i>
@@ -48,21 +50,35 @@ export class Tag {
         );
     }
 
+    static async confirmAndRemoveTag(tagId: string) {
+        const confirmed = await showConfirm(`Do you wish to delete the tag, "${tags[tagId].title
+            }"?`);
+        if (!confirmed) return;
+        await removeTagInstances(tagId);
+    }
+
     static Chip(props: { id?: string, addToId?: string, fill?: boolean }) {
         const navigate = useNavigate();
         const { childRoute } = useChildRoute();
         const tagId = props.id;
         if (tagId) {
             return (
-                <button class="tag chip small" style={
-                    `--this-clr:${tags[tagId].details.clr}`
-                    + (props.fill ? `;background-color:${tags[tagId].details.clr}` : '')
-                }
-                    onClick={() => navigate(childRoute('tag/' + tagId))}
-                >
-                    <span># {tags[tagId].title}</span>
-                    <Tag.Tooltip id={tagId} align="bottom" />
-                </button>
+                <div>
+                    <button onClick={() => navigate(childRoute('tag/' + tagId))}
+                        class="tag chip small"
+                        style={
+                            `--this-clr:${tags[tagId].details.clr}`
+                            + (props.fill ? `;background-color:${tags[tagId].details.clr}` : '')
+                        }
+                    >
+                        <span># {tags[tagId].title}</span>
+                        <Tag.Tooltip id={tagId} align="bottom" />
+                    </button>
+
+                    <button class="small transparent no-padding" onClick={() => Tag.confirmAndRemoveTag(tagId)}>
+                        <i>delete</i>
+                    </button>
+                </div>
             );
         }
 

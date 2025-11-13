@@ -176,6 +176,14 @@ export async function deleteAllTimelineItems() {
     _setTimelineSequence([]);
 }
 
+export function removeTagInstances(id: string) {
+    Object.values(timelineItems).forEach((item) => {
+        if (item.tags.includes(id)) {
+            item.tags = item.tags.filter((nid) => nid !== id);
+            updateTimelineItem(item.id, "tags", "", item.tags);
+        }
+    });
+}
 
 export async function updateTimelineItemAddNote(id: string, noteId: string) {
     const item = timelineItems[id];

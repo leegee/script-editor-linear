@@ -1,8 +1,9 @@
-import { For, Show, type JSX } from 'solid-js';
-import { removeTag, removeTagInstances, tags } from '../../stores';
+import { Show } from 'solid-js';
+import { removeTagInstances, tags } from '../../stores';
 import { A, useNavigate } from '@solidjs/router';
 import { useChildRoute } from '../ChildRoute';
 import { showConfirm } from '../../stores/modals';
+import './Tag.css';
 
 export class Tag {
     id!: string;
@@ -63,9 +64,9 @@ export class Tag {
         const tagId = props.id;
         if (tagId) {
             return (
-                <div>
+                <div class="tag-chip">
                     <button onClick={() => navigate(childRoute('tag/' + tagId))}
-                        class="tag chip small"
+                        class="tag chip small no-margin"
                         style={
                             `--this-clr:${tags[tagId].details.clr}`
                             + (props.fill ? `;background-color:${tags[tagId].details.clr}` : '')
@@ -75,7 +76,7 @@ export class Tag {
                         <Tag.Tooltip id={tagId} align="bottom" />
                     </button>
 
-                    <button class="small transparent no-padding" onClick={() => Tag.confirmAndRemoveTag(tagId)}>
+                    <button class="delete-tag tiny transparent no-padding no-margin" onClick={() => Tag.confirmAndRemoveTag(tagId)}>
                         <i>delete</i>
                     </button>
                 </div>

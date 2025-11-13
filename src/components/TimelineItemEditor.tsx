@@ -95,7 +95,7 @@ export default function TimelineItemEditor(props: TimelineItemEditorProps) {
 
     return (
         <Show when={props.multiline} fallback={
-            <div class="field border label max">
+            <div class={`field border max ${props.label ? props.label : ''}`}>
                 <input
                     ref={(el) => (inputRef = el)}
                     type="text"
@@ -103,7 +103,7 @@ export default function TimelineItemEditor(props: TimelineItemEditorProps) {
                     value={value()}
                     onInput={(e) => handleInput(e.currentTarget.value)}
                     onBlur={handleBlur}
-                    autofocus
+                    autofocus={props.focus}
                 />
                 {props.label && <label>{props.label}</label>}
             </div>

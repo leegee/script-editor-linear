@@ -19,7 +19,9 @@ export class TransitionItem extends TimelineItem {
     }
 
     renderCompact() {
-        return <span><code style="opacity:80%">Transition</code> <i class="large">{'transition_' + (this.details.transitionType ?? 'chop')}</i> </span>;
+        return <span><code style="opacity:80%">Transition</code>
+            {" "} &mdash; {" "}
+            <i class="large">{'transition_' + (this.details.transitionType ?? 'chop')}</i> </span>;
     }
 
     get icon(): string {

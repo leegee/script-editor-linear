@@ -41,22 +41,25 @@ export default function TagEditor(props: TagEditorProps) {
                 details: { text: text(), clr: clr() },
             });
             setTag(savedTag);
-
-            // Attach to parent if given
-            if (props.parentId) {
-                const parent = timelineItems[props.parentId];
-                if (parent) {
-                    parent.tags.push(savedTag.id);
-                    updateTimelineItem(parent.id, "tags", "", parent.tags);
-                }
-            }
-        } else {
+        }
+        else {
             // Patch existing
             savedTag = tag()!;
             patchTag(savedTag.id, {
                 title: title(),
                 details: { text: text(), clr: clr() },
             });
+        }
+
+        // Attach to parent if given
+        console.log('Tag Editor: parent Id', props.parentId);
+        if (props.parentId) {
+            const parent = timelineItems[props.parentId];
+            console.log('Tag Editor: parent', parent);
+            if (parent) {
+                parent.tags.push(savedTag.id);
+                updateTimelineItem(parent.id, "tags", "", parent.tags);
+            }
         }
 
         if (props.onSave) props.onSave(savedTag);

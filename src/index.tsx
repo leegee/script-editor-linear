@@ -33,7 +33,7 @@ const commonRoutes = (
   <>
     <Route path="/" component={Default} />
     <Route path="/attach-new/note/:itemId" component={NoteCreator} />
-    <Route path="/attach-new/tag/:itemId" component={TagCreator} />
+    <Route path="/attach-new/tag/:parentId" component={TagCreator} />
     <Route path="/new/:pos" component={NewTimelineItemSelector} />
     <Route path="/items/:id" component={TimelineItemView} />
     <Route path="/characters/:id" component={CharacterView} />

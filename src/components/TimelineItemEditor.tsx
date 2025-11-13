@@ -96,10 +96,16 @@ export default function TimelineItemEditor(props: TimelineItemEditorProps) {
 
     return (
         <Show when={editing()} fallback={
-            <fieldset class="padding border" onClick={() => setEditing(true)}>
-                {props.label && <legend>{props.label}</legend>}
-                {value()}
-            </fieldset>
+            <Show when={props.label} fallback={
+                <div class="bottom-padding" onClick={() => setEditing(true)}>
+                    {value()}
+                </div>
+            }>
+                <fieldset class="padding border" onClick={() => setEditing(true)}>
+                    <legend>{props.label}</legend>
+                    {value()}
+                </fieldset>
+            </Show>
         }>
 
             <Show when={props.multiline} fallback={

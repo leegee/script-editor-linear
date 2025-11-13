@@ -4,12 +4,13 @@ import PanelSectionHeader from "../PanelSectionHeader";
 
 export default function AttachNewTag() {
     const navigate = useNavigate();
-    const params = useParams<{ itemId: string }>();
+    const params = useParams<{ parentId: string }>();
 
     return (
         <>
             <PanelSectionHeader title="Add Tag" icon="new_label" />
-            <TagEditor parentId={params.itemId}
+            <TagEditor
+                parentId={params.parentId}
                 onSave={() => navigate(-1)}
                 onDelete={() => navigate(-1)}
             />

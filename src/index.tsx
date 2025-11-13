@@ -16,7 +16,7 @@ import { loadAll } from "./stores";
 import SettingsLayout from "./layouts/SettingsLayout";
 import FiltersView from "./components/panels/FiltersView";
 import NoteCreator from "./components/panels/NoteCreator";
-import TagCreator from "./components/panels/TagNewView";
+import TagCreator from "./components/panels/TagEditorView";
 import ViewEditNote from "./components/ViewEditNote";
 import TypingLayout from "./layouts/TypingLayout";
 import { ChildRouteProvider } from "./components/ChildRoute";

@@ -108,7 +108,7 @@ export default function TimelineItemEditor(props: TimelineItemEditorProps) {
                 {props.label && <label>{props.label}</label>}
             </div>
         }>
-            <div class="field border label max textarea">
+            <div class={`field border max textarea ${props.label ? 'label' : ''}`}>
                 <AutoResizingTextarea
                     class={props.class}
                     value={value()}

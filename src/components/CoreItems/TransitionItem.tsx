@@ -1,6 +1,7 @@
 import { type JSX, For } from "solid-js";
 import { TimelineItem, TimelineItemProps } from "./TimelineItem";
 import { timelineItems, updateTimelineItem } from "../../stores";
+import PanelSectionHeader from "../PanelSectionHeader";
 
 const transitionTypes = ["chop", "dissolve", "fade", "push", "slide"];
 
@@ -44,10 +45,9 @@ export class TransitionItem extends TimelineItem {
 
     renderCreateNew(props: { duration?: number; onChange: (field: string, value: any) => void }) {
         return (
-            <article>
-                <header>
-                    <h3>Transition</h3>
-                </header>
+            <>
+                <PanelSectionHeader title="transition" icon={'transition_' + this.transitionType} />
+
                 <div class="field border label max">
                     <select
                         value={this.transitionType ?? ""}
@@ -70,7 +70,7 @@ export class TransitionItem extends TimelineItem {
                     />
                     <label> Duration (seconds)</label>
                 </div>
-            </article>
+            </>
         );
     }
 

@@ -17,7 +17,7 @@ export class ActItem extends TimelineItem {
 
         return (
             <>
-                <header>
+                <header class="no-margin no-padding">
                     <h3>
                         <TimelineItemEditor id={this.id} path="title" />
                     </h3>
@@ -44,7 +44,7 @@ export class ActItem extends TimelineItem {
                 {this.panelTagsSection()}
                 {this.panelNotesSection()}
 
-                <article class="no-margin">
+                <aside class="no-margin">
                     <details>
                         <summary>
                             <PanelSectionHeader title='Locations' icon='location_on' badge={(actLocations()[this.id]).size} />
@@ -59,9 +59,9 @@ export class ActItem extends TimelineItem {
                             ))}
                         </ul>
                     </details>
-                </article>
+                </aside>
 
-                <article class="no-margin">
+                <aside class="no-margin">
                     <details>
                         <summary>
                             <PanelSectionHeader title='Characters' icon='people' badge={(actCharacters()[this.id]).size} />
@@ -76,7 +76,7 @@ export class ActItem extends TimelineItem {
                             ))}
                         </ul>
                     </details>
-                </article>
+                </aside>
 
             </ >
         );

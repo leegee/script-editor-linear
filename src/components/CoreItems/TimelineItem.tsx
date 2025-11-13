@@ -251,7 +251,7 @@ export class TimelineItem {
 
     panelNotesSection() {
         return (
-            <article class="no-margin">
+            <aside class="no-margin">
                 <details>
                     <summary>
                         <PanelSectionHeader title="Notes" icon="note_stack" badge={this.notes.length} />
@@ -264,13 +264,13 @@ export class TimelineItem {
                         <Note.Chip addToId={this.id} />
                     </nav>
                 </details>
-            </article>
+            </aside>
         );
     }
 
     panelTagsSection() {
         return (
-            <article class="no-margin">
+            <aside class="no-margin">
                 <details>
                     <summary>
                         <PanelSectionHeader title="Tags" icon="tag" badge={this.tags.length} />
@@ -283,7 +283,7 @@ export class TimelineItem {
                         <Tag.Chip addToId={this.id} />
                     </nav>
                 </details>
-            </article>
+            </aside>
         );
     }
 

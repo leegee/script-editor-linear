@@ -14,6 +14,7 @@ interface TimelineItemEditorProps {
     multiline?: boolean;
     class?: string;
     editMode?: boolean;
+    focus?: boolean;
 }
 
 export default function TimelineItemEditor(props: TimelineItemEditorProps) {
@@ -46,7 +47,7 @@ export default function TimelineItemEditor(props: TimelineItemEditorProps) {
 
     createEffect(() => {
         if (editing() && !props.multiline && inputRef) {
-            inputRef.focus();
+            if (props.focus) inputRef.focus();
             inputRef.selectionStart = inputRef.selectionEnd = inputRef.value.length;
         }
     });

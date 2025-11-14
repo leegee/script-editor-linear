@@ -1,9 +1,11 @@
-import { JSX } from "solid-js";
+import { createSignal, For, JSX } from "solid-js";
 import { locations, updateLocation } from "../../../stores";
 import { LocationMap } from "./LocationMap";
 import MapLinks from "./MapLinks";
 import TimelineItemEditor from "../../TimelineItemEditor";
-import { type TimelineItem } from "../TimelineItem";
+import { TimelineItemProps, type TimelineItem } from "../TimelineItem";
+import { useChildRoute } from "../../ChildRoute";
+import { A } from "@solidjs/router";
 
 type Constructor<T = {}> = new (...args: any[]) => T;
 
@@ -11,6 +13,22 @@ export function LocationRenderMixin<TBase extends Constructor<TimelineItem>>(Bas
 
     return class extends Base {
         _icon = "location_on";
+
+        static ListAllLocations() {
+            const { childRoute } = useChildRoute();
+
+            return (
+                <ul class="responsive no-space list scroll surface border">
+                    <For each={Object.values(locations)}>
+                        {(loc) => (
+                            <li>
+                                <A href={childRoute(`locations/${loc.id}`)}>{loc.title}</A>
+                            </li>
+                        )}
+                    </For>
+                </ul>
+            );
+        }
 
         renderCompact(): JSX.Element {
             const title = (this as any).title ?? "Unknown Location";

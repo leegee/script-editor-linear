@@ -26,22 +26,6 @@ class BaseTimelineLocationItem extends TimelineItem {
         });
     }
 
-    static ListAllLocations() {
-        const { childRoute } = useChildRoute();
-
-        return (
-            <ul class="responsive no-space list scroll surface border">
-                <For each={Object.values(locations)}>
-                    {(loc) => (
-                        <li>
-                            <A href={childRoute(`locations/${loc.id}`)}>{loc.title}</A>
-                        </li>
-                    )}
-                </For>
-            </ul>
-        );
-    }
-
     constructor(props: Omit<TimelineItemProps, "type">) {
         const ref = props.details?.ref ?? props.id;
         const canonical = locations[ref];

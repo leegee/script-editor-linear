@@ -1,5 +1,5 @@
 import { characters, locations, tags } from "../../stores";
-import { CharacterItem, TimelineLocationItem, TimelineItem } from "../CoreItems";
+import { CharacterItem, TimelineLocationItem } from "../CoreItems";
 import { FilterList, filtersActiveCount } from "../FilterList";
 import PanelSectionHeader from "../PanelSectionHeader";
 import { TagList } from "../TagList";

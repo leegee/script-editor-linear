@@ -6,13 +6,13 @@ import { Tile as TileLayer, Vector as VectorLayer } from "ol/layer";
 import { OSM } from "ol/source";
 import VectorSource from "ol/source/Vector";
 import { fromLonLat, toLonLat } from "ol/proj";
-import { Feature } from "ol";
+import { Collection, Feature } from "ol";
 import Point from "ol/geom/Point";
 import Circle from "ol/geom/Circle";
 import { Style, Fill, Stroke, Icon } from "ol/style";
 import Translate from "ol/interaction/Translate";
 import Modify from "ol/interaction/Modify";
-import { Collection } from "ol";
+import FullScreen from "ol/control/Fullscreen";
 
 type LocationMapProps = {
     lat: number;
@@ -61,7 +61,9 @@ export function LocationMap(props: LocationMapProps) {
             target: container!,
             layers: [new TileLayer({ source: new OSM() }), vectorLayer],
             view: new View({ center, zoom: 14 }),
-            controls: [],
+            controls: [
+                new FullScreen({ tipLabel: "Expand map" })
+            ],
         });
 
         const translate = new Translate({ features: new Collection([marker]) });

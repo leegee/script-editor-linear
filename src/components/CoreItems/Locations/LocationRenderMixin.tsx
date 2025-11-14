@@ -50,14 +50,23 @@ export function LocationRenderMixin<TBase extends Constructor>(Base: TBase) {
                             {isTimelineItem && canonicalId ? (
                                 <TimelineItemEditor
                                     store="locations"
-                                    id={canonicalId}
                                     path="title"
+                                    id={canonicalId}
                                 />
                             ) : (
                                 <span>{canonicalTitle}</span>
                             )}
                         </h3>
                     </header>
+
+                    <TimelineItemEditor
+                        store="locations"
+                        id={canonicalId}
+                        path="details"
+                        key="text"
+                        label="Description"
+                        multiline
+                    />
 
                     <table class="bottom-margin padding">
                         <tbody>
@@ -80,7 +89,7 @@ export function LocationRenderMixin<TBase extends Constructor>(Base: TBase) {
                         lat={canonicalDetails.lat}
                         lng={canonicalDetails.lng}
                         radius={canonicalDetails.radius}
-                        onChange={(newLat: number, newLng: number, newRadius: number) => {
+                        onChange={(newLat: number, newLng: number, newRadius: number, text?: string) => {
                             if (canonicalId) {
                                 updateLocation(canonicalId, {
                                     details: { lat: newLat, lng: newLng, radius: newRadius }

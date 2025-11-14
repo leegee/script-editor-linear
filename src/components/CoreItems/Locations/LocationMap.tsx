@@ -18,7 +18,7 @@ type LocationMapProps = {
     lat: number;
     lng: number;
     radius: number;
-    onChange?: (lat: number, lng: number, radius: number) => void;
+    onChange?: (lat: number, lng: number, radius: number, text?: string) => void;
     class?: string;
     height?: string;
 };

@@ -32,6 +32,12 @@ export async function updateLocation(id: string, updatedFields: Partial<Canonica
     if (Object.hasOwn(updatedFields, 'ref')) {
         throw new TypeError('updateLocation fields should not contain ref, this is a Canonical Location');
     }
+
+    if (typeof updatedFields !== "object" || updatedFields === null) {
+        console.error("updatedFields must be an object, got:", updatedFields);
+        throw new TypeError("updatedFields must be an object");
+    }
+
     setLocations(id, prev => ({
         ...(prev ?? {}),
         ...updatedFields,
@@ -42,6 +48,9 @@ export async function updateLocation(id: string, updatedFields: Partial<Canonica
     }));
 
     const loc = unwrap(locations[id]);
+
+    console.log('update location', id, updatedFields, "\n", loc)
+
     const updated = { ...loc };
     await storage.put("locations", updated);
 }

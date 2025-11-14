@@ -61,14 +61,24 @@ export default function TimelineItemEditor(props: TimelineItemEditorProps) {
         const v = value();
 
         if (props.id && props.store) {
-            const updateFn =
-                props.store === "locations"
-                    ? updateLocation
-                    : props.store === "characters"
-                        ? updateCharacter
-                        : updateTimelineItem;
-            updateFn(props.id, props.path, props.key ?? "", v);
-        } else if (props.item) {
+            if (props.store === "timeline") {
+                updateTimelineItem(props.id, props.path, props.key ?? "", v);
+            } else {
+                const updateObj =
+                    props.path && props.key
+                        ? { [props.path]: { [props.key]: v } }
+                        : props.path
+                            ? { [props.path]: v }
+                            : { [props.key ?? "value"]: v };
+
+                if (props.store === "locations") {
+                    updateLocation(props.id, updateObj);
+                } else {
+                    updateCharacter(props.id, updateObj);
+                }
+            }
+        }
+        else if (props.item) {
             if (props.setItem) {
                 props.setItem((prev: any) => {
                     const copy = { ...prev };

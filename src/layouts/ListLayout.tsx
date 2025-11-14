@@ -1,7 +1,7 @@
 import { type ParentProps } from "solid-js";
-import ScriptView from "../components/views/ScriptView";
+import DragDropList from "../components/DragDropList";
 
-export default function ScriptLayout(props: ParentProps) {
+export default function ListLayout(props: ParentProps) {
     return (
         <>
             <main class="responsive"
@@ -13,7 +13,7 @@ export default function ScriptLayout(props: ParentProps) {
                     <div class="surface-container-low s12 m8 l8"
                         style='height: auto; overflow-y: auto'
                     >
-                        <ScriptView />
+                        <DragDropList />
                     </div>
 
                     <div class="surface-container-low s12 m4 l4 small-padding right-padding left-padding"

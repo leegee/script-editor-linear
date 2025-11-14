@@ -4,7 +4,7 @@ import "beercss";
 import { render } from "solid-js/web";
 import { HashRouter, Route } from "@solidjs/router";
 
-import ScriptLayout from "./layouts/ScriptLayout";
+import ListLayout from "./layouts/ListLayout";
 import TimelineLayout from "./layouts/TimelineLayout";
 import MainLayout from "./layouts/MainLayout";
 import NewTimelineItemSelector from "./components/NewTimelineItemSelector";
@@ -55,7 +55,7 @@ render(
   () => (
     <ChildRouteProvider>
       <HashRouter root={MainLayout}>
-        <Route path="/script" component={ScriptLayout}>
+        <Route path="/script" component={ListLayout}>
           {commonRoutes}
         </Route>
 

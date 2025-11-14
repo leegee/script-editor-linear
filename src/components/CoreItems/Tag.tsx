@@ -58,7 +58,7 @@ export class Tag {
         await removeTagInstances(tagId);
     }
 
-    static Chip(props: { id?: string, addToId?: string, fill?: boolean }) {
+    static Chip(props: { id?: string, addToId?: string, fill?: boolean, index?: number }) {
         const navigate = useNavigate();
         const { childRoute } = useChildRoute();
         const tagId = props.id;
@@ -73,7 +73,7 @@ export class Tag {
                         }
                     >
                         <span># {tags[tagId].title}</span>
-                        <Tag.Tooltip id={tagId} align="bottom" />
+                        <Tag.Tooltip id={tagId} align={props.index === 0 ? "right " : "bottom"} />
                     </button>
 
                     <button class="delete-tag tiny transparent no-padding no-margin" onClick={() => Tag.confirmAndRemoveTag(tagId)}>

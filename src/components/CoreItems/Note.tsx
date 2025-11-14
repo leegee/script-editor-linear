@@ -45,7 +45,12 @@ export class Note {
         );
     }
 
-    static Chip(props: { id?: string, addToId?: string, fill?: boolean }) {
+    static Chip(props: {
+        id?: string,
+        addToId?: string,
+        fill?: boolean,
+        index?: number,
+    }) {
         const navigate = useNavigate();
         const { childRoute } = useChildRoute();
         const noteId = props.id;
@@ -58,7 +63,7 @@ export class Note {
                     onClick={() => navigate(childRoute('note/' + noteId))}
                 >
                     <span># {notes[noteId].title}</span>
-                    {/* <Note.Tooltip id={props.id} align="bottom" /> */}
+                    {/* <Note.Tooltip id={props.id} align={props.index === 0? "right" : "bottom"} /> */}
                 </button>
             );
         }

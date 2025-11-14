@@ -237,7 +237,7 @@ export class TimelineItem {
 
                     <nav class="scroll ">
                         <For each={this.notes}>
-                            {(noteId) => <Note.Chip id={noteId} />}
+                            {(noteId, index) => <Note.Chip id={noteId} index={index()} />}
                         </For>
                         <Note.Chip addToId={this.id} />
                     </nav>
@@ -256,7 +256,7 @@ export class TimelineItem {
 
                     <nav>
                         <For each={this.tags}>
-                            {(tagId) => <Tag.Chip id={tagId} />}
+                            {(tagId, index) => <Tag.Chip id={tagId} index={index()} />}
                         </For>
                         <Tag.Chip addToId={this.id} />
                     </nav>

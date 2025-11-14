@@ -1,3 +1,4 @@
+import "./Note.css";
 import { notes, timelineItemsByNote } from '../../stores';
 import { A, useNavigate } from '@solidjs/router';
 import { useChildRoute } from '../ChildRoute';

@@ -7,22 +7,3 @@
         font-size: inherit;
     }
 }
-
-.note.circle,
-.tag.circle {
-    font-size: 77%;
-    width: 1em;
-    height: 1em;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    i {
-        filter: invert(100%) brightness(200%);
-    }
-}
-
-.note.chip,
-.tag.chip {
-    border-color: var(--this-clr, var(--tertiary));
-}

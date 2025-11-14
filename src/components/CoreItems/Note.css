@@ -1,0 +1,17 @@
+.note.circle {
+    z-index: 1;
+    font-size: 77%;
+    width: 1em;
+    height: 1em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    i {
+        filter: invert(100%) brightness(200%);
+    }
+}
+
+.note.chip {
+    border-color: var(--this-clr, var(--tertiary));
+}

@@ -1,5 +1,5 @@
 import "./Note.css";
-import { notes, timelineItemsByNote } from '../../stores';
+import { notes, settings, timelineItemsByNote } from '../../stores';
 import { A, useNavigate } from '@solidjs/router';
 import { useChildRoute } from '../ChildRoute';
 import { createMemo, For, Show } from 'solid-js';
@@ -57,6 +57,16 @@ export class Note {
         const { childRoute } = useChildRoute();
         const noteId = props.id;
         if (noteId) {
+            if (settings.noteChipsAsPics && notes[noteId].details.urls) {
+                return (
+                    <button class="transparent square extra" onClick={() => navigate(childRoute('note/' + noteId))}>
+                        <img class="responsive" alt={notes[noteId].title}
+                            src={notes[noteId].details.urls[0]}
+                        />
+                    </button>
+                );
+            }
+
             return (
                 <button class="note chip small" style={
                     `--this-clr:${notes[noteId].details.clr}`
@@ -64,7 +74,7 @@ export class Note {
                 }
                     onClick={() => navigate(childRoute('note/' + noteId))}
                 >
-                    <span># {notes[noteId].title}</span>
+                    <span>&{notes[noteId].title}</span>
                     {/* <Note.Tooltip id={props.id} align={props.index === 0? "right" : "bottom"} /> */}
                 </button>
             );

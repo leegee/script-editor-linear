@@ -1,8 +1,6 @@
-import { createSignal } from "solid-js";
+import Settings from "../Settings";
 
 export default function SettingsView() {
-    const [activeTab, setActiveTab] = createSignal("options");
-
     return (
         <div class="active page">
             <header>
@@ -10,7 +8,7 @@ export default function SettingsView() {
             </header>
 
             <article class="responsive">
-                <p>Options go here…</p>
+                <Settings />
             </article>
         </div>
     );

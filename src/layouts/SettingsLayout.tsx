@@ -1,4 +1,4 @@
-import SettingsView from "../components/panels/SettingsView";
+import SettingsView from "../components/views/SettingsView";
 
 export default function SettingsLayout() {
     return (

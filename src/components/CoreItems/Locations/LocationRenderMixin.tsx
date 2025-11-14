@@ -1,4 +1,4 @@
-import { createSignal, For, JSX } from "solid-js";
+import { createSignal, For, JSX, Show } from "solid-js";
 import { locations, updateLocation } from "../../../stores";
 import { LocationMap } from "./LocationMap";
 import MapLinks from "./MapLinks";
@@ -32,10 +32,24 @@ export function LocationRenderMixin<TBase extends Constructor<TimelineItem>>(Bas
 
         renderCompact(): JSX.Element {
             const title = (this as any).title ?? "Unknown Location";
-            return <h4 class="with-tag">
-                {title}
-                {(this as unknown as TimelineItem).compactTagList()}
-            </h4>;
+            // {/* {title}
+            // {(this as unknown as TimelineItem).compactTagList()} */}
+            return (
+                <h4 style="opacity:80%" class="with-tag" >
+                    <div>
+                        <code>{this.type.toLocaleUpperCase()}</code>
+                        {" "}
+                        <Show when={this.title || this.details.text}>
+                            &mdash; {" "}
+                        </Show>
+                        {this.title || this.details.text || ""}
+                    </div>
+                    <div class="row right">
+                        {this.compactNoteList()}
+                        {this.compactTagList()}
+                    </div>
+                </h4>
+            );
         }
 
         renderFull(): JSX.Element {

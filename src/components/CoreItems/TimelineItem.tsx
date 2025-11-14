@@ -78,7 +78,7 @@ export class TimelineItem {
 
     // Used by drag-and-drop list
     renderCompact(): JSX.Element {
-        if (this.type === 'act' || this.type === 'scene' || this.type === "location") {
+        if (this.type === 'act' || this.type === 'scene') {
             return (
                 <h2 class="with-tag">
                     <TimelineItemEditor

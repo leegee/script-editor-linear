@@ -29,19 +29,36 @@ export class Note {
     //     )
     // }
 
+    private static ImageButton(props: { id: string }) {
+        const navigate = useNavigate();
+        const { childRoute } = useChildRoute();
+
+        return (
+            <button class="transparent square extra" onClick={() => navigate(childRoute('note/' + props.id))}>
+                <img class="responsive" alt={notes[props.id].title}
+                    src={notes[props.id].details.urls![0]}
+                />
+            </button>
+        )
+    }
+
     static Compact(props: { id: string }) {
         const navigate = useNavigate();
         const { childRoute } = useChildRoute();
-        const noteId = props.id;
         const link = () => childRoute('note/' + props.id);
+
+        if (settings.noteChipsAsPics && notes[props.id].details.urls) {
+            return <Note.ImageButton id={props.id} />;
+        }
+
         return (
             <button onClick={() => navigate(link())} class="circle note"
                 style={{
-                    color: notes[noteId].details.clr,
-                    "background-color": notes[noteId].details.clr,
+                    color: notes[props.id].details.clr,
+                    "background-color": notes[props.id].details.clr,
                 }}
             >
-                <em>@</em>
+                <em>&</em>
                 {/* <Note.Tooltip id={props.id} align="left" /> */}
             </button>
         );
@@ -55,26 +72,18 @@ export class Note {
     }) {
         const navigate = useNavigate();
         const { childRoute } = useChildRoute();
-        const noteId = props.id;
-        if (noteId) {
-            if (settings.noteChipsAsPics && notes[noteId].details.urls) {
-                return (
-                    <button class="transparent square extra" onClick={() => navigate(childRoute('note/' + noteId))}>
-                        <img class="responsive" alt={notes[noteId].title}
-                            src={notes[noteId].details.urls[0]}
-                        />
-                    </button>
-                );
+        if (props.id) {
+            if (settings.noteChipsAsPics && notes[props.id].details.urls) {
+                return <Note.ImageButton id={props.id} />;
             }
 
             return (
                 <button class="note chip small" style={
-                    `--this-clr:${notes[noteId].details.clr}`
-                    + (props.fill ? `;background-color:${notes[noteId].details.clr}` : '')
-                }
-                    onClick={() => navigate(childRoute('note/' + noteId))}
+                    `--this-clr:${notes[props.id].details.clr}`
+                    + (props.fill ? `;background-color:${notes[props.id].details.clr}` : '')
+                } onClick={() => navigate(childRoute('note/' + props.id))}
                 >
-                    <span>&{notes[noteId].title}</span>
+                    <span>&{notes[props.id].title}</span>
                     {/* <Note.Tooltip id={props.id} align={props.index === 0? "right" : "bottom"} /> */}
                 </button>
             );

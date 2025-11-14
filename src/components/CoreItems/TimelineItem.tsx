@@ -23,7 +23,7 @@ export interface TimelineItemProps {
 export class TimelineItem {
     id: string;
     type: string;
-    title?: string;
+    title: string;
     details: Record<string, any>;
     duration?: number;
     tags: string[];
@@ -31,34 +31,10 @@ export class TimelineItem {
     protected _icon: string | undefined = undefined;
     get icon(): string | undefined { return this._icon; }
 
-    // static ListTheseNotes(noteIds: string[], parentId: string) {
-    //     const { childRoute } = useChildRoute();
-
-    //     return (
-    //         <ul class="list no-space border scroll">
-    //             <li class="row middle-align">
-    //                 <A href={childRoute('/attach-new/note/' + parentId)} class="chip small transparent">
-    //                     <i>add</i><span>Add note</span>
-    //                 </A>
-    //             </li>
-
-    //             <For each={noteIds}>
-    //                 {(noteId) => (
-    //                     <li>
-    //                         <A href={childRoute("/notes/" + noteId)}>
-    //                             {notes[noteId]?.title}
-    //                         </A>
-    //                     </li>
-    //                 )}
-    //             </For>
-    //         </ul>
-    //     );
-    // }
-
     constructor(props: TimelineItemProps) {
         this.id = props.id;
         this.type = props.type;
-        this.title = props.title;
+        this.title = props.title || '';
         this.duration = props.duration;
         this.details = props.details || {};
         this.tags = props.tags || [];

@@ -7,7 +7,8 @@ import { type TimelineItem } from "../TimelineItem";
 
 type Constructor<T = {}> = new (...args: any[]) => T;
 
-export function LocationRenderMixin<TBase extends Constructor>(Base: TBase) {
+export function LocationRenderMixin<TBase extends Constructor<TimelineItem>>(Base: TBase) {
+
     return class extends Base {
         renderCompact(): JSX.Element {
             const title = (this as any).title ?? "Unknown Location";
@@ -104,6 +105,11 @@ export function LocationRenderMixin<TBase extends Constructor>(Base: TBase) {
                             lng={canonicalDetails.lng}
                         />
                     </div>
+
+                    {this.panelTagsSection()}
+
+                    {this.panelNotesSection()}
+
                 </>
             );
         }

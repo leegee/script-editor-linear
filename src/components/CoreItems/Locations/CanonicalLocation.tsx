@@ -6,9 +6,13 @@ import { LocationRenderMixin } from "./LocationRenderMixin";
  * It does NOT have a `ref`. TimelineLocationItem.details.ref points to its id.
  */
 class BaseCanonicalLocation extends TimelineItem {
-    id: string;
     title: string;
-    details: { lat: number; lng: number; radius: number, text?: string };
+    details: {
+        lat: number;
+        lng: number;
+        radius: number,
+        text?: string
+    };
 
     constructor(obj: Partial<BaseCanonicalLocation>) {
         super(obj as TimelineItemProps);

@@ -1,6 +1,7 @@
-import { notes } from '../../stores';
+import { notes, timelineItemsByNote } from '../../stores';
 import { A, useNavigate } from '@solidjs/router';
 import { useChildRoute } from '../ChildRoute';
+import { createMemo, For, Show } from 'solid-js';
 
 export class Note {
     id!: string;
@@ -81,6 +82,49 @@ export class Note {
     }
 
     renderCompact() { return this.title; }
+
+    static ListNotes = (props: { id?: string }) => {
+        const { childRoute } = useChildRoute();
+
+        const tagValues = createMemo(() => {
+            if (props.id && notes[props.id]) return [notes[props.id]];
+            return Object.values(notes);
+        });
+
+        const renderItems = (tagId: string) => (
+            <ul>
+                <For each={timelineItemsByNote()[tagId] ?? []}>
+                    {(item) => (
+                        <li>
+                            <A href={childRoute(`/notes/${tagId}`)}>
+                                {item.title || "(no title)"}
+                            </A>
+                        </li>
+                    )}
+                </For>
+            </ul>
+        );
+
+        return (
+            <Show
+                when={props.id}
+                fallback={
+                    <ul class="border list no-space">
+                        <For each={tagValues()}>
+                            {(tag) => (
+                                <li>
+                                    <strong>{tag.title}</strong>
+                                    {renderItems(tag.id)}
+                                </li>
+                            )}
+                        </For>
+                    </ul>
+                }
+            >
+                {renderItems(props.id!)}
+            </Show>
+        );
+    };
 }
 
 export function reviveNote(obj: any) { return new Note(obj); }

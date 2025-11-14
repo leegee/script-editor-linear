@@ -1,5 +1,5 @@
-import { Show } from 'solid-js';
-import { removeTagInstances, tags } from '../../stores';
+import { createMemo, For, Show } from 'solid-js';
+import { removeTagInstances, tags, timelineItemsByTag } from '../../stores';
 import { A, useNavigate } from '@solidjs/router';
 import { useChildRoute } from '../ChildRoute';
 import { showConfirm } from '../../stores/modals';
@@ -95,6 +95,49 @@ export class Tag {
     }
 
     renderCompact() { return this.title; }
+
+    static ListTags = (props: { id?: string }) => {
+        const { childRoute } = useChildRoute();
+
+        const tagValues = createMemo(() => {
+            if (props.id && tags[props.id]) return [tags[props.id]];
+            return Object.values(tags);
+        });
+
+        const renderItems = (tagId: string) => (
+            <ul>
+                <For each={timelineItemsByTag()[tagId] ?? []}>
+                    {(item) => (
+                        <li>
+                            <A href={childRoute(`/tags/${tagId}`)}>
+                                {item.title || "(no title)"}
+                            </A>
+                        </li>
+                    )}
+                </For>
+            </ul>
+        );
+
+        return (
+            <Show
+                when={props.id}
+                fallback={
+                    <ul class="border list no-space">
+                        <For each={tagValues()}>
+                            {(tag) => (
+                                <li>
+                                    <strong>{tag.title}</strong>
+                                    {renderItems(tag.id)}
+                                </li>
+                            )}
+                        </For>
+                    </ul>
+                }
+            >
+                {renderItems(props.id!)}
+            </Show>
+        );
+    };
 }
 
 export function reviveTag(obj: any) { return new Tag(obj); }

@@ -2,7 +2,7 @@
 import { useParams, useNavigate } from "@solidjs/router";
 import PanelSectionHeader from "./PanelSectionHeader";
 import TagEditor from "./CoreItems/TagEditor";
-import { TagList } from "./TagList";
+import { Tag } from "./CoreItems";
 
 export default function ViewEditTag() {
     const params = useParams<{ id: string }>();
@@ -20,7 +20,7 @@ export default function ViewEditTag() {
 
             <fieldset>
                 <legend>Occurances</legend>
-                <TagList.ListTags id={params.id} />
+                <Tag.ListTags id={params.id} />
             </fieldset>
         </>
     );

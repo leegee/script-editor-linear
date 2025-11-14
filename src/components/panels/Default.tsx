@@ -1,11 +1,18 @@
-import { characters, locations, tags } from "../../stores";
-import { CharacterItem, TimelineLocationItem } from "../CoreItems";
+import { characters, locations, notes, tags } from "../../stores";
+import { CharacterItem, Tag, TimelineLocationItem } from "../CoreItems";
+import { Note } from "../CoreItems/Note";
 import { FilterList, filtersActiveCount } from "../FilterList";
 import PanelSectionHeader from "../PanelSectionHeader";
-import { TagList } from "../TagList";
 
 export default function Default() {
     return <>
+        <details>
+            <summary>
+                <PanelSectionHeader title='Filters' icon='filter_alt' badge={filtersActiveCount()} />
+            </summary>
+            <FilterList.ListFilters />
+        </details>
+
         <details>
             <summary>
                 <PanelSectionHeader title='Locations' icon='location_on' badge={Object.keys(locations).length} />
@@ -22,18 +29,17 @@ export default function Default() {
 
         <details>
             <summary>
-                <PanelSectionHeader title='Filters' icon='filter_alt' badge={filtersActiveCount()} />
+                <PanelSectionHeader title='Tags' icon='label' badge={Object.keys(tags).length} />
             </summary>
-            <FilterList.ListFilters />
+            <Tag.ListTags />
         </details>
 
         <details>
             <summary>
-                <PanelSectionHeader title='Tags' icon='label' badge={Object.keys(tags).length} />
+                <PanelSectionHeader title='Notes' icon='note' badge={Object.keys(notes).length} />
             </summary>
-            <TagList.ListTags />
+            <Note.ListNotes />
         </details>
-
     </>
 
 }

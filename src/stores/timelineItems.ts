@@ -4,6 +4,7 @@ import { DialogueItem, TimelineItem, TimelineItemProps, reviveItem } from "../co
 import { storage } from "../db";
 import { locations } from "./locations";
 import { tags } from "./tags";
+import { notes } from "./notes";
 
 const [timelineItems, _setTimelineItems] = createStore<Record<string, TimelineItem>>({});
 
@@ -377,15 +378,30 @@ export const timelineitemStartTimes = createMemo(() => {
 export const timelineItemsByTag = createMemo(() => {
     const result: Record<string, typeof timelineItems[string][]> = {};
 
-    // Iterate over each tag
     for (const tagId in tags) {
         result[tagId] = [];
 
-        // Iterate over each timeline item
         for (const itemId in timelineItems) {
             const item = timelineItems[itemId];
             if (item.tags?.includes(tagId)) {
                 result[tagId].push(item);
+            }
+        }
+    }
+
+    return result;
+});
+
+export const timelineItemsByNote = createMemo(() => {
+    const result: Record<string, typeof timelineItems[string][]> = {};
+
+    for (const noteId in notes) {
+        result[noteId] = [];
+
+        for (const itemId in timelineItems) {
+            const item = timelineItems[itemId];
+            if (item.notes?.includes(noteId)) {
+                result[noteId].push(item);
             }
         }
     }

@@ -10,6 +10,8 @@ type Constructor<T = {}> = new (...args: any[]) => T;
 export function LocationRenderMixin<TBase extends Constructor<TimelineItem>>(Base: TBase) {
 
     return class extends Base {
+        _icon = "location_on";
+
         renderCompact(): JSX.Element {
             const title = (this as any).title ?? "Unknown Location";
             return <h4 class="with-tag">
@@ -46,18 +48,24 @@ export function LocationRenderMixin<TBase extends Constructor<TimelineItem>>(Bas
 
             return (
                 <>
-                    <header>
-                        <h3 class="field">
-                            {isTimelineItem && canonicalId ? (
-                                <TimelineItemEditor
-                                    store="locations"
-                                    path="title"
-                                    id={canonicalId}
-                                />
-                            ) : (
-                                <span>{canonicalTitle}</span>
-                            )}
-                        </h3>
+                    <header class="no-padding">
+                        <nav class="no-space">
+                            <h3 class="max" style="text-transform:capitalize">
+                                {isTimelineItem && canonicalId ? (
+                                    <TimelineItemEditor
+                                        store="locations"
+                                        path="title"
+                                        id={canonicalId}
+                                    />
+                                ) : (
+                                    <span>{canonicalTitle}</span>
+                                )}
+                            </h3>
+
+                            <a>
+                                <i>{this.icon}</i>
+                            </a>
+                        </nav>
                     </header>
 
                     <TimelineItemEditor

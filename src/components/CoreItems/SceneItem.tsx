@@ -25,7 +25,7 @@ export class SceneItem extends TimelineItem {
     renderFull() {
         return (
             <>
-                <header>
+                <header class="no-margin no-padding">
                     <h3>
                         <TimelineItemEditor id={this.id} path="title" />
                     </h3>

@@ -2,7 +2,7 @@ import Dexie from "dexie";
 
 export const db = new Dexie("ScriptDB");
 
-export type TableName = "timelineItems" | "characters" | "locations" | "tags" | "notes";
+export type TableName = "timelineItems" | "characters" | "locations" | "tags" | "notes" | "settings";
 
 export const storage = {
     async createDatabase() {
@@ -13,6 +13,7 @@ export const storage = {
             tags: "id,title",
             notes: "id,title",
             meta: "key",
+            settings: "key",
         });
         await db.open();
     },

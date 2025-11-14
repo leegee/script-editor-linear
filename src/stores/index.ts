@@ -4,18 +4,21 @@ import { loadAllNotesFromStorage } from "./notes";
 import { loadAllTimelineItemsFromStorage, } from "./timelineItems";
 import { loadAllTags as loadAllTagsFromStorage } from "./tags";
 import { storage } from "../db";
+import { loadAllSettingsFromStorage } from "./settings";
 
 export * from "./timelineItems";
 export * from "./locations";
 export * from "./characters";
 export * from "./tags";
 export * from "./notes";
+export * from "./settings";
 
 /** 
  * Loads all data from IndexedDB into the stores.
  */
 export async function loadAll() {
     console.log('stores/loadAll: Enter')
+    await loadAllSettingsFromStorage();
     await loadAllTimelineItemsFromStorage();
     await loadAllLocationsFromStorage();
     await loadAllCharactersFromStorage();

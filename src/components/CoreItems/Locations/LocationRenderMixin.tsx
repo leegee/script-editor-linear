@@ -69,23 +69,6 @@ export function LocationRenderMixin<TBase extends Constructor<TimelineItem>>(Bas
                         multiline
                     />
 
-                    <table class="bottom-margin padding">
-                        <tbody>
-                            <tr>
-                                <th>Latitude</th>
-                                <td>{canonicalDetails.lat}</td>
-                            </tr>
-                            <tr>
-                                <th>Longitude</th>
-                                <td>{canonicalDetails.lng}</td>
-                            </tr>
-                            <tr>
-                                <th>Radius</th>
-                                <td>{canonicalDetails.radius}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-
                     <LocationMap
                         lat={canonicalDetails.lat}
                         lng={canonicalDetails.lng}

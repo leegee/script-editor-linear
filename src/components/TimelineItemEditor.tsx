@@ -112,7 +112,7 @@ export default function TimelineItemEditor(props: TimelineItemEditorProps) {
                     {value()}
                 </div>
             }>
-                <fieldset class="padding border" onClick={() => setEditing(true)}>
+                <fieldset class="bottom-padding border" onClick={() => setEditing(true)}>
                     <legend>{props.label}</legend>
                     {value()}
                 </fieldset>

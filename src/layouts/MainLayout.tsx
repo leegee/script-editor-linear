@@ -11,7 +11,7 @@ export default function MainLayout(props: ParentProps) {
             <main style="height: 100vh" class="background no-padding no-margin">
                 <div class="tabs max background bottom-margin small-margin">
                     <Menu />
-                    <A title="Script view" class="transparent" href="/script">
+                    <A title="Script view" class="transparent" href="/list">
                         <i class="small">list_alt</i>
                         <div class="tooltip bottom">List View</div>
                     </A>

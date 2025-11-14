@@ -8,13 +8,13 @@ interface ChildRouteContextValue {
 const ChildRouteContext = createContext<ChildRouteContextValue>();
 
 export function ChildRouteProvider(props: ParentProps) {
-    const [currentSection, setCurrentSection] = createSignal("script");
+    const [currentSection, setCurrentSection] = createSignal("list");
 
     const updateSectionFromHash = () => {
         const clean = window.location.hash.replace(/^#\/?/, "");
         const parts = clean.split("/").filter(Boolean);
         const section = parts[0];
-        setCurrentSection(/^(script|typing|timeline)$/.test(section) ? section : "script");
+        setCurrentSection(/^(list|typing|timeline)$/.test(section) ? section : "list");
     };
 
     updateSectionFromHash();

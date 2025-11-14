@@ -27,7 +27,7 @@ export default function NewTimelineItemSelector() {
             const newItem = await createTimelineItem({ ...prepared, type: type() }, { insertAtIndex });
 
             setFields({});
-            navigate(`/script/items/${newItem.id}`);
+            navigate(`/list/items/${newItem.id}`);
         } catch (err) {
             console.error("Failed to create timeline item:", err);
         }
@@ -52,7 +52,7 @@ export default function NewTimelineItemSelector() {
 
             <footer class="field border label no-margin no-padding top-padding right-align">
                 <nav>
-                    <button onClick={() => navigate("/script")} class="transparent">Cancel</button>
+                    <button onClick={() => navigate("/list")} class="transparent">Cancel</button>
                     <button onClick={handleCreate} class="primary">Create Timeline Item</button>
                 </nav>
             </footer>

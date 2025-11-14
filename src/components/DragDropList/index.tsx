@@ -84,11 +84,11 @@ export default function DragDropList() {
         const newItem = await createTimelineItem({ ...prepared, type: "dialogue" }, { insertAtIndex });
         currentIndex = insertAtIndex;
         selectItem(items()[currentIndex], currentIndex);
-        navigate(`/script/items/${newItem.id}`);
+        navigate(`/list/items/${newItem.id}`);
       }
       else {
         selectItem(items()[currentIndex], currentIndex);
-        navigate(`/script/items/${items()[currentIndex].id}`)
+        navigate(`/list/items/${items()[currentIndex].id}`)
       }
     }
   }
@@ -207,7 +207,7 @@ export default function DragDropList() {
                 "drag-over": overIndex() === pos
               }}
             >
-              <div class="max item-content" onClick={() => navigate(`/script/items/${item().id}`)}>
+              <div class="max item-content" onClick={() => navigate(`/list/items/${item().id}`)}>
                 <small class="time-label">{displayTime}</small>
                 {item().renderCompact() ?? null}
               </div>
@@ -215,12 +215,12 @@ export default function DragDropList() {
               <DragHandleWithMenu
                 class="show-on-hover"
                 onPointerDown={(e) => startDrag(pos, e)}
-                onAddNote={() => navigate('/script/attach-new/note/' + item().id)}
-                onAddTag={() => navigate('/script/attach-new/tag/' + item().id)}
+                onAddNote={() => navigate('/list/attach-new/note/' + item().id)}
+                onAddTag={() => navigate('/list/attach-new/tag/' + item().id)}
                 onDuplicate={() => duplicateTimelineItem(item().id, { insertAtIndex: insertAfter })}
-                onInsertBefore={() => navigate(`/script/new/${insertBefore}`)}
-                onInsertAfter={() => navigate(`/script/new/${insertAfter}`)}
-                onDelete={() => { deleteTimelineItemById(item().id); navigate('/script') }}
+                onInsertBefore={() => navigate(`/list/new/${insertBefore}`)}
+                onInsertAfter={() => navigate(`/list/new/${insertAfter}`)}
+                onDelete={() => { deleteTimelineItemById(item().id); navigate('/list') }}
               />
             </li>
           );

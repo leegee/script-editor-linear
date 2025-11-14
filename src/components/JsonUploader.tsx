@@ -22,7 +22,7 @@ export default function JSONUploader() {
             console.log("Parsed JSON:", data);
             await ingest(data.script, data.characters, data.locations, data.tags, data.notes);
             // TODO Pass this in an onCompete prop
-            navigate('/script/');
+            navigate('/list/');
         } catch (err) {
             console.error("Error reading or parsing JSON file:", err);
             showAlert("Invalid JSON file");

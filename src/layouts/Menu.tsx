@@ -111,7 +111,7 @@ function FileMenuItems() {
             <li>
                 <i>news</i>
                 <ConfirmLink
-                    href="/script/new"
+                    href="/list/new"
                     message="This will over-write your script."
                     onConfirm={initNewScript}
                 >
@@ -130,7 +130,7 @@ function FileMenuItems() {
                     onClick={async (e) => {
                         e.preventDefault();
                         await downloadJSON();
-                        navigate('/script');
+                        navigate('/list');
                     }}
                 >
                     Save script
@@ -142,11 +142,11 @@ function FileMenuItems() {
             <li>
                 <i>book</i>
                 <ConfirmLink
-                    href="/script/"
+                    href="/list/"
                     message="This will over-write your script."
                     onConfirm={async () => {
                         await loadJSONfromPath("/the-three-bears.json");
-                        navigate('/script');
+                        navigate('/list');
                     }}
                 >
                     Load sample script
@@ -156,11 +156,11 @@ function FileMenuItems() {
             <li>
                 <i>article</i>
                 <ConfirmLink
-                    href="/script/"
+                    href="/list/"
                     message="This will over-write your script."
                     onConfirm={async () => {
                         await loadJSONfromPath("/the-three-bears-small.json");
-                        navigate('/script');
+                        navigate('/list');
                     }}
                 >
                     Load small sample script

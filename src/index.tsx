@@ -55,7 +55,7 @@ render(
   () => (
     <ChildRouteProvider>
       <HashRouter root={MainLayout}>
-        <Route path="/script" component={ListLayout}>
+        <Route path="/list" component={ListLayout}>
           {commonRoutes}
         </Route>
 

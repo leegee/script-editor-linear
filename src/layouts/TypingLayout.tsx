@@ -5,7 +5,7 @@ import TimelineSidePanel from "../components/panels/TimelineSidePanel";
 export default function ScriptLayout(props: ParentProps) {
     return (
         <main class="responsive" style="overflow:hidden; height: 100vh">
-            <div>
+            <div class="responsive" style="overflow:hidden; height: 100vh">
                 <TypingInput />
             </div>
 

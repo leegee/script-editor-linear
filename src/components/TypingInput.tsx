@@ -25,6 +25,7 @@ export default function TypingInput() {
         const textBeforeCursor = line.text.slice(0, context.pos - line.from);
         const trimmed = textBeforeCursor.trimStart();
 
+        // tags
         if (trimmed.startsWith("#")) {
             const prefix = trimmed.slice(1).toLowerCase();
             const allTags = Object.values(tags);
@@ -44,7 +45,8 @@ export default function TypingInput() {
             };
         }
 
-        if (trimmed.startsWith("@")) {
+        // notes
+        if (trimmed.startsWith("&")) {
             const prefix = trimmed.slice(1).toLowerCase();
             const allNotes = Object.values(notes);
             const filtered = prefix
@@ -52,7 +54,7 @@ export default function TypingInput() {
                 : allNotes;
 
             return {
-                from: line.from + textBeforeCursor.indexOf("#") + 1,
+                from: line.from + textBeforeCursor.indexOf("&") + 1,
                 options: filtered.map(note => ({
                     label: note.title,
                     detail: note.id,
@@ -84,7 +86,77 @@ export default function TypingInput() {
         };
     };
 
-    // Plugin for highlighting invalid lines
+    // Plugin to show title title of tags/notes that render as ID
+    const tagNoteTooltipPlugin = ViewPlugin.fromClass(
+        class {
+            decorations: DecorationSet;
+
+            constructor(view: EditorView) {
+                this.decorations = this.build(view);
+            }
+
+            update(update: ViewUpdate) {
+                if (update.docChanged || update.viewportChanged) {
+                    this.decorations = this.build(update.view);
+                }
+            }
+
+            build(view: EditorView): DecorationSet {
+                const builder: Range<Decoration>[] = [];
+                const text = view.state.doc.toString();
+
+                const entries: { from: number; to: number; title: string }[] = [];
+
+                const tagRegex = /#([A-Za-z0-9_-]+)/g;
+                const noteRegex = /&([A-Za-z0-9_-]+)/g;
+
+                // Collect all tag matches
+                for (const match of text.matchAll(tagRegex)) {
+                    const id = match[1];
+                    const index = match.index!;
+                    const tag = tags[id];
+                    if (tag) {
+                        entries.push({
+                            from: index,
+                            to: index + match[0].length,
+                            title: tag.title,
+                        });
+                    }
+                }
+
+                // Collect all note matches
+                for (const match of text.matchAll(noteRegex)) {
+                    const id = match[1];
+                    const index = match.index!;
+                    const note = notes[id];
+                    if (note) {
+                        entries.push({
+                            from: index,
+                            to: index + match[0].length,
+                            title: note.title,
+                        });
+                    }
+                }
+
+                // 🔥 Sort all ranges by start position
+                entries.sort((a, b) => a.from - b.from);
+
+                // Finally add in sorted order
+                for (const e of entries) {
+                    builder.push(
+                        Decoration.mark({
+                            attributes: { title: e.title }
+                        }).range(e.from, e.to)
+                    );
+                }
+
+                return Decoration.set(builder);
+            }
+        },
+        { decorations: v => v.decorations }
+    );
+
+    // Plugin to highlight invalid lines
     const highlightInvalidLines = ViewPlugin.fromClass(
         class {
             decorations: DecorationSet;
@@ -131,7 +203,7 @@ export default function TypingInput() {
         { decorations: (v) => v.decorations }
     );
 
-    // Plugin for click detection on invalid lines
+    // TEST Plugin for click detection on invalid lines
     const clickPlugin = ViewPlugin.fromClass(
         class {
             constructor(public view: EditorView) { }
@@ -169,6 +241,7 @@ export default function TypingInput() {
             extensions: [
                 basicSetup,
                 highlightInvalidLines,
+                tagNoteTooltipPlugin,
                 clickPlugin,
                 history(),
                 autocompletion({ override: [completionSource] }),

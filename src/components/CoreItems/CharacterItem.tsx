@@ -4,7 +4,7 @@ import { TimelineItem, TimelineItemProps } from "./TimelineItem";
 import { A } from "@solidjs/router";
 import TimelineItemEditor from "../TimelineItemEditor";
 import { showAlert } from "../../stores/modals";
-import { useChildRoute } from "../ChildRoute";
+import { useChildRoute } from "../../contexts/ChildRoute";
 
 function isCharacterUsed(id: string) {
     return Object.values(timelineItems).some(

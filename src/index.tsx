@@ -19,7 +19,7 @@ import NoteCreator from "./components/panels/NoteCreator";
 import TagEditorView from "./components/panels/TagEditorView";
 import ViewEditNote from "./components/ViewEditNote";
 import TypingLayout from "./layouts/TypingLayout";
-import { ChildRouteProvider } from "./components/ChildRoute";
+import { ChildRouteProvider } from "./contexts/ChildRoute";
 import TagsView from "./components/panels/TagsListView";
 import ViewEditTag from "./components/ViewEditTag";
 

@@ -5,7 +5,7 @@ import { locations, addLocation } from "../../../stores";
 import { TimelineItem, TimelineItemProps } from "../TimelineItem";
 import { LocationRenderMixin } from "./LocationRenderMixin";
 import { CanonicalLocation } from "./CanonicalLocation";
-import { useChildRoute } from "../../ChildRoute";
+import { useChildRoute } from "../../../contexts/ChildRoute";
 
 export type TimelineLocationItemType = InstanceType<typeof TimelineLocationItem>;
 

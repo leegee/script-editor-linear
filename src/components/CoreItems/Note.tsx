@@ -1,7 +1,7 @@
 import "./Note.css";
 import { notes, settings, timelineItemsByNote } from '../../stores';
 import { A, useNavigate } from '@solidjs/router';
-import { useChildRoute } from '../ChildRoute';
+import { useChildRoute } from '../../contexts/ChildRoute';
 import { createMemo, For, type JSX, Match, Show, Switch } from 'solid-js';
 import { filetypeFromExt, YouTubeThumbURL } from "../../lib/filetypeFromExt";
 

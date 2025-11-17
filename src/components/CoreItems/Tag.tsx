@@ -1,7 +1,7 @@
 import { createMemo, For, Show } from 'solid-js';
 import { removeTagInstances, tags, timelineItemsByTag } from '../../stores';
 import { A, useNavigate } from '@solidjs/router';
-import { useChildRoute } from '../ChildRoute';
+import { useChildRoute } from '../../contexts/ChildRoute';
 import { showConfirm } from '../../stores/modals';
 import './Tag.css';
 

@@ -4,7 +4,7 @@ import { LocationMap } from "./LocationMap";
 import MapLinks from "./MapLinks";
 import TimelineItemEditor from "../../TimelineItemEditor";
 import { TimelineItemProps, type TimelineItem } from "../TimelineItem";
-import { useChildRoute } from "../../ChildRoute";
+import { useChildRoute } from "../../../contexts/ChildRoute";
 import { A } from "@solidjs/router";
 
 type Constructor<T = {}> = new (...args: any[]) => T;

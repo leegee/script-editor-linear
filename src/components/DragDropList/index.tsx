@@ -10,7 +10,7 @@ import { reorderTimeline, timelineItems, timelineSequence } from "../../stores";
 import { createTimelineItemInstance } from "../../lib/timelineItemRegistry";
 import { showAlert } from "../../stores/modals";
 import { type TimelineItem } from "../CoreItems";
-import { useChildRoute } from "../ChildRoute";
+import { useChildRoute } from "../../contexts/ChildRoute";
 
 function formatTime(totalSeconds: number): string {
   const minutes = Math.floor(totalSeconds / 60);

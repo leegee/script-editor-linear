@@ -2,7 +2,7 @@ import { A, useNavigate } from "@solidjs/router";
 import { ConfirmLink } from "../components/ConfirmLink";
 import JSONUploader from "../components/JsonUploader";
 import { initNewScript, downloadJSON, loadJSONfromPath } from "../lib/io";
-import { useChildRoute } from "../components/ChildRoute";
+import { useChildRoute } from "../contexts/ChildRoute";
 
 export function Menu() {
     const { childRoute } = useChildRoute();

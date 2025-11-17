@@ -16,22 +16,34 @@ import {
     addTimelineItems, allCharacterNames, allLocationNames, deleteAllTimelineItems, findCharacterByName,
     findLocationByName, loadAll, notes, tags, timelineItems, timelineSequence
 } from "../stores";
+import { useNavigate } from "@solidjs/router";
+import { useChildRoute } from "../contexts/ChildRoute";
 
 // Regex to find identifiers around mouse position
 const tagMatch = /#([A-Za-z0-9_-]+)/g;
 const noteMatch = /&([A-Za-z0-9_-]+)/g;
 
+const getEditorPos = (event: MouseEvent, view: EditorView) => {
+    let target = event.target as HTMLElement;
+    while (target && !target.hasAttribute("cm-line")) {
+        target = target.parentElement!;
+    }
+    return view.posAtDOM(target);
+};
+
 export default function TypingInput() {
-    let editorRef!: HTMLDivElement;
+    const navigate = useNavigate();
+    const { childRoute } = useChildRoute();
     const [view, setView] = createSignal<EditorView | null>(null);
     const [isDirty, setIsDirty] = createSignal(false);
+    let editorRef!: HTMLDivElement;
 
     const findMatchAtPos = (regex: RegExp, text: string, offset: number) => {
         let m;
         while ((m = regex.exec(text))) {
             const start = m.index;
             const end = start + m[0].length;
-            if (start <= offset && offset <= end) {
+            if (start <= offset && offset < end) {
                 return { id: m[1], from: start, to: end };
             }
         }
@@ -191,6 +203,7 @@ export default function TypingInput() {
         const pos = view.posAtDOM(event.target as HTMLElement);
         const line = view.state.doc.lineAt(pos);
         const trimmed = line.text.trim();
+        console.log("trimmed", trimmed)
 
         // Dialogue detection (lines starting with ^N)
         const isDialogue = /^\^\d/.test(trimmed);
@@ -200,7 +213,8 @@ export default function TypingInput() {
         const noteFound = findMatchAtPos(noteMatch, line.text, pos - line.from);
 
         if (tagFound) {
-            alert(`Double-click tag: ${tagFound.id}`);
+            // alert(`Double-click tag: ${tagFound.id}`);
+            navigate(childRoute('tag/' + tagFound.id))
         }
         else if (noteFound) {
             alert(`Double-click note: ${noteFound.id}`);
@@ -215,9 +229,8 @@ export default function TypingInput() {
             const isKnownCharacter = findCharacterByName(trimmed.toUpperCase());
 
             if (isAllCaps && !isKnownHeader && !isKnownCharacter) {
-                alert(`Clicked invalid line: "${trimmed}"`);
+                console.warn(`Clicked invalid line: "${trimmed}"`);
             } else {
-                // New case: show item type
                 let itemType = "unknown";
                 if (isKnownHeader) itemType = "header";
                 else if (isKnownCharacter) itemType = "character";

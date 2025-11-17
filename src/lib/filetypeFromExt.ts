@@ -1,5 +1,7 @@
-export function filetypeFromExt(filename: string): "audio" | "image" | "video" | "other" {
-    const ext = filename.split(".").pop()?.toLowerCase() ?? "";
+export type YouTubeThumbURL = string;
+
+export function filetypeFromExt(url: string): "audio" | "image" | "video" | YouTubeThumbURL | "other" {
+    const ext = url.split(".").pop()?.toLowerCase() ?? "";
 
     switch (ext) {
         case "jpg":
@@ -26,9 +28,28 @@ export function filetypeFromExt(filename: string): "audio" | "image" | "video" |
         case "ogg":
         case "m4a":
             return "audio";
-
-        default:
-            return "other";
     }
+
+    if (/(youtube\.com\/watch\?v=|youtu\.be\/)/.test(url)) {
+        return youtubeThumb(url);
+    }
+
+    return "other";
 }
 
+function youtubeThumb(url: string) {
+    const id = extractYouTubeID(url);
+    return `https://img.youtube.com/vi/${id}/hqdefault.jpg` as YouTubeThumbURL;
+}
+
+function extractYouTubeID(url: string): string {
+    // youtu.be/JxSfrQbZp9k
+    const short = url.match(/youtu\.be\/([^?&#]+)/);
+    if (short) return short[1];
+
+    // youtube.com/watch?v=JxSfrQbZp9k
+    const long = url.match(/[?&]v=([^&#]+)/);
+    if (long) return long[1];
+
+    return "";
+}

@@ -146,11 +146,7 @@ export default function TypingInput() {
                 create() {
                     const dom = document.createElement("div");
                     dom.className = "cm-tooltip-note large-elevate small-padding";
-                    dom.innerHTML = (
-                        note.details.urls?.length
-                            ? `<img class="responsive" src="${note.showUrl("tiny")}"/>`
-                            : ""
-                    ) + note.title;
+                    dom.innerHTML = note.urlForInnerHtml("tiny") + '<h6>' + note.title + '</h6>';
                     return { dom };
                 }
             };

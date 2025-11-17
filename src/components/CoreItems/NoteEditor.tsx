@@ -1,19 +1,25 @@
+/**
+ * 
+ * TODO Merge into Note
+ * 
+ */
 import styles from "./NoteEditor.module.scss";
 import { createSignal, createEffect, Show, For, Match, Switch } from "solid-js";
 import AutoResizingTextarea from "../AutoResizingTextarea";
-import { addNote, getNote, NoteType, patchNote, removeNote, timelineItems, updateTimelineItem } from "../../stores";
+import { addNote, getNote, patchNote, removeNote, timelineItems, updateTimelineItem } from "../../stores";
 import { showAlert } from "../../stores/modals";
+import { Note } from "./Note";
 
 interface NoteEditorProps {
     noteId?: string;
     parentId?: string;
-    onSave?: (note: NoteType | undefined) => void;
+    onSave?: (note: Note | undefined) => void;
     onDelete?: (noteId: string) => void;
 }
 
 export default function NoteEditor(props: NoteEditorProps) {
     const existingNote = props.noteId ? getNote(props.noteId) : undefined;
-    const [note, setNote] = createSignal<NoteType | undefined>(existingNote);
+    const [note, setNote] = createSignal<Note | undefined>(existingNote);
 
     // Local signals for editing
     const [title, setTitle] = createSignal(existingNote?.title ?? "");
@@ -30,34 +36,13 @@ export default function NoteEditor(props: NoteEditorProps) {
         setUrls(n.details?.urls ?? []);
     });
 
-    function isYouTube(url: string) {
-        return /(youtube\.com\/watch\?v=|youtu\.be\/)/.test(url);
-    }
-
-    function youtubeThumb(url: string) {
-        const id = extractYouTubeID(url);
-        return `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
-    }
-
-    function extractYouTubeID(url: string): string {
-        // youtu.be/JxSfrQbZp9k
-        const short = url.match(/youtu\.be\/([^?&#]+)/);
-        if (short) return short[1];
-
-        // youtube.com/watch?v=JxSfrQbZp9k
-        const long = url.match(/[?&]v=([^&#]+)/);
-        if (long) return long[1];
-
-        return "";
-    }
-
     const handleSave = () => {
         if (!title()) {
             showAlert('Notes must have at least a title.')
             return;
         }
 
-        let savedNote: NoteType;
+        let savedNote: Note;
         if (!note()) {
             // Create new note
             savedNote = addNote({
@@ -136,7 +121,6 @@ export default function NoteEditor(props: NoteEditorProps) {
 
             <div class="field label textarea">
                 <AutoResizingTextarea
-                    // label="Note"
                     value={text()}
                     onInput={(v) => setText(v)}
                     minHeight={50}
@@ -173,17 +157,7 @@ export default function NoteEditor(props: NoteEditorProps) {
                                 </Show>
 
                                 <Show when={editingUrl() !== idx}>
-                                    <div class={"row " + styles.linkEditorRoot}>
-                                        <a href={url} target="_blank">
-                                            <Switch fallback={url}>
-                                                <Match when={url.match(/(jpg|png|webp|avif)$/)}>
-                                                    <img class={styles.tinyThumb} src={url} alt={url} />
-                                                </Match>
-                                                <Match when={isYouTube(url)}>
-                                                    <img class={styles.tinyThumb} src={youtubeThumb(url)} alt="YouTube" />
-                                                </Match>
-                                            </Switch>
-                                        </a>
+                                    <div class={"row " + styles.linkEditorRoot} innerHTML={Note.urlForInnerHtml(url, "small")}>
                                         <div class={"fill small-opacity " + styles.linkEditor}>
                                             <button class="transparent chip small">
                                                 <a href={url} target="_blank">

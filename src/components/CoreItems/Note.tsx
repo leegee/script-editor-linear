@@ -145,21 +145,6 @@ export class Note implements NoteProps {
         this.details = obj.details;
     }
 
-    // _showUrl(size = "tiny") {
-    //     if (!this.details.urls) return "";
-    //     const filetype = filetypeFromExt(this.details.urls[0]);
-    //     if (filetype === 'image') {
-    //         return `<img class=`responsive ${ size } ` src="${this.details.urls[0]}"/>`;
-    //     }
-    //     if (filetype === 'video') {
-    //         return `<video class=`responsive ${ size } `>
-    //             <source type="video/mp4" src="${this.details.urls[0]}"/>
-    //         </video >`;
-    //     }
-
-    //     return '';
-    // }
-
     static urlForInnerHtml(url: string, size = "tiny"): string {
         const typeOrThumb = filetypeFromExt(url);
 

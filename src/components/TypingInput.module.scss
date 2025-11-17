@@ -56,4 +56,27 @@
         background-color: #444 !important;
         color: white !important;
     }
+
+    ////////////////
+    .cm-tooltip.cm-tooltip-hover {
+        background-color: var(--inverse-surface);
+        color: var(--inverse-on-surface);
+        border-radius: 4pt;
+    }
+
+    .cm-tooltip-tag {
+        font-weight: 600;
+        // border: 1pt solid var(--tag-color, #ffd166);
+        background-color: var(--this-clr, white);
+
+        span {
+            color: var(--this-clr, white);
+            filter: invert(100%) brightness(200%);
+        }
+    }
+
+    .cm-tooltip-note {
+        border-color: 1pt solid var(--note-color, #06d6a0);
+    }
+
 }

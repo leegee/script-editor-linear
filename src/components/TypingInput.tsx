@@ -1,5 +1,5 @@
 import { onMount, onCleanup, createSignal } from "solid-js";
-import { EditorView, ViewUpdate, Decoration, DecorationSet, ViewPlugin } from "@codemirror/view";
+import { EditorView, ViewUpdate, Decoration, DecorationSet, ViewPlugin, hoverTooltip } from "@codemirror/view";
 import { EditorState, Range } from "@codemirror/state";
 import { basicSetup } from "@codemirror/basic-setup";
 import { history, undo, redo, undoDepth, redoDepth } from "@codemirror/commands";
@@ -13,6 +13,10 @@ import {
     addTimelineItems, allCharacterNames, allLocationNames, deleteAllTimelineItems, findCharacterByName,
     findLocationByName, loadAll, notes, tags, timelineItems, timelineSequence
 } from "../stores";
+
+// Regex to find identifiers around mouse position
+const tagMatch = /#([A-Za-z0-9_-]+)/g;
+const noteMatch = /&([A-Za-z0-9_-]+)/g;
 
 export default function TypingInput() {
     let editorRef!: HTMLDivElement;
@@ -87,74 +91,74 @@ export default function TypingInput() {
     };
 
     // Plugin to show title title of tags/notes that render as ID
-    const tagNoteTooltipPlugin = ViewPlugin.fromClass(
-        class {
-            decorations: DecorationSet;
+    const tagNoteTooltipPlugin = hoverTooltip((view, pos) => {
+        const { doc } = view.state;
+        const line = doc.lineAt(pos);
+        const text = line.text;
+        const offset = pos - line.from;
 
-            constructor(view: EditorView) {
-                this.decorations = this.build(view);
-            }
+        // Helper to locate a match that contains pos
+        function findMatch(regex: RegExp) {
+            let m;
+            while ((m = regex.exec(text))) {
+                const start = m.index;
+                const end = start + m[0].length;
 
-            update(update: ViewUpdate) {
-                if (update.docChanged || update.viewportChanged) {
-                    this.decorations = this.build(update.view);
+                if (start <= offset && offset <= end) {
+                    return {
+                        id: m[1],
+                        from: line.from + start,
+                        to: line.from + end,
+                    };
                 }
             }
+            return null;
+        }
 
-            build(view: EditorView): DecorationSet {
-                const builder: Range<Decoration>[] = [];
-                const text = view.state.doc.toString();
+        let found = findMatch(tagMatch);
+        if (found) {
+            const tag = tags[found.id];
+            if (!tag) return null;
 
-                const entries: { from: number; to: number; title: string }[] = [];
-
-                const tagRegex = /#([A-Za-z0-9_-]+)/g;
-                const noteRegex = /&([A-Za-z0-9_-]+)/g;
-
-                // Collect all tag matches
-                for (const match of text.matchAll(tagRegex)) {
-                    const id = match[1];
-                    const index = match.index!;
-                    const tag = tags[id];
-                    if (tag) {
-                        entries.push({
-                            from: index,
-                            to: index + match[0].length,
-                            title: tag.title,
-                        });
-                    }
+            return {
+                pos: found.from,
+                end: found.to,
+                above: true,
+                create() {
+                    const dom = document.createElement("div");
+                    dom.className = "cm-tooltip-tag large-elevate small-padding";
+                    dom.style.setProperty("--this-clr", tag.details.clr);
+                    dom.innerHTML = `<span>${tag.title}</span>`;
+                    return { dom };
                 }
+            };
+        }
 
-                // Collect all note matches
-                for (const match of text.matchAll(noteRegex)) {
-                    const id = match[1];
-                    const index = match.index!;
-                    const note = notes[id];
-                    if (note) {
-                        entries.push({
-                            from: index,
-                            to: index + match[0].length,
-                            title: note.title,
-                        });
-                    }
+        found = findMatch(noteMatch);
+        if (found) {
+            const note = notes[found.id];
+            if (!note) return null;
+
+            return {
+                pos: found.from,
+                end: found.to,
+                above: true,
+                create() {
+                    const dom = document.createElement("div");
+                    dom.className = "cm-tooltip-note large-elevate small-padding";
+                    dom.innerHTML = (
+                        note.details.urls?.length
+                            ? `<img class="responsive" src="${note.showUrl("tiny")}"/>`
+                            : ""
+                    ) + note.title;
+                    return { dom };
                 }
+            };
+        }
 
-                // 🔥 Sort all ranges by start position
-                entries.sort((a, b) => a.from - b.from);
+        return null;
+    });
 
-                // Finally add in sorted order
-                for (const e of entries) {
-                    builder.push(
-                        Decoration.mark({
-                            attributes: { title: e.title }
-                        }).range(e.from, e.to)
-                    );
-                }
-
-                return Decoration.set(builder);
-            }
-        },
-        { decorations: v => v.decorations }
-    );
 
     // Plugin to highlight invalid lines
     const highlightInvalidLines = ViewPlugin.fromClass(

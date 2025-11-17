@@ -3,11 +3,9 @@ import { notes, settings, timelineItemsByNote } from '../../stores';
 import { A, useNavigate } from '@solidjs/router';
 import { useChildRoute } from '../ChildRoute';
 import { createMemo, For, Show } from 'solid-js';
+import { TimelineItem, TimelineItemProps } from "./TimelineItem";
 
-export class Note {
-    id!: string;
-    title!: string;
-
+export class Note extends TimelineItem {
     // static Tooltip(props: { id: string, align: string }) {
     //     const { childRoute } = useChildRoute();
     //     const link = () => childRoute('tag/' + props.id);
@@ -97,11 +95,10 @@ export class Note {
         );
     }
 
-    constructor(data: Partial<Note>) {
-        Object.assign(this, data);
+    constructor(obj: Partial<Note>) {
+        super(obj as TimelineItemProps);
+        // Object.assign(this, obj);
     }
-
-    renderCompact() { return this.title; }
 
     static ListNotes = (props: { id?: string }) => {
         const { childRoute } = useChildRoute();
@@ -145,6 +142,14 @@ export class Note {
             </Show>
         );
     };
+
+    showUrl(size = "tiny") {
+        if (!this.details.urls) return "";
+        return `<img class="responsive" src="${this.details.urls[0]
+            }"/>`;
+    }
+
+    renderCompact() { return this.title; }
 }
 
 export function reviveNote(obj: any) { return new Note(obj); }

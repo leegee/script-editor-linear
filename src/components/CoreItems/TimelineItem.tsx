@@ -35,7 +35,7 @@ export class TimelineItem {
         this.id = props.id;
         this.type = props.type;
         this.title = props.title || '';
-        this.duration = props.duration;
+        this.duration = Number(props.duration || 0);
         this.details = props.details || {};
         this.tags = props.tags || [];
         this.notes = props.notes || [];

@@ -1,4 +1,6 @@
 import { onMount, onCleanup, createSignal } from "solid-js";
+import { useNavigate } from "@solidjs/router";
+
 import {
     EditorView, ViewUpdate, Decoration, DecorationSet,
     ViewPlugin, hoverTooltip
@@ -9,6 +11,7 @@ import { history, undo, redo, undoDepth, redoDepth } from "@codemirror/commands"
 import { autocompletion, CompletionContext } from "@codemirror/autocomplete";
 
 import styles from "./TypingInput.module.scss";
+import { useChildRoute } from "../contexts/ChildRoute";
 import { timelineItemTypesForTyping } from "../lib/timelineItemRegistry";
 import { text2timelineItemsJson } from "../lib/text2timelineItems";
 import { showAlert } from "../stores/modals";
@@ -16,8 +19,6 @@ import {
     addTimelineItems, allCharacterNames, allLocationNames, deleteAllTimelineItems, findCharacterByName,
     findLocationByName, loadAll, notes, tags, timelineItems, timelineSequence
 } from "../stores";
-import { useNavigate } from "@solidjs/router";
-import { useChildRoute } from "../contexts/ChildRoute";
 
 // Regex to find identifiers around mouse position
 const tagMatch = /#([A-Za-z0-9_-]+)/g;

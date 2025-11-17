@@ -270,7 +270,25 @@ export default function TypingInput() {
         });
     });
 
-    onCleanup(() => view()?.destroy());
+    onMount(() => {
+        const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+            if (isDirty()) {
+                e.preventDefault();
+                e.returnValue = "";
+            }
+        };
+
+        window.addEventListener("beforeunload", handleBeforeUnload);
+
+        onCleanup(() => {
+            window.removeEventListener("beforeunload", handleBeforeUnload);
+        });
+    });
+
+    onCleanup(() => {
+        if (isDirty()) handleSave();
+        view()?.destroy();
+    });
 
     function handleHelp() {
         showAlert(
@@ -305,9 +323,7 @@ export default function TypingInput() {
             findLocationByName
         );
 
-        console.log(
-            JSON.stringify(parsed, null, 4)
-        )
+        // console.log( JSON.stringify(parsed, null, 4) )
 
         await deleteAllTimelineItems();
         await addTimelineItems(parsed);

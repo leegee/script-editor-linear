@@ -1,5 +1,8 @@
 import { onMount, onCleanup, createSignal } from "solid-js";
-import { EditorView, ViewUpdate, Decoration, DecorationSet, ViewPlugin, hoverTooltip } from "@codemirror/view";
+import {
+    EditorView, ViewUpdate, Decoration, DecorationSet,
+    ViewPlugin, hoverTooltip
+} from "@codemirror/view";
 import { EditorState, Range } from "@codemirror/state";
 import { basicSetup } from "@codemirror/basic-setup";
 import { history, undo, redo, undoDepth, redoDepth } from "@codemirror/commands";
@@ -23,48 +26,57 @@ export default function TypingInput() {
     const [view, setView] = createSignal<EditorView | null>(null);
     const [isDirty, setIsDirty] = createSignal(false);
 
+    const findMatchAtPos = (regex: RegExp, text: string, offset: number) => {
+        let m;
+        while ((m = regex.exec(text))) {
+            const start = m.index;
+            const end = start + m[0].length;
+            if (start <= offset && offset <= end) {
+                return { id: m[1], from: start, to: end };
+            }
+        }
+        return null;
+    };
+
+    const buildTooltip = (content: string, className: string, style?: Record<string, string>) => {
+        const dom = document.createElement("div");
+        dom.className = className;
+        if (style) {
+            Object.entries(style).forEach(([k, v]) => dom.style.setProperty(k, v));
+        }
+        dom.innerHTML = content;
+        return { dom };
+    };
+
     const completionSource = (context: CompletionContext) => {
         const word = context.matchBefore(/[@#\w]+$/);
         const line = context.state.doc.lineAt(context.pos);
-        const textBeforeCursor = line.text.slice(0, context.pos - line.from);
-        const trimmed = textBeforeCursor.trimStart();
+        const textBeforeCursor = line.text.slice(0, context.pos - line.from).trimStart();
 
-        // tags
-        if (trimmed.startsWith("#")) {
-            const prefix = trimmed.slice(1).toLowerCase();
-            const allTags = Object.values(tags);
+        // Tags
+        if (textBeforeCursor.startsWith("#")) {
+            const prefix = textBeforeCursor.slice(1).toLowerCase();
             const filtered = prefix
-                ? allTags.filter(t => t.title.toLowerCase().includes(prefix))
-                : allTags;
+                ? Object.values(tags).filter(t => t.title.toLowerCase().includes(prefix))
+                : Object.values(tags);
 
             return {
                 from: line.from + textBeforeCursor.indexOf("#") + 1,
-                options: filtered.map(tag => ({
-                    label: tag.title,
-                    detail: tag.id,
-                    apply: tag.id,
-                    type: "tag"
-                })),
+                options: filtered.map(t => ({ label: t.title, detail: t.id, apply: t.id, type: "tag" })),
                 validFor: /^\w*$/
             };
         }
 
-        // notes
-        if (trimmed.startsWith("&")) {
-            const prefix = trimmed.slice(1).toLowerCase();
-            const allNotes = Object.values(notes);
+        // Notes
+        if (textBeforeCursor.startsWith("&")) {
+            const prefix = textBeforeCursor.slice(1).toLowerCase();
             const filtered = prefix
-                ? allNotes.filter(t => t.title.toLowerCase().includes(prefix))
-                : allNotes;
+                ? Object.values(notes).filter(n => n.title.toLowerCase().includes(prefix))
+                : Object.values(notes);
 
             return {
                 from: line.from + textBeforeCursor.indexOf("&") + 1,
-                options: filtered.map(note => ({
-                    label: note.title,
-                    detail: note.id,
-                    apply: note.id,
-                    type: "tag"
-                })),
+                options: filtered.map(n => ({ label: n.title, detail: n.id, apply: n.id, type: "tag" })),
                 validFor: /^\w*$/
             };
         }
@@ -90,79 +102,41 @@ export default function TypingInput() {
         };
     };
 
-    // Plugin to show title title of tags/notes that render as ID
-    const tagNoteTooltipPlugin = hoverTooltip((view, pos) => {
+    const tooltipPlugin = hoverTooltip((view, pos) => {
         const { doc } = view.state;
         const line = doc.lineAt(pos);
-        const text = line.text;
         const offset = pos - line.from;
+        const text = line.text;
 
-        // Helper to locate a match that contains pos
-        function findMatch(regex: RegExp) {
-            let m;
-            while ((m = regex.exec(text))) {
-                const start = m.index;
-                const end = start + m[0].length;
-
-                if (start <= offset && offset <= end) {
-                    return {
-                        id: m[1],
-                        from: line.from + start,
-                        to: line.from + end,
-                    };
-                }
-            }
-            return null;
-        }
-
-        let found = findMatch(tagMatch);
+        // Check tag
+        let found = findMatchAtPos(tagMatch, text, offset);
         if (found) {
             const tag = tags[found.id];
             if (!tag) return null;
-
             return {
-                pos: found.from,
-                end: found.to,
-                above: true,
-                create() {
-                    const dom = document.createElement("div");
-                    dom.className = "cm-tooltip-tag large-elevate small-padding";
-                    dom.style.setProperty("--this-clr", tag.details.clr);
-                    dom.innerHTML = `<span>${tag.title}</span>`;
-                    return { dom };
-                }
+                pos: line.from + found.from, end: line.from + found.to, above: true,
+                create: () => buildTooltip(`<span>${tag.title}</span>`, "cm-tooltip-tag large-elevate small-padding", { "--this-clr": tag.details.clr })
             };
         }
 
-        found = findMatch(noteMatch);
+        // Check note
+        found = findMatchAtPos(noteMatch, text, offset);
         if (found) {
             const note = notes[found.id];
             if (!note) return null;
-
             return {
-                pos: found.from,
-                end: found.to,
-                above: true,
-                create() {
-                    const dom = document.createElement("div");
-                    dom.className = "cm-tooltip-note large-elevate small-padding";
-                    dom.innerHTML = note.urlForInnerHtml("tiny") + '<h6>' + note.title + '</h6>';
-                    return { dom };
-                }
+                pos: line.from + found.from, end: line.from + found.to, above: true,
+                create: () => buildTooltip(note.urlForInnerHtml("tiny") + `<h6>${note.title}</h6>`, "cm-tooltip-note large-elevate small-padding")
             };
         }
 
         return null;
     });
 
-
-    // Plugin to highlight invalid lines
     const highlightInvalidLines = ViewPlugin.fromClass(
         class {
             decorations: DecorationSet;
-            constructor(view: EditorView) {
-                this.decorations = this.buildDecorations(view);
-            }
+            constructor(view: EditorView) { this.decorations = this.buildDecorations(view); }
             update(update: ViewUpdate) {
                 if (update.docChanged || update.viewportChanged) {
                     this.decorations = this.buildDecorations(update.view);
@@ -170,10 +144,8 @@ export default function TypingInput() {
             }
             buildDecorations(view: EditorView) {
                 const builder: Range<Decoration>[] = [];
-                const text = view.state.doc.toString();
-                const lines = text.split("\n");
+                const lines = view.state.doc.toString().split("\n");
                 let pos = 0;
-
                 for (const line of lines) {
                     const trimmed = line.trim();
                     if (!trimmed) { pos += line.length + 1; continue; }
@@ -185,55 +157,82 @@ export default function TypingInput() {
                         const isKnownCharacter = findCharacterByName(trimmed.toUpperCase());
 
                         if (!isKnownHeader && !isKnownCharacter) {
-                            builder.push(
-                                Decoration.mark({
-                                    class: "invalid-line",
-                                    attributes: { title: "Unknown character or part" },
-                                }).range(pos, pos + line.length)
-                            );
+                            builder.push(Decoration.mark({
+                                class: "invalid-line",
+                                attributes: { title: "Unknown character or part" },
+                            }).range(pos, pos + line.length));
                         }
                     }
 
                     pos += line.length + 1;
                 }
-
                 return Decoration.set(builder);
             }
         },
-        { decorations: (v) => v.decorations }
+        { decorations: v => v.decorations }
     );
 
-    // TEST Plugin for click detection on invalid lines
-    const clickPlugin = ViewPlugin.fromClass(
+    const interactivePlugin = ViewPlugin.fromClass(
         class {
             constructor(public view: EditorView) { }
             update() { }
+
         },
         {
             eventHandlers: {
-                click(event, view) {
-                    const pos = view.posAtDOM(event.target as HTMLElement);
-                    const line = view.state.doc.lineAt(pos);
-                    const trimmed = line.text.trim();
-
-                    const isAllCaps = /^[A-Z0-9 _'-]+$/.test(trimmed);
-                    if (isAllCaps) {
-                        const firstWord = trimmed.split(/\s+/)[0].toUpperCase();
-                        const isKnownHeader = timelineItemTypesForTyping.includes(firstWord as Uppercase<string>);
-                        const isKnownCharacter = findCharacterByName(trimmed.toUpperCase());
-
-                        if (!isKnownHeader && !isKnownCharacter) {
-                            alert(`Clicked invalid line: "${trimmed}"`);
-                        }
-                    }
-                },
-            },
+                dblclick(event, view) {
+                    handleClick(event, view);
+                }
+            }
         }
     );
 
+    const handleClick = (event: MouseEvent, view: EditorView) => {
+        const pos = view.posAtDOM(event.target as HTMLElement);
+        const line = view.state.doc.lineAt(pos);
+        const trimmed = line.text.trim();
+
+        // Dialogue detection (lines starting with ^N)
+        const isDialogue = /^\^\d/.test(trimmed);
+
+        // Tag/note detection
+        const tagFound = findMatchAtPos(tagMatch, line.text, pos - line.from);
+        const noteFound = findMatchAtPos(noteMatch, line.text, pos - line.from);
+
+        if (tagFound) {
+            alert(`Double-click tag: ${tagFound.id}`);
+        }
+        else if (noteFound) {
+            alert(`Double-click note: ${noteFound.id}`);
+        }
+        else if (isDialogue) {
+            alert(`Double-click dialogue: ${trimmed}`);
+        }
+        else {
+            const isAllCaps = /^[A-Z0-9 _'-]+$/.test(trimmed);
+            const firstWord = trimmed.split(/\s+/)[0].toUpperCase();
+            const isKnownHeader = timelineItemTypesForTyping.includes(firstWord as Uppercase<string>);
+            const isKnownCharacter = findCharacterByName(trimmed.toUpperCase());
+
+            if (isAllCaps && !isKnownHeader && !isKnownCharacter) {
+                alert(`Clicked invalid line: "${trimmed}"`);
+            } else {
+                // New case: show item type
+                let itemType = "unknown";
+                if (isKnownHeader) itemType = "header";
+                else if (isKnownCharacter) itemType = "character";
+                else if (/^\^\d/.test(trimmed)) itemType = "dialogue";
+                // could add more rules here for locations, etc.
+
+                alert(`Line type: ${itemType}\nContent: ${trimmed}`);
+            }
+        }
+    };
+
+
     onMount(() => {
         const initialText = timelineSequence()
-            .map((id) => timelineItems[id].renderAsText())
+            .map(id => timelineItems[id].renderAsText())
             .join("\n\n");
 
         const state = EditorState.create({
@@ -241,21 +240,18 @@ export default function TypingInput() {
             extensions: [
                 basicSetup,
                 highlightInvalidLines,
-                tagNoteTooltipPlugin,
-                clickPlugin,
+                tooltipPlugin,
+                interactivePlugin,
                 history(),
                 autocompletion({ override: [completionSource] }),
                 EditorView.lineWrapping,
-                EditorView.updateListener.of((update) => {
-                    if (update.docChanged) setIsDirty(true);
-                }),
+                EditorView.updateListener.of(update => { if (update.docChanged) setIsDirty(true); }),
             ],
         });
 
         const v = new EditorView({ state, parent: editorRef });
         setView(v);
 
-        // Keybindings
         const handleKeyDown = (e: KeyboardEvent) => {
             if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") {
                 e.preventDefault();
@@ -264,55 +260,18 @@ export default function TypingInput() {
         };
         window.addEventListener("keydown", handleKeyDown);
 
-        onCleanup(() => {
-            v.destroy();
-            window.removeEventListener("keydown", handleKeyDown);
-        });
-    });
-
-    onMount(() => {
         const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-            if (isDirty()) {
-                e.preventDefault();
-                e.returnValue = "";
-            }
+            if (isDirty()) { e.preventDefault(); e.returnValue = ""; }
         };
-
         window.addEventListener("beforeunload", handleBeforeUnload);
 
         onCleanup(() => {
+            v.destroy();
+            window.removeEventListener("keydown", handleKeyDown);
             window.removeEventListener("beforeunload", handleBeforeUnload);
+            if (isDirty()) handleSave();
         });
     });
-
-    onCleanup(() => {
-        if (isDirty()) handleSave();
-        view()?.destroy();
-    });
-
-    function handleHelp() {
-        showAlert(
-            <aside>
-                <header class="no-padding">
-                    <nav>
-                        <i>help</i>
-                        <h2 class="max">Help</h2>
-                    </nav>
-                </header>
-                <p>Your changes only take effect when you save them ysing the save button or <kbd>CTRL S</kbd></p>
-                <p>If you have created tags or notes, you can referenes to them
-                    by using their IDs at the start of a line:
-                </p>
-                <pre>
-                    <code> #tagId, &noteId, ^5 </code>
-                </pre>
-                <p>You can specify duration in secconds of a dialogue item like this:</p>
-                <pre>
-                    <code> ^5 </code>
-                </pre>
-            </aside>
-        );
-    }
 
     async function handleSave() {
         if (!view()) return;
@@ -322,13 +281,9 @@ export default function TypingInput() {
             findCharacterByName,
             findLocationByName
         );
-
-        // console.log( JSON.stringify(parsed, null, 4) )
-
         await deleteAllTimelineItems();
         await addTimelineItems(parsed);
         await loadAll();
-
         setIsDirty(false);
     }
 
@@ -338,30 +293,22 @@ export default function TypingInput() {
                 <button
                     class="icon small circle"
                     disabled={!view() || undoDepth(view()!.state) === 0}
-                    onClick={() => view() && undo(view()!)}
-                >
-                    <i>undo</i>
-                    <div class="tooltip left">Undo</div>
+                    onClick={() => view() && undo(view()!)}>
+                    <i>undo</i><div class="tooltip left">Undo</div>
                 </button>
-
                 <button
                     class="icon small circle"
                     disabled={!view() || redoDepth(view()!.state) === 0}
-                    onClick={() => view() && redo(view()!)}
-                >
-                    <i>redo</i>
-                    <div class="tooltip left">Redo</div>
+                    onClick={() => view() && redo(view()!)}>
+                    <i>redo</i><div class="tooltip left">Redo</div>
                 </button>
-
                 <button class="icon small circle" disabled={!isDirty()} onClick={handleSave}>
-                    <i>save</i>
-                    <div class="tooltip left">Save (<kbd>CTRL S</kbd>)</div>
+                    <i>save</i><div class="tooltip left">Save (<kbd>CTRL S</kbd>)</div>
                 </button>
-
-                <button class="icon small circle" onClick={handleHelp}>
-                    <i>help</i>
-                    <div class="tooltip left">Help</div>
-                </button>            </nav>
+                <button class="icon small circle" onClick={() => showAlert(<p>Help info here</p>)}>
+                    <i>help</i><div class="tooltip left">Help</div>
+                </button>
+            </nav>
             <article class={styles.typingEditor} ref={editorRef}></article>
         </>
     );

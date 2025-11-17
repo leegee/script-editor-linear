@@ -4,22 +4,23 @@ import "beercss";
 import { render } from "solid-js/web";
 import { HashRouter, Route } from "@solidjs/router";
 
+import { ChildRouteProvider } from "./contexts/ChildRoute";
+import MainLayout from "./layouts/MainLayout";
 import ListLayout from "./layouts/ListLayout";
 import TimelineLayout from "./layouts/TimelineLayout";
-import MainLayout from "./layouts/MainLayout";
+import SettingsLayout from "./layouts/SettingsLayout";
+
 import NewTimelineItemSelector from "./components/NewTimelineItemSelector";
 import Default from "./components/panels/Default";
 import CharacterView from "./components/panels/CharacterView";
 import LocationView from "./components/panels/LocationView";
 import TimelineItemView from "./components/views/TimelineItemView";
 import { loadAll } from "./stores";
-import SettingsLayout from "./layouts/SettingsLayout";
 import FiltersView from "./components/panels/FiltersView";
 import NoteCreator from "./components/panels/NoteCreator";
 import TagEditorView from "./components/panels/TagEditorView";
 import ViewEditNote from "./components/ViewEditNote";
 import TypingLayout from "./layouts/TypingLayout";
-import { ChildRouteProvider } from "./contexts/ChildRoute";
 import TagsView from "./components/panels/TagsListView";
 import ViewEditTag from "./components/ViewEditTag";
 

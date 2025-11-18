@@ -200,47 +200,79 @@ export default function TypingInput() {
         }
     );
 
+
     const handleClick = (event: MouseEvent, view: EditorView) => {
-        const pos = view.posAtDOM(event.target as HTMLElement);
+        // const pos = view.posAtDOM(event.target as HTMLElement);
+        const pos = view.state.selection.main.head;
+        if (pos == null) return;
+
         const line = view.state.doc.lineAt(pos);
-        const trimmed = line.text.trim();
-        console.log("trimmed", trimmed)
 
-        // Dialogue detection (lines starting with ^N)
-        const isDialogue = /^\^\d/.test(trimmed);
+        const rawText = line.text;
+        const offset = pos - line.from;
+        const trimmed = rawText.trim();
 
-        // Tag/note detection
-        const tagFound = findMatchAtPos(tagMatch, line.text, pos - line.from);
-        const noteFound = findMatchAtPos(noteMatch, line.text, pos - line.from);
+        if (!trimmed) return;
 
-        if (tagFound) {
-            // alert(`Double-click tag: ${tagFound.id}`);
-            navigate(childRoute('tag/' + tagFound.id))
-        }
-        else if (noteFound) {
-            alert(`Double-click note: ${noteFound.id}`);
-        }
-        else if (isDialogue) {
-            alert(`Double-click dialogue: ${trimmed}`);
-        }
-        else {
-            const isAllCaps = /^[A-Z0-9 _'-]+$/.test(trimmed);
-            const firstWord = trimmed.split(/\s+/)[0].toUpperCase();
-            const isKnownHeader = timelineItemTypesForTyping.includes(firstWord as Uppercase<string>);
-            const isKnownCharacter = findCharacterByName(trimmed.toUpperCase());
+        // Check meta tokens (# or &)
+        const metaRegex = /([#^&][A-Za-z0-9_-]+)/g;
+        let m;
+        while ((m = metaRegex.exec(rawText))) {
+            const token = m[0];
+            const meta = token[0];
+            const val = token.slice(1);
+            const start = m.index;
+            const end = start + token.length;
 
-            if (isAllCaps && !isKnownHeader && !isKnownCharacter) {
-                console.warn(`Clicked invalid line: "${trimmed}"`);
-            } else {
-                let itemType = "unknown";
-                if (isKnownHeader) itemType = "header";
-                else if (isKnownCharacter) itemType = "character";
-                else if (/^\^\d/.test(trimmed)) itemType = "dialogue";
-                // could add more rules here for locations, etc.
+            if (offset >= start && offset <= end) {
+                let info: { type: string; id?: string; title?: string } | null = null;
 
-                alert(`Line type: ${itemType}\nContent: ${trimmed}`);
+                if (meta === "#") {
+                    const tag = tags[val];
+                    if (tag) info = { type: "tag", id: tag.id, title: tag.title };
+                }
+                if (meta === "&") {
+                    const note = notes[val];
+                    if (note) info = { type: "note", id: note.id, title: note.title };
+                }
+                if (meta === "^") {
+                    info = { type: "duration", id: val, title: val };
+                }
+
+                if (info) {
+                    console.log("Clicked item:", info);
+                    navigate(childRoute(info.type + '/' + info.id));
+                    return;
+                }
             }
         }
+
+        // Map the clicked line to a timeline item ID
+        let lineStart = 0;
+        for (const id of timelineSequence()) {
+            const item = timelineItems[id];
+            const text = item.renderAsText();
+            const lines = text.split("[\n]{2,}");
+            for (const l of lines) {
+                const lineEnd = lineStart + l.length;
+                if (lineStart <= pos && pos <= lineEnd) {
+                    console.log("Clicked timeline item:", { type: item.type, id: id }, item);
+                    if (item.type === 'location') {
+                        navigate(childRoute('locations/' + item.details.ref))
+                    } else if (item.type === 'tag') {
+                        navigate(childRoute('tags/' + id))
+                    } else if (item.type === 'note') {
+                        navigate(childRoute('notes/' + id))
+                    } else {
+                        navigate(childRoute('items/' + id))
+                    }
+                    return;
+                }
+                lineStart = lineEnd + 2; // +2 because of the "\n\n" join
+            }
+        }
+
+        console.warn("Clicked line did not match any known item:", trimmed);
     };
 
 

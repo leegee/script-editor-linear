@@ -24,13 +24,29 @@ import {
 const tagMatch = /#([A-Za-z0-9_-]+)/g;
 const noteMatch = /&([A-Za-z0-9_-]+)/g;
 
-const getEditorPos = (event: MouseEvent, view: EditorView) => {
-    let target = event.target as HTMLElement;
-    while (target && !target.hasAttribute("cm-line")) {
-        target = target.parentElement!;
-    }
-    return view.posAtDOM(target);
-};
+function showHelp() {
+    showAlert(
+        <aside>
+            <header class="no-padding">
+                <nav>
+                    <i>help</i>
+                    <h2 class="max">Help</h2>
+                </nav>
+            </header>
+            <p>Your changes only take effect when you save them ysing the save button or <kbd>CTRL S</kbd></p>
+            <p>If you have created tags or notes, you can referenes to them
+                by using their IDs at the start of a line:
+            </p>
+            <pre>
+                <code> #tagId, &noteId, ^5 </code>
+            </pre>
+            <p>You can specify duration in secconds of a dialogue item like this:</p>
+            <pre>
+                <code> ^5 </code>
+            </pre>
+        </aside>
+    );
+}
 
 export default function TypingInput() {
     const navigate = useNavigate();
@@ -359,7 +375,7 @@ export default function TypingInput() {
                 <button class="icon small circle" disabled={!isDirty()} onClick={saveDoc}>
                     <i>save</i><div class="tooltip left">Save (<kbd>CTRL S</kbd>)</div>
                 </button>
-                <button class="icon small circle" onClick={() => showAlert(<p>Help info here</p>)}>
+                <button class="icon small circle" onClick={showHelp}>
                     <i>help</i><div class="tooltip left">Help</div>
                 </button>
             </nav>

@@ -159,24 +159,33 @@ export default function TypingInput() {
                 const builder: Range<Decoration>[] = [];
                 const lines = view.state.doc.toString().split("\n");
                 let pos = 0;
+                let previousLineBlank = true;
                 for (const line of lines) {
                     const trimmed = line.trim();
-                    if (!trimmed) { pos += line.length + 1; continue; }
+                    // console.log('line', line);
+                    // console.log('trimmed', trimmed);
+                    if (trimmed) {
+                        const isAllCaps = /^[A-Z0-9 _'-]+$/.test(trimmed);
+                        if (isAllCaps) {
+                            const firstWord = trimmed.split(/\s+/)[0].toUpperCase();
+                            const isKnownHeader = timelineItemTypesForTyping.includes(firstWord as Uppercase<string>);
+                            const isKnownCharacter = findCharacterByName(trimmed.toUpperCase());
 
-                    const isAllCaps = /^[A-Z0-9 _'-]+$/.test(trimmed);
-                    if (isAllCaps) {
-                        const firstWord = trimmed.split(/\s+/)[0].toUpperCase();
-                        const isKnownHeader = timelineItemTypesForTyping.includes(firstWord as Uppercase<string>);
-                        const isKnownCharacter = findCharacterByName(trimmed.toUpperCase());
+                            if (!isKnownHeader && !isKnownCharacter && previousLineBlank) {
+                                console.log('is not header or char and prv line not blank');
+                                builder.push(Decoration.mark({
+                                    class: "invalid-line",
+                                    attributes: { title: "Unknown character or part" },
+                                }).range(pos, pos + line.length));
+                            }
 
-                        if (!isKnownHeader && !isKnownCharacter) {
-                            builder.push(Decoration.mark({
-                                class: "invalid-line",
-                                attributes: { title: "Unknown character or part" },
-                            }).range(pos, pos + line.length));
+                            previousLineBlank = false;
                         }
                     }
-
+                    else {
+                        // console.log('blank');
+                        previousLineBlank = true;
+                    }
                     pos += line.length + 1;
                 }
                 return Decoration.set(builder);
@@ -241,6 +250,7 @@ export default function TypingInput() {
 
                 if (info) {
                     console.log("Clicked item:", info);
+                    saveDoc();
                     navigate(childRoute(info.type + '/' + info.id));
                     return;
                 }
@@ -258,12 +268,10 @@ export default function TypingInput() {
                 if (lineStart <= pos && pos <= lineEnd) {
                     console.log("Clicked timeline item:", { type: item.type, id: id }, item);
                     if (item.type === 'location') {
+                        saveDoc();
                         navigate(childRoute('locations/' + item.details.ref))
-                    } else if (item.type === 'tag') {
-                        navigate(childRoute('tags/' + id))
-                    } else if (item.type === 'note') {
-                        navigate(childRoute('notes/' + id))
                     } else {
+                        saveDoc();
                         navigate(childRoute('items/' + id))
                     }
                     return;
@@ -301,7 +309,7 @@ export default function TypingInput() {
         const handleKeyDown = (e: KeyboardEvent) => {
             if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") {
                 e.preventDefault();
-                handleSave();
+                saveDoc();
             }
         };
         window.addEventListener("keydown", handleKeyDown);
@@ -315,11 +323,11 @@ export default function TypingInput() {
             v.destroy();
             window.removeEventListener("keydown", handleKeyDown);
             window.removeEventListener("beforeunload", handleBeforeUnload);
-            if (isDirty()) handleSave();
+            if (isDirty()) saveDoc();
         });
     });
 
-    async function handleSave() {
+    async function saveDoc() {
         if (!view()) return;
         const parsed = text2timelineItemsJson(
             view()!.state.doc.toString(),
@@ -348,7 +356,7 @@ export default function TypingInput() {
                     onClick={() => view() && redo(view()!)}>
                     <i>redo</i><div class="tooltip left">Redo</div>
                 </button>
-                <button class="icon small circle" disabled={!isDirty()} onClick={handleSave}>
+                <button class="icon small circle" disabled={!isDirty()} onClick={saveDoc}>
                     <i>save</i><div class="tooltip left">Save (<kbd>CTRL S</kbd>)</div>
                 </button>
                 <button class="icon small circle" onClick={() => showAlert(<p>Help info here</p>)}>

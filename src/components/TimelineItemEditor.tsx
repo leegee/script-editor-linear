@@ -60,8 +60,8 @@ export default function TimelineItemEditor(props: TimelineItemEditorProps) {
 
         const v = value();
 
-        if (props.id && props.store) {
-            if (props.store === "timeline") {
+        if (props.id) {
+            if (!props.store || props.store === "timeline") {
                 updateTimelineItem(props.id, props.path, props.key ?? "", v);
             } else {
                 const updateObj =

@@ -27,17 +27,17 @@ export default function TagEditor(props: TagEditorProps) {
 
     const [title, setTitle] = createSignal(existingTag?.title ?? "");
     const [text, setText] = createSignal(existingTag?.details?.text ?? "");
-    const [clr, setClr] = createSignal(existingTag?.details?.clr ?? "transparent");
+    const [clr, setClr] = createSignal(existingTag?.details?.clr ?? "#0000");
     const [selectedId, setSelectedId] = createSignal<string>("");
 
     // Sync when tag changes
     createEffect(() => {
-        const n = tag();
-        if (!n) return;
-        setTitle(n.title);
-        setText(n.details?.text ?? "");
-        setClr(n.details?.clr ?? "transparent");
-        setSelectedId(n.id);
+        const t = tag();
+        if (!t) return;
+        setTitle(t.title);
+        setText(t.details?.text ?? "");
+        setClr(t.details?.clr ?? "transparent");
+        setSelectedId(t.id);
     });
 
     const handleSelectExisting = (id: string) => {

@@ -1,18 +1,15 @@
 import styles from "./TimelineSidePanel.module.scss";
 import { createSignal, onMount, onCleanup, type ParentProps, Match, Switch, createEffect } from "solid-js";
-import { useLocation } from "@solidjs/router";
+import { useLocation, useNavigate } from "@solidjs/router";
+import { useChildRoute } from "../../contexts/ChildRoute";
 
 
 export default function TimelineSidePanel(props: ParentProps) {
+    const { isChildRoute, routeWithoutChild } = useChildRoute();
+    const navigate = useNavigate();
     const location = useLocation();
     const [open, setOpen] = createSignal(false);
     let containerRef: HTMLDivElement | undefined;
-
-    createEffect(() =>
-        setOpen(/(^\/\w+)?\/+[^/]+[^/]+$/.test(
-            location.pathname.slice(1)
-        ))
-    );
 
     // Click outside to auto-hide
     const handleClickOutside = (e: MouseEvent) => {
@@ -22,12 +19,20 @@ export default function TimelineSidePanel(props: ParentProps) {
         }
     };
 
-    onMount(() => {
-        document.addEventListener("mousedown", handleClickOutside);
-    });
+    onMount(() => document.addEventListener("mousedown", handleClickOutside));
 
-    onCleanup(() => {
-        document.removeEventListener("mousedown", handleClickOutside);
+    onCleanup(() => document.removeEventListener("mousedown", handleClickOutside));
+
+    createEffect(() =>
+        setOpen(/(^\/\w+)?\/+[^/]+[^/]+$/.test(
+            location.pathname.slice(1)
+        ))
+    );
+
+    createEffect(() => {
+        if (isChildRoute()) {
+            navigate(routeWithoutChild());
+        }
     });
 
     return (

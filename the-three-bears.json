@@ -7,6 +7,14 @@
                 "text": "An item to do",
                 "clr": "#FFDD22"
             }
+        },
+        {
+            "id": "testing",
+            "title": "Testing",
+            "details": {
+                "text": "A test tag",
+                "clr": "#DDFF22"
+            }
         }
     ],
     "notes": [
@@ -76,7 +84,11 @@
             "type": "act",
             "title": "Act 1",
             "tags": [
-                "todo"
+                "todo",
+                "testing"
+            ],
+            "notes": [
+                "goldilocks"
             ]
         },
         {

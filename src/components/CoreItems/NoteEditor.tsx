@@ -138,7 +138,7 @@ export default function NoteEditor(props: NoteEditorProps) {
                             <>
                                 <Show when={editingUrl() === idx}>
                                     <nav class="no-space">
-                                        <div class="max field">
+                                        <div class="max field border">
                                             <input
                                                 type="text"
                                                 value={url}

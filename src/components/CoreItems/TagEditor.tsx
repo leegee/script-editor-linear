@@ -22,22 +22,30 @@ interface TagEditorProps {
 }
 
 export default function TagEditor(props: TagEditorProps) {
-    const existingTag = props.tagId ? getTag(props.tagId) : undefined;
-    const [tag, setTag] = createSignal<TagType | undefined>(existingTag);
-
-    const [title, setTitle] = createSignal(existingTag?.title ?? "");
-    const [text, setText] = createSignal(existingTag?.details?.text ?? "");
-    const [clr, setClr] = createSignal(existingTag?.details?.clr ?? "#0000");
+    const [tag, setTag] = createSignal<TagType | undefined>();
+    const [title, setTitle] = createSignal("");
+    const [text, setText] = createSignal("");
+    const [clr, setClr] = createSignal("#000000"); // must be valid hex
     const [selectedId, setSelectedId] = createSignal<string>("");
 
-    // Sync when tag changes
+    let colorEl: HTMLInputElement;
+
+    // Update signals whenever props.tagId changes
     createEffect(() => {
-        const t = tag();
-        if (!t) return;
-        setTitle(t.title);
-        setText(t.details?.text ?? "");
-        setClr(t.details?.clr ?? "transparent");
-        setSelectedId(t.id);
+        const id = props.tagId;
+        const t = id ? getTag(id) : undefined;
+        setTag(t);
+        setTitle(t?.title ?? "");
+        setText(t?.details?.text ?? "");
+        setClr(t?.details?.clr ?? "#000000");
+        setSelectedId(t?.id ?? "");
+    });
+
+    // Sync color picker DOM value whenever clr() changes
+    createEffect(() => {
+        if (colorEl && clr()) {
+            colorEl.value = clr();
+        }
     });
 
     const handleSelectExisting = (id: string) => {
@@ -83,7 +91,6 @@ export default function TagEditor(props: TagEditorProps) {
         if (!id) return;
 
         removeTagInstances(id);
-
         removeTag(id);
         setTag(undefined);
         props.onDelete?.(id);
@@ -117,7 +124,7 @@ export default function TagEditor(props: TagEditorProps) {
             <div class="field label textarea">
                 <AutoResizingTextarea
                     value={text()}
-                    onInput={(v) => setText(v)}
+                    onInput={setText}
                     minHeight={50}
                     maxHeight={300}
                 />
@@ -125,10 +132,13 @@ export default function TagEditor(props: TagEditorProps) {
 
             <fieldset class="border label no-margin tiny-padding">
                 <legend>Colour</legend>
-                <div class="field tiny-margin" style={{ background: clr(), 'border-radius': '4pt' }}>
+                <div
+                    class="field tiny-margin"
+                    style={{ background: clr(), "border-radius": "4pt" }}
+                >
                     <input
                         type="color"
-                        value={clr()}
+                        ref={(el) => colorEl = el}
                         onInput={(e) => setClr(e.currentTarget.value)}
                     />
                 </div>

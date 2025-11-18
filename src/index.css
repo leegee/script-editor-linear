@@ -44,6 +44,11 @@ h6 input {
     opacity: 50%;
 }
 
+.large-panel-img {
+    max-width: 100%;
+    max-height: 25vh;
+}
+
 .block {
     width: 1em;
     height: 1em;

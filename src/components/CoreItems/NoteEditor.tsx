@@ -157,7 +157,9 @@ export default function NoteEditor(props: NoteEditorProps) {
                                 </Show>
 
                                 <Show when={editingUrl() !== idx}>
-                                    <div class={"row " + styles.linkEditorRoot} innerHTML={Note.urlForInnerHtml(url, "small")}>
+                                    <div class={"row " + styles.linkEditorRoot}
+                                        innerHTML={Note.urlForInnerHtml(url, urls().length === 1 ? "large-panel-img" : "extra")}
+                                    >
                                         <div class={"fill small-opacity " + styles.linkEditor}>
                                             <button class="transparent chip small">
                                                 <a href={url} target="_blank">

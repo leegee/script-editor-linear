@@ -159,13 +159,14 @@ export class Note implements NoteProps {
 
         if (typeOrThumb === "image") {
             return `<a href="${escapeHtml(url)}" target="_blank">
-                        <img class="responsive ${escapeHtml(size)}" src="${escapeHtml(url)}" alt="${escapeHtml(url)}"/>
+                        <img class="${escapeHtml(size)}" src="${escapeHtml(url)}" alt="${escapeHtml(url)}"/>
+                        <div class="tooltip max"><img class="responsive" src="${escapeHtml(url)}" alt="${escapeHtml(url)}"/></div>
                     </a>`;
         }
 
         if (typeOrThumb === "video") {
             return `<div ${openInNewWindowAttr}>
-                        <video class="responsive ${escapeHtml(size)}" controls>
+                        <video class="${escapeHtml(size)}" controls>
                             <source src="${escapeHtml(url)}"/>
                         </video>
                     </div>`;
@@ -173,7 +174,7 @@ export class Note implements NoteProps {
 
         if (typeOrThumb === "audio") {
             return `<div ${openInNewWindowAttr}>
-                        <audio class="responsive ${escapeHtml(size)}" controls>
+                        <audio class="${escapeHtml(size)}" controls>
                             <source src="${escapeHtml(url)}"/>
                         </audio>
                     </div>`;
@@ -181,7 +182,7 @@ export class Note implements NoteProps {
 
         if (typeof typeOrThumb === "string" && typeOrThumb.startsWith("https://img.youtube.com")) {
             return `<a href="${escapeHtml(url)}" target="_blank">
-                        <img class="responsive ${escapeHtml(size)}" src="${escapeHtml(typeOrThumb)}" alt="YouTube"/>
+                        <img class="${escapeHtml(size)}" src="${escapeHtml(typeOrThumb)}" alt="YouTube"/>
                     </a>`;
         }
 

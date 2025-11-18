@@ -26,6 +26,15 @@
                     "https://pulpinternational.com/images/postimg/goldilocks_zone_01.jpg"
                 ]
             }
+        },
+        {
+            "id": "dawn",
+            "title": "Dawn",
+            "details": {
+                "urls": [
+                    "https://static.vecteezy.com/system/resources/previews/041/878/826/non_2x/ai-generated-mystical-foggy-forest-at-sunrise-with-sunbeams-piercing-through-trees-atmospheric-woodland-scenery-with-misty-undergrowth-and-sunlight-rays-in-morning-haze-photo.jpg"
+                ]
+            }
         }
     ],
     "characters": [
@@ -88,7 +97,8 @@
                 "testing"
             ],
             "notes": [
-                "goldilocks"
+                "goldilocks",
+                "dawn"
             ]
         },
         {

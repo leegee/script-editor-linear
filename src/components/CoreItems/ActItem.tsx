@@ -4,7 +4,6 @@ import { TimelineItem, TimelineItemProps } from "./TimelineItem";
 import TimelineItemEditor from "../TimelineItemEditor";
 import { A } from "@solidjs/router";
 import PanelSectionHeader from "../PanelSectionHeader";
-import { Show } from "solid-js";
 import { useChildRoute } from "../../contexts/ChildRoute";
 
 export class ActItem extends TimelineItem {

@@ -29,11 +29,13 @@ export default function NoteEditor(props: NoteEditorProps) {
 
     // Sync signals when note changes
     createEffect(() => {
-        const n = note();
-        if (!n) return;
-        setTitle(n.title);
-        setText(n.details?.text ?? "");
-        setUrls(n.details?.urls ?? []);
+        const id = props.noteId;
+        const n = id ? getNote(id) : undefined;
+        setNote(n);
+        setTitle(n?.title ?? "");
+        setText(n?.details?.text ?? "");
+        setUrls(n?.details?.urls ?? []);
+        setEditingUrl(-1); // reset editing
     });
 
     const handleSave = () => {

@@ -121,7 +121,7 @@ export default function TagEditor(props: TagEditorProps) {
                 <label>Title</label>
             </div>
 
-            <div class="field label textarea">
+            <div class="field label border textarea">
                 <AutoResizingTextarea
                     value={text()}
                     onInput={setText}

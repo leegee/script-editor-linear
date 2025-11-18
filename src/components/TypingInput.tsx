@@ -1,5 +1,5 @@
-import { onMount, onCleanup, createSignal } from "solid-js";
-import { useNavigate } from "@solidjs/router";
+import { onMount, onCleanup, createSignal, createEffect } from "solid-js";
+import { useLocation, useNavigate } from "@solidjs/router";
 
 import {
     EditorView, ViewUpdate, Decoration, DecorationSet,
@@ -49,6 +49,7 @@ function showHelp() {
 }
 
 export default function TypingInput() {
+    const location = useLocation();
     const navigate = useNavigate();
     const { childRoute } = useChildRoute();
     const [view, setView] = createSignal<EditorView | null>(null);
@@ -226,7 +227,7 @@ export default function TypingInput() {
     );
 
 
-    const handleClick = (event: MouseEvent, view: EditorView) => {
+    const handleClick = async (event: MouseEvent, view: EditorView) => {
         // const pos = view.posAtDOM(event.target as HTMLElement);
         const pos = view.state.selection.main.head;
         if (pos == null) return;
@@ -282,12 +283,12 @@ export default function TypingInput() {
             for (const l of lines) {
                 const lineEnd = lineStart + l.length;
                 if (lineStart <= pos && pos <= lineEnd) {
-                    console.log("Clicked timeline item:", { type: item.type, id: id }, item);
+                    console.log("Clicked timeline item:", { type: item.type, id, text }, item);
                     if (item.type === 'location') {
-                        saveDoc();
+                        // await saveDoc();
                         navigate(childRoute('locations/' + item.details.ref))
                     } else {
-                        saveDoc();
+                        // await saveDoc();
                         navigate(childRoute('items/' + id))
                     }
                     return;
@@ -356,6 +357,10 @@ export default function TypingInput() {
         await loadAll();
         setIsDirty(false);
     }
+
+    createEffect(() => {
+        console.log(location.pathname);
+    });
 
     return (
         <>

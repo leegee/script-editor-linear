@@ -228,7 +228,7 @@ export default function TypingInput() {
 
 
     const handleClick = async (event: MouseEvent, view: EditorView) => {
-        saveDoc(); // since it currently resets IDs...
+        await saveDoc(); // since it currently resets IDs...
 
         const pos = view.state.selection.main.head;
         if (pos == null) return;
@@ -343,17 +343,25 @@ export default function TypingInput() {
     });
 
     async function saveDoc() {
-        if (!view()) return;
+        console.log('saveDoc enter')
+        if (!view()) {
+            console.log('saveDoc no view!')
+            return;
+        }
         const parsed = text2timelineItemsJson(
             view()!.state.doc.toString(),
             timelineItemTypesForTyping,
             findCharacterByName,
             findLocationByName
         );
+        console.log('saveDoc parsed')
         await deleteAllTimelineItems();
         await addTimelineItems(parsed);
+        console.log('saveDoc deleted')
         await loadAll();
+        console.log('saveDoc loaded')
         setIsDirty(false);
+        console.log('saveDoc done')
     }
 
     createEffect(() => {

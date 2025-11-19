@@ -5,6 +5,7 @@ import { defineConfig } from 'vite';
 import solidPlugin from 'vite-plugin-solid';
 
 export default defineConfig({
+  base: "/script-editor-linear/",
   plugins: [solidPlugin()],
   server: {
     port: 3000,
@@ -15,7 +16,7 @@ export default defineConfig({
     setupFiles: ['node_modules/@testing-library/jest-dom/vitest'],
     // if you have few tests, try commenting this
     // out to improve performance:
-    isolate: false,
+    // isolate: false,
   },
   build: {
     target: 'esnext',

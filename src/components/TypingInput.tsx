@@ -300,8 +300,19 @@ export default function TypingInput() {
 
 
     onMount(() => {
+        // const initialText = timelineSequence()
+        //     .map(id => timelineItems[id].renderAsText())
+        //     .join("\n\n");
+
         const initialText = timelineSequence()
-            .map(id => timelineItems[id].renderAsText())
+            .map(id => {
+                try {
+                    return timelineItems[id].renderAsText();
+                } catch (err) {
+                    console.error("renderAsText failed for id:", id, err, timelineItems[id]);
+                    return ""; // safe fallback so the map continues
+                }
+            })
             .join("\n\n");
 
         const state = EditorState.create({

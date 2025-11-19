@@ -1,12 +1,15 @@
-# Project Feature List:  Script Visualizer / Story Matrix
+# Script Editor
 
 ![List view](./README/list.png)
 ![Timeline view](./README/timeline.png)
 ![Word-processor view](./README/typing.png)
 
+# Project Feature List:  Script Visualizer / Story Matrix
+
 ## Core Concepts
 
 ### Script Items
+- A linear non-hierarchical data model
 - **Single universal entity type** for anything appearing in the script or running order:
   - Dialogue, action, sound cue, lighting change, camera move, etc.
   - Meta items like **Act Marker**, **Scene Marker**, **Beat Marker**

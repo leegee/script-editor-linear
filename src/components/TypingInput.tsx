@@ -228,7 +228,8 @@ export default function TypingInput() {
 
 
     const handleClick = async (event: MouseEvent, view: EditorView) => {
-        // const pos = view.posAtDOM(event.target as HTMLElement);
+        saveDoc(); // since it currently resets IDs...
+
         const pos = view.state.selection.main.head;
         if (pos == null) return;
 
@@ -267,14 +268,13 @@ export default function TypingInput() {
 
                 if (info) {
                     console.log("Clicked item:", info);
-                    saveDoc();
                     navigate(childRoute(info.type + '/' + info.id));
                     return;
                 }
             }
         }
 
-        // Map the clicked line to a timeline item ID
+        // Map the clicked line to a timeline item ID - safe as just saved
         let lineStart = 0;
         for (const id of timelineSequence()) {
             const item = timelineItems[id];
@@ -285,10 +285,8 @@ export default function TypingInput() {
                 if (lineStart <= pos && pos <= lineEnd) {
                     console.log("Clicked timeline item:", { type: item.type, id, text }, item);
                     if (item.type === 'location') {
-                        // await saveDoc();
                         navigate(childRoute('locations/' + item.details.ref))
                     } else {
-                        // await saveDoc();
                         navigate(childRoute('items/' + id))
                     }
                     return;

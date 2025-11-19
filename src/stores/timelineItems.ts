@@ -306,7 +306,7 @@ function _collectDurations(containerType: "act" | "scene") {
     });
 }
 
-function _collectCharacters(containerType: "act" | "scene") {
+function _collectCharacters(containerType: "act" | "scene" | "beat") {
     return createMemo(() => {
         const result: Record<string, Set<string>> = {};
         let currentId: string | null = null;

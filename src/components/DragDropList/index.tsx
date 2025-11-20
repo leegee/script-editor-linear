@@ -6,7 +6,7 @@ import { List } from '@solid-primitives/list';
 import DragHandleWithMenu from "./DragHandleWithMenu";
 import { duplicateTimelineItem } from "../../lib/duplicateTimelineItem";
 import { createTimelineItem, deleteTimelineItemById } from "../../lib/createTimelineItem";
-import { reorderTimeline, timelineItems, timelineSequence } from "../../stores";
+import { reorderTimeline, timelineItems, timelineSequence, updateSetting } from "../../stores";
 import { createTimelineItemInstance } from "../../lib/timelineItemRegistry";
 import { showAlert } from "../../stores/modals";
 import { type TimelineItem } from "../CoreItems";
@@ -36,6 +36,9 @@ export default function DragDropList() {
     if (selectedId() === item.id) return;
 
     setSelectedId(item.id);
+    updateSetting('currentLineIndex', index);
+    updateSetting('selectedId', item.id);
+
     const el = document.querySelector(`[data-index="${index}"]`) as HTMLElement | null;
     el?.scrollIntoView({ block: "nearest" });
 

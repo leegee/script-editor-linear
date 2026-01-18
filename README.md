@@ -28,14 +28,16 @@
   - **Marker**:  Act / Scene / Beat (structural)
   - **Cue**:  Audio / Lighting / Transition
   - **Dialogue / Action**:  Character involvement
-  - **Other**:  Anything user-defined
+  - **Sound / FX / Score**: and more
+
+  ---
 - Each Timeline Item supports **three rendering/edit modes**:
 
-  1. **Simplified View**:  minimal timeline block
-  2. **Medium Detail**:  inline, summary information
-  3. **Full Detail / Editor**:  complete editable form (with multimedia and links)
-- **Edits persist locally** (e.g., IndexedDB tables: `timelineItems`, `characters`, etc.)
-- Timeline items are linear, in timelineSequence() order.
+  1. **Simplified View**:  minimal timeline blocks stacked as in traidtional scripts in vertical page format but with rich HTML controls and menus
+  2. **Script View**:  traditional typewritten script page in standard industry format
+  3. **Timeline**:  akin to timeline in a DAW, DVW, multi-track video or sound editor, showing blocks on content such as dialoge, lighting direction, audio cue reference or the cue itself, video, photos with timestamps and durations that (soon) can be played back in sequence, scrubbed through, and exported as mp3/4/etc.
+- **Edits persist locally** (eg IndexedDB tables)
+- Timeline items are linear, in timelineSequence() order - trees are more hassle than they are worth
 - Items without a duration (like acts, scenes, beats) are “start markers” — their end is implicitly the start of the next item of the same type or the timeline’s end.
 - Items with a duration (dialogue, action, etc.) have their start at the current time (now) and move now forward by their duration.
 
@@ -43,7 +45,7 @@
 
 ### Characters
 
-- Represent people or entities with roles in the script
+- AKA Actors in scientific sense. Represent people or entities with roles in the script
 - Have:
   - **Traits / Attributes** (key-value pairs, numeric sliders, categorical flags)
   - **Tags** and **Notes**
@@ -64,8 +66,8 @@
   - Links to **Timeline Items**, **Characters**, and **Contacts**
 - **Full Detail / Editor View:**
   - Map editor or layout view
-  - Linked contacts (e.g., liaison, owner)
-  - Optional media (photos, documents, blueprints)
+  - Hyper-linked shared contacts db with tags (eg liaison, owner)
+  - Optional media (photos, documents, blueprints, moodboards) - various indefinite attachments supported
   - Scene/sequence references
 
 ---
@@ -75,7 +77,7 @@
 - **Universal linking system** for all entities
 - Any entity (Timeline Item, Character, Location, Note) can have **multiple tags**
 - Tags can represent:
-  - **Themes** (e.g., *Hope*, *Isolation*, *Redemption*)
+  - **Themes** (eg *Hope*, *Isolation*, *Redemption*)
   - **Story Arcs**
   - **Character Arcs**
   - Or any conceptual grouping (*Mood*, *Motif*, *Symbolism*)
@@ -298,24 +300,11 @@ gantt
 
 - **Markers** (Act, Scene, Beat) are `TimelineItem` subtypes with **zero duration**
 - **Dialogue**, **Action**, **Cue**, **Transition** are standard `TimelineItems` with duration
-- **Simultaneous actions** (e.g., sound, music) run **in parallel** with others
+- **Simultaneous actions** (eg sound, music) run **in parallel** with others
 - **Timeline** supports:
   - Explicit durations (`start + length`)
   - Implicit durations (computed or assigned)
   - Overlaps (multiple active items in same time range)
-
----
-
-## Rendering Rules (planned)
-
-
-| Type                     | Visual Representation | Editable Fields           | Notes                          |
-| -------------------------- | ----------------------- | --------------------------- | -------------------------------- |
-| Marker                   | Line or flag          | Label, type               | Anchors sections of timeline   |
-| Dialogue / Action        | Block or card         | Character, duration, text | May overlap other dialogue     |
-| Cue (sound/light/camera) | Thin bar or icon      | Type, timing              | Layered under main track       |
-| Transition               | Fade band             | Type, duration            | May bridge between scenes      |
-| Meta (e.g., Theme Tag)   | Overlay band or icon  | Tag reference             | Filters across multiple scenes |
 
 ---
 

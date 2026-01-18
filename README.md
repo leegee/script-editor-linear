@@ -11,26 +11,30 @@
 ## Core Concepts
 
 ### Script Items
+
 - A linear non-hierarchical data model
 - **Single universal entity type** for anything appearing in the script or running order:
+
   - Dialogue, action, sound cue, lighting change, camera move, etc.
   - Meta items like **Act Marker**, **Scene Marker**, **Beat Marker**
 - Script items can occur **sequentially or simultaneously**
 - Can have:
+
   - **Duration** (explicit or computed)
   - **Tags** and **Notes**
   - Links to **Characters**, **Locations**, **Contacts**
 - Subtypes and examples:
+
   - **Marker**:  Act / Scene / Beat (structural)
   - **Cue**:  Audio / Lighting / Transition
   - **Dialogue / Action**:  Character involvement
   - **Other**:  Anything user-defined
 - Each Timeline Item supports **three rendering/edit modes**:
+
   1. **Simplified View**:  minimal timeline block
   2. **Medium Detail**:  inline, summary information
   3. **Full Detail / Editor**:  complete editable form (with multimedia and links)
 - **Edits persist locally** (e.g., IndexedDB tables: `timelineItems`, `characters`, etc.)
-
 - Timeline items are linear, in timelineSequence() order.
 - Items without a duration (like acts, scenes, beats) are “start markers” — their end is implicitly the start of the next item of the same type or the timeline’s end.
 - Items with a duration (dialogue, action, etc.) have their start at the current time (now) and move now forward by their duration.
@@ -38,6 +42,7 @@
 ---
 
 ### Characters
+
 - Represent people or entities with roles in the script
 - Have:
   - **Traits / Attributes** (key-value pairs, numeric sliders, categorical flags)
@@ -52,6 +57,7 @@
 ---
 
 ### Locations
+
 - Represent physical or conceptual places
 - Have:
   - **Tags** and **Notes**
@@ -65,6 +71,7 @@
 ---
 
 ### Tags
+
 - **Universal linking system** for all entities
 - Any entity (Timeline Item, Character, Location, Note) can have **multiple tags**
 - Tags can represent:
@@ -85,6 +92,7 @@
 ---
 
 ### Notes
+
 - **Attachable to anything** (Timeline Item, Character, Location, Tag)
 - Can themselves be **tagged**
 - Support:
@@ -98,6 +106,7 @@
 ## UI Features
 
 ### Timeline / 3D Perspective View
+
 - WebGL-based **skewed perspective timeline**
   - Shows chronological sequence stretching into distance
   - Smooth transitions between flat and 3D views
@@ -113,6 +122,7 @@
 ---
 
 ### Column / Matrix View
+
 - Displays chronological **columns** of entities (timeline items, characters, etc.)
 - Filters by **tag**, **character**, or **location**
 - **Zoom / Focus Mode:**
@@ -129,6 +139,7 @@
 ---
 
 ## Data Model
+
 - Every entity:
   - Has a **UUID**
   - Has timestamps / duration
@@ -142,6 +153,7 @@
 ---
 
 ## Future / Planned Features
+
 - **Audio/video synchronization** for media-based timeline items
 - **Timeline playback** (real-time simulation)
 - **Collaboration** (multi-user, shared state)
@@ -153,13 +165,13 @@
 ---
 
 ## Technical Goals
+
 - SolidJS + TypeScript reactive architecture
 - IndexedDB-backed local persistence
 - Modular data schemas (JSON-based storage)
 - WebGL/Canvas hybrid renderer for perspective and timeline modes
 - Accessibility and keyboard shortcuts
 - Multi-touch and gesture support
-
 
 ---
 
@@ -241,14 +253,13 @@ Renderer -->|interactive feedback| UI
 
 ## Summary
 
-- **TimelineItem** is the universal timeline entity  
-- **Character** and **Location** extend via references  
-- **Tag** and **Note** are shared, universal linkable layers  
-- **Storage** is local-first (IndexedDB), ready for sync extension  
-- **UI** and **Renderer** operate reactively from the same data graph  
+- **TimelineItem** is the universal timeline entity
+- **Character** and **Location** extend via references
+- **Tag** and **Note** are shared, universal linkable layers
+- **Storage** is local-first (IndexedDB), ready for sync extension
+- **UI** and **Renderer** operate reactively from the same data graph
 
 ---
-
 
 ---
 
@@ -287,7 +298,7 @@ gantt
 
 - **Markers** (Act, Scene, Beat) are `TimelineItem` subtypes with **zero duration**
 - **Dialogue**, **Action**, **Cue**, **Transition** are standard `TimelineItems` with duration
-- **Simultaneous actions** (e.g., sound, music) run **in parallel** with others  
+- **Simultaneous actions** (e.g., sound, music) run **in parallel** with others
 - **Timeline** supports:
   - Explicit durations (`start + length`)
   - Implicit durations (computed or assigned)
@@ -297,27 +308,24 @@ gantt
 
 ## Rendering Rules (planned)
 
-| Type | Visual Representation | Editable Fields | Notes |
-|------|------------------------|----------------|-------|
-| Marker | Line or flag | Label, type | Anchors sections of timeline |
-| Dialogue / Action | Block or card | Character, duration, text | May overlap other dialogue |
-| Cue (sound/light/camera) | Thin bar or icon | Type, timing | Layered under main track |
-| Transition | Fade band | Type, duration | May bridge between scenes |
-| Meta (e.g., Theme Tag) | Overlay band or icon | Tag reference | Filters across multiple scenes |
+
+| Type                     | Visual Representation | Editable Fields           | Notes                          |
+| -------------------------- | ----------------------- | --------------------------- | -------------------------------- |
+| Marker                   | Line or flag          | Label, type               | Anchors sections of timeline   |
+| Dialogue / Action        | Block or card         | Character, duration, text | May overlap other dialogue     |
+| Cue (sound/light/camera) | Thin bar or icon      | Type, timing              | Layered under main track       |
+| Transition               | Fade band             | Type, duration            | May bridge between scenes      |
+| Meta (e.g., Theme Tag)   | Overlay band or icon  | Tag reference             | Filters across multiple scenes |
 
 ---
 
-## Next Steps (Visual Layer)
+## To Do
 
-- Implement timeline rendering using **WebGL / CSS transforms**  
-- Animate zoom, skew, and focus transitions between:
+- Implement timeline rendering using **WebGL / CSS transforms**
+  - Animate zoom, skew, and focus transitions between:
   - Flat script list view
-  - 3D perspective view  
-- Allow **filtering by tag, character, or location**
-- Enable **drag-to-adjust duration** and **simultaneous event alignment**
+  - 3D perspective view
 
----
-
-## TODO
-
-No char name can be a member of `Set(Set(timelineItemTypesForTyping))`.
+* Catch and throw more sooner with explicit bespoke error messages objects
+* More logial restrictions to at least catch potential interface abuse: eg no char name can be a member of `Set(Set(timelineItemTypesForTyping))`
+* Printer CSS
